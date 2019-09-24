@@ -1,2 +1,2 @@
 This is a test about git.
-Git is free software.
+Git is a free software.
