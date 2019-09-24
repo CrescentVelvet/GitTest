@@ -1,2 +1,2 @@
 This is a test about git.
-How to use GitHub?
+Git is free software.
