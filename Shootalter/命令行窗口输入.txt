@@ -1,0 +1,3 @@
+./Hera.exe -i=lr --if=E://ProgramFilesBig/HeraLOG/2019-07-03_14-09_ER-Force-vs-TIGERs_Mannheim.log -o=ns
+
+./Hera -i=lr --id=/media/zjunlict/cresent/Works/log1 -o=ns
