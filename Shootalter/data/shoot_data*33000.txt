@@ -1,0 +1,9044 @@
+car_pos
+car_dir   	1.4542524814606
+car_posX  	-4098.3842773438
+car_posY  	3384.3466796875
+car_velMod	0
+car_velDir	0
+car_power 	2964.8775444202
+car_rotVel	2.9635586738586
+ball_pos
+ball_posX	-3990.6574707031
+ball_posY	4423.8896484375
+000000000	000000000
+car_pos
+car_dir   	1.7831228971481
+car_posX  	2291.4140625
+car_posY  	-1966.8590087891
+car_velMod	0
+car_velDir	-0
+car_power 	2713.350441639
+car_rotVel	2.9577729701996
+ball_pos
+ball_posX	2081.5549316406
+ball_posY	-948.77008056641
+000000000	000000000
+car_pos
+car_dir   	3.1234078407288
+car_posX  	1598.1032714844
+car_posY  	1229.4530029297
+car_velMod	0
+car_velDir	-0
+car_power 	2505.2574735625
+car_rotVel	2.9643588066101
+ball_pos
+ball_posX	556.22808837891
+ball_posY	1244.5217285156
+000000000	000000000
+car_pos
+car_dir   	-1.888419508934
+car_posX  	-1668.4454345703
+car_posY  	1240.4652099609
+car_velMod	0
+car_velDir	0
+car_power 	2855.970990777
+car_rotVel	2.9619882106781
+ball_pos
+ball_posX	-1988.0506591797
+ball_posY	254.14556884766
+000000000	000000000
+car_pos
+car_dir   	-0.71050065755844
+car_posX  	-2649.2077636719
+car_posY  	-1880.4614257812
+car_velMod	0
+car_velDir	-0
+car_power 	2267.6769915352
+car_rotVel	2.9634456634521
+ball_pos
+ball_posX	-1856.3784179688
+ball_posY	-2542.3842773438
+000000000	000000000
+car_pos
+car_dir   	-2.347113609314
+car_posX  	1059.3760986328
+car_posY  	698.9296875
+car_velMod	0
+car_velDir	0
+car_power 	2624.918517482
+car_rotVel	2.9568431377411
+ball_pos
+ball_posX	353.05859375
+ball_posY	-57.892711639404
+000000000	000000000
+car_pos
+car_dir   	-0.9718205332756
+car_posX  	-1185.4068603516
+car_posY  	-1695.7153320312
+car_velMod	0
+car_velDir	-0
+car_power 	2980.6512049309
+car_rotVel	2.9568078517914
+ball_pos
+ball_posX	-583.42138671875
+ball_posY	-2539.05859375
+000000000	000000000
+car_pos
+car_dir   	-2.5843045711517
+car_posX  	2265.2802734375
+car_posY  	-667.3330078125
+car_velMod	0
+car_velDir	0
+car_power 	2308.4611689246
+car_rotVel	2.9619839191437
+ball_pos
+ball_posX	1392.2830810547
+ball_posY	-1220.0795898438
+000000000	000000000
+car_pos
+car_dir   	-1.2489753961563
+car_posX  	-468.22857666016
+car_posY  	-2458.7270507812
+car_velMod	0
+car_velDir	-0
+car_power 	2099.3366991632
+car_rotVel	2.9601955413818
+ball_pos
+ball_posX	-116.84755706787
+ball_posY	-3436.708984375
+000000000	000000000
+car_pos
+car_dir   	-1.6076462268829
+car_posX  	-2282.6284179688
+car_posY  	483.88082885742
+car_velMod	0
+car_velDir	0
+car_power 	2426.1898907955
+car_rotVel	2.9569067955017
+ball_pos
+ball_posX	-2246.5705566406
+ball_posY	-564.61376953125
+000000000	000000000
+car_pos
+car_dir   	2.8420579433441
+car_posX  	1628.0234375
+car_posY  	-2076.4934082031
+car_velMod	0
+car_velDir	-0
+car_power 	2692.2379404736
+car_rotVel	2.9602563381195
+ball_pos
+ball_posX	618.95281982422
+ball_posY	-1824.7877197266
+000000000	000000000
+car_pos
+car_dir   	-1.9503000974655
+car_posX  	-1560.6787109375
+car_posY  	-1317.9113769531
+car_velMod	0
+car_velDir	0
+car_power 	2079.634550996
+car_rotVel	2.9639928340912
+ball_pos
+ball_posX	-1930.5471191406
+ball_posY	-2288.1437988281
+000000000	000000000
+car_pos
+car_dir   	2.8898324966431
+car_posX  	2610.5476074219
+car_posY  	-1462.115234375
+car_velMod	0
+car_velDir	-0
+car_power 	2350.8630713219
+car_rotVel	2.9604244232178
+ball_pos
+ball_posX	1586.4241943359
+ball_posY	-1268.5932617188
+000000000	000000000
+car_pos
+car_dir   	-2.4578020572662
+car_posX  	-623.60107421875
+car_posY  	-877.64343261719
+car_velMod	0
+car_velDir	0
+car_power 	2731.021439997
+car_rotVel	2.9567747116089
+ball_pos
+ball_posX	-1384.1900634766
+ball_posY	-1578.8050537109
+000000000	000000000
+car_pos
+car_dir   	1.1668877601624
+car_posX  	-2418.7058105469
+car_posY  	-2184.3576660156
+car_velMod	0
+car_velDir	0
+car_power 	2529.0203706962
+car_rotVel	1.8364608287811
+ball_pos
+ball_posX	-2052.3251953125
+ball_posY	-1221.3249511719
+000000000	000000000
+car_pos
+car_dir   	2.4914948940277
+car_posX  	-1250.4521484375
+car_posY  	860.36193847656
+car_velMod	0
+car_velDir	-0
+car_power 	2436.5136439151
+car_rotVel	2.9567737579346
+ball_pos
+ball_posX	-2115.2458496094
+ball_posY	1430.9611816406
+000000000	000000000
+car_pos
+car_dir   	1.6519991159439
+car_posX  	-1225.6452636719
+car_posY  	-599.19213867188
+car_velMod	0
+car_velDir	-0
+car_power 	2261.7250337553
+car_rotVel	2.9596133232117
+ball_pos
+ball_posX	-1327.8698730469
+ball_posY	440.39614868164
+000000000	000000000
+car_pos
+car_dir   	0.75743579864502
+car_posX  	-2593.4990234375
+car_posY  	-1035.572265625
+car_velMod	0
+car_velDir	0
+car_power 	2528.6820635799
+car_rotVel	2.9631445407867
+ball_pos
+ball_posX	-1851.5466308594
+ball_posY	-319.49850463867
+000000000	000000000
+car_pos
+car_dir   	1.9690024852753
+car_posX  	-269.42575073242
+car_posY  	1264.0993652344
+car_velMod	0
+car_velDir	-0
+car_power 	2383.2099346366
+car_rotVel	2.9567883014679
+ball_pos
+ball_posX	-726.45568847656
+ball_posY	2197.533203125
+000000000	000000000
+car_pos
+car_dir   	1.0865031480789
+car_posX  	-1235.7686767578
+car_posY  	-265.77191162109
+car_velMod	0
+car_velDir	0
+car_power 	2627.6854563633
+car_rotVel	2.9621198177338
+ball_pos
+ball_posX	-791.82409667969
+ball_posY	667.97387695312
+000000000	000000000
+car_pos
+car_dir   	0.28621366620064
+car_posX  	-2790.7839355469
+car_posY  	-418.33068847656
+car_velMod	0
+car_velDir	0
+car_power 	2979.3927217738
+car_rotVel	2.9642481803894
+ball_pos
+ball_posX	-1792.3288574219
+ball_posY	-134.20227050781
+000000000	000000000
+car_pos
+car_dir   	1.6491169929504
+car_posX  	337.19326782227
+car_posY  	528.23010253906
+car_velMod	0
+car_velDir	-0
+car_power 	2277.7676681419
+car_rotVel	2.961932182312
+ball_pos
+ball_posX	243.58229064941
+ball_posY	1566.5889892578
+000000000	000000000
+car_pos
+car_dir   	1.1136745214462
+car_posX  	1410.8037109375
+car_posY  	-2146.5524902344
+car_velMod	0
+car_velDir	0
+car_power 	2071.8536861575
+car_rotVel	2.9568367004395
+ball_pos
+ball_posX	1802.8314208984
+ball_posY	-1182.8155517578
+000000000	000000000
+car_pos
+car_dir   	2.5018911361694
+car_posX  	2669.2265625
+car_posY  	897.36352539062
+car_velMod	0
+car_velDir	-0
+car_power 	2932.0939019938
+car_rotVel	2.9641070365906
+ball_pos
+ball_posX	1839.2249755859
+ball_posY	1513.3642578125
+000000000	000000000
+car_pos
+car_dir   	1.4886568784714
+car_posX  	1778.474609375
+car_posY  	-483.14434814453
+car_velMod	0
+car_velDir	0
+car_power 	2287.2401458617
+car_rotVel	2.9613728523254
+ball_pos
+ball_posX	1867.1361083984
+ball_posY	554.70092773438
+000000000	000000000
+car_pos
+car_dir   	-0.15746201574802
+car_posX  	-1799.8204345703
+car_posY  	1273.8696289062
+car_velMod	0
+car_velDir	-0
+car_power 	2553.9754915768
+car_rotVel	2.9606459140778
+ball_pos
+ball_posX	-768.39477539062
+ball_posY	1125.7506103516
+000000000	000000000
+car_pos
+car_dir   	1.3452477455139
+car_posX  	1450.9166259766
+car_posY  	845.03656005859
+car_velMod	0
+car_velDir	0
+car_power 	2317.8904863623
+car_rotVel	2.9567823410034
+ball_pos
+ball_posX	1654.6735839844
+ball_posY	1870.7923583984
+000000000	000000000
+car_pos
+car_dir   	-0.15621344745159
+car_posX  	-1460.3988037109
+car_posY  	1867.5047607422
+car_velMod	0
+car_velDir	-0
+car_power 	2140.7972495727
+car_rotVel	2.9611806869507
+ball_pos
+ball_posX	-430.13638305664
+ball_posY	1708.5126953125
+000000000	000000000
+car_pos
+car_dir   	0.93378323316574
+car_posX  	1787.80859375
+car_posY  	1402.6862792969
+car_velMod	0
+car_velDir	0
+car_power 	2440.8662749645
+car_rotVel	2.9567759037018
+ball_pos
+ball_posX	2346.279296875
+ball_posY	2278.4416503906
+000000000	000000000
+car_pos
+car_dir   	0.069233775138855
+car_posX  	-417.06503295898
+car_posY  	-1577.6536865234
+car_velMod	0
+car_velDir	0
+car_power 	2214.6998607622
+car_rotVel	2.9568209648132
+ball_pos
+ball_posX	625.32305908203
+ball_posY	-1482.8903808594
+000000000	000000000
+car_pos
+car_dir   	0.9658020734787
+car_posX  	2869.2438964844
+car_posY  	-1274.7172851562
+car_velMod	0
+car_velDir	0
+car_power 	2592.0738710985
+car_rotVel	2.9567868709564
+ball_pos
+ball_posX	3398.634765625
+ball_posY	-377.64288330078
+000000000	000000000
+car_pos
+car_dir   	-1.1874279975891
+car_posX  	264.78634643555
+car_posY  	2095.5107421875
+car_velMod	0
+car_velDir	-0
+car_power 	2418.0617422881
+car_rotVel	2.9613919258118
+ball_pos
+ball_posX	668.46014404297
+ball_posY	1141.2821044922
+000000000	000000000
+car_pos
+car_dir   	0.14203751087189
+car_posX  	1587.8444824219
+car_posY  	-901.93237304688
+car_velMod	0
+car_velDir	0
+car_power 	2800.8080342788
+car_rotVel	2.9567744731903
+ball_pos
+ball_posX	2620.15234375
+ball_posY	-734.68371582031
+000000000	000000000
+car_pos
+car_dir   	-0.92249602079391
+car_posX  	1304.9024658203
+car_posY  	1011.8735961914
+car_velMod	0
+car_velDir	-0
+car_power 	2625.6342216514
+car_rotVel	2.9588658809662
+ball_pos
+ball_posX	1954.3466796875
+ball_posY	206.99237060547
+000000000	000000000
+car_pos
+car_dir   	-0.50734943151474
+car_posX  	-246.84912109375
+car_posY  	-1899.1524658203
+car_velMod	0
+car_velDir	-0
+car_power 	2396.4780915512
+car_rotVel	2.9624316692352
+ball_pos
+ball_posX	652.85705566406
+ball_posY	-2404.6083984375
+000000000	000000000
+car_pos
+car_dir   	-1.836908698082
+car_posX  	1400.0395507812
+car_posY  	1682.7629394531
+car_velMod	0
+car_velDir	0
+car_power 	2137.1130976533
+car_rotVel	2.958781003952
+ball_pos
+ball_posX	1151.6213378906
+ball_posY	671.82824707031
+000000000	000000000
+car_pos
+car_dir   	-0.466892182827
+car_posX  	644.85968017578
+car_posY  	-1506.2016601562
+car_velMod	0
+car_velDir	-0
+car_power 	2020.5667154028
+car_rotVel	2.9612941741943
+ball_pos
+ball_posX	1595.9788818359
+ball_posY	-1920.373046875
+000000000	000000000
+car_pos
+car_dir   	-1.1277686357498
+car_posX  	2594.7250976562
+car_posY  	-1754.3590087891
+car_velMod	0
+car_velDir	-0
+car_power 	2790.9229704137
+car_rotVel	2.9607872962952
+ball_pos
+ball_posX	3055.0029296875
+ball_posY	-2681.2797851562
+000000000	000000000
+car_pos
+car_dir   	1.4454474449158
+car_posX  	4262.5
+car_posY  	-870.39068603516
+car_velMod	0
+car_velDir	0
+car_power 	2347.7603259253
+car_rotVel	2.9656083583832
+ball_pos
+ball_posX	4344.0517578125
+ball_posY	168.34191894531
+000000000	000000000
+car_pos
+car_dir   	-0.18175266683102
+car_posX  	1746.9178466797
+car_posY  	1593.2817382812
+car_velMod	0
+car_velDir	-0
+car_power 	2118.4882131026
+car_rotVel	2.9617104530334
+ball_pos
+ball_posX	2773.5129394531
+ball_posY	1418.6165771484
+000000000	000000000
+car_pos
+car_dir   	0.029312508180737
+car_posX  	526.96417236328
+car_posY  	-2080.8703613281
+car_velMod	0
+car_velDir	-0
+car_power 	2440.1649550722
+car_rotVel	2.9624137878418
+ball_pos
+ball_posX	1569.2019042969
+ball_posY	-2053.4738769531
+000000000	000000000
+car_pos
+car_dir   	-1.2697647809982
+car_posX  	1811.8410644531
+car_posY  	72.975456237793
+car_velMod	0
+car_velDir	-0
+car_power 	2738.8653968176
+car_rotVel	2.9567849636078
+ball_pos
+ball_posX	2139.2341308594
+ball_posY	-916.50122070312
+000000000	000000000
+car_pos
+car_dir   	-1.3876570463181
+car_posX  	364.06958007812
+car_posY  	-832.27679443359
+car_velMod	0
+car_velDir	-0
+car_power 	2004.518555945
+car_rotVel	2.9567799568176
+ball_pos
+ball_posX	573.06719970703
+ball_posY	-1856.2467041016
+000000000	000000000
+car_pos
+car_dir   	-2.5965082645416
+car_posX  	1921.6036376953
+car_posY  	-2058.5834960938
+car_velMod	0
+car_velDir	0
+car_power 	2306.4707961429
+car_rotVel	2.9635133743286
+ball_pos
+ball_posX	1044.8366699219
+ball_posY	-2604.8420410156
+000000000	000000000
+car_pos
+car_dir   	-1.7130572795868
+car_posX  	-2120.8869628906
+car_posY  	1713.2526855469
+car_velMod	0
+car_velDir	0
+car_power 	2015.2255469073
+car_rotVel	2.962327003479
+ball_pos
+ball_posX	-2218.0256347656
+ball_posY	675.38159179688
+000000000	000000000
+car_pos
+car_dir   	-0.33110362291336
+car_posX  	-2390.2473144531
+car_posY  	-1547.6340332031
+car_velMod	0
+car_velDir	-0
+car_power 	2400.4295344466
+car_rotVel	2.9630899429321
+ball_pos
+ball_posX	-1406.8399658203
+ball_posY	-1878.7103271484
+000000000	000000000
+car_pos
+car_dir   	-1.5961211919785
+car_posX  	-1366.8359375
+car_posY  	1426.2358398438
+car_velMod	0
+car_velDir	0
+car_power 	2136.9465259542
+car_rotVel	2.9601857662201
+ball_pos
+ball_posX	-1359.0987548828
+ball_posY	383.57846069336
+000000000	000000000
+car_pos
+car_dir   	-0.33229693770409
+car_posX  	-1309.3638916016
+car_posY  	-1852.7159423828
+car_velMod	0
+car_velDir	-0
+car_power 	2426.9914736166
+car_rotVel	2.9568083286285
+ball_pos
+ball_posX	-314.53753662109
+ball_posY	-2163.0317382812
+000000000	000000000
+car_pos
+car_dir   	-1.7344862222672
+car_posX  	-507.37686157227
+car_posY  	2197.078125
+car_velMod	0
+car_velDir	0
+car_power 	2232.648674507
+car_rotVel	2.9568393230438
+ball_pos
+ball_posX	-603.43634033203
+ball_posY	1176.7189941406
+000000000	000000000
+car_pos
+car_dir   	-0.3065479695797
+car_posX  	-824.41851806641
+car_posY  	-1090.4755859375
+car_velMod	0
+car_velDir	-0
+car_power 	2113.7795011111
+car_rotVel	2.9605805873871
+ball_pos
+ball_posX	163.30738830566
+ball_posY	-1406.2814941406
+000000000	000000000
+car_pos
+car_dir   	1.0520989894867
+car_posX  	2299.0710449219
+car_posY  	-2064.8361816406
+car_velMod	0
+car_velDir	0
+car_power 	2467.4553975777
+car_rotVel	2.9567744731903
+ball_pos
+ball_posX	2787.9577636719
+ball_posY	-1147.6596679688
+000000000	000000000
+car_pos
+car_dir   	-0.018400024622679
+car_posX  	-229.71978759766
+car_posY  	-1736.6910400391
+car_velMod	0
+car_velDir	-0
+car_power 	2793.0406284486
+car_rotVel	2.9598429203033
+ball_pos
+ball_posX	813.26397705078
+ball_posY	-1734.5006103516
+000000000	000000000
+car_pos
+car_dir   	-1.3449161052704
+car_posX  	1046.6656494141
+car_posY  	409.08920288086
+car_velMod	0
+car_velDir	-0
+car_power 	2060.103432769
+car_rotVel	2.9634902477264
+ball_pos
+ball_posX	1322.8354492188
+ball_posY	-596.10491943359
+000000000	000000000
+car_pos
+car_dir   	-2.7454695701599
+car_posX  	2581.3383789062
+car_posY  	-851.68139648438
+car_velMod	0
+car_velDir	0
+car_power 	2914.632027929
+car_rotVel	2.9634184837341
+ball_pos
+ball_posX	1622.1124267578
+ball_posY	-1242.1204833984
+000000000	000000000
+car_pos
+car_dir   	-1.4923218488693
+car_posX  	-429.75192260742
+car_posY  	-2135.3764648438
+car_velMod	0
+car_velDir	-0
+car_power 	2215.9572836086
+car_rotVel	2.9567749500275
+ball_pos
+ball_posX	-287.08926391602
+ball_posY	-3170.8000488281
+000000000	000000000
+car_pos
+car_dir   	-2.2977640628815
+car_posX  	1225.0041503906
+car_posY  	2018.69921875
+car_velMod	0
+car_velDir	0
+car_power 	2513.8465415285
+car_rotVel	2.9586343765259
+ball_pos
+ball_posX	534.37884521484
+ball_posY	1255.1364746094
+000000000	000000000
+car_pos
+car_dir   	-0.81647795438766
+car_posX  	-901.98297119141
+car_posY  	-433.87796020508
+car_velMod	0
+car_velDir	-0
+car_power 	2895.4073902664
+car_rotVel	2.9658954143524
+ball_pos
+ball_posX	-200.37199401855
+ball_posY	-1188.8542480469
+000000000	000000000
+car_pos
+car_dir   	-2.2358005046844
+car_posX  	1663.0296630859
+car_posY  	1203.8272705078
+car_velMod	0
+car_velDir	0
+car_power 	2224.4105125891
+car_rotVel	2.9654941558838
+ball_pos
+ball_posX	1039.6290283203
+ball_posY	378.81787109375
+000000000	000000000
+car_pos
+car_dir   	-0.88650387525558
+car_posX  	-282.54669189453
+car_posY  	-1417.5047607422
+car_velMod	0
+car_velDir	-0
+car_power 	2511.72278985
+car_rotVel	2.9567983150482
+ball_pos
+ball_posX	423.46591186523
+ball_posY	-2177.4807128906
+000000000	000000000
+car_pos
+car_dir   	-1.5683543682098
+car_posX  	-309.97274780273
+car_posY  	-451.92166137695
+car_velMod	0
+car_velDir	0
+car_power 	2255.9422195218
+car_rotVel	2.9589290618896
+ball_pos
+ball_posX	-246.32814025879
+ball_posY	-1491.8651123047
+000000000	000000000
+car_pos
+car_dir   	-2.2787749767303
+car_posX  	969.91729736328
+car_posY  	1513.1800537109
+car_velMod	0
+car_velDir	0
+car_power 	2581.7846719091
+car_rotVel	2.96266913414
+ball_pos
+ball_posX	313.95227050781
+ball_posY	716.54119873047
+000000000	000000000
+car_pos
+car_dir   	-0.85842508077621
+car_posX  	-1081.2471923828
+car_posY  	-1032.7888183594
+car_velMod	0
+car_velDir	-0
+car_power 	2877.1474807882
+car_rotVel	2.9628238677979
+ball_pos
+ball_posX	-418.15612792969
+ball_posY	-1820.1181640625
+000000000	000000000
+car_pos
+car_dir   	-1.6849893331528
+car_posX  	-840.35662841797
+car_posY  	494.9866027832
+car_velMod	0
+car_velDir	0
+car_power 	2171.5484946834
+car_rotVel	2.9630072116852
+ball_pos
+ball_posX	-953.83648681641
+ball_posY	-540.45422363281
+000000000	000000000
+car_pos
+car_dir   	-1.8636609315872
+car_posX  	-2389.0969238281
+car_posY  	25.035053253174
+car_velMod	0
+car_velDir	0
+car_power 	2972.6475742518
+car_rotVel	2.9567821025848
+ball_pos
+ball_posX	-2659.3786621094
+ball_posY	-985.44799804688
+000000000	000000000
+car_pos
+car_dir   	-2.8028230667114
+car_posX  	-1034.0554199219
+car_posY  	-825.70300292969
+car_velMod	0
+car_velDir	0
+car_power 	2243.5119507106
+car_rotVel	2.9632475376129
+ball_pos
+ball_posX	-2016.5872802734
+ball_posY	-1162.7415771484
+000000000	000000000
+car_pos
+car_dir   	3.0303871631622
+car_posX  	724.44537353516
+car_posY  	532.50109863281
+car_velMod	0
+car_velDir	-0
+car_power 	2064.1997224019
+car_rotVel	2.9622945785522
+ball_pos
+ball_posX	-308.57147216797
+ball_posY	651.2109375
+000000000	000000000
+car_pos
+car_dir   	-1.8517061471939
+car_posX  	-2519.4763183594
+car_posY  	881.451171875
+car_velMod	0
+car_velDir	0
+car_power 	2334.8174208472
+car_rotVel	2.96373462677
+ball_pos
+ball_posX	-2794.9057617188
+ball_posY	-123.38479614258
+000000000	000000000
+car_pos
+car_dir   	-2.9487037658691
+car_posX  	-1142.2669677734
+car_posY  	-506.29254150391
+car_velMod	0
+car_velDir	0
+car_power 	2692.0061808508
+car_rotVel	2.9596507549286
+ball_pos
+ball_posX	-2166.4274902344
+ball_posY	-690.11737060547
+000000000	000000000
+car_pos
+car_dir   	-2.9192488193512
+car_posX  	-2503.3049316406
+car_posY  	1147.9671630859
+car_velMod	0
+car_velDir	0
+car_power 	2990.4376426667
+car_rotVel	2.9637432098389
+ball_pos
+ball_posX	-3518.1418457031
+ball_posY	922.89068603516
+000000000	000000000
+car_pos
+car_dir   	1.9074882268906
+car_posX  	-1307.3099365234
+car_posY  	-2296.5854492188
+car_velMod	0
+car_velDir	-0
+car_power 	2636.6383827462
+car_rotVel	2.9626474380493
+ball_pos
+ball_posX	-1637.2451171875
+ball_posY	-1313.4215087891
+000000000	000000000
+car_pos
+car_dir   	-3.1068645159351
+car_posX  	-2394.8684082031
+car_posY  	792.16223144531
+car_velMod	0
+car_velDir	-0
+car_power 	2987.2616347798
+car_rotVel	2.9567999839783
+ball_pos
+ball_posX	-3439.2619628906
+ball_posY	733.58526611328
+000000000	000000000
+car_pos
+car_dir   	2.6766378879547
+car_posX  	2714.2048339844
+car_posY  	1539.6557617188
+car_velMod	0
+car_velDir	-0
+car_power 	2252.0695488211
+car_rotVel	2.9603402614594
+ball_pos
+ball_posX	1780.9696044922
+ball_posY	1993.0546875
+000000000	000000000
+car_pos
+car_dir   	-1.2351040840149
+car_posX  	-1849.1989746094
+car_posY  	1936.65234375
+car_velMod	0
+car_velDir	-0
+car_power 	2085.5333898615
+car_rotVel	2.9565460681915
+ball_pos
+ball_posX	-1450.9305419922
+ball_posY	975.75006103516
+000000000	000000000
+car_pos
+car_dir   	-0.15016080439091
+car_posX  	-572.85308837891
+car_posY  	-1106.0072021484
+car_velMod	0
+car_velDir	-0
+car_power 	2579.3008853585
+car_rotVel	2.9630682468414
+ball_pos
+ball_posX	457.23132324219
+ball_posY	-1255.6162109375
+000000000	000000000
+car_pos
+car_dir   	1.1708419322968
+car_posX  	2674.6447753906
+car_posY  	-1541.8245849609
+car_velMod	0
+car_velDir	0
+car_power 	2937.0316313286
+car_rotVel	2.9567742347717
+ball_pos
+ball_posX	3012.8969726562
+ball_posY	-557.04138183594
+000000000	000000000
+car_pos
+car_dir   	-0.080173686146736
+car_posX  	-707.39141845703
+car_posY  	-375.06420898438
+car_velMod	0
+car_velDir	-0
+car_power 	2260.9744352572
+car_rotVel	2.9615924358368
+ball_pos
+ball_posX	329.6477355957
+ball_posY	-460.70642089844
+000000000	000000000
+car_pos
+car_dir   	1.2399234771729
+car_posX  	2548.9108886719
+car_posY  	-609.36352539062
+car_velMod	0
+car_velDir	0
+car_power 	2619.4186623299
+car_rotVel	2.9610793590546
+ball_pos
+ball_posX	2865.3728027344
+ball_posY	381.10040283203
+000000000	000000000
+car_pos
+car_dir   	-0.084400862455368
+car_posX  	352.47314453125
+car_posY  	1109.3016357422
+car_velMod	0
+car_velDir	-0
+car_power 	2970.0156547921
+car_rotVel	2.9568302631378
+ball_pos
+ball_posX	1399.4799804688
+ball_posY	1049.7006835938
+000000000	000000000
+car_pos
+car_dir   	0.27491927146912
+car_posX  	1760.9788818359
+car_posY  	-1811.0485839844
+car_velMod	0
+car_velDir	0
+car_power 	2744.3379455918
+car_rotVel	2.9619970321655
+ball_pos
+ball_posX	2746.7233886719
+ball_posY	-1485.97265625
+000000000	000000000
+car_pos
+car_dir   	-0.908198595047
+car_posX  	-2380.9853515625
+car_posY  	1761.3198242188
+car_velMod	0
+car_velDir	-0
+car_power 	2453.0863708132
+car_rotVel	2.9621276855469
+ball_pos
+ball_posX	-1749.6475830078
+ball_posY	939.44519042969
+000000000	000000000
+car_pos
+car_dir   	0.53078919649124
+car_posX  	-334.49816894531
+car_posY  	-816.33142089844
+car_velMod	0
+car_velDir	0
+car_power 	2287.6329684107
+car_rotVel	2.9567918777466
+ball_pos
+ball_posX	550.20263671875
+ball_posY	-272.021484375
+000000000	000000000
+car_pos
+car_dir   	1.55004799366
+car_posX  	2466.1843261719
+car_posY  	921.75970458984
+car_velMod	0
+car_velDir	0
+car_power 	2639.2319861982
+car_rotVel	2.9568359851837
+ball_pos
+ball_posX	2420.6782226562
+ball_posY	1946.1267089844
+000000000	000000000
+car_pos
+car_dir   	0.50417965650558
+car_posX  	786.08404541016
+car_posY  	1110.6721191406
+car_velMod	0
+car_velDir	0
+car_power 	2967.4198962596
+car_rotVel	2.9636919498444
+ball_pos
+ball_posX	1696.3608398438
+ball_posY	1603.3176269531
+000000000	000000000
+car_pos
+car_dir   	0.0098451944068074
+car_posX  	-566.61730957031
+car_posY  	144.73872375488
+car_velMod	0
+car_velDir	-0
+car_power 	2208.9850717266
+car_rotVel	2.9623012542725
+ball_pos
+ball_posX	474.04010009766
+ball_posY	150.48275756836
+000000000	000000000
+car_pos
+car_dir   	1.39499604702
+car_posX  	2699.1730957031
+car_posY  	204.08703613281
+car_velMod	0
+car_velDir	0
+car_power 	2587.1703962736
+car_rotVel	2.9613788127899
+ball_pos
+ball_posX	2841.193359375
+ball_posY	1233.7799072266
+000000000	000000000
+car_pos
+car_dir   	0.83897632360458
+car_posX  	2883.8461914062
+car_posY  	1576.0684814453
+car_velMod	0
+car_velDir	0
+car_power 	2940.2551189718
+car_rotVel	2.9567744731903
+ball_pos
+ball_posX	3556.7514648438
+ball_posY	2361.7868652344
+000000000	000000000
+car_pos
+car_dir   	-0.37243136763573
+car_posX  	-999.42175292969
+car_posY  	2351.4877929688
+car_velMod	0
+car_velDir	-0
+car_power 	2156.5182633496
+car_rotVel	2.9593000411987
+ball_pos
+ball_posX	-25.353311538696
+ball_posY	1986.7301025391
+000000000	000000000
+car_pos
+car_dir   	0.9113175868988
+car_posX  	2085.5773925781
+car_posY  	1229.8055419922
+car_velMod	0
+car_velDir	0
+car_power 	2540.1548880805
+car_rotVel	2.9624166488647
+ball_pos
+ball_posX	2686.46875
+ball_posY	2066.8811035156
+000000000	000000000
+car_pos
+car_dir   	0.27440494298935
+car_posX  	-143.28070068359
+car_posY  	-697.01947021484
+car_velMod	0
+car_velDir	0
+car_power 	2838.3075468421
+car_rotVel	2.9601609706879
+ball_pos
+ball_posX	860.22131347656
+ball_posY	-433.82788085938
+000000000	000000000
+car_pos
+car_dir   	-1.0891990661621
+car_posX  	954.93328857422
+car_posY  	1762.8824462891
+car_velMod	0
+car_velDir	-0
+car_power 	2138.7367202615
+car_rotVel	2.9567930698395
+ball_pos
+ball_posX	1451.9305419922
+ball_posY	851.69989013672
+000000000	000000000
+car_pos
+car_dir   	0.085568614304066
+car_posX  	2545.1848144531
+car_posY  	-1129.0037841797
+car_velMod	0
+car_velDir	0
+car_power 	2986.6794464116
+car_rotVel	2.9609286785126
+ball_pos
+ball_posX	3582.4895019531
+ball_posY	-1037.2182617188
+000000000	000000000
+car_pos
+car_dir   	-1.0260003805161
+car_posX  	-415.75567626953
+car_posY  	2200.0217285156
+car_velMod	0
+car_velDir	-0
+car_power 	2195.0059487461
+car_rotVel	2.961653470993
+ball_pos
+ball_posX	116.29978179932
+ball_posY	1313.5798339844
+000000000	000000000
+car_pos
+car_dir   	0.23768033087254
+car_posX  	1307.1644287109
+car_posY  	-573.76959228516
+car_velMod	0
+car_velDir	0
+car_power 	2987.601278344
+car_rotVel	2.9567761421204
+ball_pos
+ball_posX	2297.9887695312
+ball_posY	-311.39514160156
+000000000	000000000
+car_pos
+car_dir   	-0.38626334071159
+car_posX  	-46.53165435791
+car_posY  	-812.00476074219
+car_velMod	0
+car_velDir	-0
+car_power 	2317.7966709797
+car_rotVel	2.9567747116089
+ball_pos
+ball_posX	942.80450439453
+ball_posY	-1137.3502197266
+000000000	000000000
+car_pos
+car_dir   	-1.1799638271332
+car_posX  	-1809.5786132812
+car_posY  	1405.9368896484
+car_velMod	0
+car_velDir	-0
+car_power 	2028.2287132126
+car_rotVel	2.9639403820038
+ball_pos
+ball_posX	-1383.1864013672
+ball_posY	462.8948059082
+000000000	000000000
+car_pos
+car_dir   	0.23589226603508
+car_posX  	-410.23715209961
+car_posY  	-1537.0473632812
+car_velMod	0
+car_velDir	0
+car_power 	2911.3502194692
+car_rotVel	2.9624059200287
+ball_pos
+ball_posX	598.82318115234
+ball_posY	-1280.2409667969
+000000000	000000000
+car_pos
+car_dir   	1.6181237697601
+car_posX  	2752.9387207031
+car_posY  	-682.51129150391
+car_velMod	0
+car_velDir	-0
+car_power 	2855.3762225692
+car_rotVel	2.9568431377411
+ball_pos
+ball_posX	2680.2041015625
+ball_posY	361.39624023438
+000000000	000000000
+car_pos
+car_dir   	-0.4033525288105
+car_posX  	-1550.6846923828
+car_posY  	2348.3608398438
+car_velMod	0
+car_velDir	-0
+car_power 	2681.9327318491
+car_rotVel	2.9613800048828
+ball_pos
+ball_posX	-589.09307861328
+ball_posY	1958.2288818359
+000000000	000000000
+car_pos
+car_dir   	0.81112349033356
+car_posX  	1497.1488037109
+car_posY  	1139.3582763672
+car_velMod	0
+car_velDir	0
+car_power 	2476.6548254884
+car_rotVel	2.9567782878876
+ball_pos
+ball_posX	2159.6489257812
+ball_posY	1934.9699707031
+000000000	000000000
+car_pos
+car_dir   	0.71328538656235
+car_posX  	2906.1486816406
+car_posY  	407.94119262695
+car_velMod	0
+car_velDir	0
+car_power 	2335.4337701273
+car_rotVel	2.9651393890381
+ball_pos
+ball_posX	3686.0803222656
+ball_posY	1083.1888427734
+000000000	000000000
+car_pos
+car_dir   	-0.45748201012611
+car_posX  	-1338.326171875
+car_posY  	1888.4870605469
+car_velMod	0
+car_velDir	-0
+car_power 	2543.8732740208
+car_rotVel	2.9606823921204
+ball_pos
+ball_posX	-395.88226318359
+ball_posY	1452.6285400391
+000000000	000000000
+car_pos
+car_dir   	0.95266729593277
+car_posX  	1633.6538085938
+car_posY  	533.16229248047
+car_velMod	0
+car_velDir	0
+car_power 	2427.3940615484
+car_rotVel	2.9568407535553
+ball_pos
+ball_posX	2209.521484375
+ball_posY	1398.5222167969
+000000000	000000000
+car_pos
+car_dir   	0.17106491327286
+car_posX  	-1017.4619750977
+car_posY  	-1322.9022216797
+car_velMod	0
+car_velDir	0
+car_power 	2726.530762262
+car_rotVel	2.9568023681641
+ball_pos
+ball_posX	-1.0969070196152
+ball_posY	-1086.0173339844
+000000000	000000000
+car_pos
+car_dir   	1.4883794784546
+car_posX  	2185.0637207031
+car_posY  	-562.77752685547
+car_velMod	0
+car_velDir	0
+car_power 	2990.2521423019
+car_rotVel	2.9568133354187
+ball_pos
+ball_posX	2203.1591796875
+ball_posY	484.82952880859
+000000000	000000000
+car_pos
+car_dir   	0.9622015953064
+car_posX  	2220.5656738281
+car_posY  	-1890.9533691406
+car_velMod	0
+car_velDir	0
+car_power 	2309.1685284437
+car_rotVel	2.9616601467133
+ball_pos
+ball_posX	2770.8698730469
+ball_posY	-1016.5965576172
+000000000	000000000
+car_pos
+car_dir   	-0.092210307717323
+car_posX  	1021.6552124023
+car_posY  	-345.90896606445
+car_velMod	0
+car_velDir	-0
+car_power 	2077.9797821669
+car_rotVel	2.9600925445557
+ball_pos
+ball_posX	2056.0278320312
+ball_posY	-447.50479125977
+000000000	000000000
+car_pos
+car_dir   	-1.085409283638
+car_posX  	-367.81372070312
+car_posY  	1139.7099609375
+car_velMod	0
+car_velDir	-0
+car_power 	2350.1020233846
+car_rotVel	2.9567785263062
+ball_pos
+ball_posX	133.89418029785
+ball_posY	230.83792114258
+000000000	000000000
+car_pos
+car_dir   	0.38175976276398
+car_posX  	1234.0874023438
+car_posY  	-1735.701171875
+car_velMod	0
+car_velDir	0
+car_power 	2201.920401399
+car_rotVel	2.9634962081909
+ball_pos
+ball_posX	2194.5551757812
+ball_posY	-1342.2337646484
+000000000	000000000
+car_pos
+car_dir   	-0.83055210113525
+car_posX  	-2097.3571777344
+car_posY  	-194.02389526367
+car_velMod	0
+car_velDir	-0
+car_power 	2497.357552637
+car_rotVel	2.9652905464172
+ball_pos
+ball_posX	-1373.6541748047
+ball_posY	-927.1962890625
+000000000	000000000
+car_pos
+car_dir   	-0.29787391424179
+car_posX  	-1023.0562133789
+car_posY  	-2477.5285644531
+car_velMod	0
+car_velDir	-0
+car_power 	2296.8766737249
+car_rotVel	2.9618632793427
+ball_pos
+ball_posX	-26.528881072998
+ball_posY	-2771.8544921875
+000000000	000000000
+car_pos
+car_dir   	-0.95384359359741
+car_posX  	-1906.8088378906
+car_posY  	-1947.0416259766
+car_velMod	0
+car_velDir	-0
+car_power 	2061.2946860778
+car_rotVel	2.956823348999
+ball_pos
+ball_posX	-1255.7420654297
+ball_posY	-2752.9743652344
+000000000	000000000
+car_pos
+car_dir   	-1.944081902504
+car_posX  	-577.4462890625
+car_posY  	-54.764080047607
+car_velMod	0
+car_velDir	0
+car_power 	2304.0667629354
+car_rotVel	2.9621870517731
+ball_pos
+ball_posX	-905.30120849609
+ball_posY	-1040.5129394531
+000000000	000000000
+car_pos
+car_dir   	-2.6593770980835
+car_posX  	1207.8775634766
+car_posY  	2127.5498046875
+car_velMod	0
+car_velDir	0
+car_power 	2547.217060601
+car_rotVel	2.963410615921
+ball_pos
+ball_posX	320.17468261719
+ball_posY	1598.9851074219
+000000000	000000000
+car_pos
+car_dir   	-1.2975714206696
+car_posX  	-1571.7016601562
+car_posY  	419.19735717773
+car_velMod	0
+car_velDir	-0
+car_power 	2840.3866937572
+car_rotVel	2.9567809104919
+ball_pos
+ball_posX	-1234.7427978516
+ball_posY	-566.16229248047
+000000000	000000000
+car_pos
+car_dir   	-2.7820537090302
+car_posX  	1046.767578125
+car_posY  	-1148.8669433594
+car_velMod	0
+car_velDir	0
+car_power 	2193.0135284518
+car_rotVel	2.9619390964508
+ball_pos
+ball_posX	78.455238342285
+ball_posY	-1518.7574462891
+000000000	000000000
+car_pos
+car_dir   	-1.4041239023209
+car_posX  	-1975.0607910156
+car_posY  	-2362.5092773438
+car_velMod	0
+car_velDir	-0
+car_power 	2048.8597853337
+car_rotVel	2.9620778560638
+ball_pos
+ball_posX	-1750.4489746094
+ball_posY	-3380.5551757812
+000000000	000000000
+car_pos
+car_dir   	-2.2839305400848
+car_posX  	-255.50160217285
+car_posY  	1731.3831787109
+car_velMod	0
+car_velDir	0
+car_power 	2287.9452632218
+car_rotVel	2.9646558761597
+ball_pos
+ball_posX	-922.02423095703
+ball_posY	943.74517822266
+000000000	000000000
+car_pos
+car_dir   	-1.0375007390976
+car_posX  	-2344.0659179688
+car_posY  	-786.12945556641
+car_velMod	0
+car_velDir	-0
+car_power 	2168.925774828
+car_rotVel	2.9622564315796
+ball_pos
+ball_posX	-1804.205078125
+ball_posY	-1668.4149169922
+000000000	000000000
+car_pos
+car_dir   	-2.7180969715118
+car_posX  	732.34320068359
+car_posY  	-1793.8205566406
+car_velMod	0
+car_velDir	0
+car_power 	2526.3853876509
+car_rotVel	2.9567935466766
+ball_pos
+ball_posX	-190.75791931152
+ball_posY	-2279.7702636719
+000000000	000000000
+car_pos
+car_dir   	-2.8923652172089
+car_posX  	2487.5959472656
+car_posY  	2033.1823730469
+car_velMod	0
+car_velDir	0
+car_power 	2735.6106190642
+car_rotVel	2.9568119049072
+ball_pos
+ball_posX	1479.4093017578
+ball_posY	1764.501953125
+000000000	000000000
+car_pos
+car_dir   	-1.610916852951
+car_posX  	-683.72454833984
+car_posY  	1160.1555175781
+car_velMod	0
+car_velDir	0
+car_power 	2117.9969730405
+car_rotVel	2.9617068767548
+ball_pos
+ball_posX	-731.98358154297
+ball_posY	121.3768081665
+000000000	000000000
+car_pos
+car_dir   	-0.12712863087654
+car_posX  	-803.18237304688
+car_posY  	-2105.8666992188
+car_velMod	0
+car_velDir	-0
+car_power 	2979.024241203
+car_rotVel	2.9571077823639
+ball_pos
+ball_posX	231.29959106445
+ball_posY	-2230.5278320312
+000000000	000000000
+car_pos
+car_dir   	1.1773502826691
+car_posX  	2455.6684570312
+car_posY  	-2470.2141113281
+car_velMod	0
+car_velDir	0
+car_power 	2917.4721431534
+car_rotVel	2.9568402767181
+ball_pos
+ball_posX	2785.7194824219
+ball_posY	-1481.3342285156
+000000000	000000000
+car_pos
+car_dir   	3.0592901706696
+car_posX  	2146.7170410156
+car_posY  	2173.2163085938
+car_velMod	0
+car_velDir	-0
+car_power 	2807.6991354151
+car_rotVel	2.9698038101196
+ball_pos
+ball_posX	1105.9853515625
+ball_posY	2215.3020019531
+000000000	000000000
+car_pos
+car_dir   	-1.8504495620728
+car_posX  	-1117.408203125
+car_posY  	2276.5546875
+car_velMod	0
+car_velDir	0
+car_power 	2215.8492362201
+car_rotVel	2.9567747116089
+ball_pos
+ball_posX	-1336.9497070312
+ball_posY	1255.8201904297
+000000000	000000000
+car_pos
+car_dir   	-0.58973932266235
+car_posX  	-1822.3707275391
+car_posY  	-946.17834472656
+car_velMod	0
+car_velDir	-0
+car_power 	2068.3822250312
+car_rotVel	2.9568390846252
+ball_pos
+ball_posX	-943.84545898438
+ball_posY	-1497.4904785156
+000000000	000000000
+car_pos
+car_dir   	-0.88370817899704
+car_posX  	-2537.1701660156
+car_posY  	-1618.21875
+car_velMod	0
+car_velDir	-0
+car_power 	2397.9841281651
+car_rotVel	2.9568231105804
+ball_pos
+ball_posX	-1862.2862548828
+ball_posY	-2403.9887695312
+000000000	000000000
+car_pos
+car_dir   	-1.9971160888672
+car_posX  	-1482.6929931641
+car_posY  	2021.1201171875
+car_velMod	0
+car_velDir	0
+car_power 	2634.1979674223
+car_rotVel	2.9592337608337
+ball_pos
+ball_posX	-1852.9951171875
+ball_posY	1050.4053955078
+000000000	000000000
+car_pos
+car_dir   	-0.56652265787125
+car_posX  	-2620.7209472656
+car_posY  	-1052.4055175781
+car_velMod	0
+car_velDir	-0
+car_power 	2427.326192347
+car_rotVel	2.9568092823029
+ball_pos
+ball_posX	-1727.6279296875
+ball_posY	-1583.3087158203
+000000000	000000000
+car_pos
+car_dir   	-2.4333291053772
+car_posX  	2175.0114746094
+car_posY  	1759.4427490234
+car_velMod	0
+car_velDir	0
+car_power 	2755.3164655135
+car_rotVel	2.9659879207611
+ball_pos
+ball_posX	1391.8323974609
+ball_posY	1088.1143798828
+000000000	000000000
+car_pos
+car_dir   	-1.0649400949478
+car_posX  	-269.34063720703
+car_posY  	-396.79229736328
+car_velMod	0
+car_velDir	-0
+car_power 	2109.3142829413
+car_rotVel	2.9643149375916
+ball_pos
+ball_posX	276.95812988281
+ball_posY	-1274.1077880859
+000000000	000000000
+car_pos
+car_dir   	-2.5876338481903
+car_posX  	2866.3493652344
+car_posY  	201.67668151855
+car_velMod	0
+car_velDir	0
+car_power 	2432.930974957
+car_rotVel	2.962456703186
+ball_pos
+ball_posX	2021.5913085938
+ball_posY	-392.95861816406
+000000000	000000000
+car_pos
+car_dir   	-1.2985274791718
+car_posX  	206.79539489746
+car_posY  	-1719.6428222656
+car_velMod	0
+car_velDir	-0
+car_power 	2320.7364256125
+car_rotVel	2.9626457691193
+ball_pos
+ball_posX	525.07568359375
+ball_posY	-2707.7836914062
+000000000	000000000
+car_pos
+car_dir   	-2.1288146972656
+car_posX  	1414.1351318359
+car_posY  	-1538.1618652344
+car_velMod	0
+car_velDir	0
+car_power 	2588.4623404539
+car_rotVel	2.9628965854645
+ball_pos
+ball_posX	908.65991210938
+ball_posY	-2439.505859375
+000000000	000000000
+car_pos
+car_dir   	-2.2262227535248
+car_posX  	-28.438110351562
+car_posY  	-2414.5859375
+car_velMod	0
+car_velDir	0
+car_power 	2355.8907454628
+car_rotVel	2.9568445682526
+ball_pos
+ball_posX	-636.64685058594
+ball_posY	-3253.4765625
+000000000	000000000
+car_pos
+car_dir   	-2.3862142562866
+car_posX  	-1261.0390625
+car_posY  	-1097.76171875
+car_velMod	0
+car_velDir	0
+car_power 	2152.9119346072
+car_rotVel	2.9659359455109
+ball_pos
+ball_posX	-2007.5739746094
+ball_posY	-1812.7951660156
+000000000	000000000
+car_pos
+car_dir   	-2.3441598415375
+car_posX  	-2653.9296875
+car_posY  	542.8994140625
+car_velMod	0
+car_velDir	0
+car_power 	2481.6381598272
+car_rotVel	2.9651784896851
+ball_pos
+ball_posX	-3369.5400390625
+ball_posY	-200.37315368652
+000000000	000000000
+car_pos
+car_dir   	3.1300926208496
+car_posX  	1846.65625
+car_posY  	2286.3122558594
+car_velMod	0
+car_velDir	-0
+car_power 	2598.6800652923
+car_rotVel	2.9617052078247
+ball_pos
+ball_posX	805.21801757812
+ball_posY	2251.1154785156
+000000000	000000000
+car_pos
+car_dir   	-1.7033475637436
+car_posX  	-1420.6274414062
+car_posY  	2130.2626953125
+car_velMod	0
+car_velDir	0
+car_power 	2977.7801716597
+car_rotVel	2.961238861084
+ball_pos
+ball_posX	-1546.6717529297
+ball_posY	1095.8771972656
+000000000	000000000
+car_pos
+car_dir   	-0.40995523333549
+car_posX  	-1781.5909423828
+car_posY  	-1132.4232177734
+car_velMod	0
+car_velDir	-0
+car_power 	2832.2137635351
+car_rotVel	2.9567742347717
+ball_pos
+ball_posX	-800.03015136719
+ball_posY	-1480.4833984375
+000000000	000000000
+car_pos
+car_dir   	0.91689449548721
+car_posX  	1313.6417236328
+car_posY  	-2243.6750488281
+car_velMod	0
+car_velDir	0
+car_power 	2775.8974580913
+car_rotVel	2.9567742347717
+ball_pos
+ball_posX	1922.2756347656
+ball_posY	-1406.3156738281
+000000000	000000000
+car_pos
+car_dir   	0.062856398522854
+car_posX  	949.43218994141
+car_posY  	-1131.5286865234
+car_velMod	0
+car_velDir	0
+car_power 	2045.3574271153
+car_rotVel	2.9607439041138
+ball_pos
+ball_posX	1985.2713623047
+ball_posY	-1024.8740234375
+000000000	000000000
+car_pos
+car_dir   	-0.91684854030609
+car_posX  	2750.2121582031
+car_posY  	-55.934352874756
+car_velMod	0
+car_velDir	-0
+car_power 	2899.2488896005
+car_rotVel	2.9652559757233
+ball_pos
+ball_posX	3370.4448242188
+ball_posY	-878.77728271484
+000000000	000000000
+car_pos
+car_dir   	-1.2078280448914
+car_posX  	-1274.9425048828
+car_posY  	886.36785888672
+car_velMod	0
+car_velDir	-0
+car_power 	2641.5195877857
+car_rotVel	2.9641427993774
+ball_pos
+ball_posX	-905.43560791016
+ball_posY	-82.340873718262
+000000000	000000000
+car_pos
+car_dir   	0.075659491121769
+car_posX  	-61.787784576416
+car_posY  	-2143.0344238281
+car_velMod	0
+car_velDir	0
+car_power 	2996.2065997516
+car_rotVel	2.9648540019989
+ball_pos
+ball_posX	972.28527832031
+ball_posY	-2021.3311767578
+000000000	000000000
+car_pos
+car_dir   	-1.6170502901077
+car_posX  	2397.3171386719
+car_posY  	520.84783935547
+car_velMod	0
+car_velDir	0
+car_power 	2794.194432811
+car_rotVel	2.9568274021149
+ball_pos
+ball_posX	2375.5568847656
+ball_posY	-526.76733398438
+000000000	000000000
+car_pos
+car_dir   	-1.1498590707779
+car_posX  	-1756.1696777344
+car_posY  	-627.34545898438
+car_velMod	0
+car_velDir	-0
+car_power 	2029.7469431673
+car_rotVel	2.9568161964417
+ball_pos
+ball_posX	-1315.2283935547
+ball_posY	-1568.4846191406
+000000000	000000000
+car_pos
+car_dir   	-2.1310262680054
+car_posX  	-308.66284179688
+car_posY  	923.41003417969
+car_velMod	0
+car_velDir	0
+car_power 	2885.8129800697
+car_rotVel	2.9595489501953
+ball_pos
+ball_posX	-820.06372070312
+ball_posY	26.60503578186
+000000000	000000000
+car_pos
+car_dir   	-0.83194875717163
+car_posX  	-1909.0333251953
+car_posY  	-1926.9233398438
+car_velMod	0
+car_velDir	-0
+car_power 	2656.0417244472
+car_rotVel	2.9670722484589
+ball_pos
+ball_posX	-1210.5167236328
+ball_posY	-2688.1979980469
+000000000	000000000
+car_pos
+car_dir   	-1.5543375015259
+car_posX  	-2519.1462402344
+car_posY  	-428.29058837891
+car_velMod	0
+car_velDir	0
+car_power 	2892.0767739844
+car_rotVel	2.9568576812744
+ball_pos
+ball_posX	-2435.8068847656
+ball_posY	-1472.4744873047
+000000000	000000000
+car_pos
+car_dir   	-2.7319285869598
+car_posX  	1692.8897705078
+car_posY  	1594.4952392578
+car_velMod	0
+car_velDir	0
+car_power 	2132.5033084175
+car_rotVel	2.9611423015594
+ball_pos
+ball_posX	752.59429931641
+ball_posY	1161.4473876953
+000000000	000000000
+car_pos
+car_dir   	-1.2777718305588
+car_posX  	-1263.9780273438
+car_posY  	179.94017028809
+car_velMod	0
+car_velDir	-0
+car_power 	2983.1636850644
+car_rotVel	2.9604370594025
+ball_pos
+ball_posX	-945.44372558594
+ball_posY	-808.89916992188
+000000000	000000000
+car_pos
+car_dir   	-3.1337290445911
+car_posX  	2570.0588378906
+car_posY  	-1493.3944091797
+car_velMod	0
+car_velDir	-0
+car_power 	2344.8563378047
+car_rotVel	2.9602916240692
+ball_pos
+ball_posX	1529.2000732422
+ball_posY	-1491.9035644531
+000000000	000000000
+car_pos
+car_dir   	-1.7373641729355
+car_posX  	-691.63128662109
+car_posY  	-1524.9822998047
+car_velMod	0
+car_velDir	0
+car_power 	2222.4499765888
+car_rotVel	2.9621469974518
+ball_pos
+ball_posX	-861.83831787109
+ball_posY	-2550.6018066406
+000000000	000000000
+car_pos
+car_dir   	-2.7047183513641
+car_posX  	737.19635009766
+car_posY  	-1304.0903320312
+car_velMod	0
+car_velDir	0
+car_power 	2550.62636619
+car_rotVel	2.9610247612
+ball_pos
+ball_posX	-187.96031188965
+ball_posY	-1765.3277587891
+000000000	000000000
+car_pos
+car_dir   	-3.1193247477161
+car_posX  	1914.8724365234
+car_posY  	1064.6552734375
+car_velMod	0
+car_velDir	-0
+car_power 	2785.3658803671
+car_rotVel	2.9568047523499
+ball_pos
+ball_posX	893.22125244141
+ball_posY	976.76849365234
+000000000	000000000
+car_pos
+car_dir   	-1.7456915378571
+car_posX  	-1369.7823486328
+car_posY  	774.57360839844
+car_velMod	0
+car_velDir	0
+car_power 	2145.5732566051
+car_rotVel	2.9610710144043
+ball_pos
+ball_posX	-1488.3483886719
+ball_posY	-264.50030517578
+000000000	000000000
+car_pos
+car_dir   	-2.7283203601837
+car_posX  	-189.55004882812
+car_posY  	-2028.7894287109
+car_velMod	0
+car_velDir	0
+car_power 	2935.6182254551
+car_rotVel	2.9636747837067
+ball_pos
+ball_posX	-1119.6888427734
+ball_posY	-2482.541015625
+000000000	000000000
+car_pos
+car_dir   	-2.6373207569122
+car_posX  	-974.73547363281
+car_posY  	954.646484375
+car_velMod	0
+car_velDir	0
+car_power 	2264.8320446093
+car_rotVel	2.9568109512329
+ball_pos
+ball_posX	-1851.7062988281
+ball_posY	400.75744628906
+000000000	000000000
+car_pos
+car_dir   	2.3187711238861
+car_posX  	369.07727050781
+car_posY  	-1822.7607421875
+car_velMod	0
+car_velDir	-0
+car_power 	2941.4624129149
+car_rotVel	2.9569592475891
+ball_pos
+ball_posX	-344.66220092773
+ball_posY	-1076.9422607422
+000000000	000000000
+car_pos
+car_dir   	-2.4383628368378
+car_posX  	-1910.2224121094
+car_posY  	511.56381225586
+car_velMod	0
+car_velDir	0
+car_power 	2713.0049563539
+car_rotVel	2.9576930999756
+ball_pos
+ball_posX	-2701.7099609375
+ball_posY	-152.70715332031
+000000000	000000000
+car_pos
+car_dir   	-2.8274581432343
+car_posX  	-1852.0946044922
+car_posY  	1628.8347167969
+car_velMod	0
+car_velDir	0
+car_power 	2570.6768755664
+car_rotVel	2.9567868709564
+ball_pos
+ball_posX	-2838.7033691406
+ball_posY	1288.951171875
+000000000	000000000
+car_pos
+car_dir   	2.5908224582672
+car_posX  	2667.9929199219
+car_posY  	907.66162109375
+car_velMod	0
+car_velDir	-0
+car_power 	2367.3272064735
+car_rotVel	2.959664106369
+ball_pos
+ball_posX	1787.7015380859
+ball_posY	1445.9711914062
+000000000	000000000
+car_pos
+car_dir   	2.305811882019
+car_posX  	646.57647705078
+car_posY  	1654.5968017578
+car_velMod	0
+car_velDir	-0
+car_power 	2164.9147724569
+car_rotVel	2.9647524356842
+ball_pos
+ball_posX	-39.007923126221
+ball_posY	2423.0368652344
+000000000	000000000
+car_pos
+car_dir   	1.6305238008499
+car_posX  	-192.4758605957
+car_posY  	2254.5114746094
+car_velMod	0
+car_velDir	-0
+car_power 	2431.8840044699
+car_rotVel	2.9567794799805
+ball_pos
+ball_posX	-316.10614013672
+ball_posY	3292.2653808594
+000000000	000000000
+car_pos
+car_dir   	1.3123195171356
+car_posX  	1651.2899169922
+car_posY  	-1417.4338378906
+car_velMod	0
+car_velDir	0
+car_power 	2698.0209614607
+car_rotVel	2.9568078517914
+ball_pos
+ball_posX	1848.1822509766
+ball_posY	-391.36685180664
+000000000	000000000
+car_pos
+car_dir   	2.5753529071808
+car_posX  	2285.5200195312
+car_posY  	1821.8623046875
+car_velMod	0
+car_velDir	-0
+car_power 	2555.9772213716
+car_rotVel	2.9636068344116
+ball_pos
+ball_posX	1391.7105712891
+ball_posY	2339.0979003906
+000000000	000000000
+car_pos
+car_dir   	-0.23860904574394
+car_posX  	-314.61114501953
+car_posY  	2530.7736816406
+car_velMod	0
+car_velDir	-0
+car_power 	2849.3979777439
+car_rotVel	2.9950380325317
+ball_pos
+ball_posX	706.85760498047
+ball_posY	2332.21875
+000000000	000000000
+car_pos
+car_dir   	1.1645418405533
+car_posX  	2906.6799316406
+car_posY  	1940.7777099609
+car_velMod	0
+car_velDir	0
+car_power 	2349.8809967888
+car_rotVel	2.962605714798
+ball_pos
+ball_posX	3310.8266601562
+ball_posY	2894.3791503906
+000000000	000000000
+car_pos
+car_dir   	0.5316304564476
+car_posX  	1646.6712646484
+car_posY  	-1185.8580322266
+car_velMod	0
+car_velDir	0
+car_power 	2146.0006354125
+car_rotVel	2.9624996185303
+ball_pos
+ball_posX	2532.6354980469
+ball_posY	-653.77612304688
+000000000	000000000
+car_pos
+car_dir   	-0.53789609670639
+car_posX  	241.43597412109
+car_posY  	670.18133544922
+car_velMod	0
+car_velDir	-0
+car_power 	2324.820367305
+car_rotVel	2.9642415046692
+ball_pos
+ball_posX	1125.7897949219
+ball_posY	140.02781677246
+000000000	000000000
+car_pos
+car_dir   	-0.79295164346695
+car_posX  	-2091.3771972656
+car_posY  	480.00561523438
+car_velMod	0
+car_velDir	-0
+car_power 	2061.579102679
+car_rotVel	2.9647402763367
+ball_pos
+ball_posX	-1357.4226074219
+ball_posY	-245.74935913086
+000000000	000000000
+car_pos
+car_dir   	0.5113930106163
+car_posX  	262.12405395508
+car_posY  	-1793.8337402344
+car_velMod	0
+car_velDir	0
+car_power 	2449.4879704199
+car_rotVel	2.9639666080475
+ball_pos
+ball_posX	1145.6263427734
+ball_posY	-1257.8292236328
+000000000	000000000
+car_pos
+car_dir   	-2.494499206543
+car_posX  	1989.9982910156
+car_posY  	-395.39743041992
+car_velMod	0
+car_velDir	0
+car_power 	2742.4002214067
+car_rotVel	2.108781337738
+ball_pos
+ball_posX	1184.5205078125
+ball_posY	-1029.5822753906
+000000000	000000000
+car_pos
+car_dir   	-1.2041290998459
+car_posX  	-545.17333984375
+car_posY  	-2448.478515625
+car_velMod	0
+car_velDir	-0
+car_power 	2241.7975292736
+car_rotVel	2.9568026065826
+ball_pos
+ball_posX	-155.35116577148
+ball_posY	-3413.2067871094
+000000000	000000000
+car_pos
+car_dir   	-1.1082262992859
+car_posX  	-1887.2779541016
+car_posY  	-2509.240234375
+car_velMod	0
+car_velDir	-0
+car_power 	2510.3641727522
+car_rotVel	2.9567728042603
+ball_pos
+ball_posX	-1363.890625
+ball_posY	-3407.6118164062
+000000000	000000000
+car_pos
+car_dir   	-2.1019041538239
+car_posX  	-270.37124633789
+car_posY  	1155.3854980469
+car_velMod	0
+car_velDir	0
+car_power 	2835.817827301
+car_rotVel	2.9567940235138
+ball_pos
+ball_posX	-718.03930664062
+ball_posY	208.13279724121
+000000000	000000000
+car_pos
+car_dir   	-0.79010665416718
+car_posX  	-1743.0360107422
+car_posY  	-1827.1446533203
+car_velMod	0
+car_velDir	-0
+car_power 	2107.9546083268
+car_rotVel	2.9567742347717
+ball_pos
+ball_posX	-998.95318603516
+ball_posY	-2545.529296875
+000000000	000000000
+car_pos
+car_dir   	-2.0771245956421
+car_posX  	664.40667724609
+car_posY  	-1947.5101318359
+car_velMod	0
+car_velDir	0
+car_power 	2993.2767539254
+car_rotVel	2.9636294841766
+ball_pos
+ball_posX	206.9714050293
+ball_posY	-2876.1655273438
+000000000	000000000
+car_pos
+car_dir   	-2.6246552467346
+car_posX  	2329.5964355469
+car_posY  	1849.0994873047
+car_velMod	0
+car_velDir	0
+car_power 	2700.0718469266
+car_rotVel	2.9615678787231
+ball_pos
+ball_posX	1462.875
+ball_posY	1288.1247558594
+000000000	000000000
+car_pos
+car_dir   	-1.2853813171387
+car_posX  	-391.81741333008
+car_posY  	32.825542449951
+car_velMod	0
+car_velDir	-0
+car_power 	2584.1079766788
+car_rotVel	2.9640145301819
+ball_pos
+ball_posX	-104.18888092041
+ball_posY	-965.236328125
+000000000	000000000
+car_pos
+car_dir   	-1.5848898887634
+car_posX  	-2758.3891601562
+car_posY  	1549.3946533203
+car_velMod	0
+car_velDir	0
+car_power 	2382.9320894475
+car_rotVel	2.9601881504059
+ball_pos
+ball_posX	-2739.0202636719
+ball_posY	507.0544128418
+000000000	000000000
+car_pos
+car_dir   	-0.26970484852791
+car_posX  	-2666.4133300781
+car_posY  	-1731.3166503906
+car_velMod	0
+car_velDir	-0
+car_power 	2171.9389344435
+car_rotVel	2.9614160060883
+ball_pos
+ball_posX	-1661.9758300781
+ball_posY	-1998.7844238281
+000000000	000000000
+car_pos
+car_dir   	-0.7198771238327
+car_posX  	-2656.2844238281
+car_posY  	-1991.1141357422
+car_velMod	0
+car_velDir	-0
+car_power 	2496.8880091314
+car_rotVel	2.9645314216614
+ball_pos
+ball_posX	-1880.7357177734
+ball_posY	-2672.1040039062
+000000000	000000000
+car_pos
+car_dir   	-2.5924484729767
+car_posX  	2060.5270996094
+car_posY  	1289.3469238281
+car_velMod	0
+car_velDir	0
+car_power 	2235.6575747187
+car_rotVel	2.9606091976166
+ball_pos
+ball_posX	1187.7901611328
+ball_posY	734.81237792969
+000000000	000000000
+car_pos
+car_dir   	-1.1927007436752
+car_posX  	-676.57745361328
+car_posY  	-496.85287475586
+car_velMod	0
+car_velDir	-0
+car_power 	2621.1845025519
+car_rotVel	2.9621894359589
+ball_pos
+ball_posX	-308.36932373047
+ball_posY	-1464.9255371094
+000000000	000000000
+car_pos
+car_dir   	-1.1091088056564
+car_posX  	-2793.2634277344
+car_posY  	-1772.2922363281
+car_velMod	0
+car_velDir	-0
+car_power 	2368.4320241997
+car_rotVel	2.9567806720734
+ball_pos
+ball_posX	-2277.4079589844
+ball_posY	-2672.4626464844
+000000000	000000000
+car_pos
+car_dir   	-2.1761484146118
+car_posX  	-1157.7379150391
+car_posY  	1929.9161376953
+car_velMod	0
+car_velDir	0
+car_power 	2688.4226187544
+car_rotVel	2.963219165802
+ball_pos
+ball_posX	-1719.6666259766
+ball_posY	1060.6469726562
+000000000	000000000
+car_pos
+car_dir   	-0.85048860311508
+car_posX  	-2927.3395996094
+car_posY  	-838.62017822266
+car_velMod	0
+car_velDir	-0
+car_power 	2456.8414150071
+car_rotVel	2.9610316753387
+ball_pos
+ball_posX	-2222.3056640625
+ball_posY	-1595.7385253906
+000000000	000000000
+car_pos
+car_dir   	-2.5952639579773
+car_posX  	2467.51171875
+car_posY  	1648.1240234375
+car_velMod	0
+car_velDir	0
+car_power 	2281.622705181
+car_rotVel	2.9650142192841
+ball_pos
+ball_posX	1578.0866699219
+ball_posY	1118.2253417969
+000000000	000000000
+car_pos
+car_dir   	-1.3296490907669
+car_posX  	-313.56536865234
+car_posY  	-74.491577148438
+car_velMod	0
+car_velDir	-0
+car_power 	2638.578271325
+car_rotVel	2.9567904472351
+ball_pos
+ball_posX	-6.7260084152222
+ball_posY	-1070.8629150391
+000000000	000000000
+car_pos
+car_dir   	-2.2046463489532
+car_posX  	636.45440673828
+car_posY  	610.29431152344
+car_velMod	0
+car_velDir	0
+car_power 	2987.85226419
+car_rotVel	2.9634654521942
+ball_pos
+ball_posX	39.370174407959
+ball_posY	-234.68299865723
+000000000	000000000
+car_pos
+car_dir   	-0.90815824270248
+car_posX  	-1232.595703125
+car_posY  	-2084.7407226562
+car_velMod	0
+car_velDir	-0
+car_power 	2347.2291107044
+car_rotVel	2.9638683795929
+ball_pos
+ball_posX	-583.78070068359
+ball_posY	-2891.3430175781
+000000000	000000000
+car_pos
+car_dir   	-1.7327020168304
+car_posX  	-1369.0083007812
+car_posY  	1220.2939453125
+car_velMod	0
+car_velDir	0
+car_power 	2592.4260409514
+car_rotVel	2.9619557857513
+ball_pos
+ball_posX	-1491.3908691406
+ball_posY	186.05113220215
+000000000	000000000
+car_pos
+car_dir   	-0.3213152885437
+car_posX  	-1716.2742919922
+car_posY  	-2028.2691650391
+car_velMod	0
+car_velDir	-0
+car_power 	2396.6775137916
+car_rotVel	2.957939863205
+ball_pos
+ball_posX	-714.64978027344
+ball_posY	-2315.1794433594
+000000000	000000000
+car_pos
+car_dir   	-2.1415350437164
+car_posX  	1873.9605712891
+car_posY  	1162.9748535156
+car_velMod	0
+car_velDir	0
+car_power 	2569.7228417591
+car_rotVel	2.9617869853973
+ball_pos
+ball_posX	1350.2645263672
+ball_posY	274.68496704102
+000000000	000000000
+car_pos
+car_dir   	-0.65142172574997
+car_posX  	243.24314880371
+car_posY  	-1652.0535888672
+car_velMod	0
+car_velDir	-0
+car_power 	2954.4007535812
+car_rotVel	2.9639625549316
+ball_pos
+ball_posX	1060.0302734375
+ball_posY	-2282.4946289062
+000000000	000000000
+car_pos
+car_dir   	-0.97310817241669
+car_posX  	-749.41040039062
+car_posY  	-2503.7719726562
+car_velMod	0
+car_velDir	-0
+car_power 	2781.2328509899
+car_rotVel	2.9567754268646
+ball_pos
+ball_posX	-117.86412811279
+ball_posY	-3323.6298828125
+000000000	000000000
+car_pos
+car_dir   	-1.2848012447357
+car_posX  	-2014.5653076172
+car_posY  	-1309.4622802734
+car_velMod	0
+car_velDir	-0
+car_power 	2052.9747545035
+car_rotVel	2.9567804336548
+ball_pos
+ball_posX	-1697.6680908203
+ball_posY	-2307.4697265625
+000000000	000000000
+car_pos
+car_dir   	-2.1671483516693
+car_posX  	-754.14562988281
+car_posY  	636.40386962891
+car_velMod	0
+car_velDir	0
+car_power 	2792.8933244165
+car_rotVel	2.9635066986084
+ball_pos
+ball_posX	-1330.4543457031
+ball_posY	-219.38424682617
+000000000	000000000
+car_pos
+car_dir   	-0.93256866931915
+car_posX  	-2548.6057128906
+car_posY  	-2083.4633789062
+car_velMod	0
+car_velDir	-0
+car_power 	2643.6780149321
+car_rotVel	2.956794500351
+ball_pos
+ball_posX	-1879.9083251953
+ball_posY	-2874.451171875
+000000000	000000000
+car_pos
+car_dir   	-1.6519664525986
+car_posX  	-2542.8447265625
+car_posY  	-337.25942993164
+car_velMod	0
+car_velDir	0
+car_power 	2971.8440519515
+car_rotVel	2.9596054553986
+ball_pos
+ball_posX	-2636.1965332031
+ball_posY	-1371.8383789062
+000000000	000000000
+car_pos
+car_dir   	-2.6250460147858
+car_posX  	-1289.9840087891
+car_posY  	-831.81500244141
+car_velMod	0
+car_velDir	0
+car_power 	2244.405207338
+car_rotVel	2.9605276584625
+ball_pos
+ball_posX	-2177.0043945312
+ball_posY	-1365.0327148438
+000000000	000000000
+car_pos
+car_dir   	-3.0655725638019
+car_posX  	253.4732208252
+car_posY  	870.70245361328
+car_velMod	0
+car_velDir	0
+car_power 	2887.2802578319
+car_rotVel	2.9568257331848
+ball_pos
+ball_posX	-787.53039550781
+ball_posY	769.44183349609
+000000000	000000000
+car_pos
+car_dir   	2.6737940311432
+car_posX  	1422.1314697266
+car_posY  	1031.4931640625
+car_velMod	0
+car_velDir	-0
+car_power 	2158.9424373391
+car_rotVel	2.956775188446
+ball_pos
+ball_posX	482.41119384766
+ball_posY	1473.7691650391
+000000000	000000000
+car_pos
+car_dir   	-2.1935186386108
+car_posX  	-1546.9228515625
+car_posY  	2440.3698730469
+car_velMod	0
+car_velDir	0
+car_power 	2510.6702467942
+car_rotVel	2.9567801952362
+ball_pos
+ball_posX	-2127.8696289062
+ball_posY	1580.712890625
+000000000	000000000
+car_pos
+car_dir   	-3.0262205600739
+car_posX  	2411.4665527344
+car_posY  	-746.2939453125
+car_velMod	0
+car_velDir	0
+car_power 	2753.5022388927
+car_rotVel	2.2260036468506
+ball_pos
+ball_posX	1386.2452392578
+ball_posY	-944.75238037109
+000000000	000000000
+car_pos
+car_dir   	-1.6386380195618
+car_posX  	-817.52362060547
+car_posY  	-1386.447265625
+car_velMod	0
+car_velDir	0
+car_power 	2135.7412385455
+car_rotVel	2.9568381309509
+ball_pos
+ball_posX	-862.06323242188
+ball_posY	-2431.7182617188
+000000000	000000000
+car_pos
+car_dir   	-2.5953342914581
+car_posX  	206.36058044434
+car_posY  	-1327.2974853516
+car_velMod	0
+car_velDir	0
+car_power 	2459.8366080131
+car_rotVel	2.9649682044983
+ball_pos
+ball_posX	-679.95617675781
+ball_posY	-1860.8116455078
+000000000	000000000
+car_pos
+car_dir   	-2.465714931488
+car_posX  	-1368.4636230469
+car_posY  	656.89959716797
+car_velMod	0
+car_velDir	0
+car_power 	2725.912551268
+car_rotVel	2.966671705246
+ball_pos
+ball_posX	-2171.9104003906
+ball_posY	10.297433853149
+000000000	000000000
+car_pos
+car_dir   	-2.8442769050598
+car_posX  	-2832.3559570312
+car_posY  	-174.00360107422
+car_velMod	0
+car_velDir	0
+car_power 	2524.5509471393
+car_rotVel	2.9567842483521
+ball_pos
+ball_posX	-3824.3142089844
+ball_posY	-497.27285766602
+000000000	000000000
+car_pos
+car_dir   	-3.027982711792
+car_posX  	2142.6491699219
+car_posY  	815.69097900391
+car_velMod	0
+car_velDir	0
+car_power 	2205.4292504701
+car_rotVel	2.9609651565552
+ball_pos
+ball_posX	1116.5478515625
+ball_posY	633.21752929688
+000000000	000000000
+car_pos
+car_dir   	-1.6195485591888
+car_posX  	-1086.0765380859
+car_posY  	194.90171813965
+car_velMod	0
+car_velDir	0
+car_power 	2060.0615968276
+car_rotVel	2.9618716239929
+ball_pos
+ball_posX	-1071.6795654297
+ball_posY	-848.75695800781
+000000000	000000000
+car_pos
+car_dir   	-2.3911752700806
+car_posX  	-389.93688964844
+car_posY  	-1338.4752197266
+car_velMod	0
+car_velDir	0
+car_power 	2353.6302681796
+car_rotVel	2.9653697013855
+ball_pos
+ball_posX	-1143.6788330078
+ball_posY	-2041.6589355469
+000000000	000000000
+car_pos
+car_dir   	-2.7058765888214
+car_posX  	960.40087890625
+car_posY  	2128.2446289062
+car_velMod	0
+car_velDir	0
+car_power 	2565.5361975383
+car_rotVel	2.9567747116089
+ball_pos
+ball_posX	24.217910766602
+ball_posY	1671.0987548828
+000000000	000000000
+car_pos
+car_dir   	-1.4205995798111
+car_posX  	-2001.0236816406
+car_posY  	666.16436767578
+car_velMod	0
+car_velDir	-0
+car_power 	2421.821655902
+car_rotVel	2.9633324146271
+ball_pos
+ball_posX	-1835.5554199219
+ball_posY	-361.66293334961
+000000000	000000000
+car_pos
+car_dir   	-2.6768465042114
+car_posX  	1714.1960449219
+car_posY  	1840.3826904297
+car_velMod	0
+car_velDir	0
+car_power 	2240.3849136272
+car_rotVel	2.9567880630493
+ball_pos
+ball_posX	794.41729736328
+ball_posY	1357.912109375
+000000000	000000000
+car_pos
+car_dir   	-1.4468342065811
+car_posX  	-1205.7443847656
+car_posY  	292.79159545898
+car_velMod	0
+car_velDir	-0
+car_power 	2044.9808291369
+car_rotVel	2.9594352245331
+ball_pos
+ball_posX	-1040.7066650391
+ball_posY	-736.25213623047
+000000000	000000000
+car_pos
+car_dir   	-2.8525648117065
+car_posX  	2801.4543457031
+car_posY  	869.52600097656
+car_velMod	0
+car_velDir	0
+car_power 	2337.479772669
+car_rotVel	2.9636104106903
+ball_pos
+ball_posX	1805.1553955078
+ball_posY	578.40588378906
+000000000	000000000
+car_pos
+car_dir   	-1.3660504817963
+car_posX  	-302.96463012695
+car_posY  	-94.215682983398
+car_velMod	0
+car_velDir	-0
+car_power 	2219.6135400886
+car_rotVel	2.9626626968384
+ball_pos
+ball_posX	-87.545791625977
+ball_posY	-1113.1439208984
+000000000	000000000
+car_pos
+car_dir   	-1.7438212633133
+car_posX  	-1750.9139404297
+car_posY  	1943.9604492188
+car_velMod	0
+car_velDir	0
+car_power 	2018.6068168928
+car_rotVel	2.9567749500275
+ball_pos
+ball_posX	-1901.5924072266
+ball_posY	906.86541748047
+000000000	000000000
+car_pos
+car_dir   	-0.55178147554398
+car_posX  	-2235.8217773438
+car_posY  	-1338.8248291016
+car_velMod	0
+car_velDir	-0
+car_power 	2901.9115915997
+car_rotVel	2.9567742347717
+ball_pos
+ball_posX	-1316.4541015625
+ball_posY	-1821.2526855469
+000000000	000000000
+car_pos
+car_dir   	2.0352470874786
+car_posX  	1663.1413574219
+car_posY  	-1728.2735595703
+car_velMod	0
+car_velDir	-0
+car_power 	2288.4153720403
+car_rotVel	2.9847528934479
+ball_pos
+ball_posX	1168.8103027344
+ball_posY	-817.94262695312
+000000000	000000000
+car_pos
+car_dir   	-2.8537721633911
+car_posX  	58.733654022217
+car_posY  	1112.0744628906
+car_velMod	0
+car_velDir	0
+car_power 	2199.3975887072
+car_rotVel	2.9637937545776
+ball_pos
+ball_posX	-927.86633300781
+ball_posY	775.21203613281
+000000000	000000000
+car_pos
+car_dir   	1.3002918958664
+car_posX  	-2700.7707519531
+car_posY  	-2195.564453125
+car_velMod	0
+car_velDir	0
+car_power 	2558.1001381195
+car_rotVel	2.9612739086151
+ball_pos
+ball_posX	-2422.0629882812
+ball_posY	-1197.6135253906
+000000000	000000000
+car_pos
+car_dir   	2.6366944313049
+car_posX  	-1846.3841552734
+car_posY  	957.23065185547
+car_velMod	0
+car_velDir	-0
+car_power 	2355.8991888333
+car_rotVel	2.9568226337433
+ball_pos
+ball_posX	-2770.1342773438
+ball_posY	1432.10546875
+000000000	000000000
+car_pos
+car_dir   	1.6804294586182
+car_posX  	-1554.4432373047
+car_posY  	-2195.4755859375
+car_velMod	0
+car_velDir	-0
+car_power 	2061.4050911094
+car_rotVel	2.9608452320099
+ball_pos
+ball_posX	-1677.2814941406
+ball_posY	-1161.3956298828
+000000000	000000000
+car_pos
+car_dir   	3.0077152252197
+car_posX  	-1990.1352539062
+car_posY  	1055.2327880859
+car_velMod	0
+car_velDir	-0
+car_power 	2444.2559603808
+car_rotVel	2.9568083286285
+ball_pos
+ball_posX	-3025.8994140625
+ball_posY	1182.0776367188
+000000000	000000000
+car_pos
+car_dir   	2.0158867835999
+car_posX  	-1025.1986083984
+car_posY  	-933.99383544922
+car_velMod	0
+car_velDir	-0
+car_power 	2270.4580003724
+car_rotVel	2.9567823410034
+ball_pos
+ball_posX	-1528.0266113281
+ball_posY	-23.118169784546
+000000000	000000000
+car_pos
+car_dir   	-2.9345779418945
+car_posX  	-2644.4597167969
+car_posY  	1954.5897216797
+car_velMod	0
+car_velDir	0
+car_power 	2624.7456896234
+car_rotVel	2.9568090438843
+ball_pos
+ball_posX	-3663.5346679688
+ball_posY	1736.6134033203
+000000000	000000000
+car_pos
+car_dir   	2.2765800952911
+car_posX  	-2984.1335449219
+car_posY  	498.64028930664
+car_velMod	0
+car_velDir	-0
+car_power 	2978.6494397459
+car_rotVel	2.9635694026947
+ball_pos
+ball_posX	-3644.5380859375
+ball_posY	1289.1872558594
+000000000	000000000
+car_pos
+car_dir   	1.8249727487564
+car_posX  	-1135.3748779297
+car_posY  	-610.48883056641
+car_velMod	0
+car_velDir	-0
+car_power 	2219.9209147226
+car_rotVel	2.9579491615295
+ball_pos
+ball_posX	-1386.5737304688
+ball_posY	399.06112670898
+000000000	000000000
+car_pos
+car_dir   	-0.65712356567383
+car_posX  	-2752.8354492188
+car_posY  	2154.4985351562
+car_velMod	0
+car_velDir	-0
+car_power 	2544.8851899919
+car_rotVel	2.9567902088165
+ball_pos
+ball_posX	-1890.390625
+ball_posY	1579.2293701172
+000000000	000000000
+car_pos
+car_dir   	0.68204832077026
+car_posX  	-25.379850387573
+car_posY  	316.56643676758
+car_velMod	0
+car_velDir	0
+car_power 	2457.5803798892
+car_rotVel	2.9609849452972
+ball_pos
+ball_posX	757.92077636719
+ball_posY	988.67779541016
+000000000	000000000
+car_pos
+car_dir   	0.75219655036926
+car_posX  	1904.4854736328
+car_posY  	-1569.6136474609
+car_velMod	0
+car_velDir	0
+car_power 	2784.5906497839
+car_rotVel	2.9605388641357
+ball_pos
+ball_posX	2613.3151855469
+ball_posY	-814.44219970703
+000000000	000000000
+car_pos
+car_dir   	-0.97736710309982
+car_posX  	866.5908203125
+car_posY  	1980.4158935547
+car_velMod	0
+car_velDir	-0
+car_power 	2547.6912928502
+car_rotVel	2.9622719287872
+ball_pos
+ball_posX	1458.595703125
+ball_posY	1133.4576416016
+000000000	000000000
+car_pos
+car_dir   	0.35915437340736
+car_posX  	2779.3935546875
+car_posY  	-686.82849121094
+car_velMod	0
+car_velDir	0
+car_power 	2408.6118766147
+car_rotVel	2.9626886844635
+ball_pos
+ball_posX	3748.3513183594
+ball_posY	-317.92309570312
+000000000	000000000
+car_pos
+car_dir   	-0.59811925888062
+car_posX  	-870.05493164062
+car_posY  	669.45281982422
+car_velMod	0
+car_velDir	-0
+car_power 	2113.9623495349
+car_rotVel	2.9627087116241
+ball_pos
+ball_posX	3.6645839214325
+ball_posY	122.12264251709
+000000000	000000000
+car_pos
+car_dir   	0.84318423271179
+car_posX  	1900.8087158203
+car_posY  	-1028.3944091797
+car_velMod	0
+car_velDir	0
+car_power 	2414.4191902198
+car_rotVel	2.9654676914215
+ball_pos
+ball_posX	2552.4519042969
+ball_posY	-228.98066711426
+000000000	000000000
+car_pos
+car_dir   	-0.18159027397633
+car_posX  	-350.55932617188
+car_posY  	-219.2610168457
+car_velMod	0
+car_velDir	-0
+car_power 	2239.2977076766
+car_rotVel	2.9594933986664
+ball_pos
+ball_posX	677.12982177734
+ball_posY	-390.59338378906
+000000000	000000000
+car_pos
+car_dir   	1.2774000167847
+car_posX  	2881.310546875
+car_posY  	-724.99676513672
+car_velMod	0
+car_velDir	0
+car_power 	2622.4803918146
+car_rotVel	2.9567747116089
+ball_pos
+ball_posX	3154.9006347656
+ball_posY	281.0104675293
+000000000	000000000
+car_pos
+car_dir   	-0.0029776964802295
+car_posX  	-2806.93359375
+car_posY  	-1398.4410400391
+car_velMod	0
+car_velDir	-0
+car_power 	2887.4489650537
+car_rotVel	2.9617848396301
+ball_pos
+ball_posX	-1765.8843994141
+ball_posY	-1357.8133544922
+000000000	000000000
+car_pos
+car_dir   	1.2860683202744
+car_posX  	457.04959106445
+car_posY  	-1239.3342285156
+car_velMod	0
+car_velDir	0
+car_power 	2271.5061201116
+car_rotVel	2.9635560512543
+ball_pos
+ball_posX	705.46234130859
+ball_posY	-231.23977661133
+000000000	000000000
+car_pos
+car_dir   	2.618458032608
+car_posX  	1218.5853271484
+car_posY  	1949.9315185547
+car_velMod	0
+car_velDir	-0
+car_power 	2629.1514349306
+car_rotVel	2.9632179737091
+ball_pos
+ball_posX	317.48782348633
+ball_posY	2458.2199707031
+000000000	000000000
+car_pos
+car_dir   	1.5900783538818
+car_posX  	672.22595214844
+car_posY  	-348.18548583984
+car_velMod	0
+car_velDir	0
+car_power 	2953.5338994831
+car_rotVel	2.9624691009521
+ball_pos
+ball_posX	615.13269042969
+ball_posY	691.88525390625
+000000000	000000000
+car_pos
+car_dir   	1.8919365406036
+car_posX  	1888.5223388672
+car_posY  	1974.5850830078
+car_velMod	0
+car_velDir	-0
+car_power 	2747.2657774329
+car_rotVel	2.9620373249054
+ball_pos
+ball_posX	1547.2987060547
+ball_posY	2954.2944335938
+000000000	000000000
+car_pos
+car_dir   	0.98680412769318
+car_posX  	957.01702880859
+car_posY  	461.15811157227
+car_velMod	0
+car_velDir	0
+car_power 	2517.5341942895
+car_rotVel	2.9571642875671
+ball_pos
+ball_posX	1474.2777099609
+ball_posY	1358.4747314453
+000000000	000000000
+car_pos
+car_dir   	0.33154165744781
+car_posX  	-466.82525634766
+car_posY  	-95.705589294434
+car_velMod	0
+car_velDir	0
+car_power 	2350.7417269753
+car_rotVel	2.9621865749359
+ball_pos
+ball_posX	516.27960205078
+ball_posY	239.17288208008
+000000000	000000000
+car_pos
+car_dir   	1.7262765169144
+car_posX  	2607.6867675781
+car_posY  	1014.4924926758
+car_velMod	0
+car_velDir	-0
+car_power 	2647.4307624844
+car_rotVel	2.963484287262
+ball_pos
+ball_posX	2450.5939941406
+ball_posY	2042.7023925781
+000000000	000000000
+car_pos
+car_dir   	0.20068545639515
+car_posX  	-2726.0913085938
+car_posY  	-1437.7200927734
+car_velMod	0
+car_velDir	0
+car_power 	2319.0569758038
+car_rotVel	2.9626414775848
+ball_pos
+ball_posX	-1708.4567871094
+ball_posY	-1220.8100585938
+000000000	000000000
+car_pos
+car_dir   	1.4854325056076
+car_posX  	476.60049438477
+car_posY  	-708.69061279297
+car_velMod	0
+car_velDir	0
+car_power 	2203.7998159434
+car_rotVel	2.9620358943939
+ball_pos
+ball_posX	539.85736083984
+ball_posY	334.96890258789
+000000000	000000000
+car_pos
+car_dir   	0.42849242687225
+car_posX  	-2029.8842773438
+car_posY  	-1695.2215576172
+car_velMod	0
+car_velDir	0
+car_power 	2004.1541880947
+car_rotVel	2.9641177654266
+ball_pos
+ball_posX	-1087.9052734375
+ball_posY	-1265.7785644531
+000000000	000000000
+car_pos
+car_dir   	1.6809731721878
+car_posX  	923.33166503906
+car_posY  	-286.99295043945
+car_velMod	0
+car_velDir	-0
+car_power 	2384.3159104624
+car_rotVel	2.9568150043488
+ball_pos
+ball_posX	785.67791748047
+ball_posY	751.6767578125
+000000000	000000000
+car_pos
+car_dir   	1.3310055732727
+car_posX  	1569.875
+car_posY  	-705.69470214844
+car_velMod	0
+car_velDir	0
+car_power 	2208.0403176174
+car_rotVel	2.9597055912018
+ball_pos
+ball_posX	1819.3671875
+ball_posY	300.57022094727
+000000000	000000000
+car_pos
+car_dir   	-0.20990382134914
+car_posX  	-2758.2495117188
+car_posY  	1160.4213867188
+car_velMod	0
+car_velDir	-0
+car_power 	2448.2635811196
+car_rotVel	2.9588241577148
+ball_pos
+ball_posX	-1734.4951171875
+ball_posY	966.69256591797
+000000000	000000000
+car_pos
+car_dir   	0.97757709026337
+car_posX  	490.67694091797
+car_posY  	576.95916748047
+car_velMod	0
+car_velDir	0
+car_power 	2831.5412168538
+car_rotVel	2.9568498134613
+ball_pos
+ball_posX	1044.8206787109
+ball_posY	1454.0623779297
+000000000	000000000
+car_pos
+car_dir   	0.60469532012939
+car_posX  	1352.2292480469
+car_posY  	-102.4566192627
+car_velMod	0
+car_velDir	0
+car_power 	2074.7295539243
+car_rotVel	2.9611644744873
+ball_pos
+ball_posX	2165.3420410156
+ball_posY	535.32385253906
+000000000	000000000
+car_pos
+car_dir   	0.075817219913006
+car_posX  	86.889808654785
+car_posY  	-999.0390625
+car_velMod	0
+car_velDir	0
+car_power 	2926.9062289628
+car_rotVel	2.9614408016205
+ball_pos
+ball_posX	1119.33203125
+ball_posY	-854.73809814453
+000000000	000000000
+car_pos
+car_dir   	-1.122771024704
+car_posX  	1547.3430175781
+car_posY  	784.55688476562
+car_velMod	0
+car_velDir	-0
+car_power 	2695.0677273306
+car_rotVel	2.962459564209
+ball_pos
+ball_posX	2006.8006591797
+ball_posY	-142.56927490234
+000000000	000000000
+car_pos
+car_dir   	-1.2578225135803
+car_posX  	113.27140808105
+car_posY  	-108.76765441895
+car_velMod	0
+car_velDir	-0
+car_power 	2871.0236437018
+car_rotVel	2.9606726169586
+ball_pos
+ball_posX	490.03338623047
+ball_posY	-1074.2325439453
+000000000	000000000
+car_pos
+car_dir   	-1.2362357378006
+car_posX  	-1625.4366455078
+car_posY  	-1297.5480957031
+car_velMod	0
+car_velDir	-0
+car_power 	2168.3281581701
+car_rotVel	2.9567842483521
+ball_pos
+ball_posX	-1229.4234619141
+ball_posY	-2259.0979003906
+000000000	000000000
+car_pos
+car_dir   	-2.4131445884705
+car_posX  	-47.052101135254
+car_posY  	-2571.5725097656
+car_velMod	0
+car_velDir	0
+car_power 	2438.9248660016
+car_rotVel	2.9651563167572
+ball_pos
+ball_posX	-818.2763671875
+ball_posY	-3255.8723144531
+000000000	000000000
+car_pos
+car_dir   	3.0799856185913
+car_posX  	1582.8843994141
+car_posY  	-1213.9250488281
+car_velMod	0
+car_velDir	-0
+car_power 	2678.1093933052
+car_rotVel	2.9619252681732
+ball_pos
+ball_posX	538.32818603516
+ball_posY	-1204.2321777344
+000000000	000000000
+car_pos
+car_dir   	-1.9345871210098
+car_posX  	-1702.5816650391
+car_posY  	-1222.9792480469
+car_velMod	0
+car_velDir	0
+car_power 	2532.7286862455
+car_rotVel	2.9567935466766
+ball_pos
+ball_posX	-2043.8992919922
+ball_posY	-2206.8205566406
+000000000	000000000
+car_pos
+car_dir   	-3.1057463327991
+car_posX  	-472.93374633789
+car_posY  	-1879.5798339844
+car_velMod	0
+car_velDir	-0
+car_power 	2387.6916716749
+car_rotVel	2.9627475738525
+ball_pos
+ball_posX	-1515.9129638672
+ball_posY	-1913.7708740234
+000000000	000000000
+car_pos
+car_dir   	2.3908219337463
+car_posX  	-2071.7592773438
+car_posY  	-2194.7299804688
+car_velMod	0
+car_velDir	-0
+car_power 	2684.810349571
+car_rotVel	2.9637157917023
+ball_pos
+ball_posX	-2819.7407226562
+ball_posY	-1486.2071533203
+000000000	000000000
+car_pos
+car_dir   	1.7868858575821
+car_posX  	-3089.0969238281
+car_posY  	-1197.4039306641
+car_velMod	0
+car_velDir	-0
+car_power 	2009.510787674
+car_rotVel	2.9603545665741
+ball_pos
+ball_posX	-3323.6555175781
+ball_posY	-183.27613830566
+000000000	000000000
+car_pos
+car_dir   	1.8650410175323
+car_posX  	-1320.6585693359
+car_posY  	85.722023010254
+car_velMod	0
+car_velDir	-0
+car_power 	2246.6077922129
+car_rotVel	2.9567873477936
+ball_pos
+ball_posX	-1639.857421875
+ball_posY	1077.6848144531
+000000000	000000000
+car_pos
+car_dir   	1.5288742780685
+car_posX  	168.96713256836
+car_posY  	-369.69784545898
+car_velMod	0
+car_velDir	0
+car_power 	2986.1878170568
+car_rotVel	2.9607908725739
+ball_pos
+ball_posX	171.26542663574
+ball_posY	671.65386962891
+000000000	000000000
+car_pos
+car_dir   	1.7886252403259
+car_posX  	1535.6612548828
+car_posY  	1831.1062011719
+car_velMod	0
+car_velDir	-0
+car_power 	2692.0985843484
+car_rotVel	2.9567894935608
+ball_pos
+ball_posX	1292.3688964844
+ball_posY	2845.8576660156
+000000000	000000000
+car_pos
+car_dir   	0.34184542298317
+car_posX  	-2580.7521972656
+car_posY  	-270.68814086914
+car_velMod	0
+car_velDir	0
+car_power 	2934.8466512444
+car_rotVel	2.9648506641388
+ball_pos
+ball_posX	-1619.3012695312
+ball_posY	116.39729309082
+000000000	000000000
+car_pos
+car_dir   	1.7712650299072
+car_posX  	425.71139526367
+car_posY  	1001.2956542969
+car_velMod	0
+car_velDir	-0
+car_power 	2817.8178676487
+car_rotVel	2.9646391868591
+ball_pos
+ball_posX	169.97634887695
+ball_posY	2009.3718261719
+000000000	000000000
+car_pos
+car_dir   	0.51687806844711
+car_posX  	-1709.1164550781
+car_posY  	1574.1302490234
+car_velMod	0
+car_velDir	0
+car_power 	2174.2953388832
+car_rotVel	2.9648439884186
+ball_pos
+ball_posX	-829.32629394531
+ball_posY	2114.2097167969
+000000000	000000000
+car_pos
+car_dir   	0.66423982381821
+car_posX  	92.164115905762
+car_posY  	405.87216186523
+car_velMod	0
+car_velDir	0
+car_power 	2441.7049002097
+car_rotVel	2.9625897407532
+ball_pos
+ball_posX	911.36486816406
+ball_posY	1030.0679931641
+000000000	000000000
+car_pos
+car_dir   	1.9306305646896
+car_posX  	2661.3212890625
+car_posY  	2423.966796875
+car_velMod	0
+car_velDir	-0
+car_power 	2796.8659344115
+car_rotVel	2.9567971229553
+ball_pos
+ball_posX	2278.7883300781
+ball_posY	3391.7517089844
+000000000	000000000
+car_pos
+car_dir   	0.1668992638588
+car_posX  	-1623.6110839844
+car_posY  	1446.1453857422
+car_velMod	0
+car_velDir	0
+car_power 	2567.490035001
+car_rotVel	2.9567992687225
+ball_pos
+ball_posX	-605.45196533203
+ball_posY	1689.0135498047
+000000000	000000000
+car_pos
+car_dir   	1.4010230302811
+car_posX  	1613.7585449219
+car_posY  	2209.265625
+car_velMod	0
+car_velDir	0
+car_power 	2949.8636275296
+car_rotVel	2.96044921875
+ball_pos
+ball_posX	1775.1109619141
+ball_posY	3238.7766113281
+000000000	000000000
+car_pos
+car_dir   	0.40456569194794
+car_posX  	-705.65911865234
+car_posY  	-400.88647460938
+car_velMod	0
+car_velDir	0
+car_power 	2772.8869671807
+car_rotVel	2.9593741893768
+ball_pos
+ball_posX	226.1337890625
+ball_posY	51.803165435791
+000000000	000000000
+car_pos
+car_dir   	1.6431914567947
+car_posX  	2219.4331054688
+car_posY  	1073.2149658203
+car_velMod	0
+car_velDir	-0
+car_power 	2129.7753728599
+car_rotVel	2.9568073749542
+ball_pos
+ball_posX	2122.7377929688
+ball_posY	2114.3002929688
+000000000	000000000
+car_pos
+car_dir   	0.64324748516083
+car_posX  	314.81857299805
+car_posY  	-1406.1287841797
+car_velMod	0
+car_velDir	0
+car_power 	2429.6825204183
+car_rotVel	2.9626197814941
+ball_pos
+ball_posX	1147.0006103516
+ball_posY	-798.25616455078
+000000000	000000000
+car_pos
+car_dir   	2.0246496200562
+car_posX  	2910.6821289062
+car_posY  	553.91119384766
+car_velMod	0
+car_velDir	-0
+car_power 	2225.5541562222
+car_rotVel	2.9567778110504
+ball_pos
+ball_posX	2439.4399414062
+ball_posY	1480.0350341797
+000000000	000000000
+car_pos
+car_dir   	0.48507407307625
+car_posX  	723.09686279297
+car_posY  	477.55038452148
+car_velMod	0
+car_velDir	0
+car_power 	2959.7468287497
+car_rotVel	2.9646348953247
+ball_pos
+ball_posX	1612.7979736328
+ball_posY	1003.7669067383
+000000000	000000000
+car_pos
+car_dir   	0.51195824146271
+car_posX  	2326.3015136719
+car_posY  	-399.28521728516
+car_velMod	0
+car_velDir	0
+car_power 	2258.4318012271
+car_rotVel	2.9567818641663
+ball_pos
+ball_posX	3199.9748535156
+ball_posY	163.31817626953
+000000000	000000000
+car_pos
+car_dir   	-0.55591690540314
+car_posX  	1213.6437988281
+car_posY  	759.75927734375
+car_velMod	0
+car_velDir	-0
+car_power 	2523.9049641061
+car_rotVel	2.9657247066498
+ball_pos
+ball_posX	2122.455078125
+ball_posY	263.91079711914
+000000000	000000000
+car_pos
+car_dir   	-0.83505541086197
+car_posX  	-356.79202270508
+car_posY  	171.05076599121
+car_velMod	0
+car_velDir	-0
+car_power 	2351.1325374018
+car_rotVel	2.9568085670471
+ball_pos
+ball_posX	385.11337280273
+ball_posY	-550.25280761719
+000000000	000000000
+car_pos
+car_dir   	0.42397108674049
+car_posX  	1999.7932128906
+car_posY  	-2123.5727539062
+car_velMod	0
+car_velDir	0
+car_power 	2145.3396427191
+car_rotVel	2.9567756652832
+ball_pos
+ball_posX	2939.8957519531
+ball_posY	-1681.3511962891
+000000000	000000000
+car_pos
+car_dir   	-0.78370344638824
+car_posX  	-2096.3227539062
+car_posY  	1298.9174804688
+car_velMod	0
+car_velDir	-0
+car_power 	2420.3096071353
+car_rotVel	2.9569249153137
+ball_pos
+ball_posX	-1347.1240234375
+ball_posY	587.04278564453
+000000000	000000000
+car_pos
+car_dir   	0.54690259695053
+car_posX  	290.34942626953
+car_posY  	-931.55950927734
+car_velMod	0
+car_velDir	0
+car_power 	2301.6378229026
+car_rotVel	2.9567754268646
+ball_pos
+ball_posX	1166.0035400391
+ball_posY	-378.02117919922
+000000000	000000000
+car_pos
+car_dir   	-0.17597524821758
+car_posX  	1631.6418457031
+car_posY  	1050.5994873047
+car_velMod	0
+car_velDir	-0
+car_power 	2153.9351046802
+car_rotVel	2.9599447250366
+ball_pos
+ball_posX	2661.9860839844
+ball_posY	906.80444335938
+000000000	000000000
+car_pos
+car_dir   	-0.25813293457031
+car_posX  	256.53720092773
+car_posY  	-995.36370849609
+car_velMod	0
+car_velDir	-0
+car_power 	2428.3378047069
+car_rotVel	2.9606821537018
+ball_pos
+ball_posX	1266.4342041016
+ball_posY	-1246.0675048828
+000000000	000000000
+car_pos
+car_dir   	-1.0398933887482
+car_posX  	2030.8493652344
+car_posY  	-1079.5289306641
+car_velMod	0
+car_velDir	-0
+car_power 	2192.3971042002
+car_rotVel	2.9652652740479
+ball_pos
+ball_posX	2599.6540527344
+ball_posY	-1943.6053466797
+000000000	000000000
+car_pos
+car_dir   	-1.3391803503036
+car_posX  	-2633.5090332031
+car_posY  	2285.5031738281
+car_velMod	0
+car_velDir	-0
+car_power 	2309.1985710474
+car_rotVel	2.9619228839874
+ball_pos
+ball_posX	-2341.80078125
+ball_posY	1288.9482421875
+000000000	000000000
+car_pos
+car_dir   	-0.011476054787636
+car_posX  	-1671.1300048828
+car_posY  	-843.96051025391
+car_velMod	0
+car_velDir	-0
+car_power 	2163.9529504645
+car_rotVel	2.9649674892426
+ball_pos
+ball_posX	-630.34503173828
+ball_posY	-859.8173828125
+000000000	000000000
+car_pos
+car_dir   	1.3057866096497
+car_posX  	1607.3463134766
+car_posY  	-860.24420166016
+car_velMod	0
+car_velDir	0
+car_power 	2603.8880495373
+car_rotVel	2.9568095207214
+ball_pos
+ball_posX	1860.8934326172
+ball_posY	150.23292541504
+000000000	000000000
+car_pos
+car_dir   	2.4937856197357
+car_posX  	2399.4475097656
+car_posY  	2324.2211914062
+car_velMod	0
+car_velDir	-0
+car_power 	2959.7846506908
+car_rotVel	2.9568290710449
+ball_pos
+ball_posX	1555.7467041016
+ball_posY	2926.177734375
+000000000	000000000
+car_pos
+car_dir   	1.5038675069809
+car_posX  	2637.4560546875
+car_posY  	-1409.6831054688
+car_velMod	0
+car_velDir	0
+car_power 	2291.0404504701
+car_rotVel	2.9619636535645
+ball_pos
+ball_posX	2649.6979980469
+ball_posY	-366.501953125
+000000000	000000000
+car_pos
+car_dir   	2.8048810958862
+car_posX  	2636.8012695312
+car_posY  	1878.9289550781
+car_velMod	0
+car_velDir	-0
+car_power 	2145.0511278329
+car_rotVel	2.9617650508881
+ball_pos
+ball_posX	1639.412109375
+ball_posY	2170.3342285156
+000000000	000000000
+car_pos
+car_dir   	0.61823463439941
+car_posX  	-2791.5852050781
+car_posY  	-2223.2849121094
+car_velMod	0
+car_velDir	0
+car_power 	2965.4314708735
+car_rotVel	2.964864730835
+ball_pos
+ball_posX	-1985.2955322266
+ball_posY	-1579.0231933594
+000000000	000000000
+car_pos
+car_dir   	1.974560379982
+car_posX  	-257.5466003418
+car_posY  	-146.41952514648
+car_velMod	0
+car_velDir	-0
+car_power 	2821.9113442218
+car_rotVel	2.9567902088165
+ball_pos
+ball_posX	-718.76483154297
+ball_posY	783.95574951172
+000000000	000000000
+car_pos
+car_dir   	2.105001449585
+car_posX  	1058.1063232422
+car_posY  	1664.4897460938
+car_velMod	0
+car_velDir	-0
+car_power 	2090.2437451716
+car_rotVel	2.9665970802307
+ball_pos
+ball_posX	532.14831542969
+ball_posY	2554.0268554688
+000000000	000000000
+car_pos
+car_dir   	0.59534364938736
+car_posX  	-2732.7548828125
+car_posY  	-2282.1232910156
+car_velMod	0
+car_velDir	0
+car_power 	2887.0755680311
+car_rotVel	2.9611937999725
+ball_pos
+ball_posX	-1892.6041259766
+ball_posY	-1682.5648193359
+000000000	000000000
+car_pos
+car_dir   	1.9444055557251
+car_posX  	-85.431083679199
+car_posY  	-342.77200317383
+car_velMod	0
+car_velDir	-0
+car_power 	2682.1874471764
+car_rotVel	2.9597899913788
+ball_pos
+ball_posX	-487.48571777344
+ball_posY	614.32562255859
+000000000	000000000
+car_pos
+car_dir   	0.46177372336388
+car_posX  	-2112.0341796875
+car_posY  	274.14166259766
+car_velMod	0
+car_velDir	0
+car_power 	2537.9810498739
+car_rotVel	2.9628341197968
+ball_pos
+ball_posX	-1190.5198974609
+ball_posY	748.35540771484
+000000000	000000000
+car_pos
+car_dir   	1.8493213653564
+car_posX  	768.74127197266
+car_posY  	1815.3734130859
+car_velMod	0
+car_velDir	-0
+car_power 	2341.799136876
+car_rotVel	2.9603772163391
+ball_pos
+ball_posX	429.73687744141
+ball_posY	2797.810546875
+000000000	000000000
+car_pos
+car_dir   	1.4624700546265
+car_posX  	1471.5393066406
+car_posY  	766.65899658203
+car_velMod	0
+car_velDir	0
+car_power 	2669.4115794587
+car_rotVel	2.9592759609222
+ball_pos
+ball_posX	1544.7606201172
+ball_posY	1807.3894042969
+000000000	000000000
+car_pos
+car_dir   	0.37650018930435
+car_posX  	-2396.8859863281
+car_posY  	-2060.6040039062
+car_velMod	0
+car_velDir	0
+car_power 	2878.7890648836
+car_rotVel	2.9608783721924
+ball_pos
+ball_posX	-1434.7932128906
+ball_posY	-1666.3433837891
+000000000	000000000
+car_pos
+car_dir   	1.7294321060181
+car_posX  	613.47528076172
+car_posY  	-766.53265380859
+car_velMod	0
+car_velDir	-0
+car_power 	2267.1537810318
+car_rotVel	2.9613163471222
+ball_pos
+ball_posX	389.79190063477
+ball_posY	249.91668701172
+000000000	000000000
+car_pos
+car_dir   	3.0965669155121
+car_posX  	-141.42727661133
+car_posY  	2422.4638671875
+car_velMod	0
+car_velDir	-0
+car_power 	2624.8545281705
+car_rotVel	2.9567747116089
+ball_pos
+ball_posX	-1187.4874267578
+ball_posY	2405.1376953125
+000000000	000000000
+car_pos
+car_dir   	1.8777447938919
+car_posX  	-2543.1181640625
+car_posY  	-903.10760498047
+car_velMod	0
+car_velDir	-0
+car_power 	2975.8888659886
+car_rotVel	3.0766100883484
+ball_pos
+ball_posX	-2918.6999511719
+ball_posY	67.203453063965
+000000000	000000000
+car_pos
+car_dir   	1.5358304977417
+car_posX  	-785.36303710938
+car_posY  	-2121.6303710938
+car_velMod	0
+car_velDir	0
+car_power 	2211.902409425
+car_rotVel	2.9567761421204
+ball_pos
+ball_posX	-813.69586181641
+ball_posY	-1075.6058349609
+000000000	000000000
+car_pos
+car_dir   	2.8759350776672
+car_posX  	-878.55444335938
+car_posY  	1171.7459716797
+car_velMod	0
+car_velDir	-0
+car_power 	2567.140236761
+car_rotVel	2.9607985019684
+ball_pos
+ball_posX	-1885.2822265625
+ball_posY	1434.0338134766
+000000000	000000000
+car_pos
+car_dir   	2.834406375885
+car_posX  	-2783.49609375
+car_posY  	1725.2202148438
+car_velMod	0
+car_velDir	-0
+car_power 	2958.2393006227
+car_rotVel	2.9568467140198
+ball_pos
+ball_posX	-3787.1257324219
+ball_posY	2009.7565917969
+000000000	000000000
+car_pos
+car_dir   	2.0212953090668
+car_posX  	2042.7257080078
+car_posY  	-1885.380859375
+car_velMod	0
+car_velDir	-0
+car_power 	2131.4578978957
+car_rotVel	2.9567847251892
+ball_pos
+ball_posX	1574.9156494141
+ball_posY	-958.14996337891
+000000000	000000000
+car_pos
+car_dir   	-2.9008550643921
+car_posX  	548.26983642578
+car_posY  	1034.2065429688
+car_velMod	0
+car_velDir	0
+car_power 	2516.4699868841
+car_rotVel	2.9596264362335
+ball_pos
+ball_posX	-452.65777587891
+ball_posY	758.30499267578
+000000000	000000000
+car_pos
+car_dir   	-1.5747258663177
+car_posX  	-2590.4797363281
+car_posY  	121.00466156006
+car_velMod	0
+car_velDir	0
+car_power 	2872.5506075996
+car_rotVel	2.9609663486481
+ball_pos
+ball_posX	-2602.8837890625
+ball_posY	-918.90264892578
+000000000	000000000
+car_pos
+car_dir   	-2.9580419063568
+car_posX  	1190.9543457031
+car_posY  	-254.82182312012
+car_velMod	0
+car_velDir	0
+car_power 	2665.7717896932
+car_rotVel	2.9631216526031
+ball_pos
+ball_posX	166.67834472656
+ball_posY	-436.86187744141
+000000000	000000000
+car_pos
+car_dir   	-1.6741902828217
+car_posX  	-2028.2349853516
+car_posY  	-874.69683837891
+car_velMod	0
+car_velDir	0
+car_power 	2468.1131669637
+car_rotVel	2.9632556438446
+ball_pos
+ball_posX	-2130.9963378906
+ball_posY	-1910.9007568359
+000000000	000000000
+car_pos
+car_dir   	2.9655485153198
+car_posX  	2626.0993652344
+car_posY  	-1900.6779785156
+car_velMod	0
+car_velDir	-0
+car_power 	2759.7137357852
+car_rotVel	2.9632947444916
+ball_pos
+ball_posX	1601.3348388672
+ball_posY	-1718.6429443359
+000000000	000000000
+car_pos
+car_dir   	-2.0711596012115
+car_posX  	-601.93243408203
+car_posY  	-1357.7677001953
+car_velMod	0
+car_velDir	0
+car_power 	2642.9771970226
+car_rotVel	2.9567749500275
+ball_pos
+ball_posX	-1074.1376953125
+ball_posY	-2284.0881347656
+000000000	000000000
+car_pos
+car_dir   	-2.5180819034576
+car_posX  	280.75042724609
+car_posY  	1784.5620117188
+car_velMod	0
+car_velDir	0
+car_power 	2942.2464430995
+car_rotVel	2.959068775177
+ball_pos
+ball_posX	-543.54730224609
+ball_posY	1156.8380126953
+000000000	000000000
+car_pos
+car_dir   	-1.151603102684
+car_posX  	-2309.0483398438
+car_posY  	-227.72546386719
+car_velMod	0
+car_velDir	-0
+car_power 	2294.0145839443
+car_rotVel	2.9623177051544
+ball_pos
+ball_posX	-1884.4235839844
+ball_posY	-1173.8818359375
+000000000	000000000
+car_pos
+car_dir   	-1.8043166399002
+car_posX  	-1809.9617919922
+car_posY  	-992.77258300781
+car_velMod	0
+car_velDir	0
+car_power 	2652.5163318275
+car_rotVel	2.9607763290405
+ball_pos
+ball_posX	-2006.5294189453
+ball_posY	-2014.7952880859
+000000000	000000000
+car_pos
+car_dir   	3.0841228961945
+car_posX  	-120.20332336426
+car_posY  	-2505.8322753906
+car_velMod	0
+car_velDir	-0
+car_power 	2423.0172361354
+car_rotVel	2.9618039131165
+ball_pos
+ball_posX	-1159.7078857422
+ball_posY	-2448.63671875
+000000000	000000000
+car_pos
+car_dir   	2.8460540771484
+car_posX  	1298.5698242188
+car_posY  	-460.66638183594
+car_velMod	0
+car_velDir	-0
+car_power 	2690.3018852185
+car_rotVel	2.9621925354004
+ball_pos
+ball_posX	290.18087768555
+ball_posY	-203.68446350098
+000000000	000000000
+car_pos
+car_dir   	-2.1244897842407
+car_posX  	-1883.2951660156
+car_posY  	319.857421875
+car_velMod	0
+car_velDir	0
+car_power 	2542.8788361805
+car_rotVel	2.9568502902985
+ball_pos
+ball_posX	-2364.5524902344
+ball_posY	-605.90771484375
+000000000	000000000
+car_pos
+car_dir   	2.8243715763092
+car_posX  	2337.73046875
+car_posY  	-1481.1723632812
+car_velMod	0
+car_velDir	-0
+car_power 	2783.8755737915
+car_rotVel	2.9607121944427
+ball_pos
+ball_posX	1343.4710693359
+ball_posY	-1176.9235839844
+000000000	000000000
+car_pos
+car_dir   	-2.0607104301453
+car_posX  	-798.49371337891
+car_posY  	-550.84655761719
+car_velMod	0
+car_velDir	0
+car_power 	2545.5181079663
+car_rotVel	2.9622747898102
+ball_pos
+ball_posX	-1230.3828125
+ball_posY	-1494.5989990234
+000000000	000000000
+car_pos
+car_dir   	-1.8931845426559
+car_posX  	-2835.0231933594
+car_posY  	-88.929374694824
+car_velMod	0
+car_velDir	0
+car_power 	2402.5383486424
+car_rotVel	2.9609959125519
+ball_pos
+ball_posX	-3135.6062011719
+ball_posY	-1086.8587646484
+000000000	000000000
+car_pos
+car_dir   	-1.077329993248
+car_posX  	1227.0164794922
+car_posY  	-1337.3748779297
+car_velMod	0
+car_velDir	-0
+car_power 	2984.6905991364
+car_rotVel	2.959166765213
+ball_pos
+ball_posX	1711.6322021484
+ball_posY	-2251.1965332031
+000000000	000000000
+car_pos
+car_dir   	-1.993021607399
+car_posX  	2599.28125
+car_posY  	-2550.7841796875
+car_velMod	0
+car_velDir	0
+car_power 	2783.684912037
+car_rotVel	2.9603106975555
+ball_pos
+ball_posX	2203.1677246094
+ball_posY	-3511.1486816406
+000000000	000000000
+car_pos
+car_dir   	-1.4025303125381
+car_posX  	-1538.8345947266
+car_posY  	-1241.5087890625
+car_velMod	0
+car_velDir	-0
+car_power 	2579.9464316014
+car_rotVel	2.9577813148499
+ball_pos
+ball_posX	-1381.9609375
+ball_posY	-2267.4436035156
+000000000	000000000
+car_pos
+car_dir   	-2.3633279800415
+car_posX  	-80.777725219727
+car_posY  	377.04849243164
+car_velMod	0
+car_velDir	0
+car_power 	2318.4687240601
+car_rotVel	2.9632532596588
+ball_pos
+ball_posX	-792.84393310547
+ball_posY	-366.47387695312
+000000000	000000000
+car_pos
+car_dir   	-0.91205555200577
+car_posX  	-2299.8395996094
+car_posY  	-2001.1115722656
+car_velMod	0
+car_velDir	-0
+car_power 	2699.2830306754
+car_rotVel	2.9659538269043
+ball_pos
+ball_posX	-1674.2899169922
+ball_posY	-2821.6486816406
+000000000	000000000
+car_pos
+car_dir   	-2.4685990810394
+car_posX  	607.17749023438
+car_posY  	-1205.4536132812
+car_velMod	0
+car_velDir	0
+car_power 	2027.9029780197
+car_rotVel	2.9659106731415
+ball_pos
+ball_posX	-168.69728088379
+ball_posY	-1885.3052978516
+000000000	000000000
+car_pos
+car_dir   	-2.6000373363495
+car_posX  	-975.50372314453
+car_posY  	-1671.0588378906
+car_velMod	0
+car_velDir	0
+car_power 	2320.3102728912
+car_rotVel	2.9567897319794
+ball_pos
+ball_posX	-1854.0864257812
+ball_posY	-2221.6135253906
+000000000	000000000
+car_pos
+car_dir   	3.112827539444
+car_posX  	739.78131103516
+car_posY  	-318.35385131836
+car_velMod	0
+car_velDir	-0
+car_power 	2062.4576970294
+car_rotVel	2.9567754268646
+ball_pos
+ball_posX	-305.85464477539
+ball_posY	-352.26666259766
+000000000	000000000
+car_pos
+car_dir   	-2.0449304580688
+car_posX  	-2582.2612304688
+car_posY  	-430.06787109375
+car_velMod	0
+car_velDir	0
+car_power 	2920.8900220324
+car_rotVel	2.9568340778351
+ball_pos
+ball_posX	-3028.1818847656
+ball_posY	-1369.2738037109
+000000000	000000000
+car_pos
+car_dir   	2.9354672431946
+car_posX  	1820.4398193359
+car_posY  	-1276.5650634766
+car_velMod	0
+car_velDir	-0
+car_power 	2246.5742641345
+car_rotVel	2.9568545818329
+ball_pos
+ball_posX	783.58575439453
+ball_posY	-1133.9947509766
+000000000	000000000
+car_pos
+car_dir   	-2.0492513179779
+car_posX  	-1440.8438720703
+car_posY  	-813.52886962891
+car_velMod	0
+car_velDir	0
+car_power 	2513.5360581398
+car_rotVel	2.9568600654602
+ball_pos
+ball_posX	-1852.3909912109
+ball_posY	-1769.3706054688
+000000000	000000000
+car_pos
+car_dir   	-2.6793081760406
+car_posX  	-562.18072509766
+car_posY  	136.25508117676
+car_velMod	0
+car_velDir	0
+car_power 	2248.3438440824
+car_rotVel	2.9567813873291
+ball_pos
+ball_posX	-1462.6044921875
+ball_posY	-378.19149780273
+000000000	000000000
+car_pos
+car_dir   	-3.1046491304981
+car_posX  	818.38427734375
+car_posY  	2180.5688476562
+car_velMod	0
+car_velDir	-0
+car_power 	2074.0583357746
+car_rotVel	2.9567744731903
+ball_pos
+ball_posX	-225.52478027344
+ball_posY	2120.7504882812
+000000000	000000000
+car_pos
+car_dir   	-1.742329955101
+car_posX  	-2466.2846679688
+car_posY  	1986.8918457031
+car_velMod	0
+car_velDir	0
+car_power 	2373.7637816806
+car_rotVel	2.9568455219269
+ball_pos
+ball_posX	-2615.1879882812
+ball_posY	951.95373535156
+000000000	000000000
+car_pos
+car_dir   	-0.53328144550323
+car_posX  	-2951.4426269531
+car_posY  	-1292.982421875
+car_velMod	0
+car_velDir	-0
+car_power 	2812.3953686153
+car_rotVel	2.9601590633392
+ball_pos
+ball_posX	-2024.1878662109
+ball_posY	-1757.3353271484
+000000000	000000000
+car_pos
+car_dir   	2.5116646289825
+car_posX  	1063.1055908203
+car_posY  	-2078.1667480469
+car_velMod	0
+car_velDir	-0
+car_power 	2698.0778568881
+car_rotVel	2.9656512737274
+ball_pos
+ball_posX	194.96408081055
+ball_posY	-1516.5535888672
+000000000	000000000
+car_pos
+car_dir   	-2.5117437839508
+car_posX  	-1703.6394042969
+car_posY  	-321.27191162109
+car_velMod	0
+car_velDir	0
+car_power 	2616.6693165976
+car_rotVel	2.9615113735199
+ball_pos
+ball_posX	-2519.1591796875
+ball_posY	-956.66217041016
+000000000	000000000
+car_pos
+car_dir   	2.9634201526642
+car_posX  	-214.21591186523
+car_posY  	-693.32904052734
+car_velMod	0
+car_velDir	-0
+car_power 	2934.8017936269
+car_rotVel	2.9601993560791
+ball_pos
+ball_posX	-1251.5075683594
+ball_posY	-577.99975585938
+000000000	000000000
+car_pos
+car_dir   	2.3926527500153
+car_posX  	1196.5764160156
+car_posY  	-1077.6381835938
+car_velMod	0
+car_velDir	-0
+car_power 	2675.8723406474
+car_rotVel	2.9623506069183
+ball_pos
+ball_posX	410.28634643555
+ball_posY	-410.25997924805
+000000000	000000000
+car_pos
+car_dir   	-2.4736933708191
+car_posX  	-1310.7425537109
+car_posY  	996.53094482422
+car_velMod	0
+car_velDir	0
+car_power 	2060.7003015749
+car_rotVel	2.9649288654327
+ball_pos
+ball_posX	-2124.9738769531
+ball_posY	364.58349609375
+000000000	000000000
+car_pos
+car_dir   	2.3217878341675
+car_posX  	-527.37542724609
+car_posY  	-2423.29296875
+car_velMod	0
+car_velDir	-0
+car_power 	2883.6386477964
+car_rotVel	2.9638822078705
+ball_pos
+ball_posX	-1241.6046142578
+ball_posY	-1675.5711669922
+000000000	000000000
+car_pos
+car_dir   	-2.6955537796021
+car_posX  	-2818.08203125
+car_posY  	-86.489295959473
+car_velMod	0
+car_velDir	0
+car_power 	2682.6208264952
+car_rotVel	2.9567959308624
+ball_pos
+ball_posX	-3726.7668457031
+ball_posY	-588.36486816406
+000000000	000000000
+car_pos
+car_dir   	2.5962738990784
+car_posX  	867.22869873047
+car_posY  	-1727.478515625
+car_velMod	0
+car_velDir	-0
+car_power 	2476.8276323922
+car_rotVel	2.9619965553284
+ball_pos
+ball_posX	-12.44455242157
+ball_posY	-1188.5451660156
+000000000	000000000
+car_pos
+car_dir   	-2.3206112384796
+car_posX  	-1924.1055908203
+car_posY  	-52.563659667969
+car_velMod	0
+car_velDir	0
+car_power 	2245.3422277446
+car_rotVel	2.9567759037018
+ball_pos
+ball_posX	-2610.7585449219
+ball_posY	-826.3876953125
+000000000	000000000
+car_pos
+car_dir   	-2.9338223934174
+car_posX  	821.00592041016
+car_posY  	2353.0163574219
+car_velMod	0
+car_velDir	0
+car_power 	2045.6573115874
+car_rotVel	2.9567978382111
+ball_pos
+ball_posX	-185.96282958984
+ball_posY	2078.5139160156
+000000000	000000000
+car_pos
+car_dir   	-1.6135523319244
+car_posX  	-2351.1062011719
+car_posY  	1476.0311279297
+car_velMod	0
+car_velDir	0
+car_power 	2423.2966813367
+car_rotVel	2.9608190059662
+ball_pos
+ball_posX	-2334.5610351562
+ball_posY	433.51419067383
+000000000	000000000
+car_pos
+car_dir   	-0.33783477544785
+car_posX  	-2270.4755859375
+car_posY  	-1804.4086914062
+car_velMod	0
+car_velDir	-0
+car_power 	2779.155756244
+car_rotVel	2.962837934494
+ball_pos
+ball_posX	-1294.0892333984
+ball_posY	-2148.7973632812
+000000000	000000000
+car_pos
+car_dir   	-1.1390912532806
+car_posX  	-1331.3494873047
+car_posY  	-1299.7877197266
+car_velMod	0
+car_velDir	-0
+car_power 	2137.6301632904
+car_rotVel	2.9605805873871
+ball_pos
+ball_posX	-913.57061767578
+ball_posY	-2248.6918945312
+000000000	000000000
+car_pos
+car_dir   	-2.2730319499969
+car_posX  	284.59646606445
+car_posY  	-2582.5485839844
+car_velMod	0
+car_velDir	0
+car_power 	2938.1688534926
+car_rotVel	2.9618949890137
+ball_pos
+ball_posX	-369.34048461914
+ball_posY	-3380.6865234375
+000000000	000000000
+car_pos
+car_dir   	-2.3507213592529
+car_posX  	-975.11712646484
+car_posY  	1178.7933349609
+car_velMod	0
+car_velDir	0
+car_power 	2168.8052560989
+car_rotVel	2.9568593502045
+ball_pos
+ball_posX	-1652.1395263672
+ball_posY	394.97775268555
+000000000	000000000
+car_pos
+car_dir   	2.7120273113251
+car_posX  	121.56387329102
+car_posY  	-1281.6716308594
+car_velMod	0
+car_velDir	-0
+car_power 	2944.3238023409
+car_rotVel	2.9599406719208
+ball_pos
+ball_posX	-813.31597900391
+ball_posY	-845.81469726562
+000000000	000000000
+car_pos
+car_dir   	-2.2742507457733
+car_posX  	-2851.5864257812
+car_posY  	70.02018737793
+car_velMod	0
+car_velDir	0
+car_power 	2324.494122213
+car_rotVel	2.9567754268646
+ball_pos
+ball_posX	-3467.6494140625
+ball_posY	-762.41186523438
+000000000	000000000
+car_pos
+car_dir   	-3.0688095728504
+car_posX  	1257.2622070312
+car_posY  	1371.4122314453
+car_velMod	0
+car_velDir	0
+car_power 	2097.3283020301
+car_rotVel	2.9617505073547
+ball_pos
+ball_posX	219.3621673584
+ball_posY	1300.3394775391
+000000000	000000000
+car_pos
+car_dir   	-1.6582596302032
+car_posX  	-1989.0640869141
+car_posY  	1098.3095703125
+car_velMod	0
+car_velDir	0
+car_power 	2477.7358716716
+car_rotVel	2.9567749500275
+ball_pos
+ball_posX	-2012.3509521484
+ball_posY	49.9287109375
+000000000	000000000
+car_pos
+car_dir   	-0.32417461276054
+car_posX  	-2062.0959472656
+car_posY  	-2206.6484375
+car_velMod	0
+car_velDir	-0
+car_power 	2832.2118473389
+car_rotVel	2.9597380161285
+ball_pos
+ball_posX	-1053.3192138672
+ball_posY	-2467.4692382812
+000000000	000000000
+car_pos
+car_dir   	-2.4094779491425
+car_posX  	1456.7322998047
+car_posY  	-2368.1706542969
+car_velMod	0
+car_velDir	0
+car_power 	2626.5052732204
+car_rotVel	2.9663619995117
+ball_pos
+ball_posX	724.60198974609
+ball_posY	-3094.7319335938
+000000000	000000000
+car_pos
+car_dir   	-1.941491484642
+car_posX  	-2418.3271484375
+car_posY  	1908.5435791016
+car_velMod	0
+car_velDir	0
+car_power 	2481.6259897694
+car_rotVel	2.959906578064
+ball_pos
+ball_posX	-2794.7954101562
+ball_posY	944.84149169922
+000000000	000000000
+car_pos
+car_dir   	2.8205678462982
+car_posX  	1636.4735107422
+car_posY  	-532.35437011719
+car_velMod	0
+car_velDir	-0
+car_power 	2217.2119152812
+car_rotVel	2.9608464241028
+ball_pos
+ball_posX	652.41961669922
+ball_posY	-204.92691040039
+000000000	000000000
+car_pos
+car_dir   	-2.0070078372955
+car_posX  	-1474.2944335938
+car_posY  	471.3176574707
+car_velMod	0
+car_velDir	0
+car_power 	2601.4414409182
+car_rotVel	2.95680809021
+ball_pos
+ball_posX	-1883.5963134766
+ball_posY	-484.06866455078
+000000000	000000000
+car_pos
+car_dir   	-3.083993498479
+car_posX  	-416.05740356445
+car_posY  	-1256.1967773438
+car_velMod	0
+car_velDir	0
+car_power 	2931.3861010277
+car_rotVel	2.9612948894501
+ball_pos
+ball_posX	-1455.6590576172
+ball_posY	-1311.5900878906
+000000000	000000000
+car_pos
+car_dir   	2.8207695484161
+car_posX  	1307.9177246094
+car_posY  	66.173301696777
+car_velMod	0
+car_velDir	-0
+car_power 	2195.4627620035
+car_rotVel	2.9567747116089
+ball_pos
+ball_posX	310.50653076172
+ball_posY	366.94177246094
+000000000	000000000
+car_pos
+car_dir   	-2.1414661407471
+car_posX  	-1835.8168945312
+car_posY  	1027.2015380859
+car_velMod	0
+car_velDir	0
+car_power 	2546.6034517375
+car_rotVel	2.9601111412048
+ball_pos
+ball_posX	-2336.6970214844
+ball_posY	117.50736236572
+000000000	000000000
+car_pos
+car_dir   	-2.833131313324
+car_posX  	-540.48065185547
+car_posY  	1450.3620605469
+car_velMod	0
+car_velDir	0
+car_power 	2788.8675242611
+car_rotVel	2.961168050766
+ball_pos
+ball_posX	-1528.1409912109
+ball_posY	1130.9462890625
+000000000	000000000
+car_pos
+car_dir   	2.0899872779846
+car_posX  	1024.0892333984
+car_posY  	-1673.0902099609
+car_velMod	0
+car_velDir	-0
+car_power 	2115.5108847262
+car_rotVel	2.9653887748718
+ball_pos
+ball_posX	516.06616210938
+ball_posY	-771.60198974609
+000000000	000000000
+car_pos
+car_dir   	-2.7705657482147
+car_posX  	-620.77801513672
+car_posY  	1128.2342529297
+car_velMod	0
+car_velDir	0
+car_power 	2414.0416660411
+car_rotVel	2.9621016979218
+ball_pos
+ball_posX	-1572.7987060547
+ball_posY	720.21484375
+000000000	000000000
+car_pos
+car_dir   	-3.0803189913379
+car_posX  	-852.53674316406
+car_posY  	2139.0363769531
+car_velMod	0
+car_velDir	0
+car_power 	2242.1635125029
+car_rotVel	2.9568235874176
+ball_pos
+ball_posX	-1890.4279785156
+ball_posY	2012.4356689453
+000000000	000000000
+car_pos
+car_dir   	1.9675318002701
+car_posX  	202.08122253418
+car_posY  	-957.76647949219
+car_velMod	0
+car_velDir	-0
+car_power 	2393.0151175675
+car_rotVel	2.9567806720734
+ball_pos
+ball_posX	-214.49722290039
+ball_posY	-5.7179203033447
+000000000	000000000
+car_pos
+car_dir   	-2.9320738315582
+car_posX  	-1130.8798828125
+car_posY  	2040.3955078125
+car_velMod	0
+car_velDir	0
+car_power 	2773.0736754709
+car_rotVel	2.9567971229553
+ball_pos
+ball_posX	-2147.7788085938
+ball_posY	1804.666015625
+000000000	000000000
+car_pos
+car_dir   	2.0483846664429
+car_posX  	1295.6455078125
+car_posY  	-1971.0708007812
+car_velMod	0
+car_velDir	-0
+car_power 	2067.6583741175
+car_rotVel	2.9613792896271
+ball_pos
+ball_posX	799.63745117188
+ball_posY	-1065.2969970703
+000000000	000000000
+car_pos
+car_dir   	-2.8955643177032
+car_posX  	-321.53549194336
+car_posY  	865.56433105469
+car_velMod	0
+car_velDir	0
+car_power 	2426.2688897672
+car_rotVel	2.9619028568268
+ball_pos
+ball_posX	-1329.6510009766
+ball_posY	601.26391601562
+000000000	000000000
+car_pos
+car_dir   	2.9276735782623
+car_posX  	1653.6392822266
+car_posY  	2017.4182128906
+car_velMod	0
+car_velDir	-0
+car_power 	2247.6423975302
+car_rotVel	2.9608521461487
+ball_pos
+ball_posX	622.32037353516
+ball_posY	2182.4809570312
+000000000	000000000
+car_pos
+car_dir   	1.696555018425
+car_posX  	-2268.3520507812
+car_posY  	2275.5954589844
+car_velMod	0
+car_velDir	-0
+car_power 	2078.0365937753
+car_rotVel	2.9567763805389
+ball_pos
+ball_posX	-2417.9982910156
+ball_posY	3309.5078125
+000000000	000000000
+car_pos
+car_dir   	1.4020863771439
+car_posX  	3.7358407974243
+car_posY  	-1605.8405761719
+car_velMod	0
+car_velDir	0
+car_power 	2933.0954253362
+car_rotVel	2.9614901542664
+ball_pos
+ball_posX	129.90341186523
+ball_posY	-571.66387939453
+000000000	000000000
+car_pos
+car_dir   	2.62424659729
+car_posX  	366.99160766602
+car_posY  	1658.0440673828
+car_velMod	0
+car_velDir	-0
+car_power 	2235.0854059845
+car_rotVel	2.9602439403534
+ball_pos
+ball_posX	-568.74926757812
+ball_posY	2106.0942382812
+000000000	000000000
+car_pos
+car_dir   	1.7564619779587
+car_posX  	1051.2873535156
+car_posY  	-148.79809570312
+car_velMod	0
+car_velDir	-0
+car_power 	2027.9197073672
+car_rotVel	2.956794500351
+ball_pos
+ball_posX	837.97735595703
+ball_posY	875.51019287109
+000000000	000000000
+car_pos
+car_dir   	1.4757604598999
+car_posX  	2552.6672363281
+car_posY  	-580.98468017578
+car_velMod	0
+car_velDir	0
+car_power 	2292.3153304925
+car_rotVel	2.9568092823029
+ball_pos
+ball_posX	2602.5354003906
+ball_posY	461.57260131836
+000000000	000000000
+car_pos
+car_dir   	0.60588449239731
+car_posX  	1135.0489501953
+car_posY  	-1069.4527587891
+car_velMod	0
+car_velDir	0
+car_power 	2562.1153798709
+car_rotVel	2.9568095207214
+ball_pos
+ball_posX	1974.3905029297
+ball_posY	-461.31579589844
+000000000	000000000
+car_pos
+car_dir   	0.50686484575272
+car_posX  	2389.5983886719
+car_posY  	-2286.9130859375
+car_velMod	0
+car_velDir	0
+car_power 	2327.0680393684
+car_rotVel	2.9571607112885
+ball_pos
+ball_posX	3278.4753417969
+ball_posY	-1755.1722412109
+000000000	000000000
+car_pos
+car_dir   	-0.41887867450714
+car_posX  	1099.1779785156
+car_posY  	-806.30480957031
+car_velMod	0
+car_velDir	-0
+car_power 	2095.1294559497
+car_rotVel	2.9636287689209
+ball_pos
+ball_posX	2050.41015625
+ball_posY	-1217.2701416016
+000000000	000000000
+car_pos
+car_dir   	-0.69664466381073
+car_posX  	-262.58840942383
+car_posY  	-1677.9924316406
+car_velMod	0
+car_velDir	-0
+car_power 	2832.9704770972
+car_rotVel	2.9602293968201
+ball_pos
+ball_posX	575.12280273438
+ball_posY	-2284.7768554688
+000000000	000000000
+car_pos
+car_dir   	-1.5393211841583
+car_posX  	-1744.1862792969
+car_posY  	2307.9104003906
+car_velMod	0
+car_velDir	0
+car_power 	2548.6447385273
+car_rotVel	2.9600803852081
+ball_pos
+ball_posX	-1651.6236572266
+ball_posY	1270.0815429688
+000000000	000000000
+car_pos
+car_dir   	-0.18870975077152
+car_posX  	-1403.4429931641
+car_posY  	-961.50317382812
+car_velMod	0
+car_velDir	-0
+car_power 	2925.9969312353
+car_rotVel	2.9619266986847
+ball_pos
+ball_posX	-368.71435546875
+ball_posY	-1100.9643554688
+000000000	000000000
+car_pos
+car_dir   	1.1537046432495
+car_posX  	1860.3266601562
+car_posY  	-1365.6838378906
+car_velMod	0
+car_velDir	0
+car_power 	2284.3056741563
+car_rotVel	2.9615814685822
+ball_pos
+ball_posX	2218.9428710938
+ball_posY	-390.66696166992
+000000000	000000000
+car_pos
+car_dir   	2.4434194564819
+car_posX  	2971.5439453125
+car_posY  	1724.1007080078
+car_velMod	0
+car_velDir	-0
+car_power 	2724.1564801541
+car_rotVel	2.9567742347717
+ball_pos
+ball_posX	2162.1315917969
+ball_posY	2369.4067382812
+000000000	000000000
+car_pos
+car_dir   	1.1042631864548
+car_posX  	828.81109619141
+car_posY  	-1659.3885498047
+car_velMod	0
+car_velDir	0
+car_power 	2051.9607151169
+car_rotVel	2.9589860439301
+ball_pos
+ball_posX	1239.3563232422
+ball_posY	-704.34582519531
+000000000	000000000
+car_pos
+car_dir   	2.3920228481293
+car_posX  	2099.4079589844
+car_posY  	1365.3159179688
+car_velMod	0
+car_velDir	-0
+car_power 	2403.1261440381
+car_rotVel	2.9568300247192
+ball_pos
+ball_posX	1321.1956787109
+ball_posY	2049.7346191406
+000000000	000000000
+car_pos
+car_dir   	1.4884413480759
+car_posX  	1811.1839599609
+car_posY  	-223.09761047363
+car_velMod	0
+car_velDir	0
+car_power 	2643.0426829695
+car_rotVel	2.956844329834
+ball_pos
+ball_posX	1829.3842773438
+ball_posY	823.49713134766
+000000000	000000000
+car_pos
+car_dir   	0.63183110952377
+car_posX  	416.40417480469
+car_posY  	-696.31683349609
+car_velMod	0
+car_velDir	0
+car_power 	2905.8964750291
+car_rotVel	2.9637484550476
+ball_pos
+ball_posX	1255.8845214844
+ball_posY	-97.633224487305
+000000000	000000000
+car_pos
+car_dir   	-0.51711791753769
+car_posX  	-1578.6405029297
+car_posY  	1144.5637207031
+car_velMod	0
+car_velDir	-0
+car_power 	2147.7218447941
+car_rotVel	2.9601719379425
+ball_pos
+ball_posX	-670.78472900391
+ball_posY	648.59906005859
+000000000	000000000
+car_pos
+car_dir   	0.88964539766312
+car_posX  	1305.7097167969
+car_posY  	-399.44909667969
+car_velMod	0
+car_velDir	0
+car_power 	2950.175847835
+car_rotVel	2.9568452835083
+ball_pos
+ball_posX	1935.5473632812
+ball_posY	422.7248840332
+000000000	000000000
+car_pos
+car_dir   	0.6357519030571
+car_posX  	2541.1474609375
+car_posY  	-57.955749511719
+car_velMod	0
+car_velDir	0
+car_power 	2799.6926874852
+car_rotVel	2.9567940235138
+ball_pos
+ball_posX	3335.0539550781
+ball_posY	606.92095947266
+000000000	000000000
+car_pos
+car_dir   	0.29515674710274
+car_posX  	1567.6175537109
+car_posY  	-1675.66015625
+car_velMod	0
+car_velDir	0
+car_power 	2541.0053765127
+car_rotVel	2.9567873477936
+ball_pos
+ball_posX	2560.4792480469
+ball_posY	-1354.1297607422
+000000000	000000000
+car_pos
+car_dir   	-1.021815776825
+car_posX  	2882.6870117188
+car_posY  	475.66925048828
+car_velMod	0
+car_velDir	-0
+car_power 	2338.6175452446
+car_rotVel	2.9611127376556
+ball_pos
+ball_posX	3443.0458984375
+ball_posY	-390.34854125977
+000000000	000000000
+car_pos
+car_dir   	-0.85697138309479
+car_posX  	-1289.1424560547
+car_posY  	-688.63073730469
+car_velMod	0
+car_velDir	-0
+car_power 	2161.6719007314
+car_rotVel	2.9631567001343
+ball_pos
+ball_posX	-623.90795898438
+ball_posY	-1474.2984619141
+000000000	000000000
+car_pos
+car_dir   	-0.29079046845436
+car_posX  	-186.26669311523
+car_posY  	-985.36090087891
+car_velMod	0
+car_velDir	-0
+car_power 	2433.5828360327
+car_rotVel	2.9640617370605
+car_pos
+car_dir   	0.031848434358835
+car_posX  	-184.28039550781
+car_posY  	-987.49682617188
+car_velMod	0
+car_velDir	-0
+car_power 	2433.5828360327
+car_rotVel	1.6423851251602
+ball_pos
+ball_posX	849.21697998047
+ball_posY	-859.81188964844
+000000000	000000000
+car_pos
+car_dir   	-1.1237111091614
+car_posX  	1568.1458740234
+car_posY  	768.85107421875
+car_velMod	0
+car_velDir	-0
+car_power 	2221.6000716303
+car_rotVel	2.9625217914581
+ball_pos
+ball_posX	2024.6872558594
+ball_posY	-159.68434143066
+000000000	000000000
+car_pos
+car_dir   	-1.2212418317795
+car_posX  	303.52209472656
+car_posY  	-468.74612426758
+car_velMod	0
+car_velDir	-0
+car_power 	2499.2517421484
+car_rotVel	2.9651789665222
+ball_pos
+ball_posX	661.40301513672
+ball_posY	-1443.1112060547
+000000000	000000000
+car_pos
+car_dir   	-1.2972242832184
+car_posX  	-919.16229248047
+car_posY  	-1702.8156738281
+car_velMod	0
+car_velDir	-0
+car_power 	2239.7671161405
+car_rotVel	2.9567768573761
+ball_pos
+ball_posX	-620.57666015625
+ball_posY	-2702.7192382812
+000000000	000000000
+car_pos
+car_dir   	-1.7172414064407
+car_posX  	-2516.0322265625
+car_posY  	2291.3542480469
+car_velMod	0
+car_velDir	0
+car_power 	2451.7988262008
+car_rotVel	2.9619653224945
+ball_pos
+ball_posX	-2653.8803710938
+ball_posY	1258.1466064453
+000000000	000000000
+car_pos
+car_dir   	-0.42897859215736
+car_posX  	-2916.2680664062
+car_posY  	-962.57006835938
+car_velMod	0
+car_velDir	-0
+car_power 	2310.1129398263
+car_rotVel	2.9567742347717
+ball_pos
+ball_posX	-1958.6379394531
+ball_posY	-1367.4573974609
+000000000	000000000
+car_pos
+car_dir   	0.89089810848236
+car_posX  	103.0259552002
+car_posY  	-2257.2658691406
+car_velMod	0
+car_velDir	0
+car_power 	2165.3338601651
+car_rotVel	2.9639921188354
+ball_pos
+ball_posX	734.63079833984
+ball_posY	-1436.6588134766
+000000000	000000000
+car_pos
+car_dir   	2.2957797050476
+car_posX  	2070.3132324219
+car_posY  	347.39263916016
+car_velMod	0
+car_velDir	-0
+car_power 	2104.9760478106
+car_rotVel	2.9567739963531
+ball_pos
+ball_posX	1336.7398681641
+ball_posY	1077.7292480469
+000000000	000000000
+car_pos
+car_dir   	1.4770501852036
+car_posX  	-122.59913635254
+car_posY  	1180.1070556641
+car_velMod	0
+car_velDir	0
+car_power 	2990.831186525
+car_rotVel	2.9604353904724
+ball_pos
+ball_posX	-34.358539581299
+ball_posY	2217.9382324219
+000000000	000000000
+car_pos
+car_dir   	1.3987951278687
+car_posX  	1817.3122558594
+car_posY  	-406.12701416016
+car_velMod	0
+car_velDir	0
+car_power 	2225.3197432614
+car_rotVel	2.9621956348419
+ball_pos
+ball_posX	1946.9232177734
+ball_posY	628.57769775391
+000000000	000000000
+car_pos
+car_dir   	0.11619980633259
+car_posX  	-2204.38671875
+car_posY  	-429.06329345703
+car_velMod	0
+car_velDir	0
+car_power 	2467.6459624747
+car_rotVel	2.9618501663208
+ball_pos
+ball_posX	-1179.4436035156
+ball_posY	-246.02099609375
+000000000	000000000
+car_pos
+car_dir   	1.5615447759628
+car_posX  	1013.9146118164
+car_posY  	197.2679901123
+car_velMod	0
+car_velDir	0
+car_power 	2353.5808536008
+car_rotVel	2.9567744731903
+ball_pos
+ball_posX	1000.4144287109
+ball_posY	1243.6508789062
+000000000	000000000
+car_pos
+car_dir   	0.53891354799271
+car_posX  	-1517.3892822266
+car_posY  	-1902.7178955078
+car_velMod	0
+car_velDir	0
+car_power 	2642.8169769434
+car_rotVel	2.9651327133179
+ball_pos
+ball_posX	-657.61639404297
+ball_posY	-1329.9162597656
+000000000	000000000
+car_pos
+car_dir   	1.9000545740128
+car_posX  	1170.509765625
+car_posY  	-51.473541259766
+car_velMod	0
+car_velDir	-0
+car_power 	2501.02197961
+car_rotVel	2.963258266449
+ball_pos
+ball_posX	792.41296386719
+ball_posY	914.22430419922
+000000000	000000000
+car_pos
+car_dir   	-0.30601638555527
+car_posX  	-607.53259277344
+car_posY  	2452.4636230469
+car_velMod	0
+car_velDir	-0
+car_power 	2801.3725168078
+car_rotVel	2.9605360031128
+ball_pos
+ball_posX	383.34088134766
+ball_posY	2144.7094726562
+000000000	000000000
+car_pos
+car_dir   	0.9401912689209
+car_posX  	2531.2502441406
+car_posY  	1510.9798583984
+car_velMod	0
+car_velDir	0
+car_power 	2209.6443987496
+car_rotVel	2.9567742347717
+ball_pos
+ball_posX	3119.83984375
+ball_posY	2363.5678710938
+000000000	000000000
+car_pos
+car_dir   	0.42794814705849
+car_posX  	840.65362548828
+car_posY  	-1628.0739746094
+car_velMod	0
+car_velDir	0
+car_power 	2005.2665527935
+car_rotVel	2.9604122638702
+ball_pos
+ball_posX	1789.8680419922
+ball_posY	-1217.076171875
+000000000	000000000
+car_pos
+car_dir   	0.10609216243029
+car_posX  	2128.7592773438
+car_posY  	-1812.7713623047
+car_velMod	0
+car_velDir	0
+car_power 	2805.2978724266
+car_rotVel	2.9609894752502
+ball_pos
+ball_posX	3156.2124023438
+ball_posY	-1648.0853271484
+000000000	000000000
+car_pos
+car_dir   	-0.73893225193024
+car_posX  	960.23974609375
+car_posY  	-690.00256347656
+car_velMod	0
+car_velDir	-0
+car_power 	2042.3566894803
+car_rotVel	2.9660124778748
+ball_pos
+ball_posX	1758.4711914062
+ball_posY	-1343.9602050781
+000000000	000000000
+car_pos
+car_dir   	-1.7787008285522
+car_posX  	2306.9934082031
+car_posY  	1196.3903808594
+car_velMod	0
+car_velDir	0
+car_power 	2813.8056242903
+car_rotVel	2.961362361908
+ball_pos
+ball_posX	2106.9047851562
+ball_posY	173.87246704102
+000000000	000000000
+car_pos
+car_dir   	-0.35233375430107
+car_posX  	1711.0435791016
+car_posY  	-2018.5447998047
+car_velMod	0
+car_velDir	-0
+car_power 	2694.6368011155
+car_rotVel	2.9616537094116
+ball_pos
+ball_posX	2683.2888183594
+ball_posY	-2374.6186523438
+000000000	000000000
+car_pos
+car_dir   	-0.98067134618759
+car_posX  	-2354.4641113281
+car_posY  	-95.221809387207
+car_velMod	0
+car_velDir	-0
+car_power 	2959.2073103223
+car_rotVel	2.9656991958618
+ball_pos
+ball_posX	-1744.2445068359
+ball_posY	-927.52209472656
+000000000	000000000
+car_pos
+car_dir   	-1.7159097194672
+car_posX  	-1348.9467773438
+car_posY  	55.31383895874
+car_velMod	0
+car_velDir	0
+car_power 	2231.3560821262
+car_rotVel	2.9592657089233
+ball_pos
+ball_posX	-1474.7681884766
+ball_posY	-980.19604492188
+000000000	000000000
+car_pos
+car_dir   	-1.9694602489471
+car_posX  	-2636.6286621094
+car_posY  	1299.4096679688
+car_velMod	0
+car_velDir	0
+car_power 	2495.8276029191
+car_rotVel	2.9567818641663
+ball_pos
+ball_posX	-2971.8908691406
+ball_posY	310.32577514648
+000000000	000000000
+car_pos
+car_dir   	2.7013959884644
+car_posX  	-1245.6291503906
+car_posY  	-1874.5394287109
+car_velMod	0
+car_velDir	-0
+car_power 	2268.8218286581
+car_rotVel	2.9622776508331
+ball_pos
+ball_posX	-2207.9733886719
+ball_posY	-1486.5302734375
+000000000	000000000
+car_pos
+car_dir   	2.7043347358704
+car_posX  	328.19610595703
+car_posY  	-18.811902999878
+car_velMod	0
+car_velDir	-0
+car_power 	2943.1910025623
+car_rotVel	2.9592514038086
+ball_pos
+ball_posX	-626.69128417969
+ball_posY	391.17877197266
+000000000	000000000
+car_pos
+car_dir   	-2.2541284561157
+car_posX  	-2696.8088378906
+car_posY  	1264.9252929688
+car_velMod	0
+car_velDir	0
+car_power 	2302.2981119819
+car_rotVel	2.9655132293701
+ball_pos
+ball_posX	-3348.3608398438
+ball_posY	466.9658203125
+000000000	000000000
+car_pos
+car_dir   	-3.123462740575
+car_posX  	-1896.0201416016
+car_posY  	813.07318115234
+car_velMod	0
+car_velDir	-0
+car_power 	2150.386360544
+car_rotVel	2.9624636173248
+ball_pos
+ball_posX	-2938.7783203125
+ball_posY	792.49157714844
+000000000	000000000
+car_pos
+car_dir   	2.4316325187683
+car_posX  	2695.3154296875
+car_posY  	123.22584533691
+car_velMod	0
+car_velDir	-0
+car_power 	2361.0646367823
+car_rotVel	2.965353012085
+ball_pos
+ball_posX	1910.7873535156
+ball_posY	791.96997070312
+000000000	000000000
+car_pos
+car_dir   	-2.4843311309814
+car_posX  	189.68495178223
+car_posY  	2210.1708984375
+car_velMod	0
+car_velDir	0
+car_power 	2215.7513788975
+car_rotVel	2.9668080806732
+ball_pos
+ball_posX	-629.07257080078
+ball_posY	1583.3023681641
+000000000	000000000
+car_pos
+car_dir   	-1.102567076683
+car_posX  	-2366.7795410156
+car_posY  	193.03698730469
+car_velMod	0
+car_velDir	-0
+car_power 	2573.9239158919
+car_rotVel	2.9626350402832
+ball_pos
+ball_posX	-1891.5439453125
+ball_posY	-726.544921875
+000000000	000000000
+car_pos
+car_dir   	-1.731663942337
+car_posX  	-2634.3571777344
+car_posY  	1627.4326171875
+car_velMod	0
+car_velDir	0
+car_power 	2399.3520915505
+car_rotVel	2.9616634845734
+ball_pos
+ball_posX	-2799.419921875
+ball_posY	600.12670898438
+000000000	000000000
+car_pos
+car_dir   	2.6807360649109
+car_posX  	1642.0786132812
+car_posY  	-1605.7663574219
+car_velMod	0
+car_velDir	-0
+car_power 	2168.2184059956
+car_rotVel	2.9610872268677
+ball_pos
+ball_posX	712.51928710938
+ball_posY	-1151.7619628906
+000000000	000000000
+car_pos
+car_dir   	-2.2129707336426
+car_posX  	-1306.8919677734
+car_posY  	-200.37661743164
+car_velMod	0
+car_velDir	0
+car_power 	2019.8711291979
+car_rotVel	2.9568073749542
+ball_pos
+ball_posX	-1904.3991699219
+ball_posY	-1047.1958007812
+000000000	000000000
+car_pos
+car_dir   	-2.6046185493469
+car_posX  	-650.35113525391
+car_posY  	2065.5659179688
+car_velMod	0
+car_velDir	0
+car_power 	2348.3369808403
+car_rotVel	2.9567806720734
+ball_pos
+ball_posX	-1508.1437988281
+ball_posY	1484.7052001953
+000000000	000000000
+car_pos
+car_dir   	2.9075202941895
+car_posX  	1205.2017822266
+car_posY  	1850.2755126953
+car_velMod	0
+car_velDir	-0
+car_power 	2089.0664477316
+car_rotVel	2.9568326473236
+ball_pos
+ball_posX	179.64944458008
+ball_posY	2061.044921875
+000000000	000000000
+car_pos
+car_dir   	1.8787126541138
+car_posX  	2111.5844726562
+car_posY  	-927.76129150391
+car_velMod	0
+car_velDir	-0
+car_power 	2239.7939051687
+car_rotVel	2.9632046222687
+ball_pos
+ball_posX	1809.0960693359
+ball_posY	64.485992431641
+000000000	000000000
+car_pos
+car_dir   	-3.1253774801837
+car_posX  	1105.45703125
+car_posY  	2190.0004882812
+car_velMod	0
+car_velDir	-0
+car_power 	2625.979750243
+car_rotVel	2.9602479934692
+ball_pos
+ball_posX	64.328582763672
+ball_posY	2182.4677734375
+000000000	000000000
+car_pos
+car_dir   	-1.7980436086655
+car_posX  	-2170.98828125
+car_posY  	2127.5412597656
+car_velMod	0
+car_velDir	0
+car_power 	2563.3489534088
+car_rotVel	2.9629881381989
+ball_pos
+ball_posX	-2406.5686035156
+ball_posY	1116.8953857422
+000000000	000000000
+car_pos
+car_dir   	-0.48328042030334
+car_posX  	-2892.1584472656
+car_posY  	-1056.8981933594
+car_velMod	0
+car_velDir	-0
+car_power 	2415.4503789802
+car_rotVel	2.9567933082581
+ball_pos
+ball_posX	-1940.0816650391
+ball_posY	-1474.5784912109
+000000000	000000000
+car_pos
+car_dir   	0.94199705123901
+car_posX  	108.80491638184
+car_posY  	-2390.2333984375
+car_velMod	0
+car_velDir	0
+car_power 	2356.9065362014
+car_rotVel	2.9640378952026
+ball_pos
+ball_posX	655.9970703125
+ball_posY	-1511.2916259766
+000000000	000000000
+car_pos
+car_dir   	2.1914188861847
+car_posX  	1827.9318847656
+car_posY  	401.96643066406
+car_velMod	0
+car_velDir	-0
+car_power 	2213.1749457741
+car_rotVel	2.9618527889252
+ball_pos
+ball_posX	1241.0798339844
+ball_posY	1249.2989501953
+000000000	000000000
+car_pos
+car_dir   	0.14613525569439
+car_posX  	-2230.0180664062
+car_posY  	2566.1418457031
+car_velMod	0
+car_velDir	0
+car_power 	2567.688302867
+car_rotVel	2.9623200893402
+ball_pos
+ball_posX	-1200.0860595703
+ball_posY	2707.5239257812
+000000000	000000000
+car_pos
+car_dir   	1.6517277956009
+car_posX  	2446.2204589844
+car_posY  	1074.08984375
+car_velMod	0
+car_velDir	-0
+car_power 	2366.3847136155
+car_rotVel	2.9567754268646
+ball_pos
+ball_posX	2338.7373046875
+ball_posY	2117.3227539062
+000000000	000000000
+car_pos
+car_dir   	0.19027258455753
+car_posX  	-1697.7103271484
+car_posY  	190.15469360352
+car_velMod	0
+car_velDir	0
+car_power 	2108.0447091293
+car_rotVel	2.9575183391571
+ball_pos
+ball_posX	-683.14569091797
+ball_posY	419.06845092773
+000000000	000000000
+car_pos
+car_dir   	1.5171983242035
+car_posX  	1478.7042236328
+car_posY  	951.74438476562
+car_velMod	0
+car_velDir	0
+car_power 	2959.5275944842
+car_rotVel	2.9567770957947
+ball_pos
+ball_posX	1510.1801757812
+ball_posY	1997.1125488281
+000000000	000000000
+car_pos
+car_dir   	1.359645485878
+car_posX  	2177.8430175781
+car_posY  	1728.2010498047
+car_velMod	0
+car_velDir	0
+car_power 	2814.3489648655
+car_rotVel	2.9591190814972
+ball_pos
+ball_posX	2373.2678222656
+ball_posY	2752.0612792969
+000000000	000000000
+car_pos
+car_dir   	0.56832647323608
+car_posX  	1107.6953125
+car_posY  	514.50891113281
+car_velMod	0
+car_velDir	0
+car_power 	2584.0827490129
+car_rotVel	2.9654128551483
+ball_pos
+ball_posX	1949.6352539062
+ball_posY	1113.3624267578
+000000000	000000000
+car_pos
+car_dir   	-0.46078819036484
+car_posX  	-353.52658081055
+car_posY  	2338.8908691406
+car_velMod	0
+car_velDir	-0
+car_power 	2758.9451068821
+car_rotVel	2.9604754447937
+ball_pos
+ball_posX	568.33819580078
+ball_posY	1875.7878417969
+000000000	000000000
+car_pos
+car_dir   	0.82655256986618
+car_posX  	2567.3544921875
+car_posY  	903.89721679688
+car_velMod	0
+car_velDir	0
+car_power 	2642.8074206425
+car_rotVel	2.9567880630493
+ball_pos
+ball_posX	3217.1257324219
+ball_posY	1710.5101318359
+000000000	000000000
+car_pos
+car_dir   	-0.2226836681366
+car_posX  	-2454.3669433594
+car_posY  	719.23876953125
+car_velMod	0
+car_velDir	-0
+car_power 	2908.3509346975
+car_rotVel	2.9588887691498
+ball_pos
+ball_posX	-1431.298828125
+ball_posY	513.59741210938
+000000000	000000000
+car_pos
+car_dir   	1.1521182060242
+car_posX  	773.26208496094
+car_posY  	102.72422027588
+car_velMod	0
+car_velDir	0
+car_power 	2213.2572514067
+car_rotVel	2.9632351398468
+ball_pos
+ball_posX	1141.8861083984
+ball_posY	1075.1892089844
+000000000	000000000
+car_pos
+car_dir   	0.37146672606468
+car_posX  	-1820.0794677734
+car_posY  	-2007.6368408203
+car_velMod	0
+car_velDir	0
+car_power 	2507.9772954378
+car_rotVel	2.9620568752289
+ball_pos
+ball_posX	-875.97747802734
+ball_posY	-1580.1667480469
+000000000	000000000
+car_pos
+car_dir   	1.7460541725159
+car_posX  	1135.5446777344
+car_posY  	-613.95373535156
+car_velMod	0
+car_velDir	-0
+car_power 	2362.0370604852
+car_rotVel	2.9608154296875
+ball_pos
+ball_posX	902.10418701172
+ball_posY	399.69610595703
+000000000	000000000
+car_pos
+car_dir   	0.43868494033813
+car_posX  	-1088.6909179688
+car_posY  	226.93762207031
+car_velMod	0
+car_velDir	0
+car_power 	2718.7185193034
+car_rotVel	2.961891412735
+ball_pos
+ball_posX	-155.8493347168
+ball_posY	677.39398193359
+000000000	000000000
+car_pos
+car_dir   	1.7583709955215
+car_posX  	1842.6721191406
+car_posY  	1695.6663818359
+car_velMod	0
+car_velDir	-0
+car_power 	2600.8413543929
+car_rotVel	2.9567799568176
+ball_pos
+ball_posX	1629.7583007812
+ball_posY	2718.5979003906
+000000000	000000000
+car_pos
+car_dir   	-0.37558254599571
+car_posX  	-2746.9584960938
+car_posY  	2480.7631835938
+car_velMod	0
+car_velDir	-0
+car_power 	2928.8666322496
+car_rotVel	2.9567747116089
+ball_pos
+ball_posX	-1751.8576660156
+ball_posY	2166.4145507812
+000000000	000000000
+car_pos
+car_dir   	0.95157706737518
+car_posX  	391.86456298828
+car_posY  	1478.05859375
+car_velMod	0
+car_velDir	0
+car_power 	2696.02955072
+car_rotVel	2.9657082557678
+ball_pos
+ball_posX	976.90130615234
+ball_posY	2329.9763183594
+000000000	000000000
+car_pos
+car_dir   	0.75929307937622
+car_posX  	1195.1357421875
+car_posY  	-898.83941650391
+car_velMod	0
+car_velDir	0
+car_power 	2520.3247557023
+car_rotVel	2.9568293094635
+ball_pos
+ball_posX	1898.0161132812
+ball_posY	-137.55891418457
+000000000	000000000
+car_pos
+car_dir   	-0.48976030945778
+car_posX  	-366.53628540039
+car_posY  	1288.2790527344
+car_velMod	0
+car_velDir	-0
+car_power 	2789.6571530912
+car_rotVel	2.962073802948
+ball_pos
+ball_posX	580.86511230469
+ball_posY	863.46954345703
+000000000	000000000
+car_pos
+car_dir   	0.94930267333984
+car_posX  	2625.8825683594
+car_posY  	-34.311805725098
+car_velMod	0
+car_velDir	0
+car_power 	2549.8182352399
+car_rotVel	2.9642534255981
+ball_pos
+ball_posX	3183.1625976562
+ball_posY	836.23571777344
+000000000	000000000
+car_pos
+car_dir   	-0.33714669942856
+car_posX  	36.922985076904
+car_posY  	1961.6302490234
+car_velMod	0
+car_velDir	-0
+car_power 	2385.9498260477
+car_rotVel	2.9607229232788
+ball_pos
+ball_posX	1036.0888671875
+ball_posY	1673.7072753906
+000000000	000000000
+car_pos
+car_dir   	-0.708316385746
+car_posX  	-1206.0634765625
+car_posY  	1912.0784912109
+car_velMod	0
+car_velDir	-0
+car_power 	2647.0470496672
+car_rotVel	2.9628880023956
+ball_pos
+ball_posX	-405.26794433594
+ball_posY	1258.0358886719
+000000000	000000000
+car_pos
+car_dir   	0.74965113401413
+car_posX  	1343.8760986328
+car_posY  	-130.1607208252
+car_velMod	0
+car_velDir	0
+car_power 	2999.8774034902
+car_rotVel	2.9568095207214
+ball_pos
+ball_posX	2084.828125
+ball_posY	595.25903320312
+000000000	000000000
+car_pos
+car_dir   	0.43431973457336
+car_posX  	2617.6684570312
+car_posY  	208.61741638184
+car_velMod	0
+car_velDir	0
+car_power 	2854.0745712137
+car_rotVel	2.9567868709564
+ball_pos
+ball_posX	3552.3972167969
+ball_posY	661.37585449219
+000000000	000000000
+car_pos
+car_dir   	-0.19808068871498
+car_posX  	-1558.6627197266
+car_posY  	-1141.8420410156
+car_velMod	0
+car_velDir	-0
+car_power 	2567.4274957587
+car_rotVel	2.9593501091003
+ball_pos
+ball_posX	-533.59149169922
+ball_posY	-1308.5495605469
+000000000	000000000
+car_pos
+car_dir   	1.1610153913498
+car_posX  	1665.0023193359
+car_posY  	-1632.3515625
+car_velMod	0
+car_velDir	0
+car_power 	2949.5840882648
+car_rotVel	2.9630563259125
+ball_pos
+ball_posX	2017.2076416016
+ball_posY	-654.1962890625
+000000000	000000000
+car_pos
+car_dir   	2.5126411914825
+car_posX  	2754.8093261719
+car_posY  	1461.3240966797
+car_velMod	0
+car_velDir	-0
+car_power 	2304.4915750178
+car_rotVel	2.9634957313538
+ball_pos
+ball_posX	1902.169921875
+ball_posY	2046.2320556641
+000000000	000000000
+car_pos
+car_dir   	1.371462225914
+car_posX  	1602.2159423828
+car_posY  	-1808.4462890625
+car_velMod	0
+car_velDir	0
+car_power 	2133.1917104
+car_rotVel	2.9611494541168
+ball_pos
+ball_posX	1807.3259277344
+ball_posY	-790.30346679688
+000000000	000000000
+car_pos
+car_dir   	2.7100536823273
+car_posX  	2215.2971191406
+car_posY  	1403.9997558594
+car_velMod	0
+car_velDir	-0
+car_power 	2484.7141553111
+car_rotVel	2.9567747116089
+ball_pos
+ball_posX	1259.2777099609
+ball_posY	1811.9965820312
+000000000	000000000
+car_pos
+car_dir   	1.1331197023392
+car_posX  	-772.73883056641
+car_posY  	-470.82504272461
+car_velMod	0
+car_velDir	0
+car_power 	2841.6809438922
+car_rotVel	2.9642019271851
+ball_pos
+ball_posX	-378.86959838867
+ball_posY	489.34066772461
+000000000	000000000
+car_pos
+car_dir   	-0.016509812325239
+car_posX  	-2019.3388671875
+car_posY  	1056.0510253906
+car_velMod	0
+car_velDir	-0
+car_power 	2516.5290089867
+car_rotVel	2.956832408905
+ball_pos
+ball_posX	-973.55444335938
+ball_posY	1104.4732666016
+000000000	000000000
+car_pos
+car_dir   	1.325636267662
+car_posX  	1264.4256591797
+car_posY  	1208.4907226562
+car_velMod	0
+car_velDir	0
+car_power 	2405.2865963454
+car_rotVel	2.9615905284882
+ball_pos
+ball_posX	1504.3532714844
+ball_posY	2222.6994628906
+000000000	000000000
+car_pos
+car_dir   	0.96262830495834
+car_posX  	1900.6052246094
+car_posY  	1590.0625
+car_velMod	0
+car_velDir	0
+car_power 	2173.2119532177
+car_rotVel	2.9624421596527
+ball_pos
+ball_posX	2459.1711425781
+ball_posY	2456.3950195312
+000000000	000000000
+car_pos
+car_dir   	0.19952376186848
+car_posX  	680.72869873047
+car_posY  	702.91668701172
+car_velMod	0
+car_velDir	0
+car_power 	2497.8067816691
+car_rotVel	2.9599556922913
+ball_pos
+ball_posX	1692.0219726562
+ball_posY	936.25891113281
+000000000	000000000
+car_pos
+car_dir   	-0.020574366673827
+car_posX  	2121.6518554688
+car_posY  	149.43795776367
+car_velMod	0
+car_velDir	-0
+car_power 	2296.4074543195
+car_rotVel	2.9633123874664
+ball_pos
+ball_posX	3163.1833496094
+ball_posY	172.65354919434
+000000000	000000000
+car_pos
+car_dir   	-0.20084631443024
+car_posX  	923.84924316406
+car_posY  	-1108.8721923828
+car_velMod	0
+car_velDir	-0
+car_power 	2534.4080066003
+car_rotVel	2.9617757797241
+ball_pos
+ball_posX	1946.3166503906
+ball_posY	-1311.6773681641
+000000000	000000000
+car_pos
+car_dir   	-1.1139749288559
+car_posX  	-663.70495605469
+car_posY  	744.36126708984
+car_velMod	0
+car_velDir	-0
+car_power 	2276.0207798686
+car_rotVel	2.9651103019714
+ball_pos
+ball_posX	-201.94206237793
+ball_posY	-182.1360168457
+000000000	000000000
+car_pos
+car_dir   	0.27258187532425
+car_posX  	834.67181396484
+car_posY  	-2155.2658691406
+car_velMod	0
+car_velDir	0
+car_power 	2658.4575398166
+car_rotVel	2.9621424674988
+ball_pos
+ball_posX	1835.5532226562
+ball_posY	-1876.7305908203
+000000000	000000000
+car_pos
+car_dir   	-0.83393979072571
+car_posX  	456.44375610352
+car_posY  	-212.00531005859
+car_velMod	0
+car_velDir	-0
+car_power 	2985.0601702859
+car_rotVel	2.964955329895
+ball_pos
+ball_posX	1143.6437988281
+ball_posY	-979.26721191406
+000000000	000000000
+car_pos
+car_dir   	-1.0609809160233
+car_posX  	-1140.1223144531
+car_posY  	-775.66375732422
+car_velMod	0
+car_velDir	-0
+car_power 	2753.7700420962
+car_rotVel	2.9625971317291
+ball_pos
+ball_posX	-626.89801025391
+ball_posY	-1673.2684326172
+000000000	000000000
+car_pos
+car_dir   	-1.5170311927795
+car_posX  	-2391.2182617188
+car_posY  	462.0065612793
+car_velMod	0
+car_velDir	-0
+car_power 	2400.9407397364
+car_rotVel	2.9635074138641
+ball_pos
+ball_posX	-2333.474609375
+ball_posY	-578.70092773438
+000000000	000000000
+car_pos
+car_dir   	1.2392785549164
+car_posX  	-1386.728515625
+car_posY  	-1972.0166015625
+car_velMod	0
+car_velDir	0
+car_power 	2696.369905349
+car_rotVel	1.8726183176041
+ball_pos
+ball_posX	-1089.2254638672
+ball_posY	-984.35571289062
+000000000	000000000
+car_pos
+car_dir   	2.5816428661346
+car_posX  	-441.08303833008
+car_posY  	1142.9113769531
+car_velMod	0
+car_velDir	-0
+car_power 	2141.987040705
+car_rotVel	2.9568271636963
+ball_pos
+ball_posX	-1357.68359375
+ball_posY	1631.4868164062
+000000000	000000000
+car_pos
+car_dir   	0.045566026121378
+car_posX  	-2644.2868652344
+car_posY  	2110.0688476562
+car_velMod	0
+car_velDir	0
+car_power 	2022.2568530693
+car_rotVel	3.0199484825134
+ball_pos
+ball_posX	-1607.0478515625
+ball_posY	2216.4821777344
+000000000	000000000
+car_pos
+car_dir   	1.3247910737991
+car_posX  	2544.0400390625
+car_posY  	-1043.4432373047
+car_velMod	0
+car_velDir	0
+car_power 	2848.3259779626
+car_rotVel	2.9567747116089
+ball_pos
+ball_posX	2770.3608398438
+ball_posY	-24.899509429932
+000000000	000000000
+car_pos
+car_dir   	-0.15617944300175
+car_posX  	-1392.0101318359
+car_posY  	174.46478271484
+car_velMod	0
+car_velDir	-0
+car_power 	2174.1660112395
+car_rotVel	2.9610989093781
+ball_pos
+ball_posX	-360.67556762695
+ball_posY	20.048389434814
+000000000	000000000
+car_pos
+car_dir   	1.1741895675659
+car_posX  	1858.5290527344
+car_posY  	-276.17813110352
+car_velMod	0
+car_velDir	0
+car_power 	2446.6548955285
+car_rotVel	2.9612386226654
+ball_pos
+ball_posX	2261.5270996094
+ball_posY	675.04309082031
+000000000	000000000
+car_pos
+car_dir   	0.87998926639557
+car_posX  	2519.0915527344
+car_posY  	-748.08154296875
+car_velMod	0
+car_velDir	0
+car_power 	2298.3329572241
+car_rotVel	2.9621284008026
+ball_pos
+ball_posX	3153.4436035156
+ball_posY	69.424346923828
+000000000	000000000
+car_pos
+car_dir   	-0.29860371351242
+car_posX  	-1529.8891601562
+car_posY  	399.67471313477
+car_velMod	0
+car_velDir	-0
+car_power 	2033.7657360517
+car_rotVel	2.9624698162079
+ball_pos
+ball_posX	-537.28881835938
+ball_posY	96.312484741211
+000000000	000000000
+car_pos
+car_dir   	1.0504193305969
+car_posX  	1596.0872802734
+car_posY  	-529.48974609375
+car_velMod	0
+car_velDir	0
+car_power 	2894.8533208551
+car_rotVel	2.9637296199799
+ball_pos
+ball_posX	2072.5727539062
+ball_posY	387.04028320312
+000000000	000000000
+car_pos
+car_dir   	0.64427727460861
+car_posX  	2261.5661621094
+car_posY  	-108.97771453857
+car_velMod	0
+car_velDir	0
+car_power 	2752.9597872649
+car_rotVel	2.9568331241608
+ball_pos
+ball_posX	3049.1591796875
+ball_posY	563.51391601562
+000000000	000000000
+car_pos
+car_dir   	-0.044513124972582
+car_posX  	-2205.14453125
+car_posY  	-1962.9848632812
+car_velMod	0
+car_velDir	-0
+car_power 	2955.5103261748
+car_rotVel	2.9633021354675
+ball_pos
+ball_posX	-1163.9848632812
+ball_posY	-2003.5244140625
+000000000	000000000
+car_pos
+car_dir   	1.1702536344528
+car_posX  	1061.3187255859
+car_posY  	-2052.28515625
+car_velMod	0
+car_velDir	0
+car_power 	2719.5367863027
+car_rotVel	2.9598851203918
+ball_pos
+ball_posX	1427.0275878906
+ball_posY	-1084.5343017578
+000000000	000000000
+car_pos
+car_dir   	2.5089807510376
+car_posX  	2193.4475097656
+car_posY  	1012.7373657227
+car_velMod	0
+car_velDir	-0
+car_power 	2166.7773892017
+car_rotVel	2.9629590511322
+ball_pos
+ball_posX	1366.5128173828
+ball_posY	1627.0316162109
+000000000	000000000
+car_pos
+car_dir   	0.4340053498745
+car_posX  	-2609.4951171875
+car_posY  	176.18316650391
+car_velMod	0
+car_velDir	0
+car_power 	2931.2477912434
+car_rotVel	2.9597444534302
+ball_pos
+ball_posX	-1700.7905273438
+ball_posY	673.25982666016
+000000000	000000000
+car_pos
+car_dir   	1.7822569608688
+car_posX  	257.751953125
+car_posY  	1788.7463378906
+car_velMod	0
+car_velDir	-0
+car_power 	2314.7088993875
+car_rotVel	2.9607605934143
+ball_pos
+ball_posX	-21.263204574585
+ball_posY	2789.4392089844
+000000000	000000000
+car_pos
+car_dir   	1.4702354669571
+car_posX  	1271.2995605469
+car_posY  	390.24237060547
+car_velMod	0
+car_velDir	0
+car_power 	2140.0952386391
+car_rotVel	2.9609565734863
+ball_pos
+ball_posX	1335.6651611328
+ball_posY	1429.6790771484
+000000000	000000000
+car_pos
+car_dir   	0.66798031330109
+car_posX  	196.27514648438
+car_posY  	457.86761474609
+car_velMod	0
+car_velDir	0
+car_power 	2908.1192565654
+car_rotVel	2.9653885364532
+ball_pos
+ball_posX	1006.1304321289
+ball_posY	1096.8305664062
+000000000	000000000
+car_pos
+car_dir   	0.56657308340073
+car_posX  	1683.4890136719
+car_posY  	-30.846956253052
+car_velMod	0
+car_velDir	0
+car_power 	2683.2527893983
+car_rotVel	2.9608581066132
+ball_pos
+ball_posX	2540.9321289062
+ball_posY	545.96942138672
+000000000	000000000
+car_pos
+car_dir   	-0.43060332536697
+car_posX  	-2243.4499511719
+car_posY  	759.59893798828
+car_velMod	0
+car_velDir	-0
+car_power 	2388.4728878683
+car_rotVel	2.9633507728577
+ball_pos
+ball_posX	-1282.4002685547
+ball_posY	369.14242553711
+000000000	000000000
+car_pos
+car_dir   	1.0493665933609
+car_posX  	796.88580322266
+car_posY  	-445.91546630859
+car_velMod	0
+car_velDir	0
+car_power 	2268.1867565346
+car_rotVel	2.9650359153748
+ball_pos
+ball_posX	1300.3697509766
+ball_posY	457.78591918945
+000000000	000000000
+car_pos
+car_dir   	2.4453682899475
+car_posX  	2359.9248046875
+car_posY  	2413.5964355469
+car_velMod	0
+car_velDir	-0
+car_power 	2714.6267298211
+car_rotVel	2.9567782878876
+ball_pos
+ball_posX	1547.9857177734
+ball_posY	3056.86328125
+000000000	000000000
+car_pos
+car_dir   	1.4467304944992
+car_posX  	668.16290283203
+car_posY  	1683.3231201172
+car_velMod	0
+car_velDir	0
+car_power 	2978.6372971622
+car_rotVel	2.9641880989075
+ball_pos
+ball_posX	795.03082275391
+ball_posY	2716.2006835938
+000000000	000000000
+car_pos
+car_dir   	0.75282388925552
+car_posX  	-581.25543212891
+car_posY  	-1663.0798339844
+car_velMod	0
+car_velDir	0
+car_power 	2184.3172848152
+car_rotVel	2.9615178108215
+ball_pos
+ball_posX	172.63473510742
+ball_posY	-957.79815673828
+000000000	000000000
+car_pos
+car_dir   	2.0219337940216
+car_posX  	1772.8465576172
+car_posY  	587.28155517578
+car_velMod	0
+car_velDir	-0
+car_power 	2486.3023508742
+car_rotVel	2.9610641002655
+ball_pos
+ball_posX	1299.3359375
+ball_posY	1505.7482910156
+000000000	000000000
+car_pos
+car_dir   	1.6511645317078
+car_posX  	2621.2607421875
+car_posY  	193.67012023926
+car_velMod	0
+car_velDir	-0
+car_power 	2310.323699522
+car_rotVel	2.9567744731903
+ball_pos
+ball_posX	2515.1484375
+ball_posY	1214.619140625
+000000000	000000000
+car_pos
+car_dir   	0.3381350338459
+car_posX  	-1527.6077880859
+car_posY  	-680.53131103516
+car_velMod	0
+car_velDir	0
+car_power 	2136.5679833743
+car_rotVel	2.9626841545105
+ball_pos
+ball_posX	-545.86700439453
+ball_posY	-347.02603149414
+000000000	000000000
+car_pos
+car_dir   	1.5636094808578
+car_posX  	1552.9924316406
+car_posY  	424.40673828125
+car_velMod	0
+car_velDir	0
+car_power 	2437.2760725381
+car_rotVel	2.9604051113129
+ball_pos
+ball_posX	1493.9287109375
+ball_posY	1466.4420166016
+000000000	000000000
+car_pos
+car_dir   	1.4155548810959
+car_posX  	2341.5661621094
+car_posY  	-1673.1352539062
+car_velMod	0
+car_velDir	0
+car_power 	2233.7878491887
+car_rotVel	2.9632577896118
+ball_pos
+ball_posX	2494.0688476562
+ball_posY	-642.88989257812
+000000000	000000000
+car_pos
+car_dir   	2.7472901344299
+car_posX  	2788.8420410156
+car_posY  	1573.0993652344
+car_velMod	0
+car_velDir	-0
+car_power 	2587.8873800802
+car_rotVel	2.9620008468628
+ball_pos
+ball_posX	1832.3740234375
+ball_posY	1968.4743652344
+000000000	000000000
+car_pos
+car_dir   	1.8153201341629
+car_posX  	2671.5964355469
+car_posY  	-45.827281951904
+car_velMod	0
+car_velDir	-0
+car_power 	2939.0947092041
+car_rotVel	2.9631357192993
+ball_pos
+ball_posX	2416.9260253906
+ball_posY	961.59906005859
+000000000	000000000
+car_pos
+car_dir   	-0.019644228741527
+car_posX  	-888.78247070312
+car_posY  	1755.0279541016
+car_velMod	0
+car_velDir	-0
+car_power 	2707.2400505223
+car_rotVel	2.9601395130157
+ball_pos
+ball_posX	154.17085266113
+ball_posY	1748.5338134766
+000000000	000000000
+car_pos
+car_dir   	1.3469623327255
+car_posX  	2389.73828125
+car_posY  	1776.3427734375
+car_velMod	0
+car_velDir	0
+car_power 	2594.6671662827
+car_rotVel	2.9605529308319
+ball_pos
+ball_posX	2606.7058105469
+ball_posY	2794.685546875
+000000000	000000000
+car_pos
+car_dir   	0.1329190582037
+car_posX  	-2793.1831054688
+car_posY  	-488.08248901367
+car_velMod	0
+car_velDir	0
+car_power 	2365.9911883837
+car_rotVel	2.9609308242798
+ball_pos
+ball_posX	-1761.4836425781
+ball_posY	-346.70373535156
+000000000	000000000
+car_pos
+car_dir   	1.5273853540421
+car_posX  	436.21527099609
+car_posY  	4.6051754951477
+car_velMod	0
+car_velDir	0
+car_power 	2661.02917756
+car_rotVel	2.9610090255737
+ball_pos
+ball_posX	476.02947998047
+ball_posY	1045.7557373047
+000000000	000000000
+car_pos
+car_dir   	1.2665785551071
+car_posX  	473.39324951172
+car_posY  	2054.9970703125
+car_velMod	0
+car_velDir	0
+car_power 	2960.8531961967
+car_rotVel	2.9586107730865
+ball_pos
+ball_posX	769.92645263672
+ball_posY	3050.888671875
+000000000	000000000
+car_pos
+car_dir   	1.0768947601318
+car_posX  	2251.7028808594
+car_posY  	-1631.0043945312
+car_velMod	0
+car_velDir	0
+car_power 	2263.0941333543
+car_rotVel	2.9568638801575
+ball_pos
+ball_posX	2699.5476074219
+ball_posY	-708.69476318359
+000000000	000000000
+car_pos
+car_dir   	-0.26587450504303
+car_posX  	689.59655761719
+car_posY  	569.22259521484
+car_velMod	0
+car_velDir	-0
+car_power 	2029.9021671665
+car_rotVel	2.9605286121368
+ball_pos
+ball_posX	1705.1717529297
+ball_posY	340.11907958984
+000000000	000000000
+car_pos
+car_dir   	-0.48934918642044
+car_posX  	-696.00311279297
+car_posY  	-354.00164794922
+car_velMod	0
+car_velDir	-0
+car_power 	2296.5113019089
+car_rotVel	2.9568114280701
+ball_pos
+ball_posX	235.08184814453
+ball_posY	-814.66094970703
+000000000	000000000
+car_pos
+car_dir   	0.75047439336777
+car_posX  	2262.6467285156
+car_posY  	-1835.0155029297
+car_velMod	0
+car_velDir	0
+car_power 	2656.6733101647
+car_rotVel	2.9647793769836
+ball_pos
+ball_posX	3011.7863769531
+ball_posY	-1125.1884765625
+000000000	000000000
+car_pos
+car_dir   	-0.55882853269577
+car_posX  	591.43707275391
+car_posY  	794.8408203125
+car_velMod	0
+car_velDir	-0
+car_power 	2420.084896693
+car_rotVel	2.9615643024445
+ball_pos
+ball_posX	1466.015625
+ball_posY	243.81143188477
+000000000	000000000
+car_pos
+car_dir   	-0.85889273881912
+car_posX  	-987.40673828125
+car_posY  	234.36643981934
+car_velMod	0
+car_velDir	-0
+car_power 	2749.8183877905
+car_rotVel	2.9567790031433
+ball_pos
+ball_posX	-263.79037475586
+ball_posY	-505.21524047852
+000000000	000000000
+car_pos
+car_dir   	0.56823295354843
+car_posX  	1305.77734375
+car_posY  	-2106.1237792969
+car_velMod	0
+car_velDir	0
+car_power 	2048.566721868
+car_rotVel	2.9568109512329
+ball_pos
+ball_posX	2144.3295898438
+ball_posY	-1495.7907714844
+000000000	000000000
+car_pos
+car_dir   	-1.0046311616898
+car_posX  	-2729.2924804688
+car_posY  	1354.2687988281
+car_velMod	0
+car_velDir	-0
+car_power 	2309.1859912077
+car_rotVel	2.9635682106018
+ball_pos
+ball_posX	-2147.052734375
+ball_posY	502.54479980469
+000000000	000000000
+car_pos
+car_dir   	0.23314408957958
+car_posX  	-844.68365478516
+car_posY  	-1317.1922607422
+car_velMod	0
+car_velDir	0
+car_power 	2696.0168032423
+car_rotVel	2.9595894813538
+ball_pos
+ball_posX	162.8994140625
+ball_posY	-1061.1607666016
+000000000	000000000
+car_pos
+car_dir   	1.4901158809662
+car_posX  	2330.2956542969
+car_posY  	-455.86740112305
+car_velMod	0
+car_velDir	0
+car_power 	2049.2538027695
+car_rotVel	2.9568092823029
+ball_pos
+ball_posX	2384.6499023438
+ball_posY	567.50500488281
+000000000	000000000
+car_pos
+car_dir   	0.9563359618187
+car_posX  	2399.6701660156
+car_posY  	655.52252197266
+car_velMod	0
+car_velDir	0
+car_power 	2817.0334979971
+car_rotVel	2.9567744731903
+ball_pos
+ball_posX	2974.3615722656
+ball_posY	1519.4581298828
+000000000	000000000
+car_pos
+car_dir   	0.047852762043476
+car_posX  	1532.1696777344
+car_posY  	1503.4918212891
+car_velMod	0
+car_velDir	0
+car_power 	2581.4538260835
+car_rotVel	2.959493637085
+ball_pos
+ball_posX	2572.5834960938
+ball_posY	1546.5103759766
+000000000	000000000
+car_pos
+car_dir   	-0.1438299715519
+car_posX  	-2818.3349609375
+car_posY  	-1853.8784179688
+car_velMod	0
+car_velDir	-0
+car_power 	2379.1557603419
+car_rotVel	2.9580805301666
+ball_pos
+ball_posX	-1783.5836181641
+ball_posY	-1964.1955566406
+000000000	000000000
+car_pos
+car_dir   	1.1602169275284
+car_posX  	440.81240844727
+car_posY  	-2181.8303222656
+car_velMod	0
+car_velDir	0
+car_power 	2736.9509766516
+car_rotVel	2.9567739963531
+ball_pos
+ball_posX	827.9765625
+ball_posY	-1216.2844238281
+000000000	000000000
+car_pos
+car_dir   	2.663302898407
+car_posX  	1669.8276367188
+car_posY  	860.66418457031
+car_velMod	0
+car_velDir	-0
+car_power 	2595.7356037552
+car_rotVel	2.9568104743958
+ball_pos
+ball_posX	727.50170898438
+ball_posY	1305.5915527344
+000000000	000000000
+car_pos
+car_dir   	-2.263364315033
+car_posX  	-1303.93359375
+car_posY  	2270.6462402344
+car_velMod	0
+car_velDir	0
+car_power 	2032.8328041513
+car_rotVel	2.9647257328033
+ball_pos
+ball_posX	-1950.1887207031
+ball_posY	1464.9304199219
+000000000	000000000
+car_pos
+car_dir   	2.898983001709
+car_posX  	2299.4221191406
+car_posY  	1453.5335693359
+car_velMod	0
+car_velDir	-0
+car_power 	2329.321523816
+car_rotVel	2.9592781066895
+ball_pos
+ball_posX	1273.5988769531
+ball_posY	1638.0452880859
+000000000	000000000
+car_pos
+car_dir   	-2.053760766983
+car_posX  	-943.02722167969
+car_posY  	2002.9250488281
+car_velMod	0
+car_velDir	0
+car_power 	2125.0148807303
+car_rotVel	2.9567747116089
+ball_pos
+ball_posX	-1399.5754394531
+ball_posY	1070.5014648438
+000000000	000000000
+car_pos
+car_dir   	-0.78239560127258
+car_posX  	-2400.7456054688
+car_posY  	-949.47424316406
+car_velMod	0
+car_velDir	-0
+car_power 	2572.1097246614
+car_rotVel	2.9568092823029
+ball_pos
+ball_posX	-1652.3724365234
+ball_posY	-1664.7329101562
+000000000	000000000
+car_pos
+car_dir   	-1.9688804149628
+car_posX  	-250.94039916992
+car_posY  	-370.84085083008
+car_velMod	0
+car_velDir	0
+car_power 	2918.392885904
+car_rotVel	2.9615654945374
+ball_pos
+ball_posX	-603.14227294922
+ball_posY	-1347.5760498047
+000000000	000000000
+car_pos
+car_dir   	-2.1074686050415
+car_posX  	-1479.4061279297
+car_posY  	928.63513183594
+car_velMod	0
+car_velDir	0
+car_power 	2166.2750184379
+car_rotVel	2.9636421203613
+ball_pos
+ball_posX	-2008.603515625
+ball_posY	40.7356300354
+000000000	000000000
+car_pos
+car_dir   	3.0068473815918
+car_posX  	2559.85546875
+car_posY  	871.25830078125
+car_velMod	0
+car_velDir	-0
+car_power 	2311.9899515584
+car_rotVel	2.9593713283539
+ball_pos
+ball_posX	1520.1119384766
+ball_posY	948.93145751953
+000000000	000000000
+car_pos
+car_dir   	-1.9474618434906
+car_posX  	-717.74151611328
+car_posY  	1075.8016357422
+car_velMod	0
+car_velDir	0
+car_power 	2190.6844434285
+car_rotVel	2.9567739963531
+ball_pos
+ball_posX	-1032.2482910156
+ball_posY	80.784248352051
+000000000	000000000
+car_pos
+car_dir   	-0.67075532674789
+car_posX  	-1728.9895019531
+car_posY  	-2068.3171386719
+car_velMod	0
+car_velDir	-0
+car_power 	2548.7534411013
+car_rotVel	2.9651818275452
+ball_pos
+ball_posX	-913.89739990234
+ball_posY	-2700.9340820312
+000000000	000000000
+car_pos
+car_dir   	-2.4315223693848
+car_posX  	2707.3029785156
+car_posY  	858.30413818359
+car_velMod	0
+car_velDir	0
+car_power 	2373.8079585013
+car_rotVel	2.9635643959045
+ball_pos
+ball_posX	1968.3322753906
+ball_posY	136.9429473877
+000000000	000000000
+car_pos
+car_dir   	-1.0128999948502
+car_posX  	394.65579223633
+car_posY  	-1449.4373779297
+car_velMod	0
+car_velDir	-0
+car_power 	2728.632773612
+car_rotVel	2.9657318592072
+ball_pos
+ball_posX	987.08325195312
+ball_posY	-2302.8664550781
+000000000	000000000
+car_pos
+car_dir   	-1.7670893669128
+car_posX  	944.61871337891
+car_posY  	-126.01261901855
+car_velMod	0
+car_velDir	0
+car_power 	2052.0442212243
+car_rotVel	2.9596807956696
+ball_pos
+ball_posX	765.81903076172
+ball_posY	-1152.7425537109
+000000000	000000000
+car_pos
+car_dir   	-2.4912025928497
+car_posX  	2209.7302246094
+car_posY  	1858.1223144531
+car_velMod	0
+car_velDir	0
+car_power 	2794.7392132109
+car_rotVel	2.9567749500275
+ball_pos
+ball_posX	1425.5469970703
+ball_posY	1183.2873535156
+000000000	000000000
+car_pos
+car_dir   	-1.1947816610336
+car_posX  	-278.30093383789
+car_posY  	-292.33160400391
+car_velMod	0
+car_velDir	-0
+car_power 	2174.4919974238
+car_rotVel	2.9655330181122
+ball_pos
+ball_posX	138.63317871094
+ball_posY	-1240.5380859375
+000000000	000000000
+car_pos
+car_dir   	-1.4166120290756
+car_posX  	-2478.3259277344
+car_posY  	898.29943847656
+car_velMod	0
+car_velDir	-0
+car_power 	2475.5382451581
+car_rotVel	2.956775188446
+ball_pos
+ball_posX	-2298.6364746094
+ball_posY	-131.81134033203
+000000000	000000000
+car_pos
+car_dir   	-0.044071100652218
+car_posX  	-1896.3267822266
+car_posY  	-2351.9150390625
+car_velMod	0
+car_velDir	-0
+car_power 	2768.8775387448
+car_rotVel	2.9609892368317
+ball_pos
+ball_posX	-858.30224609375
+ball_posY	-2406.150390625
+000000000	000000000
+car_pos
+car_dir   	1.3021591901779
+car_posX  	1374.6164550781
+car_posY  	-2488.8422851562
+car_velMod	0
+car_velDir	0
+car_power 	2713.6673483596
+car_rotVel	2.9567742347717
+ball_pos
+ball_posX	1622.7781982422
+ball_posY	-1475.2047119141
+000000000	000000000
+car_pos
+car_dir   	2.5588960647583
+car_posX  	2172.5642089844
+car_posY  	711.32727050781
+car_velMod	0
+car_velDir	-0
+car_power 	2069.057412012
+car_rotVel	2.9636254310608
+ball_pos
+ball_posX	1293.8721923828
+ball_posY	1258.6190185547
+000000000	000000000
+car_pos
+car_dir   	-2.3982939720154
+car_posX  	-625.28735351562
+car_posY  	2425.6240234375
+car_velMod	0
+car_velDir	0
+car_power 	2017.1467298722
+car_rotVel	2.9567747116089
+ball_pos
+ball_posX	-1372.0336914062
+ball_posY	1704.5759277344
+000000000	000000000
+car_pos
+car_dir   	2.7762982845306
+car_posX  	1981.830078125
+car_posY  	934.04040527344
+car_velMod	0
+car_velDir	-0
+car_power 	2746.1024326021
+car_rotVel	2.9594237804413
+ball_pos
+ball_posX	1010.3020019531
+ball_posY	1297.6658935547
+000000000	000000000
+car_pos
+car_dir   	-2.1511416435242
+car_posX  	-1082.4849853516
+car_posY  	2043.8179931641
+car_velMod	0
+car_velDir	0
+car_power 	2097.9464464346
+car_rotVel	2.9567739963531
+ball_pos
+ball_posX	-1590.8588867188
+ball_posY	1138.8914794922
+000000000	000000000
+car_pos
+car_dir   	-0.80257773399353
+car_posX  	-2702.4008789062
+car_posY  	-812.70428466797
+car_velMod	0
+car_velDir	-0
+car_power 	2960.3848936783
+car_rotVel	2.956778049469
+ball_pos
+ball_posX	-1937.4376220703
+ball_posY	-1509.3493652344
+000000000	000000000
+car_pos
+car_dir   	-1.9264030456543
+car_posX  	-894.38891601562
+car_posY  	1260.6711425781
+car_velMod	0
+car_velDir	0
+car_power 	2780.9182315976
+car_rotVel	2.9594011306763
+ball_pos
+ball_posX	-1192.9411621094
+ball_posY	263.98950195312
+000000000	000000000
+car_pos
+car_dir   	-0.69409424066544
+car_posX  	-1813.7448730469
+car_posY  	-1893.1420898438
+car_velMod	0
+car_velDir	-0
+car_power 	2664.3565090673
+car_rotVel	2.9662792682648
+ball_pos
+ball_posX	-1009.735168457
+ball_posY	-2545.9340820312
+000000000	000000000
+car_pos
+car_dir   	-1.6836479902267
+car_posX  	-2390.8654785156
+car_posY  	2062.5593261719
+car_velMod	0
+car_velDir	0
+car_power 	2465.9861603128
+car_rotVel	2.9597952365875
+ball_pos
+ball_posX	-2444.1525878906
+ball_posY	1020.6309204102
+000000000	000000000
+car_pos
+car_dir   	-0.32375219464302
+car_posX  	-2516.5007324219
+car_posY  	-1219.7625732422
+car_velMod	0
+car_velDir	-0
+car_power 	2234.8719878285
+car_rotVel	2.96120262146
+ball_pos
+ball_posX	-1504.9683837891
+ball_posY	-1482.0520019531
+000000000	000000000
+car_pos
+car_dir   	1.0569941997528
+car_posX  	678.77862548828
+car_posY  	-2022.5822753906
+car_velMod	0
+car_velDir	0
+car_power 	2680.1917933301
+car_rotVel	2.9647212028503
+ball_pos
+ball_posX	1171.4244384766
+ball_posY	-1108.7241210938
+000000000	000000000
+car_pos
+car_dir   	2.3739831447601
+car_posX  	2215.14453125
+car_posY  	878.89593505859
+car_velMod	0
+car_velDir	-0
+car_power 	2530.4165480334
+car_rotVel	2.9631497859955
+ball_pos
+ball_posX	1453.5745849609
+ball_posY	1577.330078125
+000000000	000000000
+car_pos
+car_dir   	1.0488778352737
+car_posX  	-15.607237815857
+car_posY  	-1594.4146728516
+car_velMod	0
+car_velDir	0
+car_power 	2854.4366796754
+car_rotVel	2.9628739356995
+ball_pos
+ball_posX	478.26885986328
+ball_posY	-684.00970458984
+000000000	000000000
+car_pos
+car_dir   	2.4402673244476
+car_posX  	1524.9608154297
+car_posY  	1293.7249755859
+car_velMod	0
+car_velDir	-0
+car_power 	2740.6025550983
+car_rotVel	2.9570596218109
+ball_pos
+ball_posX	712.95251464844
+ball_posY	1934.7449951172
+000000000	000000000
+car_pos
+car_dir   	1.8714044094086
+car_posX  	589.32720947266
+car_posY  	1791.1912841797
+car_velMod	0
+car_velDir	-0
+car_power 	2595.8149407971
+car_rotVel	2.9616224765778
+ball_pos
+ball_posX	283.75817871094
+ball_posY	2782.8913574219
+000000000	000000000
+car_pos
+car_dir   	1.4536951780319
+car_posX  	2413.4885253906
+car_posY  	-1894.16796875
+car_velMod	0
+car_velDir	0
+car_power 	2304.4973357136
+car_rotVel	2.9595324993134
+ball_pos
+ball_posX	2513.5380859375
+ball_posY	-855.54858398438
+000000000	000000000
+car_pos
+car_dir   	2.6350598335266
+car_posX  	2692.8957519531
+car_posY  	1381.5733642578
+car_velMod	0
+car_velDir	-0
+car_power 	2097.1208611024
+car_rotVel	2.9567744731903
+ball_pos
+ball_posX	1750.5014648438
+ball_posY	1822.0201416016
+000000000	000000000
+car_pos
+car_dir   	2.418860912323
+car_posX  	2695.7436523438
+car_posY  	2342.0043945312
+car_velMod	0
+car_velDir	-0
+car_power 	2921.0123512526
+car_rotVel	2.9639167785645
+ball_pos
+ball_posX	1894.6282958984
+ball_posY	2990.8237304688
+000000000	000000000
+car_pos
+car_dir   	0.74003809690475
+car_posX  	-1285.0986328125
+car_posY  	-1207.0501708984
+car_velMod	0
+car_velDir	0
+car_power 	2194.3235137473
+car_rotVel	2.9610342979431
+ball_pos
+ball_posX	-532.34588623047
+ball_posY	-503.28173828125
+000000000	000000000
+car_pos
+car_dir   	2.057825088501
+car_posX  	1074.2733154297
+car_posY  	1056.4067382812
+car_velMod	0
+car_velDir	-0
+car_power 	2548.6943696387
+car_rotVel	2.9622344970703
+ball_pos
+ball_posX	601.97735595703
+ball_posY	1978.0051269531
+000000000	000000000
+car_pos
+car_dir   	1.7183283567429
+car_posX  	2627.2993164062
+car_posY  	241.70211791992
+car_velMod	0
+car_velDir	-0
+car_power 	2874.1076895381
+car_rotVel	2.963103055954
+ball_pos
+ball_posX	2431.3564453125
+ball_posY	1263.3087158203
+000000000	000000000
+car_pos
+car_dir   	0.28629592061043
+car_posX  	-1683.6638183594
+car_posY  	-262.32437133789
+car_velMod	0
+car_velDir	0
+car_power 	2611.7457512821
+car_rotVel	2.9611246585846
+ball_pos
+ball_posX	-691.66748046875
+ball_posY	48.175724029541
+000000000	000000000
+car_pos
+car_dir   	1.7470628023148
+car_posX  	1422.2110595703
+car_posY  	763.03363037109
+car_velMod	0
+car_velDir	-0
+car_power 	2910.5820576244
+car_rotVel	2.9578633308411
+ball_pos
+ball_posX	1201.6041259766
+ball_posY	1779.2911376953
+000000000	000000000
+car_pos
+car_dir   	1.6129404306412
+car_posX  	2203.6538085938
+car_posY  	1281.8513183594
+car_velMod	0
+car_velDir	-0
+car_power 	2737.7760623292
+car_rotVel	2.9616587162018
+ball_pos
+ball_posX	2149.6918945312
+ball_posY	2322.4685058594
+000000000	000000000
+car_pos
+car_dir   	-0.21579295396805
+car_posX  	-1774.3375244141
+car_posY  	2433.1594238281
+car_velMod	0
+car_velDir	-0
+car_power 	2006.4443578042
+car_rotVel	2.9602074623108
+ball_pos
+ball_posX	-760.37847900391
+ball_posY	2210.5803222656
+000000000	000000000
+car_pos
+car_dir   	1.1705490350723
+car_posX  	1413.9604492188
+car_posY  	1763.6578369141
+car_velMod	0
+car_velDir	0
+car_power 	2861.1645572172
+car_rotVel	2.9610986709595
+ball_pos
+ball_posX	1796.6828613281
+ball_posY	2730.1003417969
+000000000	000000000
+car_pos
+car_dir   	0.97189688682556
+car_posX  	2137.0773925781
+car_posY  	-966.76190185547
+car_velMod	0
+car_velDir	0
+car_power 	2683.0034734136
+car_rotVel	2.9567744731903
+ball_pos
+ball_posX	2698.0883789062
+ball_posY	-93.978897094727
+000000000	000000000
+car_pos
+car_dir   	-0.33085331320763
+car_posX  	216.68154907227
+car_posY  	948.37939453125
+car_velMod	0
+car_velDir	-0
+car_power 	2859.7351302671
+car_rotVel	2.9604804515839
+ball_pos
+ball_posX	1210.1096191406
+ball_posY	651.43823242188
+000000000	000000000
+car_pos
+car_dir   	-0.26980024576187
+car_posX  	-1326.6130371094
+car_posY  	-2015.1990966797
+car_velMod	0
+car_velDir	-0
+car_power 	2100.0120859128
+car_rotVel	2.9567747116089
+ball_pos
+ball_posX	-304.01443481445
+ball_posY	-2225.0952148438
+000000000	000000000
+car_pos
+car_dir   	-1.4197261333466
+car_posX  	208.11045837402
+car_posY  	-615.86334228516
+car_velMod	0
+car_velDir	-0
+car_power 	2456.2753035949
+car_rotVel	2.9636306762695
+ball_pos
+ball_posX	413.16098022461
+ball_posY	-1636.0927734375
+000000000	000000000
+car_pos
+car_dir   	-2.3392224311829
+car_posX  	1666.1143798828
+car_posY  	981.77093505859
+car_velMod	0
+car_velDir	0
+car_power 	2724.7293487772
+car_rotVel	2.962639093399
+ball_pos
+ball_posX	1004.0246582031
+ball_posY	188.55346679688
+000000000	000000000
+car_pos
+car_dir   	-0.95102488994598
+car_posX  	-415.79391479492
+car_posY  	-1545.873046875
+car_velMod	0
+car_velDir	-0
+car_power 	2992.2958677599
+car_rotVel	2.956775188446
+ball_pos
+ball_posX	204.76582336426
+ball_posY	-2378.1286621094
+000000000	000000000
+car_pos
+car_dir   	-2.4236145019531
+car_posX  	2913.7048339844
+car_posY  	-347.99761962891
+car_velMod	0
+car_velDir	0
+car_power 	2846.4796724014
+car_rotVel	2.9641931056976
+ball_pos
+ball_posX	2131.201171875
+ball_posY	-1019.4252319336
+000000000	000000000
+car_pos
+car_dir   	-1.7782336473465
+car_posX  	-1703.0073242188
+car_posY  	2009.5892333984
+car_velMod	0
+car_velDir	0
+car_power 	2590.6266721853
+car_rotVel	2.9572751522064
+ball_pos
+ball_posX	-1883.5363769531
+ball_posY	978.69097900391
+000000000	000000000
+car_pos
+car_dir   	-0.5992180109024
+car_posX  	-2256.0456542969
+car_posY  	-1255.1143798828
+car_velMod	0
+car_velDir	-0
+car_power 	2474.251303577
+car_rotVel	2.9568114280701
+ball_pos
+ball_posX	-1360.5389404297
+ball_posY	-1779.6694335938
+000000000	000000000
+car_pos
+car_dir   	-2.5699346065521
+car_posX  	2571.5341796875
+car_posY  	280.10806274414
+car_velMod	0
+car_velDir	0
+car_power 	2297.3032343654
+car_rotVel	2.9567768573761
+ball_pos
+ball_posX	1735.2270507812
+ball_posY	-329.92468261719
+000000000	000000000
+car_pos
+car_dir   	-1.3105945587158
+car_posX  	-79.532936096191
+car_posY  	-1666.2902832031
+car_velMod	0
+car_velDir	-0
+car_power 	2185.8798918249
+car_rotVel	2.9567840099335
+ball_pos
+ball_posX	205.02975463867
+ball_posY	-2669.4038085938
+000000000	000000000
+car_pos
+car_dir   	-2.0927867889404
+car_posX  	597.51831054688
+car_posY  	-1639.0308837891
+car_velMod	0
+car_velDir	0
+car_power 	2942.4035451107
+car_rotVel	2.9617056846619
+ball_pos
+ball_posX	113.54815673828
+ball_posY	-2559.1494140625
+000000000	000000000
+car_pos
+car_dir   	-3.1298638025867
+car_posX  	1447.1525878906
+car_posY  	-2395.8874511719
+car_velMod	0
+car_velDir	-0
+car_power 	2212.4590613937
+car_rotVel	2.9605598449707
+ball_pos
+ball_posX	404.48687744141
+ball_posY	-2418.8098144531
+000000000	000000000
+car_pos
+car_dir   	-2.9160025119781
+car_posX  	-75.319442749023
+car_posY  	-409.07992553711
+car_velMod	0
+car_velDir	0
+car_power 	2978.4994800475
+car_rotVel	2.9567909240723
+ball_pos
+ball_posX	-1089.0212402344
+ball_posY	-661.58514404297
+000000000	000000000
+car_pos
+car_dir   	3.0118663311005
+car_posX  	1507.0880126953
+car_posY  	1293.7546386719
+car_velMod	0
+car_velDir	-0
+car_power 	2718.1382364212
+car_rotVel	2.956775188446
+ball_pos
+ball_posX	464.59768676758
+ball_posY	1401.1518554688
+000000000	000000000
+car_pos
+car_dir   	-1.990402340889
+car_posX  	-1779.0118408203
+car_posY  	1637.8635253906
+car_velMod	0
+car_velDir	0
+car_power 	2606.6377840967
+car_rotVel	2.9630944728851
+ball_pos
+ball_posX	-2149.1967773438
+ball_posY	667.17700195312
+000000000	000000000
+car_pos
+car_dir   	-0.58333587646484
+car_posX  	-2918.8762207031
+car_posY  	-1420.8497314453
+car_velMod	0
+car_velDir	-0
+car_power 	2958.3082510896
+car_rotVel	2.9568581581116
+ball_pos
+ball_posX	-2035.9615478516
+ball_posY	-1966.0264892578
+000000000	000000000
+car_pos
+car_dir   	-1.9938758611679
+car_posX  	-406.80551147461
+car_posY  	1774.0716552734
+car_velMod	0
+car_velDir	0
+car_power 	2282.0162285501
+car_rotVel	2.9608862400055
+ball_pos
+ball_posX	-817.80834960938
+ball_posY	822.49957275391
+000000000	000000000
+car_pos
+car_dir   	-0.58065563440323
+car_posX  	-1674.5860595703
+car_posY  	-1235.1287841797
+car_velMod	0
+car_velDir	-0
+car_power 	2642.7469270503
+car_rotVel	2.9615647792816
+ball_pos
+ball_posX	-793.13500976562
+ball_posY	-1770.5640869141
+000000000	000000000
+car_pos
+car_dir   	-1.2958569526672
+car_posX  	279.03945922852
+car_posY  	-1850.0062255859
+car_velMod	0
+car_velDir	-0
+car_power 	2523.4875416027
+car_rotVel	2.9629604816437
+ball_pos
+ball_posX	560.71795654297
+ball_posY	-2849.8103027344
+000000000	000000000
+car_pos
+car_dir   	-2.6487183570862
+car_posX  	2036.5454101562
+car_posY  	1539.5148925781
+car_velMod	0
+car_velDir	0
+car_power 	2735.2151115123
+car_rotVel	2.9638030529022
+ball_pos
+ball_posX	1129.3243408203
+ball_posY	1041.7989501953
+000000000	000000000
+car_pos
+car_dir   	-1.1861913204193
+car_posX  	-793.04876708984
+car_posY  	-74.33659362793
+car_velMod	0
+car_velDir	-0
+car_power 	2621.5080998938
+car_rotVel	2.9635210037231
+ball_pos
+ball_posX	-398.10150146484
+ball_posY	-1036.2807617188
+000000000	000000000
+car_pos
+car_dir   	-2.0630843639374
+car_posX  	22.310024261475
+car_posY  	856.04663085938
+car_velMod	0
+car_velDir	0
+car_power 	2357.5169687893
+car_rotVel	2.9624485969543
+ball_pos
+ball_posX	-462.71578979492
+ball_posY	-56.341407775879
+000000000	000000000
+car_pos
+car_dir   	-0.72053921222687
+car_posX  	-1480.1707763672
+car_posY  	-2037.7231445312
+car_velMod	0
+car_velDir	-0
+car_power 	2151.5361355392
+car_rotVel	2.9572794437408
+ball_pos
+ball_posX	-682.81567382812
+ball_posY	-2689.9467773438
+000000000	000000000
+car_pos
+car_dir   	-1.2084774971008
+car_posX  	-2443.6369628906
+car_posY  	-929.58892822266
+car_velMod	0
+car_velDir	-0
+car_power 	2446.6110544496
+car_rotVel	2.9632272720337
+ball_pos
+ball_posX	-2086.7580566406
+ball_posY	-1902.3956298828
+000000000	000000000
+car_pos
+car_dir   	-3.0026504993439
+car_posX  	2176.9943847656
+car_posY  	-1266.6849365234
+car_velMod	0
+car_velDir	0
+car_power 	2214.944082878
+car_rotVel	2.9623181819916
+ball_pos
+ball_posX	1146.2946777344
+ball_posY	-1407.103515625
+000000000	000000000
+car_pos
+car_dir   	1.2740643024445
+car_posX  	-1197.6218261719
+car_posY  	-1865.3273925781
+car_velMod	0
+car_velDir	0
+car_power 	2102.4631262303
+car_rotVel	1.6938474178314
+ball_pos
+ball_posX	-842.96014404297
+ball_posY	-893.82623291016
+000000000	000000000
+car_pos
+car_dir   	2.5804688930511
+car_posX  	-59.165328979492
+car_posY  	1176.7192382812
+car_velMod	0
+car_velDir	-0
+car_power 	2953.890307785
+car_rotVel	2.9606714248657
+ball_pos
+ball_posX	-961.13348388672
+ball_posY	1682.8198242188
+000000000	000000000
+car_pos
+car_dir   	1.4631515741348
+car_posX  	-709.68988037109
+car_posY  	-2303.6567382812
+car_velMod	0
+car_velDir	0
+car_power 	2754.543657766
+car_rotVel	2.9606294631958
+ball_pos
+ball_posX	-604.76208496094
+ball_posY	-1267.6646728516
+000000000	000000000
+car_pos
+car_dir   	2.7039308547974
+car_posX  	-417.7926940918
+car_posY  	965.12237548828
+car_velMod	0
+car_velDir	-0
+car_power 	2135.7535212933
+car_rotVel	2.9591794013977
+ball_pos
+ball_posX	-1368.9415283203
+ball_posY	1368.7071533203
+000000000	000000000
+car_pos
+car_dir   	1.3594450950623
+car_posX  	-2605.1989746094
+car_posY  	-804.38232421875
+car_velMod	0
+car_velDir	0
+car_power 	2962.5764381898
+car_rotVel	2.9592995643616
+ball_pos
+ball_posX	-2458.6682128906
+ball_posY	230.75215148926
+000000000	000000000
+car_pos
+car_dir   	2.7291169166565
+car_posX  	-2172.3173828125
+car_posY  	2451.4099121094
+car_velMod	0
+car_velDir	-0
+car_power 	2346.3523049589
+car_rotVel	2.9607453346252
+ball_pos
+ball_posX	-3153.9206542969
+ball_posY	2801.1271972656
+000000000	000000000
+car_pos
+car_dir   	2.1003880500793
+car_posX  	-1624.2884521484
+car_posY  	1828.1987304688
+car_velMod	0
+car_velDir	-0
+car_power 	2177.2437804273
+car_rotVel	2.9568240642548
+ball_pos
+ball_posX	-2200.3837890625
+ball_posY	2689.6335449219
+000000000	000000000
+car_pos
+car_dir   	1.2014820575714
+car_posX  	-2870.2104492188
+car_posY  	1085.291015625
+car_velMod	0
+car_velDir	0
+car_power 	2937.180612207
+car_rotVel	2.9622030258179
+ball_pos
+ball_posX	-2505.2416992188
+ball_posY	2056.03515625
+000000000	000000000
+car_pos
+car_dir   	1.6983860731125
+car_posX  	1654.4655761719
+car_posY  	194.80589294434
+car_velMod	0
+car_velDir	-0
+car_power 	2086.9795098375
+car_rotVel	2.9610447883606
+ball_pos
+ball_posX	1478.5089111328
+ball_posY	1219.8542480469
+000000000	000000000
+car_pos
+car_dir   	0.41131514310837
+car_posX  	-2878.0732421875
+car_posY  	-2220.8024902344
+car_velMod	0
+car_velDir	0
+car_power 	2323.4974277781
+car_rotVel	2.9597380161285
+ball_pos
+ball_posX	-1941.1743164062
+ball_posY	-1784.0364990234
+000000000	000000000
+car_pos
+car_dir   	1.870866060257
+car_posX  	38.49711227417
+car_posY  	-795.04028320312
+car_velMod	0
+car_velDir	-0
+car_power 	2683.5360087843
+car_rotVel	2.9640429019928
+ball_pos
+ball_posX	-262.23818969727
+ball_posY	200.35774230957
+000000000	000000000
+car_pos
+car_dir   	-3.1024921576129
+car_posX  	-962.21301269531
+car_posY  	2328.46484375
+car_velMod	0
+car_velDir	-0
+car_power 	2038.0239058463
+car_rotVel	2.9593050479889
+ball_pos
+ball_posX	-2004.9193115234
+ball_posY	2263.29296875
+000000000	000000000
+car_pos
+car_dir   	2.3234262466431
+car_posX  	12.533738136292
+car_posY  	916.06799316406
+car_velMod	0
+car_velDir	-0
+car_power 	2368.3632888684
+car_rotVel	2.9618031978607
+ball_pos
+ball_posX	-717.34893798828
+ball_posY	1650.8685302734
+000000000	000000000
+car_pos
+car_dir   	1.8747557401657
+car_posX  	1478.3237304688
+car_posY  	491.52456665039
+car_velMod	0
+car_velDir	-0
+car_power 	2132.3753297945
+car_rotVel	2.9603016376495
+ball_pos
+ball_posX	1140.0240478516
+ball_posY	1471.6489257812
+000000000	000000000
+car_pos
+car_dir   	1.2480396032333
+car_posX  	261.54190063477
+car_posY  	2237.3859863281
+car_velMod	0
+car_velDir	0
+car_power 	2427.9351357501
+car_rotVel	2.9602704048157
+ball_pos
+ball_posX	570.02130126953
+ball_posY	3230.5168457031
+000000000	000000000
+car_pos
+car_dir   	1.2497744560242
+car_posX  	1989.8161621094
+car_posY  	1020.575378418
+car_velMod	0
+car_velDir	0
+car_power 	2786.0684277425
+car_rotVel	2.9568798542023
+ball_pos
+ball_posX	2286.8081054688
+ball_posY	2020.6164550781
+000000000	000000000
+car_pos
+car_dir   	0.11116033047438
+car_posX  	-2000.8707275391
+car_posY  	-245.82551574707
+car_velMod	0
+car_velDir	0
+car_power 	2028.1982077417
+car_rotVel	2.956779718399
+ball_pos
+ball_posX	-964.345703125
+ball_posY	-110.25954437256
+000000000	000000000
+car_pos
+car_dir   	1.4124418497086
+car_posX  	1270.8431396484
+car_posY  	193.07867431641
+car_velMod	0
+car_velDir	0
+car_power 	2880.085182786
+car_rotVel	2.9567747116089
+ball_pos
+ball_posX	1408.4715576172
+ball_posY	1229.232421875
+000000000	000000000
+car_pos
+car_dir   	-0.018211584538221
+car_posX  	-1259.7634277344
+car_posY  	1933.0421142578
+car_velMod	0
+car_velDir	-0
+car_power 	2151.7172451838
+car_rotVel	2.9622318744659
+ball_pos
+ball_posX	-215.9541015625
+ball_posY	1969.8542480469
+000000000	000000000
+car_pos
+car_dir   	1.3194673061371
+car_posX  	2023.9444580078
+car_posY  	2092.3176269531
+car_velMod	0
+car_velDir	0
+car_power 	2412.0758298841
+car_rotVel	2.9624755382538
+ball_pos
+ball_posX	2223.1201171875
+ball_posY	3115.8303222656
+000000000	000000000
+car_pos
+car_dir   	-0.085791647434235
+car_posX  	-861.42956542969
+car_posY  	2548.6064453125
+car_velMod	0
+car_velDir	-0
+car_power 	2764.072214609
+car_rotVel	2.9614510536194
+ball_pos
+ball_posX	175.61982727051
+ball_posY	2454.86328125
+000000000	000000000
+car_pos
+car_dir   	1.3639223575592
+car_posX  	2387.3674316406
+car_posY  	2279.4084472656
+car_velMod	0
+car_velDir	0
+car_power 	2618.0189021947
+car_rotVel	2.9615476131439
+ball_pos
+ball_posX	2592.9353027344
+ball_posY	3300.7839355469
+000000000	000000000
+car_pos
+car_dir   	0.27655977010727
+car_posX  	352.92449951172
+car_posY  	1230.6978759766
+car_velMod	0
+car_velDir	0
+car_power 	2474.0460237833
+car_rotVel	2.9592506885529
+ball_pos
+ball_posX	1345.2598876953
+ball_posY	1534.7941894531
+000000000	000000000
+car_pos
+car_dir   	-0.24408416450024
+car_posX  	-1225.0268554688
+car_posY  	594.42742919922
+car_velMod	0
+car_velDir	-0
+car_power 	2209.9222853826
+car_rotVel	2.9607005119324
+ball_pos
+ball_posX	-207.39443969727
+ball_posY	385.70239257812
+000000000	000000000
+car_pos
+car_dir   	1.1094945669174
+car_posX  	1986.4093017578
+car_posY  	-30.547193527222
+car_velMod	0
+car_velDir	0
+car_power 	2014.7330928662
+car_rotVel	2.9623827934265
+ball_pos
+ball_posX	2429.9443359375
+ball_posY	906.51318359375
+000000000	000000000
+car_pos
+car_dir   	-1.5726389884949
+car_posX  	2956.2041015625
+car_posY  	1879.1239013672
+car_velMod	0
+car_velDir	0
+car_power 	2897.9415688188
+car_rotVel	2.4861814975739
+ball_pos
+ball_posX	2970.0444335938
+ball_posY	838.78045654297
+000000000	000000000
+car_pos
+car_dir   	-1.2379739284515
+car_posX  	2208.6320800781
+car_posY  	-1584.3757324219
+car_velMod	0
+car_velDir	-0
+car_power 	2341.6024112802
+car_rotVel	2.9627556800842
+ball_pos
+ball_posX	2596.4860839844
+ball_posY	-2545.5129394531
+000000000	000000000
+car_pos
+car_dir   	-1.1349503993988
+car_posX  	2029.4599609375
+car_posY  	32.024444580078
+car_velMod	0
+car_velDir	-0
+car_power 	2108.5430607705
+car_rotVel	2.9626035690308
+ball_pos
+ball_posX	2453.0888671875
+ball_posY	-912.18536376953
+000000000	000000000
+car_pos
+car_dir   	-1.3046418428421
+car_posX  	-2733.6179199219
+car_posY  	2350.9982910156
+car_velMod	0
+car_velDir	-0
+car_power 	2900.7932887882
+car_rotVel	2.9623472690582
+ball_pos
+ball_posX	-2471.1228027344
+ball_posY	1345.0157470703
+000000000	000000000
+car_pos
+car_dir   	0.085173301398754
+car_posX  	-1861.9658203125
+car_posY  	-796.58892822266
+car_velMod	0
+car_velDir	0
+car_power 	2756.080701368
+car_rotVel	2.9629015922546
+ball_pos
+ball_posX	-824.12451171875
+ball_posY	-707.02673339844
+000000000	000000000
+car_pos
+car_dir   	1.2958821058273
+car_posX  	1405.9644775391
+car_posY  	-468.83975219727
+car_velMod	0
+car_velDir	0
+car_power 	2111.3550770615
+car_rotVel	2.9567747116089
+ball_pos
+ball_posX	1621.1690673828
+ball_posY	552.35778808594
+000000000	000000000
+car_pos
+car_dir   	0.47853142023087
+car_posX  	70.370834350586
+car_posY  	-826.14642333984
+car_velMod	0
+car_velDir	0
+car_power 	2889.0826310446
+car_rotVel	2.9644651412964
+ball_pos
+ball_posX	993.05035400391
+ball_posY	-359.54650878906
+000000000	000000000
+car_pos
+car_dir   	1.8558963537216
+car_posX  	2945.8674316406
+car_posY  	689.82525634766
+car_velMod	0
+car_velDir	-0
+car_power 	2274.5597638537
+car_rotVel	2.9621188640594
+ball_pos
+ball_posX	2610.3728027344
+ball_posY	1672.3510742188
+000000000	000000000
+car_pos
+car_dir   	0.39964231848717
+car_posX  	-1971.3598632812
+car_posY  	-1945.3942871094
+car_velMod	0
+car_velDir	0
+car_power 	2076.3895106858
+car_rotVel	2.9630448818207
+ball_pos
+ball_posX	-1033.2271728516
+ball_posY	-1508.6856689453
+000000000	000000000
+car_pos
+car_dir   	1.7131881713867
+car_posX  	971.74237060547
+car_posY  	-512.44000244141
+car_velMod	0
+car_velDir	-0
+car_power 	2341.0940684104
+car_rotVel	2.9625279903412
+ball_pos
+ball_posX	823.58093261719
+ball_posY	517.54974365234
+000000000	000000000
+car_pos
+car_dir   	-2.0458526611328
+car_posX  	-969.37322998047
+car_posY  	2359.2048339844
+car_velMod	0
+car_velDir	0
+car_power 	2220.598098459
+car_rotVel	3.0132813453674
+ball_pos
+ball_posX	-1433.9774169922
+ball_posY	1435.7723388672
+000000000	000000000
+car_pos
+car_dir   	-0.60876172780991
+car_posX  	-2406.1330566406
+car_posY  	-565.59393310547
+car_velMod	0
+car_velDir	-0
+car_power 	2137.3382602527
+car_rotVel	2.9568068981171
+ball_pos
+ball_posX	-1508.4299316406
+ball_posY	-1088.4302978516
+000000000	000000000
+car_pos
+car_dir   	0.72154265642166
+car_posX  	441.24313354492
+car_posY  	-2217.2827148438
+car_velMod	0
+car_velDir	0
+car_power 	2579.487913558
+car_rotVel	2.9567973613739
+ball_pos
+ball_posX	1202.822265625
+ball_posY	-1516.0954589844
+000000000	000000000
+car_pos
+car_dir   	1.985062122345
+car_posX  	2862.6223144531
+car_posY  	11.316065788269
+car_velMod	0
+car_velDir	-0
+car_power 	2433.5212523274
+car_rotVel	2.9600298404694
+ball_pos
+ball_posX	2424.8154296875
+ball_posY	949.89343261719
+000000000	000000000
+car_pos
+car_dir   	1.2397303581238
+car_posX  	2345.9389648438
+car_posY  	1.160143494606
+car_velMod	0
+car_velDir	0
+car_power 	2787.3130709805
+car_rotVel	2.9618504047394
+ball_pos
+ball_posX	2616.197265625
+ball_posY	1007.2067260742
+000000000	000000000
+car_pos
+car_dir   	0.15705448389053
+car_posX  	1153.0347900391
+car_posY  	1599.4339599609
+car_velMod	0
+car_velDir	0
+car_power 	2059.601191459
+car_rotVel	2.9610705375671
+ball_pos
+ball_posX	2173.8078613281
+ball_posY	1801.3685302734
+000000000	000000000
+car_pos
+car_dir   	0.13477398455143
+car_posX  	-85.115905761719
+car_posY  	-2134.4636230469
+car_velMod	0
+car_velDir	0
+car_power 	2878.2855411425
+car_rotVel	2.9568011760712
+ball_pos
+ball_posX	940.08227539062
+ball_posY	-1933.9183349609
+000000000	000000000
+car_pos
+car_dir   	-0.8521341085434
+car_posX  	-1721.2420654297
+car_posY  	94.293312072754
+car_velMod	0
+car_velDir	-0
+car_power 	2622.9435627456
+car_rotVel	2.9634668827057
+ball_pos
+ball_posX	-1010.7672119141
+ball_posY	-653.56213378906
+000000000	000000000
+car_pos
+car_dir   	0.39460355043411
+car_posX  	562.85888671875
+car_posY  	-2239.0698242188
+car_velMod	0
+car_velDir	0
+car_power 	2415.2983345163
+car_rotVel	2.9567832946777
+ball_pos
+ball_posX	1497.8721923828
+ball_posY	-1786.1494140625
+000000000	000000000
+car_pos
+car_dir   	-0.54840761423111
+car_posX  	-1028.5955810547
+car_posY  	-1212.3220214844
+car_velMod	0
+car_velDir	-0
+car_power 	2157.8686275323
+car_rotVel	2.9570913314819
+ball_pos
+ball_posX	-133.03674316406
+ball_posY	-1733.4632568359
+000000000	000000000
+car_pos
+car_dir   	-1.1530904769897
+car_posX  	402.79858398438
+car_posY  	-1812.3563232422
+car_velMod	0
+car_velDir	-0
+car_power 	2950.6435598948
+car_rotVel	2.9625153541565
+ball_pos
+ball_posX	826.48364257812
+ball_posY	-2759.4506835938
+000000000	000000000
+car_pos
+car_dir   	-1.6851519346237
+car_posX  	-743.89672851562
+car_posY  	1526.9613037109
+car_velMod	0
+car_velDir	0
+car_power 	2742.9151799264
+car_rotVel	2.9602704048157
+ball_pos
+ball_posX	-860.69665527344
+ball_posY	492.26348876953
+000000000	000000000
+car_pos
+car_dir   	-0.32055643200874
+car_posX  	-1065.947265625
+car_posY  	-1730.4405517578
+car_velMod	0
+car_velDir	-0
+car_power 	2018.4402084064
+car_rotVel	2.9645366668701
+ball_pos
+ball_posX	-62.436538696289
+ball_posY	-2004.1984863281
+000000000	000000000
+car_pos
+car_dir   	2.3646192550659
+car_posX  	2848.0161132812
+car_posY  	-1295.1962890625
+car_velMod	0
+car_velDir	-0
+car_power 	2903.3845122454
+car_rotVel	2.9677979946136
+ball_pos
+ball_posX	2115.2775878906
+ball_posY	-571.62713623047
+000000000	000000000
+car_pos
+car_dir   	-2.677946805954
+car_posX  	492.0361328125
+car_posY  	968.51892089844
+car_velMod	0
+car_velDir	0
+car_power 	2315.3523534142
+car_rotVel	2.9617075920105
+ball_pos
+ball_posX	-404.40399169922
+ball_posY	452.25521850586
+000000000	000000000
+car_pos
+car_dir   	-1.4299731254578
+car_posX  	-2342.3466796875
+car_posY  	-713.705078125
+car_velMod	0
+car_velDir	-0
+car_power 	2253.9905608883
+car_rotVel	2.9611179828644
+ball_pos
+ball_posX	-2209.0422363281
+ball_posY	-1745.2106933594
+000000000	000000000
+car_pos
+car_dir   	-2.0375292301178
+car_posX  	-1969.9276123047
+car_posY  	1458.4887695312
+car_velMod	0
+car_velDir	0
+car_power 	2579.4679464677
+car_rotVel	2.9638683795929
+ball_pos
+ball_posX	-2431.4287109375
+ball_posY	533.5244140625
+000000000	000000000
+car_pos
+car_dir   	2.7466380596161
+car_posX  	-751.80633544922
+car_posY  	-1361.9666748047
+car_velMod	0
+car_velDir	-0
+car_power 	2378.0608462999
+car_rotVel	2.9621548652649
+ball_pos
+ball_posX	-1729.8209228516
+ball_posY	-1004.7427368164
+000000000	000000000
+car_pos
+car_dir   	2.298807144165
+car_posX  	1376.4677734375
+car_posY  	-1946.7230224609
+car_velMod	0
+car_velDir	-0
+car_power 	2119.9780004658
+car_rotVel	2.9658532142639
+ball_pos
+ball_posX	691.51153564453
+ball_posY	-1176.8394775391
+000000000	000000000
+car_pos
+car_dir   	-2.7043485641479
+car_posX  	-829.04974365234
+car_posY  	464.44351196289
+car_velMod	0
+car_velDir	0
+car_power 	2476.4051770216
+car_rotVel	2.9623622894287
+ball_pos
+ball_posX	-1752.0523681641
+ball_posY	-0.70566821098328
+000000000	000000000
+car_pos
+car_dir   	2.6916608810425
+car_posX  	1933.6594238281
+car_posY  	-732.7763671875
+car_velMod	0
+car_velDir	-0
+car_power 	2206.2681788608
+car_rotVel	2.9592626094818
+ball_pos
+ball_posX	986.48834228516
+ball_posY	-306.99905395508
+000000000	000000000
+car_pos
+car_dir   	-2.1924583911896
+car_posX  	-1059.9349365234
+car_posY  	583.96221923828
+car_velMod	0
+car_velDir	0
+car_power 	2060.3609592935
+car_rotVel	2.9567756652832
+ball_pos
+ball_posX	-1641.3142089844
+ball_posY	-273.58087158203
+000000000	000000000
+car_pos
+car_dir   	-0.90020781755447
+car_posX  	-2908.1008300781
+car_posY  	-2127.7983398438
+car_velMod	0
+car_velDir	-0
+car_power 	2416.9577525076
+car_rotVel	2.9567997455597
+ball_pos
+ball_posX	-2216.0698242188
+ball_posY	-2897.12109375
+000000000	000000000
+car_pos
+car_dir   	-2.5592157840729
+car_posX  	1900.1929931641
+car_posY  	2067.9287109375
+car_velMod	0
+car_velDir	0
+car_power 	2711.3109318127
+car_rotVel	2.9567997455597
+ball_pos
+ball_posX	1045.9509277344
+ball_posY	1481.6202392578
+000000000	000000000
+car_pos
+car_dir   	-1.4723079204559
+car_posX  	-816.47161865234
+car_posY  	187.63165283203
+car_velMod	0
+car_velDir	-0
+car_power 	2070.5525609993
+car_rotVel	2.9617614746094
+ball_pos
+ball_posX	-679.55981445312
+ball_posY	-843.96295166016
+000000000	000000000
+car_pos
+car_dir   	-2.1369857788086
+car_posX  	-290.38262939453
+car_posY  	-750.34375
+car_velMod	0
+car_velDir	0
+car_power 	2450.0903968933
+car_rotVel	2.9568350315094
+ball_pos
+ball_posX	-820.34735107422
+ball_posY	-1645.3287353516
+000000000	000000000
+car_pos
+car_dir   	-0.076009161770344
+car_posX  	-2262.0278320312
+car_posY  	-3917.7692871094
+car_velMod	0
+car_velDir	-0
+car_power 	2047.3078200814
+car_rotVel	2.9647054672241
+ball_pos
+ball_posX	-1219.7944335938
+ball_posY	-3949.5493164062
+000000000	000000000
+car_pos
+car_dir   	-1.7620198726654
+car_posX  	-498.84469604492
+car_posY  	-105.52784729004
+car_velMod	0
+car_velDir	0
+car_power 	2315.0542421802
+car_rotVel	2.9611001014709
+ball_pos
+ball_posX	-641.76251220703
+ball_posY	-1137.8848876953
+000000000	000000000
+car_pos
+car_dir   	-2.6927518844604
+car_posX  	764.98278808594
+car_posY  	-555.18084716797
+car_velMod	0
+car_velDir	0
+car_power 	2583.2424567003
+car_rotVel	2.9651448726654
+ball_pos
+ball_posX	-170.40231323242
+ball_posY	-997.08703613281
+000000000	000000000
+car_pos
+car_dir   	-1.4804340600967
+car_posX  	-2177.0166015625
+car_posY  	-2006.1293945312
+car_velMod	0
+car_velDir	-0
+car_power 	2375.8731965795
+car_rotVel	2.956803560257
+ball_pos
+ball_posX	-2061.6801757812
+ball_posY	-3045.7121582031
+000000000	000000000
+car_pos
+car_dir   	2.9683589935303
+car_posX  	2125.4299316406
+car_posY  	-2196.2482910156
+car_velMod	0
+car_velDir	-0
+car_power 	2206.5022900731
+car_rotVel	2.9570591449738
+ball_pos
+ball_posX	1095.6551513672
+ball_posY	-2056.8239746094
+000000000	000000000
+car_pos
+car_dir   	-1.959720492363
+car_posX  	-1104.2066650391
+car_posY  	-1833.5753173828
+car_velMod	0
+car_velDir	0
+car_power 	2496.0533005633
+car_rotVel	2.9567747116089
+ball_pos
+ball_posX	-1431.2772216797
+ball_posY	-2825.251953125
+000000000	000000000
+car_pos
+car_dir   	3.1218521595001
+car_posX  	2308.9008789062
+car_posY  	-1260.9808349609
+car_velMod	0
+car_velDir	-0
+car_power 	2795.1153511159
+car_rotVel	2.9620387554169
+ball_pos
+ball_posX	1267.5684814453
+ball_posY	-1235.1441650391
+000000000	000000000
+car_pos
+car_dir   	-1.8545968532562
+car_posX  	-966.63629150391
+car_posY  	-1214.1578369141
+car_velMod	0
+car_velDir	0
+car_power 	2177.9039749773
+car_rotVel	2.9633586406708
+ball_pos
+ball_posX	-1196.0424804688
+ball_posY	-2230.5180664062
+000000000	000000000
+car_pos
+car_dir   	-1.7612097263336
+car_posX  	-2359.5419921875
+car_posY  	-2355.3061523438
+car_velMod	0
+car_velDir	0
+car_power 	2536.0930313059
+car_rotVel	2.9626293182373
+ball_pos
+ball_posX	-2491.2209472656
+ball_posY	-3391.9392089844
+000000000	000000000
+car_pos
+car_dir   	-2.4299836158752
+car_posX  	-923.77020263672
+car_posY  	1748.4881591797
+car_velMod	0
+car_velDir	0
+car_power 	2771.7084878924
+car_rotVel	2.9604828357697
+ball_pos
+ball_posX	-1659.6181640625
+ball_posY	1023.3943481445
+000000000	000000000
+car_pos
+car_dir   	2.6043725013733
+car_posX  	229.86734008789
+car_posY  	-675.54235839844
+car_velMod	0
+car_velDir	-0
+car_power 	2042.984851656
+car_rotVel	2.9619972705841
+ball_pos
+ball_posX	-676.73303222656
+ball_posY	-182.49725341797
+000000000	000000000
+car_pos
+car_dir   	-2.3090724945068
+car_posX  	-2641.9353027344
+car_posY  	849.34619140625
+car_velMod	0
+car_velDir	0
+car_power 	2926.7094535412
+car_rotVel	2.9567754268646
+ball_pos
+ball_posX	-3287.8666992188
+ball_posY	40.283645629883
+000000000	000000000
+car_pos
+car_dir   	2.8320000171661
+car_posX  	1829.98828125
+car_posY  	-310.83648681641
+car_velMod	0
+car_velDir	-0
+car_power 	2721.2008590443
+car_rotVel	2.9626989364624
+ball_pos
+ball_posX	838.77996826172
+ball_posY	-2.2557735443115
+000000000	000000000
+car_pos
+car_dir   	-2.0595660209656
+car_posX  	-1293.3212890625
+car_posY  	628.51287841797
+car_velMod	0
+car_velDir	0
+car_power 	2990.8813820178
+car_rotVel	2.9598104953766
+ball_pos
+ball_posX	-1717.9942626953
+ball_posY	-319.20840454102
+000000000	000000000
+car_pos
+car_dir   	-0.80001389980316
+car_posX  	-2627.0817871094
+car_posY  	-2379.7421875
+car_velMod	0
+car_velDir	-0
+car_power 	2934.5572958396
+car_rotVel	2.9619538784027
+ball_pos
+ball_posX	-1891.1711425781
+ball_posY	-3103.1027832031
+000000000	000000000
+car_pos
+car_dir   	-2.8659408092499
+car_posX  	1962.4826660156
+car_posY  	-1738.7287597656
+car_velMod	0
+car_velDir	0
+car_power 	2289.5770293146
+car_rotVel	2.9606308937073
+ball_pos
+ball_posX	959.11737060547
+ball_posY	-2005.6656494141
+000000000	000000000
+car_pos
+car_dir   	-1.8893495798111
+car_posX  	-2430.357421875
+car_posY  	213.33290100098
+car_velMod	0
+car_velDir	0
+car_power 	2991.0606518346
+car_rotVel	2.9590146541595
+ball_pos
+ball_posX	-2743.7644042969
+ball_posY	-780.21044921875
+000000000	000000000
+car_pos
+car_dir   	-2.9841940402985
+car_posX  	1803.6842041016
+car_posY  	1254.6766357422
+car_velMod	0
+car_velDir	0
+car_power 	2206.5960169801
+car_rotVel	2.9604086875916
+ball_pos
+ball_posX	777.31817626953
+ball_posY	1071.6343994141
+000000000	000000000
+car_pos
+car_dir   	-1.6663641929626
+car_posX  	-1416.6068115234
+car_posY  	631.09539794922
+car_velMod	0
+car_velDir	0
+car_power 	2587.2330719546
+car_rotVel	2.9603655338287
+ball_pos
+ball_posX	-1521.8481445312
+ball_posY	-404.14935302734
+000000000	000000000
+car_pos
+car_dir   	-2.8528788089752
+car_posX  	-454.44711303711
+car_posY  	-1573.1257324219
+car_velMod	0
+car_velDir	0
+car_power 	2355.2186192736
+car_rotVel	2.9599862098694
+ball_pos
+ball_posX	-1440.0222167969
+ball_posY	-1893.9274902344
+000000000	000000000
+car_pos
+car_dir   	3.0482034683228
+car_posX  	1439.1018066406
+car_posY  	-596.13067626953
+car_velMod	0
+car_velDir	-0
+car_power 	2182.548942595
+car_rotVel	2.9619431495667
+ball_pos
+ball_posX	401.40191650391
+ball_posY	-505.38101196289
+000000000	000000000
+car_pos
+car_dir   	-1.8925060033798
+car_posX  	-1818.9782714844
+car_posY  	-349.33221435547
+car_velMod	0
+car_velDir	0
+car_power 	2451.8429112862
+car_rotVel	2.956775188446
+ball_pos
+ball_posX	-2079.8918457031
+ball_posY	-1359.11328125
+000000000	000000000
+car_pos
+car_dir   	-2.6012187004089
+car_posX  	-370.67822265625
+car_posY  	811.29803466797
+car_velMod	0
+car_velDir	0
+car_power 	2275.9260354917
+car_rotVel	2.9609014987946
+ball_pos
+ball_posX	-1240.1405029297
+ball_posY	256.16036987305
+000000000	000000000
+car_pos
+car_dir   	2.416229724884
+car_posX  	758.71148681641
+car_posY  	-1646.2296142578
+car_velMod	0
+car_velDir	-0
+car_power 	2544.335036792
+car_rotVel	2.9639909267426
+ball_pos
+ball_posX	-7.2778878211975
+ball_posY	-958.94561767578
+000000000	000000000
+car_pos
+car_dir   	-2.534567117691
+car_posX  	-1686.5814208984
+car_posY  	491.86712646484
+car_velMod	0
+car_velDir	0
+car_power 	2431.3246917125
+car_rotVel	2.9568228721619
+ball_pos
+ball_posX	-2499.8947753906
+ball_posY	-152.03314208984
+000000000	000000000
+car_pos
+car_dir   	2.6468544006348
+car_posX  	2191.4711914062
+car_posY  	-920.22393798828
+car_velMod	0
+car_velDir	-0
+car_power 	2231.5621460935
+car_rotVel	2.960756778717
+ball_pos
+ball_posX	1248.9892578125
+ball_posY	-487.88662719727
+000000000	000000000
+car_pos
+car_dir   	-2.3125903606415
+car_posX  	-797.58795166016
+car_posY  	426.14218139648
+car_velMod	0
+car_velDir	0
+car_power 	2581.8724173968
+car_rotVel	2.9568271636963
+ball_pos
+ball_posX	-1444.8194580078
+ball_posY	-381.99838256836
+000000000	000000000
+car_pos
+car_dir   	-0.99383354187012
+car_posX  	-2858.505859375
+car_posY  	-2133.8486328125
+car_velMod	0
+car_velDir	-0
+car_power 	2438.3031155161
+car_rotVel	2.9616122245789
+ball_pos
+ball_posX	-2272.4462890625
+ball_posY	-2991.3803710938
+000000000	000000000
+car_pos
+car_dir   	-2.180272102356
+car_posX  	-952.46795654297
+car_posY  	-287.18252563477
+car_velMod	0
+car_velDir	0
+car_power 	2170.6116353956
+car_rotVel	2.9630558490753
+ball_pos
+ball_posX	-1547.7465820312
+ball_posY	-1128.0562744141
+000000000	000000000
+car_pos
+car_dir   	-2.2507500648499
+car_posX  	-2513.115234375
+car_posY  	1744.0980224609
+car_velMod	0
+car_velDir	0
+car_power 	2443.7350460532
+car_rotVel	2.9567744731903
+ball_pos
+ball_posX	-3109.2729492188
+ball_posY	896.05279541016
+000000000	000000000
+car_pos
+car_dir   	-3.1361437479602
+car_posX  	-1052.4293212891
+car_posY  	979.8291015625
+car_velMod	0
+car_velDir	-0
+car_power 	2295.1112940419
+car_rotVel	2.9604425430298
+ball_pos
+ball_posX	-2095.6799316406
+ball_posY	950.11981201172
+000000000	000000000
+car_pos
+car_dir   	1.6528763771057
+car_posX  	-2383.185546875
+car_posY  	-2089.4282226562
+car_velMod	0
+car_velDir	-0
+car_power 	2563.8963568788
+car_rotVel	2.963255405426
+ball_pos
+ball_posX	-2516.130859375
+ball_posY	-1056.6553955078
+000000000	000000000
+car_pos
+car_dir   	3.0691850185394
+car_posX  	-2847.4997558594
+car_posY  	1150.8631591797
+car_velMod	0
+car_velDir	-0
+car_power 	2827.4005701893
+car_rotVel	2.962128162384
+ball_pos
+ball_posX	-3885.6882324219
+ball_posY	1226.7462158203
+000000000	000000000
+car_pos
+car_dir   	2.6516020298004
+car_posX  	-1232.0589599609
+car_posY  	1344.7951660156
+car_velMod	0
+car_velDir	-0
+car_power 	2161.7965964423
+car_rotVel	2.9655930995941
+ball_pos
+ball_posX	-2147.1672363281
+ball_posY	1826.0461425781
+000000000	000000000
+car_pos
+car_dir   	1.7864927053452
+car_posX  	255.35531616211
+car_posY  	-1507.2810058594
+car_velMod	0
+car_velDir	-0
+car_power 	2982.066064599
+car_rotVel	2.9599990844727
+ball_pos
+ball_posX	9.0838937759399
+ball_posY	-499.09411621094
+000000000	000000000
+car_pos
+car_dir   	-3.1083188692676
+car_posX  	-562.89831542969
+car_posY  	1659.2563476562
+car_velMod	0
+car_velDir	-0
+car_power 	2254.88910184
+car_rotVel	2.9621114730835
+ball_pos
+ball_posX	-1601.3540039062
+ball_posY	1581.0361328125
+000000000	000000000
+car_pos
+car_dir   	2.09690117836
+car_posX  	-1871.4138183594
+car_posY  	304.73522949219
+car_velMod	0
+car_velDir	-0
+car_power 	2605.6861088638
+car_rotVel	2.960120677948
+ball_pos
+ball_posX	-2414.0798339844
+ball_posY	1185.05859375
+000000000	000000000
+car_pos
+car_dir   	2.1891503334045
+car_posX  	-64.656776428223
+car_posY  	1604.9699707031
+car_velMod	0
+car_velDir	-0
+car_power 	2873.8252939069
+car_rotVel	2.9634618759155
+ball_pos
+ball_posX	-653.78161621094
+ball_posY	2452.5749511719
+000000000	000000000
+car_pos
+car_dir   	1.7919132709503
+car_posX  	1020.8569946289
+car_posY  	812.62158203125
+car_velMod	0
+car_velDir	-0
+car_power 	2021.2519662554
+car_rotVel	2.9609050750732
+ball_pos
+ball_posX	734.32153320312
+ball_posY	1811.3864746094
+000000000	000000000
+car_pos
+car_dir   	1.6481096744537
+car_posX  	2477.1547851562
+car_posY  	325.05694580078
+car_velMod	0
+car_velDir	-0
+car_power 	2877.3065553407
+car_rotVel	2.9607856273651
+ball_pos
+ball_posX	2358.01953125
+ball_posY	1359.1053466797
+000000000	000000000
+car_pos
+car_dir   	-0.047676648944616
+car_posX  	-1608.6252441406
+car_posY  	1927.5816650391
+car_velMod	0
+car_velDir	-0
+car_power 	2144.6995349343
+car_rotVel	2.9598565101624
+ball_pos
+ball_posX	-565.97973632812
+ball_posY	1935.5417480469
+000000000	000000000
+car_pos
+car_dir   	1.3617436885834
+car_posX  	1666.5324707031
+car_posY  	1994.1068115234
+car_velMod	0
+car_velDir	0
+car_power 	2410.3866407696
+car_rotVel	2.9601290225983
+ball_pos
+ball_posX	1813.2065429688
+ball_posY	3027.3156738281
+000000000	000000000
+car_pos
+car_dir   	0.54659646749496
+car_posX  	-472.16015625
+car_posY  	-1880.9022216797
+car_velMod	0
+car_velDir	0
+car_power 	2240.2250064724
+car_rotVel	2.9567716121674
+ball_pos
+ball_posX	402.32373046875
+ball_posY	-1318.3040771484
+000000000	000000000
+car_pos
+car_dir   	1.8449809551239
+car_posX  	2310.1728515625
+car_posY  	-91.122673034668
+car_velMod	0
+car_velDir	-0
+car_power 	2095.4746264478
+car_rotVel	2.961728811264
+ball_pos
+ball_posX	2025.4301757812
+ball_posY	909.00860595703
+000000000	000000000
+car_pos
+car_dir   	-1.4166841506958
+car_posX  	519.66729736328
+car_posY  	2452.3293457031
+car_velMod	0
+car_velDir	-0
+car_power 	2980.5731233119
+car_rotVel	2.9841721057892
+ball_pos
+ball_posX	713.94085693359
+ball_posY	1430.9907226562
+000000000	000000000
+car_pos
+car_dir   	-0.09778805077076
+car_posX  	1179.900390625
+car_posY  	-761.16864013672
+car_velMod	0
+car_velDir	-0
+car_power 	2394.2698810223
+car_rotVel	2.9604551792145
+ball_pos
+ball_posX	2217.9226074219
+ball_posY	-825.265625
+000000000	000000000
+car_pos
+car_dir   	-0.23973378539085
+car_posX  	2031.2679443359
+car_posY  	-1877.1505126953
+car_velMod	0
+car_velDir	-0
+car_power 	2742.8043707008
+car_rotVel	2.9599778652191
+ball_pos
+ball_posX	3049.3608398438
+ball_posY	-2099.0510253906
+000000000	000000000
+car_pos
+car_dir   	-1.1463340520859
+car_posX  	-2198.6057128906
+car_posY  	1746.4572753906
+car_velMod	0
+car_velDir	-0
+car_power 	2457.1800215436
+car_rotVel	2.9568021297455
+ball_pos
+ball_posX	-1751.3610839844
+ball_posY	805.64215087891
+000000000	000000000
+car_pos
+car_dir   	0.13748943805695
+car_posX  	-762.60986328125
+car_posY  	-1232.6278076172
+car_velMod	0
+car_velDir	0
+car_power 	2813.7595028681
+car_rotVel	2.964608669281
+ball_pos
+ball_posX	269.1208190918
+ball_posY	-1094.20703125
+000000000	000000000
+car_pos
+car_dir   	1.4890818595886
+car_posX  	2464.6149902344
+car_posY  	-752.69506835938
+car_velMod	0
+car_velDir	0
+car_power 	2157.7247684625
+car_rotVel	2.9571375846863
+ball_pos
+ball_posX	2497.6691894531
+ball_posY	290.93087768555
+000000000	000000000
+car_pos
+car_dir   	-0.16199399530888
+car_posX  	287.41516113281
+car_posY  	1859.2603759766
+car_velMod	0
+car_velDir	-0
+car_power 	2962.4380208377
+car_rotVel	2.9606120586395
+ball_pos
+ball_posX	1324.0128173828
+ball_posY	1744.8913574219
+000000000	000000000
+car_pos
+car_dir   	0.033214412629604
+car_posX  	-785.66345214844
+car_posY  	-2172.4733886719
+car_velMod	0
+car_velDir	-0
+car_power 	2252.7313601471
+car_rotVel	2.9568114280701
+ball_pos
+ball_posX	257.47991943359
+ball_posY	-2072.9184570312
+000000000	000000000
+car_pos
+car_dir   	1.3325816392899
+car_posX  	2504.01953125
+car_posY  	-1851.7019042969
+car_velMod	0
+car_velDir	0
+car_power 	2555.2941735626
+car_rotVel	2.9588687419891
+ball_pos
+ball_posX	2718.0922851562
+ball_posY	-829.876953125
+000000000	000000000
+car_pos
+car_dir   	-0.49122998118401
+car_posX  	370.07202148438
+car_posY  	1718.3370361328
+car_velMod	0
+car_velDir	-0
+car_power 	2910.8142898934
+car_rotVel	2.9624361991882
+ball_pos
+ball_posX	1281.4429931641
+ball_posY	1232.6390380859
+000000000	000000000
+car_pos
+car_dir   	-0.76561135053635
+car_posX  	-1064.9417724609
+car_posY  	790.15228271484
+car_velMod	0
+car_velDir	-0
+car_power 	2676.6653408653
+car_rotVel	2.9627461433411
+ball_pos
+ball_posX	-303.31454467773
+ball_posY	92.624214172363
+000000000	000000000
+car_pos
+car_dir   	0.54514509439468
+car_posX  	1372.4064941406
+car_posY  	-1402.5617675781
+car_velMod	0
+car_velDir	0
+car_power 	2534.2758570492
+car_rotVel	2.9623050689697
+ball_pos
+ball_posX	2241.1901855469
+ball_posY	-846.28210449219
+000000000	000000000
+car_pos
+car_dir   	-0.72966754436493
+car_posX  	-131.70150756836
+car_posY  	1384.8670654297
+car_velMod	0
+car_velDir	-0
+car_power 	2358.3932939723
+car_rotVel	2.963259935379
+ball_pos
+ball_posX	655.50219726562
+ball_posY	717.16186523438
+000000000	000000000
+car_pos
+car_dir   	0.59102433919907
+car_posX  	2389.4645996094
+car_posY  	-716.79058837891
+car_velMod	0
+car_velDir	0
+car_power 	2242.4823526491
+car_rotVel	2.9567754268646
+ball_pos
+ball_posX	3239.3933105469
+ball_posY	-122.35515594482
+000000000	000000000
+car_pos
+car_dir   	-0.44437843561172
+car_posX  	-1860.8989257812
+car_posY  	96.691856384277
+car_velMod	0
+car_velDir	-0
+car_power 	2538.4018526126
+car_rotVel	2.9632270336151
+ball_pos
+ball_posX	-916.23400878906
+ball_posY	-331.96954345703
+000000000	000000000
+car_pos
+car_dir   	1.0292838811874
+car_posX  	1128.3311767578
+car_posY  	-1229.2276611328
+car_velMod	0
+car_velDir	0
+car_power 	2307.7384002077
+car_rotVel	2.9625773429871
+ball_pos
+ball_posX	1640.0543212891
+ball_posY	-327.66989135742
+000000000	000000000
+car_pos
+car_dir   	2.3989577293396
+car_posX  	2723.1896972656
+car_posY  	1634.2918701172
+car_velMod	0
+car_velDir	-0
+car_power 	2749.6935342204
+car_rotVel	2.9568331241608
+ball_pos
+ball_posX	1940.4913330078
+ball_posY	2314.40625
+000000000	000000000
+car_pos
+car_dir   	1.3095101118088
+car_posX  	930.99884033203
+car_posY  	1409.763671875
+car_velMod	0
+car_velDir	0
+car_power 	2007.6588764822
+car_rotVel	2.9570770263672
+ball_pos
+ball_posX	1176.8894042969
+ball_posY	2422.4284667969
+000000000	000000000
+car_pos
+car_dir   	0.59821730852127
+car_posX  	-682.33526611328
+car_posY  	-2278.4133300781
+car_velMod	0
+car_velDir	0
+car_power 	2222.4194697209
+car_rotVel	2.9649980068207
+ball_pos
+ball_posX	175.29615783691
+ball_posY	-1705.3773193359
+000000000	000000000
+car_pos
+car_dir   	1.9006450176239
+car_posX  	2006.2255859375
+car_posY  	-420.40203857422
+car_velMod	0
+car_velDir	-0
+car_power 	2105.2613263509
+car_rotVel	2.956779718399
+ball_pos
+ball_posX	1653.3310546875
+ball_posY	559.12145996094
+000000000	000000000
+car_pos
+car_dir   	0.68936002254486
+car_posX  	-172.83087158203
+car_posY  	267.60781860352
+car_velMod	0
+car_velDir	0
+car_power 	2878.8677979628
+car_rotVel	2.9654774665833
+ball_pos
+ball_posX	588.69543457031
+ball_posY	963.51092529297
+000000000	000000000
+car_pos
+car_dir   	0.74550998210907
+car_posX  	1445.9752197266
+car_posY  	-574.11895751953
+car_velMod	0
+car_velDir	0
+car_power 	2729.9881552951
+car_rotVel	2.9630584716797
+ball_pos
+ball_posX	2189.7543945312
+ball_posY	140.78286743164
+000000000	000000000
+car_pos
+car_dir   	-0.029795058071613
+car_posX  	-2477.2990722656
+car_posY  	-2219.0173339844
+car_velMod	0
+car_velDir	-0
+car_power 	2441.275810097
+car_rotVel	2.9610936641693
+ball_pos
+ball_posX	-1436.2725830078
+ball_posY	-2210.8835449219
+000000000	000000000
+car_pos
+car_dir   	1.1596059799194
+car_posX  	802.83624267578
+car_posY  	-2152.6003417969
+car_velMod	0
+car_velDir	0
+car_power 	2295.2203821834
+car_rotVel	2.9626986980438
+ball_pos
+ball_posX	1159.6271972656
+ball_posY	-1176.2745361328
+000000000	000000000
+car_pos
+car_dir   	2.5175747871399
+car_posX  	1905.6813964844
+car_posY  	936.38385009766
+car_velMod	0
+car_velDir	-0
+car_power 	2150.548812072
+car_rotVel	2.963930606842
+ball_pos
+ball_posX	1070.7172851562
+ball_posY	1540.5249023438
+000000000	000000000
+car_pos
+car_dir   	-1.0728704929352
+car_posX  	-2141.1420898438
+car_posY  	1995.2210693359
+car_velMod	0
+car_velDir	-0
+car_power 	2533.4995861787
+car_rotVel	2.959933757782
+ball_pos
+ball_posX	-1625.6005859375
+ball_posY	1100.4140625
+000000000	000000000
+car_pos
+car_dir   	0.36845862865448
+car_posX  	-467.2409362793
+car_posY  	-793.92156982422
+car_velMod	0
+car_velDir	0
+car_power 	2980.5109854697
+car_rotVel	2.9626235961914
+ball_pos
+ball_posX	488.49185180664
+ball_posY	-390.49682617188
+000000000	000000000
+car_pos
+car_dir   	1.7763414382935
+car_posX  	2516.3483886719
+car_posY  	524.83209228516
+car_velMod	0
+car_velDir	-0
+car_power 	2892.985393709
+car_rotVel	2.956778049469
+ball_pos
+ball_posX	2285.91015625
+ball_posY	1543.2666015625
+000000000	000000000
+car_pos
+car_dir   	1.0551813840866
+car_posX  	1792.1087646484
+car_posY  	2270.4309082031
+car_velMod	0
+car_velDir	0
+car_power 	2185.8516154745
+car_rotVel	2.9628276824951
+ball_pos
+ball_posX	2289.1049804688
+ball_posY	3178.0397949219
+000000000	000000000
+car_pos
+car_dir   	0
+car_posX  	-999999
+car_posY  	-999999
+car_velMod	0
+car_velDir	0
+car_power 	2221.5407459166
+car_rotVel	0
+ball_pos
+ball_posX	4722.8857421875
+ball_posY	5018.4248046875
+000000000	000000000
+car_pos
+car_dir   	0
+car_posX  	-999999
+car_posY  	-999999
+car_velMod	0
+car_velDir	0
+car_power 	2198.2845408834
+car_rotVel	0
+ball_pos
+ball_posX	4995.576171875
+ball_posY	4985.5366210938
+000000000	000000000
+car_pos
+car_dir   	0
+car_posX  	-999999
+car_posY  	-999999
+car_velMod	0
+car_velDir	0
+car_power 	2675.418274326
+car_rotVel	0
+ball_pos
+ball_posX	5996.2202148438
+ball_posY	4864.8530273438
+000000000	000000000
+car_pos
+car_dir   	0
+car_posX  	-999999
+car_posY  	-999999
+car_velMod	0
+car_velDir	0
+car_power 	2067.1725198939
+car_rotVel	0
+ball_pos
+ball_posX	6268.9111328125
+ball_posY	4831.96484375
+000000000	000000000
+car_pos
+car_dir   	0
+car_posX  	-999999
+car_posY  	-999999
+car_velMod	0
+car_velDir	0
+car_power 	2960.8703073863
+car_rotVel	0
+ball_pos
+ball_posX	6679.4384765625
+ball_posY	4782.453125
+000000000	000000000
+car_pos
+car_dir   	0
+car_posX  	-999999
+car_posY  	-999999
+car_velMod	0
+car_velDir	0
+car_power 	2114.6927970064
+car_rotVel	0
+ball_pos
+ball_posX	6653.2001953125
+ball_posY	4427.3530273438
+000000000	000000000
+car_pos
+car_dir   	0
+car_posX  	-999999
+car_posY  	-999999
+car_velMod	0
+car_velDir	0
+car_power 	2773.2654664541
+car_rotVel	0
+ball_pos
+ball_posX	6621.7333984375
+ball_posY	4059.2077636719
+000000000	000000000
+car_pos
+car_dir   	0
+car_posX  	-999999
+car_posY  	-999999
+car_velMod	0
+car_velDir	0
+car_power 	2838.2112932569
+car_rotVel	0
+ball_pos
+ball_posX	6551.8618164062
+ball_posY	3241.7482910156
+000000000	000000000
+car_pos
+car_dir   	0
+car_posX  	-999999
+car_posY  	-999999
+car_velMod	0
+car_velDir	0
+car_power 	2864.2511353196
+car_rotVel	0
+ball_pos
+ball_posX	6531.13671875
+ball_posY	2999.2775878906
+000000000	000000000
+car_pos
+car_dir   	0
+car_posX  	-999999
+car_posY  	-999999
+car_velMod	0
+car_velDir	0
+car_power 	2817.5930305466
+car_rotVel	0
+ball_pos
+ball_posX	6471.248046875
+ball_posY	2298.6147460938
+000000000	000000000
+car_pos
+car_dir   	0
+car_posX  	-999999
+car_posY  	-999999
+car_velMod	0
+car_velDir	0
+car_power 	2632.5905344601
+car_rotVel	0
+ball_pos
+ball_posX	6431.2866210938
+ball_posY	1831.0831298828
+000000000	000000000
+car_pos
+car_dir   	0
+car_posX  	-999999
+car_posY  	-999999
+car_velMod	0
+car_velDir	0
+car_power 	2026.963520342
+car_rotVel	0
+ball_pos
+ball_posX	6392.8618164062
+ball_posY	1381.5380859375
+000000000	000000000
+car_pos
+car_dir   	0
+car_posX  	-999999
+car_posY  	-999999
+car_velMod	0
+car_velDir	0
+car_power 	2420.4292117713
+car_rotVel	0
+ball_pos
+ball_posX	6360.1928710938
+ball_posY	999.32678222656
+000000000	000000000
+car_pos
+car_dir   	0
+car_posX  	-999999
+car_posY  	-999999
+car_velMod	0
+car_velDir	0
+car_power 	2526.6233098352
+car_rotVel	0
+ball_pos
+ball_posX	6313.6284179688
+ball_posY	454.54595947266
+000000000	000000000
+car_pos
+car_dir   	0
+car_posX  	-999999
+car_posY  	-999999
+car_velMod	0
+car_velDir	0
+car_power 	2660.3461907526
+car_rotVel	0
+ball_pos
+ball_posX	6252.478515625
+ball_posY	-260.87521362305
+000000000	000000000
+car_pos
+car_dir   	0
+car_posX  	-999999
+car_posY  	-999999
+car_velMod	0
+car_velDir	0
+car_power 	2501.0211432823
+car_rotVel	0
+ball_pos
+ball_posX	6241.607421875
+ball_posY	-496.30718994141
+000000000	000000000
+car_pos
+car_dir   	0
+car_posX  	-999999
+car_posY  	-999999
+car_velMod	0
+car_velDir	0
+car_power 	2894.1987868837
+car_rotVel	0
+ball_pos
+ball_posX	6241.8364257812
+ball_posY	-723.81079101562
+000000000	000000000
