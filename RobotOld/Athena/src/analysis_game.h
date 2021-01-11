@@ -8,6 +8,7 @@
 #include <QThread>
 #include <QFile>
 #include <QObject>
+#include <vector>
 const double param_width = 12000;
 const double param_penalty_radius = 800;
 const double param_penalty_area_l = 350;

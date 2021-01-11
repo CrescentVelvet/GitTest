@@ -345,12 +345,6 @@ void AnalysisGame::judgeSide(const QByteArray& packet){
     Team == PARAM::BLUE ? opTeam = PARAM::YELLOW : opTeam = PARAM::BLUE;
 }
 
-//计算进攻时对方留守后卫数
-
-
-
-
-
 bool AnalysisGame::loadRec(QString &filename){
     replayFile = new QFile(filename);
     packets.clear();
@@ -390,12 +384,66 @@ void AnalysisGame::loadFile(QString filename){
 void AnalysisGame::run(){
     //开启逐帧分析
     qDebug() << "analysing~~~running~~~start!";
-    for (int currentFrame = 0 ; currentFrame < realFrame ; currentFrame++) {
+    int analy_realFrame1 = 0;
+    int analy_realFrame2 = 10000;
+    std::vector<double>our_aggress_x;
+    std::vector<double>our_aggress_y;
+    std::vector<double>their_aggress_x;
+    std::vector<double>their_aggress_y;
+    while(true){
+        //每10000帧分析一次
+        if(analy_realFrame2 > realFrame) { analy_realFrame2 = realFrame; }
+//        qDebug() << analy_realFrame1 << "=" << analy_realFrame2 << "————————————";
+        for(int currentFrame = analy_realFrame1; currentFrame < analy_realFrame2; currentFrame++) {
+                judgeSide(packets.at(currentFrame));
+                cal_our_carnum(packets.at(currentFrame));
+//                if (currentFrame%100 == 0) { qDebug() << currentFrame; }
+        }
+        for(int i = 0; i < 6; i++) {
+            our_car_num[i] = our_car_num[i] / real_ourframe[i/2];
+            their_car_num[i] = their_car_num[i] / real_theirframe[i/2];
+        }
+        //保存数据
+        our_aggress_x.push_back(our_car_num[0]);
+        our_aggress_y.push_back(our_car_num[2]);
+        their_aggress_x.push_back(their_car_num[0]);
+        their_aggress_y.push_back(their_car_num[2]);
+        for(int i = 0; i < 6; i++) {
+            our_car_num[i] = 0;
+            their_car_num[i] = 0;
+        }
+        qDebug() << analy_realFrame2;
+        if(analy_realFrame2 == realFrame) { break; }
+        analy_realFrame1 += 10000;
+        analy_realFrame2 += 10000;
+    }
+    //输出数据
+    std::cout << "x1 = [";
+    for(int i = 0; i < our_aggress_x.size(); i++){
+        std::cout << our_aggress_x[i] << ",";
+    }
+    std::cout << "]" << std::endl;
+    std::cout << "y1 = [";
+    for(int i = 0; i < our_aggress_y.size(); i++){
+        std::cout << our_aggress_y[i] << ",";
+    }
+    std::cout << "]" << std::endl;
+    std::cout << "x2 = [";
+    for(int i = 0; i < their_aggress_x.size(); i++){
+        std::cout << their_aggress_x[i] << ",";
+    }
+    std::cout << "]" << std::endl;
+    std::cout << "y2 = [";
+    for(int i = 0; i < their_aggress_y.size(); i++){
+        std::cout << their_aggress_y[i] << ",";
+    }
+    std::cout << "]" << std::endl;
+    /*for(int currentFrame = 0; currentFrame < realFrame; currentFrame++) {
         judgeSide(packets.at(currentFrame));
         cal_our_carnum(packets.at(currentFrame));
         if (currentFrame%100 == 0) { qDebug() << currentFrame; }
     }
-    for (int i = 0; i < 6; i++) {
+    for(int i = 0; i < 6; i++) {
         our_car_num[i] = our_car_num[i] / real_ourframe[i/2];
         their_car_num[i] = their_car_num[i] / real_theirframe[i/2];
     }
@@ -405,6 +453,6 @@ void AnalysisGame::run(){
     qDebug() << "我方防守时候的防守车数 =" << our_car_num[3] << " | 敌方防守时候的防守车数 =" << their_car_num[3];
     qDebug() << "我方争抢时候的进攻车数 =" << our_car_num[4] << " | 敌方争抢时候的进攻车数 =" << their_car_num[4];
     qDebug() << "我方争抢时候的防守车数 =" << our_car_num[5] << " | 敌方争抢时候的防守车数 =" << their_car_num[5];
-    qDebug() << realFrame;
+    qDebug() << realFrame;*/
     qDebug() << "analysing~~~running~~~end!";
 }
