@@ -13,11 +13,9 @@ public:
 public slots:
     void receiveBlue();
     void receiveYellow();
-//    void receiveAnalyser();
 private:
     QUdpSocket receiverBlue;
     QUdpSocket receiverYellow;
-//    QUdpSocket receiverAnalyser;
 };
 typedef Singleton<Debugger> ZDebugger;
 #endif // DEBUGGER_H

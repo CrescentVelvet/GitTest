@@ -40,6 +40,7 @@ message Robot4Rec {
 	required double posX  = 2;
 	required double posY  = 3;
 	required double angle = 4;
+	optional bool valid =   5;
 }
 
 message Balls4Rec {

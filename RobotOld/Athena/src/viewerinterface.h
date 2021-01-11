@@ -2,28 +2,27 @@
 #define VIEWERINTERFACE_H
 
 #include <QAbstractListModel>
+#include <QTimer>
+#include <QDateTime>
 #include "globaldata.h"
 #include "actionmodule.h"
 #include "simmodule.h"
 #include "parammanager.h"
 
 class ViewerInterface : public QAbstractListModel{
-    Q_OBJECT
+    Q_OBJECT    
 public slots:
-    void changeRobotInfo(int team,int id){
-        emit dataChanged(createIndex(team+id*PARAM::TEAMS,0),createIndex(team+id*PARAM::TEAMS,0));
-    }
+    void changeRobotInfo(int team,int id);
 public:
-    explicit ViewerInterface(QObject *parent = Q_NULLPTR){
-        QObject::connect(ZSS::ZActionModule::instance(),SIGNAL(receiveRobotInfo(int,int)),this,SLOT(changeRobotInfo(int,int)));
-        QObject::connect(ZSS::ZSimModule::instance(),SIGNAL(receiveSimInfo(int,int)),this,SLOT(changeRobotInfo(int,int)));
-    }
+    explicit ViewerInterface(QObject *parent = Q_NULLPTR);
+    void exist_display();
     enum Roles {
         robotID = Qt::UserRole + 1,
         robotTeam,
         robotBattery,
         robotCapacitance,
-        robotInfrared
+        robotInfrared,
+        robotInexist
     };
     Q_ENUM(Roles)
     QHash<int, QByteArray> roleNames() const {
@@ -33,10 +32,11 @@ public:
         result.insert(robotBattery, ("mBattery"));
         result.insert(robotCapacitance, ("mCapacitance"));
         result.insert(robotInfrared, ("mInfrared"));
+        result.insert(robotInexist, ("mInexist"));
         return result;
     }
     virtual int rowCount(const QModelIndex &parent = QModelIndex()) const override{
-        return 24;
+        return PARAM::ROBOTNUM*2;
     }
     virtual int columnCount(const QModelIndex &parent = QModelIndex()) const override{
         return 5;
@@ -56,10 +56,15 @@ public:
                 return GlobalData::instance()->robotInformation[team][id].capacitance;
             case robotInfrared:
                 return GlobalData::instance()->robotInformation[team][id].infrared;
+            case robotInexist:
+                return displayExist[team][id];
             }
             return 0;
         }
     }
+private:
+    RobotInformation displayInfomation[PARAM::TEAMS][PARAM::ROBOTMAXID];
+    bool displayExist[PARAM::TEAMS][PARAM::ROBOTMAXID];
 };
 
 #endif // VIEWERINTERFACE_H

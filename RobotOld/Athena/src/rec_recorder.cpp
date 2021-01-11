@@ -68,17 +68,24 @@ void RecRecorder::store() {
                 robot4Rec->set_posx(robot_vision.robot[color][j].pos.x());
                 robot4Rec->set_posy(robot_vision.robot[color][j].pos.y());
                 robot4Rec->set_angle(robot_vision.robot[color][j].angle);
+                robot4Rec->set_valid(robot_vision.robot[color][j].valid);//add by lzx
             }
         }
         auto& maintainMsg = GlobalData::instance()->maintain[0];
         for(int color = PARAM::BLUE; color <= PARAM::YELLOW; color++) {
             maintain = recMsg.mutable_maintainvision()->add_maintain();
             maintain->set_size(maintainMsg.robotSize[color]);
-            for(int j = 0; j < maintainMsg.robotSize[color]; j++) {
+           // for(int j = 0; j < maintainMsg.robotSize[color]; j++) {
+            for(int j = 0; j < PARAM::ROBOTNUM; j++) {//change by lzx
+                if(!maintainMsg.robot[color][j].valid) continue;
+                if(maintainMsg.robot[color][j].id!=j)
+                        qDebug()<<"a fatal bug or maintain";
                 robot4Rec = maintain->add_robot();
+                robot4Rec->set_id(maintainMsg.robot[color][j].id);//add by lzx
                 robot4Rec->set_posx(maintainMsg.robot[color][j].pos.x());
                 robot4Rec->set_posy(maintainMsg.robot[color][j].pos.y());
                 robot4Rec->set_angle(maintainMsg.robot[color][j].angle);
+                robot4Rec->set_valid(robot_vision.robot[color][j].valid);//add by lzx
             }
         }
         recMsg.mutable_maintainvision()->mutable_balls()->set_size(maintainMsg.ballSize);

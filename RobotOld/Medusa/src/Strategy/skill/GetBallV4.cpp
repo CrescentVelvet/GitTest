@@ -14,6 +14,7 @@
 #include "SkillUtils.h"
 #include "WaitKickPos.h"
 #include "Compensate.h"
+#include "ShootModule.h"
 #include <algorithm>
 
 namespace {
@@ -122,9 +123,10 @@ void CGetBallV4::plan(const CVisionModule* pVision) {
 //        getballTask.player.angle = me2Ball.dir(); //只截球，不射
 //    }
 //    else{
+        bool canShoot = false;
         if(Utils::InTheirPenaltyArea(targetPoint, 0)){//shoot goal
-            KickDirection::Instance()->GenerateShootDir(robotNum, me.RawPos());
-            getballTask.player.angle = KickDirection::Instance()->getRealKickDir();
+            canShoot = ShootModule::Instance()->generateShootDir(robotNum);
+            getballTask.player.angle = ShootModule::Instance()->getDir();
             power = 650;
         }
         else{//pass ball

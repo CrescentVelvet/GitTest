@@ -286,6 +286,7 @@ SOURCES += \
     src/Algorithm/PenaltyPosCleaner.cpp \
     src/Algorithm/ShootRangeList.cpp \
     src/Algorithm/kickregulation.cpp \
+    src/Algorithm/ShootModule.cpp \
     src/LuaModule/LuaModule.cpp \
     src/LuaModule/lua_zeus.cpp \
     src/Main/ActionModule.cpp \
@@ -452,7 +453,8 @@ SOURCES += \
     src/PathPlan/KDTreeNew.cpp \
     src/PathPlan/RRTPathPlannerNew.cpp \
     src/Strategy/skill/SmartGotoPositionV3.cpp \
-    src/Algorithm/ballmodel.cpp
+    src/Algorithm/ballmodel.cpp \
+    src/Algorithm/self_pass.cpp
 
 
 
@@ -468,6 +470,7 @@ HEADERS += \
     src/Algorithm/PenaltyPosCleaner.h \
     src/Algorithm/ShootRangeList.h \
     src/Algorithm/kickregulation.h \
+    src/Algorithm/ShootModule.h \
     src/LuaModule/lauxlib.h \
     src/LuaModule/luaconf.h \
     src/LuaModule/lua.h \
@@ -676,6 +679,7 @@ HEADERS += \
     src/PathPlan/RRTPathPlannerNew.h \
     src/Strategy/skill/SmartGotoPositionV3.h \
     src/Algorithm/ballmodel.h\
+    src/Algorithm/self_pass.h
 
 
 

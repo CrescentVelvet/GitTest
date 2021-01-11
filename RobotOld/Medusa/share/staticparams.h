@@ -6,7 +6,7 @@
 namespace PARAM {
 const bool DEBUG = false;
 const int CAMERA = 8;
-const int SENDROBOTNUM = 8;
+const int SENDROBOTNUM = 16;
 const int ROBOTNUM = 16;// max allow robot on the playgroung
 const int ROBOTMAXID = 16;
 const int BALLNUM = 20;

@@ -10,6 +10,7 @@ public:
     float minimumX,maximumX,minimumY,maximumY;
     float selectCarMinX,selectCarMaxX,selectCarMinY,selectCarMaxY;
     float ballPlacementX,ballPlacementY;
+    int oldLogFlag;
     bool inChosenArea(float x, float y);
     bool inChosenArea(CGeoPoint);
     void setArea(float,float,float,float);
@@ -17,6 +18,7 @@ public:
     void setBallPlacementPos(float,float);
     void setSelectCarArea(float,float,float,float);
     void resetSelectCarArea();
+    void setOldLogFlag(bool old);
 signals:
     void needRepaint();
     void addOutput(const QString&);

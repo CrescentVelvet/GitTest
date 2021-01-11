@@ -89,11 +89,13 @@ void Interaction::setVision(bool needStart, bool real) {
     ZSS::ZActionModule::instance()->setSimulation(!real);
     if (needStart) {
         ZSS::ZParamManager::instance()->changeParam("Alert/IsSimulation", !real);
+        ZCommunicator::instance()->reloadSimulation();
         VisionModule::instance()->udpSocketConnect(real);
         if (real) RefereeThread::instance()->start();
         //Maintain::instance()->udpSocketConnect();
     } else {
         ZSS::ZParamManager::instance()->changeParam("Alert/IsSimulation", !real);
+        ZCommunicator::instance()->reloadSimulation();
         VisionModule::instance()->udpSocketDisconnect();
         RefereeThread::instance()->disconnectTCP();
         //Maintain::instance()->udpSocketDisconnect();

@@ -53,7 +53,6 @@ class CGlobalData {
     int lastTouch;//Be attention it's id!!!
     QByteArray debugBlueMessages;
     QByteArray debugYellowMessages;
-    QByteArray debugAnalyserMessages;
     QMutex debugMutex;// debugMessages;
     bool ctrlC;
     QMutex ctrlCMutex;

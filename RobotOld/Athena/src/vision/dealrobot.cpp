@@ -185,8 +185,12 @@ void CDealRobot::sortRobot(int color) {
 }
 
 void CDealRobot::updateVel(int team, ReceiveVisionMessage& result) {
-    for (int i = 0; i < validNum[team]; i++) {
-        Robot & robot = result.robot[team][i];
+ //   for (int i = 0; i < validNum[team]; i++) {
+ //   Robot & robot = result.robot[team][i];
+    for(int i=0;i<=GlobalData::instance()->processRobot[0].robotSize[team];i++){
+        int id = GlobalData::instance()->processRobot[0].robot[team][i].id;
+        Robot & robot = result.robot[team][id];
+        if(!robot.valid) continue;//change by lzx
         //位置滤波
         auto & playerPosVel = _kalmanFilter[team][robot.id].update(robot.pos.x(), robot.pos.y());
         CGeoPoint filtPoint (playerPosVel(0, 0), playerPosVel(1, 0));
@@ -206,7 +210,6 @@ void CDealRobot::updateVel(int team, ReceiveVisionMessage& result) {
         robot.velocity = PlayVel * ZSS::Athena::FRAME_RATE;
         robot.raw_vel = robot.velocity;
         robot.rawRotateVel = robot.rotateVel;
-
         //我方位置朝向修正，根据medusa回传的速度信息
         if (GlobalData::instance()->commandMissingFrame[team] < 20) {
             //小数部分
@@ -238,13 +241,15 @@ void CDealRobot::updateVel(int team, ReceiveVisionMessage& result) {
             //FIX IT
 
         }
-        for (int j = 0; j < PARAM::ROBOTNUM; j++) {
-            if (robot.id == GlobalData::instance()->maintain[0].robot[team][j].id ) {
 
-                robot.accelerate = (robot.velocity - GlobalData::instance()->maintain[-2].robot[team][j].velocity) / 3 * ZSS::Athena::FRAME_RATE ;
-//                if (abs(robot.accelerate.mod()) > 600) robot.accelerate = CVector(0, 0);
-            }
-        }
+//        for (int j = 0; j < PARAM::ROBOTNUM; j++) {
+//            if (robot.id == GlobalData::instance()->maintain[0].robot[team][j].id ) {
+
+//                robot.accelerate = (robot.velocity - GlobalData::instance()->maintain[-2].robot[team][j].velocity) / 3 * ZSS::Athena::FRAME_RATE ;
+////                if (abs(robot.accelerate.mod()) > 600) robot.accelerate = CVector(0, 0);
+//            }
+//        }
+        robot.accelerate = (robot.velocity - GlobalData::instance()->maintain[-2].robot[team][robot.id].velocity) / 3 * ZSS::Athena::FRAME_RATE ;//change by lzx
         lastRobot[team][robot.id].velocity = robot.velocity;
         lastRobot[team][robot.id].rotateVel = robot.rotateVel;
     }
@@ -257,11 +262,16 @@ void CDealRobot::run() {
     sortRobot(PARAM::YELLOW);
     result.init();
     //重新加入概率排序后的车
-    for (int i = 0; i < validNum[PARAM::BLUE]; i++)
+    for (int i = 0; i < validNum[PARAM::BLUE]; i++){
+        sortTemp[PARAM::BLUE][i].valid = true;    //set valid --lzx
         result.addRobot(PARAM::BLUE, sortTemp[PARAM::BLUE][i]);
-    for (int i = 0; i < validNum[PARAM::YELLOW]; i++)
+    }
+    for (int i = 0; i < validNum[PARAM::YELLOW]; i++){
+        if(i < PARAM::SENDROBOTNUM) {
+            sortTemp[PARAM::BLUE][i].valid = true;    //set valid --lzx
+        }
         result.addRobot(PARAM::YELLOW, sortTemp[PARAM::YELLOW][i]);
-
+    }
     GlobalData::instance()->processRobot.push(result);
 }
 

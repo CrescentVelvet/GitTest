@@ -23,8 +23,8 @@ public:
         return instance;
     }
     explicit rec_slider(QObject* parent = nullptr);
-    Q_INVOKABLE QString maxTime = "0";
-    Q_INVOKABLE QString durTime = "0";
+    Q_INVOKABLE QString maxTime = "00:00.000";
+    Q_INVOKABLE QString durTime = "00:00.000";
     Q_INVOKABLE QString recName = "No rec file is playing.";
     Q_INVOKABLE double maximumValue = 1;
     Q_INVOKABLE double stepSize = 1;
@@ -79,8 +79,6 @@ public:
     }
 
     int _maxFrame = 0;
-    static int now_frame;
-
 
 signals:
   void maxTimechanged();

@@ -70,25 +70,40 @@ struct Robot {
     double rotateVel;
     double rawRotateVel;
     bool valid = false;
-    Robot(): id(-1), accelerate(0, 0) {}
-    Robot(double _x, double _y, double _angle, double _id = -1) {
+    Robot(): id(9999), accelerate(0, 0) {}
+    Robot(double _x, double _y, double _angle, double _id = 9999) {
         pos.setX(_x);
         pos.setY(_y);
         angle = _angle;
         raw_angle = _angle;
         id = _id;
     }
-    bool fill(unsigned short id, double _x, double _y, double angle, CVector vel = CVector(0, 0)) {
+    bool init() {
+        pos.setX(9999);
+        pos.setY(9999);
+        this->angle = 0;
+        this->raw_angle = 0;
+        this->velocity = CVector(0, 0);
+        this->raw_vel = CVector(0, 0);
+        this->valid = false;
+        this->id = -1;
+        return true;
+    }//add by lzx
+    bool fill(unsigned short id, double _x, double _y, double angle, CVector vel = CVector(0, 0),/*add by lzx*/bool valid = false) {
         this->id = id;
         pos.setX(_x);
         pos.setY(_y);
         this->angle = angle;
         this->raw_angle = angle;
         this->velocity = vel;
+        this->valid = valid;
         return true;
     }
     bool fill(const Robot& robot) {
         return fill(robot.id, robot.pos.x(), robot.pos.y(), robot.angle, robot.velocity);
+    }
+    bool fill(const Robot& robot,bool valid){
+        return fill(robot.id, robot.pos.x(), robot.pos.y(), robot.angle, robot.velocity,valid);
     }
     bool setPos(CGeoPoint pos) {
         this->pos = pos;
@@ -144,6 +159,12 @@ class OriginMessage {
         robotSize[PARAM::BLUE] = robotSize[PARAM::YELLOW] = ballSize = 0;
         std::fill_n(&robotIndex[0][0], 2 * PARAM::ROBOTMAXID, -1);
         ball[0].pos.fill(-32767, -32767);
+        for(unsigned short i = 0; i < PARAM::ROBOTNUM; i++) {//add by lzx
+            robot[PARAM::BLUE][i].init();
+            robot[PARAM::YELLOW][i].init();
+            robot[PARAM::BLUE][i].id = i;
+            robot[PARAM::YELLOW][i].id =  i;
+        }
     }
     bool addBall(double x, double y, double height = 0, int id = -1) {
         return ballSize >= PARAM::BALLNUM ? false : ball[ballSize++].fill(x, y, height, id);
@@ -157,6 +178,12 @@ class OriginMessage {
         robotIndex[color][id] = robotSize[color];
         return robot[color][robotSize[color]++].fill(id, x, y, angel);
     }
+    bool addRobot(int color, unsigned short id, double x, double y, double angel,bool valid) {
+        if(robotSize[color] >= PARAM::ROBOTNUM)
+            return false;
+        robotIndex[color][id] = robotSize[color];
+        return robot[color][robotSize[color]++].fill(id, x, y, angel, CVector(0, 0),true);
+    }//add by lzx;only use in old log
     bool addRobot(int color, unsigned short id, CGeoPoint point, double angel) {
         if(robotSize[color] >= PARAM::ROBOTNUM)
             return false;

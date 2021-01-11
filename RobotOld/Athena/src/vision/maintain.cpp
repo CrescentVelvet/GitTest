@@ -31,14 +31,26 @@ void CMaintain::init() {
     result.init();
     result.addBall(GlobalData::instance()->processBall[0].ball[0]);
     result.ball[0].valid = DealBall::instance()->getValid();
+//    for (int i = 0; i < GlobalData::instance()->processRobot[0].robotSize[PARAM::BLUE]; i++) {
+//        result.addRobot(PARAM::BLUE, GlobalData::instance()->processRobot[0].robot[PARAM::BLUE][i]);
+//        robotIndex[PARAM::BLUE][result.robot[PARAM::BLUE][i].id] = i;
+//    }
+//    for (int i = 0; i < GlobalData::instance()->processRobot[0].robotSize[PARAM::YELLOW]; i++) {
+//        result.addRobot(PARAM::YELLOW, GlobalData::instance()->processRobot[0].robot[PARAM::YELLOW][i]);
+//        robotIndex[PARAM::YELLOW][result.robot[PARAM::YELLOW][i].id] = i;
+//    }
     for (int i = 0; i < GlobalData::instance()->processRobot[0].robotSize[PARAM::BLUE]; i++) {
-        result.addRobot(PARAM::BLUE, GlobalData::instance()->processRobot[0].robot[PARAM::BLUE][i]);
+        int id = GlobalData::instance()->processRobot[0].robot[PARAM::BLUE][i].id;
+        result.robot[PARAM::BLUE][id].fill(GlobalData::instance()->processRobot[0].robot[PARAM::BLUE][i],true);
+        result.robotSize[PARAM::BLUE]++;
         robotIndex[PARAM::BLUE][result.robot[PARAM::BLUE][i].id] = i;
     }
     for (int i = 0; i < GlobalData::instance()->processRobot[0].robotSize[PARAM::YELLOW]; i++) {
-        result.addRobot(PARAM::YELLOW, GlobalData::instance()->processRobot[0].robot[PARAM::YELLOW][i]);
+        int id = GlobalData::instance()->processRobot[0].robot[PARAM::YELLOW][i].id;
+        result.robot[PARAM::YELLOW][id].fill(GlobalData::instance()->processRobot[0].robot[PARAM::YELLOW][i],true);
+        result.robotSize[PARAM::YELLOW]++;
         robotIndex[PARAM::YELLOW][result.robot[PARAM::YELLOW][i].id] = i;
-    }
+    } //change by lzx
 }
 
 
@@ -88,7 +100,6 @@ void CMaintain::run() {  //TODO move to visionmodule
             } else
                 result.ball[0].ball_state_machine.ballState = _flat_pass;
     }
-
     GlobalData::instance()->maintain.push(result);
 
 }

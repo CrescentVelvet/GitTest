@@ -181,10 +181,6 @@ void CVisionModule::parse(void * ptr, int size) {
         }
         GlobalData::instance()->camera[message.camID].push(message);
         GlobalData::instance()->cameraUpdate[message.camID] = true;
-
-        dealWithData();
-        ZRecRecorder::instance()->store();
-        emit needDraw();
     }
     if (collectNewVision()) {
         checkCommand();
@@ -236,30 +232,35 @@ void  CVisionModule::udpSend() {
         detectionBall->set_x(-32767);
         detectionBall->set_y(-32767);
     }
+
     for (int team = 0; team < PARAM::TEAMS; team++) {
-        for (int i = 0; i < result.robotSize[team]; i++) {
+//        for (int i = 0; i < result.robotSize[team]; i++) {
+//            if (i == PARAM::SENDROBOTNUM) break; //for sending MAX 8 car possible
+        for(int i = 0;i<GlobalData::instance()->processRobot[0].robotSize[team];i++){//change by lzx
             if (i == PARAM::SENDROBOTNUM) break; //for sending MAX 8 car possible
             Vision_DetectionRobot* robot;
+            int id = GlobalData::instance()->processRobot[0].robot[team][i].id;
             if (team == 0 )  robot = detectionFrame.add_robots_blue();
             else robot = detectionFrame.add_robots_yellow();
-            robot->set_x(result.robot[team][i].pos.x());
-            robot->set_y(result.robot[team][i].pos.y());
-            robot->set_orientation(result.robot[team][i].angle);
-            robot->set_robot_id(result.robot[team][i].id);
-            CVector TransferVel(result.robot[team][i].velocity.x(),
-                                result.robot[team][i].velocity.y());
+            robot->set_x(result.robot[team][id].pos.x());
+            robot->set_y(result.robot[team][id].pos.y());
+            robot->set_orientation(result.robot[team][id].angle);
+            robot->set_robot_id(result.robot[team][id].id);
+            CVector TransferVel(result.robot[team][id].velocity.x(),
+                                result.robot[team][id].velocity.y());
             robot->set_vel_x(TransferVel.x());
             robot->set_vel_y(TransferVel.y());
-            robot->set_rotate_vel(result.robot[team][i].rotateVel);
-            robot->set_accelerate_x(result.robot[team][i].accelerate.x());
-            robot->set_accelerate_y(result.robot[team][i].accelerate.y());
+            robot->set_rotate_vel(result.robot[team][id].rotateVel);
+            robot->set_accelerate_x(result.robot[team][id].accelerate.x());
+            robot->set_accelerate_y(result.robot[team][id].accelerate.y());
             robot->set_raw_x(GlobalData::instance()->processRobot[0].robot[team][i].pos.x());
             robot->set_raw_y(GlobalData::instance()->processRobot[0].robot[team][i].pos.y());
             robot->set_raw_orientation(GlobalData::instance()->processRobot[0].robot[team][i].angle);
-            robot->set_valid(true);
-            robot->set_raw_vel_x(result.robot[team][i].raw_vel.x());
-            robot->set_raw_vel_y(result.robot[team][i].raw_vel.y());
-            robot->set_raw_rotate_vel(result.robot[team][i].rawRotateVel);
+            robot->set_valid(result.robot[team][id].valid);
+            if(result.robot[team][id].valid!=true) qDebug()<<"a error of valid in maintain";
+            robot->set_raw_vel_x(result.robot[team][id].raw_vel.x());
+            robot->set_raw_vel_y(result.robot[team][id].raw_vel.y());
+            robot->set_raw_rotate_vel(result.robot[team][id].rawRotateVel);
         }
     }
     int size = detectionFrame.ByteSize();

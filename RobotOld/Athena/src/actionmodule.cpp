@@ -3,6 +3,7 @@
 #include "globaldata.h"
 #include "dealrobot.h"
 #include "messageinfo.h"
+#include <QDateTime>
 #include <QtDebug>
 #include <chrono>
 #include <thread>
@@ -23,18 +24,18 @@ const double LOW_CAPACITANCE = 29.0;
 auto zpm = ZSS::ZParamManager::instance();
 void encodeLegacy(const ZSS::Protocol::Robot_Command&, QByteArray&, int);
 quint8 kickStandardization(quint8, bool, quint16);
-const QString radioSendAddress[PARAM::TEAMS] = {"10.10.11.22", "10.10.11.22"};
-const QString radioReceiveAddress[PARAM::TEAMS] = {"10.10.11.23", "10.10.11.23"};
+const QString radioSendAddress[PARAM::TEAMS] = {"10.12.225.142", "10.12.225.142"};
+const QString radioReceiveAddress[PARAM::TEAMS] = {"10.12.225.142", "10.12.225.142"};
 int blue_sender_interface,blue_receiver_interface,yellow_sender_interface,yellow_receiver_interface;
 std::thread* receiveThread = nullptr;
 bool IS_SIMULATION;
+double VIEW_FREQUENCE;
 }
 
 ActionModule::ActionModule(QObject *parent) : QObject(parent), team{-1, -1} {
     blue_sender_interface = blue_receiver_interface = yellow_sender_interface = yellow_receiver_interface = 0;
     tx.resize(TRANSMIT_PACKET_SIZE);
     tx[0] = 0x40;
-//    QObject::connect(&receiveSocket, SIGNAL(readyRead()), this, SLOT(readData()), Qt::DirectConnection);
     if(receiveSocket.bind(QHostAddress::AnyIPv4, PORT_RECEIVE, QUdpSocket::ShareAddress | QUdpSocket::ReuseAddressHint)) {
         qDebug() << "****** start receive ! ******";
         receiveThread = new std::thread([ = ] {readData();});
@@ -42,6 +43,7 @@ ActionModule::ActionModule(QObject *parent) : QObject(parent), team{-1, -1} {
     } else {
         qDebug() << "Bind Error in action module !";
     }
+    zpm->loadParam(VIEW_FREQUENCE, "Debug/VIEW_FREQUENCE", 1.0);
 }
 
 ActionModule::~ActionModule() {
@@ -192,25 +194,25 @@ void ActionModule::sendLegacy(int t, const ZSS::Protocol::Robots_Command& comman
 void ActionModule::readData() {
     static QHostAddress address;
     static int color;
-    static int count[PARAM::TEAMS][PARAM::ROBOTNUM];
-    for (int color = PARAM::BLUE; color < PARAM::TEAMS; color++) {
-        for (int j = 0; j < PARAM::ROBOTNUM; j++ ) {
-            count[color][j] = 0;
-        }
+    static qint64 last_receive_time[PARAM::ROBOTNUM];
+    static bool no_response[PARAM::ROBOTNUM];
+    for (int i = 0; i < PARAM::ROBOTNUM; i++) {
+        no_response[i] = false;
     }
     while(true) {
         std::this_thread::sleep_for(std::chrono::microseconds(500));
-//        ZSS::ZParamManager::instance()->loadParam(isSimulation, "Alert/IsSimulation", false);
         if(!IS_SIMULATION) {
-            for (int color = PARAM::BLUE; color < PARAM::TEAMS; color++) {
+            for (int color = PARAM::BLUE; color <= PARAM::YELLOW; color++) {
                 for (int j = 0; j < PARAM::ROBOTNUM; j++ ) {
-                    if (count[color][j]++ > 1000) {
+                    QDateTime UTC(QDateTime::currentDateTimeUtc());
+                    qint64 current_time = UTC.toMSecsSinceEpoch();
+                    if (current_time - last_receive_time[j] > 3 * VIEW_FREQUENCE * 1000 && !no_response[j]) {
+                        no_response[j] = true;
                         robotInfoMutex.lock();
                         GlobalData::instance()->robotInformation[color][j].infrared = false;
                         GlobalData::instance()->robotInformation[color][j].flat = false;
                         GlobalData::instance()->robotInformation[color][j].chip = false;
-                        count[color][j] = 0;
-//                        qDebug() << "FUCK" << color << j;
+                        GlobalData::instance()->robotInformation[color][j].battery = 0;
                         robotInfoMutex.unlock();
                         emit receiveRobotInfo(color, j);
                     }
@@ -251,15 +253,19 @@ void ActionModule::readData() {
                 wheelVel[3] = (quint16)(data[12] << 8) + data[13];
 
                 robotInfoMutex.lock();
-                count[color][id] = 0;
                 GlobalData::instance()->robotInformation[color][id].infrared = infrared;
                 GlobalData::instance()->robotInformation[color][id].flat = flat;
                 GlobalData::instance()->robotInformation[color][id].chip = chip;
-                GlobalData::instance()->robotInformation[color][id].battery = std::min(std::max((battery - LOW_BATTERY) / (FULL_BATTERY - LOW_BATTERY), 0.0), 1.0);
+                GlobalData::instance()->robotInformation[color][id].battery = battery/256.0;//std::min(std::max((battery - LOW_BATTERY) / (FULL_BATTERY - LOW_BATTERY), 0.0), 1.0);
                 GlobalData::instance()->robotInformation[color][id].capacitance = std::min(std::max((capacitance - LOW_CAPACITANCE) / (FULL_CAPACITANCE - LOW_CAPACITANCE), 0.0), 1.0);
                 robotInfoMutex.unlock();
+
                 emit receiveRobotInfo(color, id);
             }
+            QDateTime UTC(QDateTime::currentDateTimeUtc());
+            last_receive_time[id] = UTC.toMSecsSinceEpoch();
+            no_response[id] = false;
+
             qDebug() << rx.toHex();
             qDebug() << color << id << infrared << flat << address;
         }
@@ -278,6 +284,20 @@ void encodeLegacy(const ZSS::Protocol::Robot_Command& command, QByteArray& tx, i
     double theta = - origin_vr * dt;
     CVector v(origin_vx, origin_vy);
     v = v.rotate(theta);
+
+    static qint64 time_old[PARAM::ROBOTNUM];
+    QDateTime UTC(QDateTime::currentDateTimeUtc());
+    qint64 current_time = UTC.toMSecsSinceEpoch();
+
+    static int report_cnt = 0;
+    if (num == 0) report_cnt = 0;
+
+    bool report = ((current_time - time_old[id]) >= VIEW_FREQUENCE * 1000) && (report_cnt < 1);
+    if (report) {
+        time_old[id] = current_time;
+        report_cnt++;
+    }
+
     if (fabs(theta) > 0.00001) {
         //            if (i==0) cout << theta << " " <<vx << " "<< vy << " ";
         v = v * theta / (2 * sin(theta / 2));
@@ -285,7 +305,6 @@ void encodeLegacy(const ZSS::Protocol::Robot_Command& command, QByteArray& tx, i
         origin_vy = v.y();
         //            if (i==0) cout << vx << " "<< vy << " " << endl;
     }
-
 
     qint16 vx = (qint16)(origin_vx);
     qint16 vy = (qint16)(origin_vy);
@@ -306,7 +325,7 @@ void encodeLegacy(const ZSS::Protocol::Robot_Command& command, QByteArray& tx, i
     // dribble -1 ~ +1 -> -3 ~ +3
     qint8 dribble = command.dribbler_spin() > 0.5 ? 3 : 0;
     tx[0] = (tx[0]) | (1 << (3 - num));
-    tx[num * 4 + 1] = ((quint8)kick << 6) | dribble << 4 | id;
+    tx[num * 4 + 1] = ((quint8)report << 7) | ((quint8)kick << 6) | dribble << 4 | id;
     tx[num * 4 + 2] = (vx >> 8 & 0x80) | (abs_vx & 0x7f);
     tx[num * 4 + 3] = (vy >> 8 & 0x80) | (abs_vy & 0x7f);
     tx[num * 4 + 4] = (vr >> 8 & 0x80) | (abs_vr & 0x7f);

@@ -89,5 +89,6 @@
         <file>source/scissors1.png</file>
         <file>source/scissors2.png</file>
         <file>src/qml/ZComboBox.qml</file>
+        <file>source/repair.png</file>
     </qresource>
 </RCC>

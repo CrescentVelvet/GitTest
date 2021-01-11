@@ -11,7 +11,33 @@ gRoleNum = {
 	["Breaker"] = 0,
 	["Fronter"] = 0,
 	["Receiver"] = 0,
-	["Center"]  = 0
+	["Center"]  = 0,
+	["a"] = 0,
+	["b"] = 0,
+	["c"] = 0,
+	["d"] = 0,
+	["e"] = 0,
+	["f"] = 0,
+	["g"] = 0,
+	["h"] = 0,
+	["i"] = 0,
+	["j"] = 0,
+	["k"] = 0,
+	["l"] = 0,
+	["m"] = 0,
+	["n"] = 0,
+	["o"] = 0,
+	["p"] = 0,
+	["q"] = 0,
+	["r"] = 0,
+	["s"] = 0,
+	["t"] = 0,
+	["u"] = 0,
+	["v"] = 0,
+	["w"] = 0,
+	["x"] = 0,
+	["y"] = 0,
+	["z"] = 0
 }
 
 gLastRoleNum = {
@@ -22,8 +48,8 @@ gRolePos = {
 
 }
 
--- gRolePriority = { "Goalie","Kicker","Tier","Receiver"}
-gRolePriority = { "Goalie","Kicker", "Tier"} --wangzai test
+gRolePriority = { "Goalie","Kicker","Tier","Receiver"}
+-- gRolePriority = { "Goalie","Kicker", "Tier"} --wangzai test
 
 
 gOurExistNum = {
@@ -46,7 +72,33 @@ gRoleLookUpTable = {
 ["L"] = "Leader",
 ["B"] = "Breaker",
 ["F"] = "Fronter",
-["C"] = "Center"
+["C"] = "Center",
+["a"] = "a",
+["b"] = "b",
+["c"] = "c",
+["d"] = "d",
+["e"] = "e",
+["f"] = "f",
+["g"] = "g",
+["h"] = "h",
+["i"] = "i",
+["j"] = "j",
+["k"] = "k",
+["l"] = "l",
+["m"] = "m",
+["n"] = "n",
+["o"] = "o",
+["p"] = "p",
+["q"] = "q",
+["r"] = "r",
+["s"] = "s",
+["t"] = "t",
+["u"] = "u",
+["v"] = "v",
+["w"] = "w",
+["x"] = "x",
+["y"] = "y",
+["z"] = "z"
 }
 
 function DecodeMatchStr(str)

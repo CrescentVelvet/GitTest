@@ -157,34 +157,6 @@ firstState = "initState",
 	Goalie   = task.stop(),
 	match    = "{LR}[MDAFC]"
 },
-["test1"] = {
-	switch = function ()
-		gRoleNum["Leader"] = leaderNum() + 1
-		gRoleNum["Receiver"] = receiverNum() + 1
-		local isValid = messi:isReceiverPosValid()
-		if isValid then
-			return "test2"
-		end
-		return 
-	end,
-	Leader   = leaderTask(pos.getPassPos(), pos.getLeaderWaitPos(), getPassVel(), getFlag()),
-	Special  = task.zdrag(pos.getOtherPos(1)),
-	match    = "{L}[S]"
-},
-["test2"] = {
-	switch = function ()
-		gRoleNum["Leader"] = leaderNum() + 1
-		gRoleNum["Receiver"] = receiverNum() + 1
-		local isValid = messi:isReceiverPosValid()
-		if not isValid then
-			return "test2"
-		end
-		return 
-	end,
-	Leader   = leaderTask(pos.getPassPos(), pos.getLeaderWaitPos(), getPassVel(), getFlag()),
-	Receiver = receiverTask(), --task.goCmuRush(pos.getReceivePos(),player.toBallDir,_,DSS),
-	match    = "{LR}"
-},
 ["test3"] = {
 	switch = function ()
 		return ourBallJumpCondTest()

@@ -1,4 +1,5 @@
 #include "ballmodel.h"
+#include "CMmotion.h"
 #include <param.h>
 #include <iostream>
 using namespace std;
@@ -16,7 +17,8 @@ double SLIDE_FRICTION;
 double SLIDE_BALL_ACC;
 double ROLL_BALL_ACC;
 const double SLIDE_FACTOR = 15.0;
-const double FLAT_SLIDE_PART = 2.0 / 7.0;
+const double FLAT_SLIDE_RATIO = 2.0 / 7.0;
+const double FLAT_ROLL_RATIO = 1 - FLAT_SLIDE_RATIO;
 }
 
 CBallModel::CBallModel() {
@@ -36,7 +38,7 @@ double CBallModel::flatRollTime(double startVel) {
         cout << "Oh shit!!! Error startVel to calculate roll time!!! ---CBallModel.cpp" << endl;
         return 0.0;
     }
-    return (startVel * (1 - FLAT_SLIDE_PART) / ROLL_BALL_ACC);
+    return (startVel * FLAT_ROLL_RATIO / ROLL_BALL_ACC);
 }
 
 double CBallModel::flatSlideTime(double startVel) {
@@ -44,7 +46,7 @@ double CBallModel::flatSlideTime(double startVel) {
         cout << "Oh shit!!! Error startVel to calculate slide time!!! ---CBallModel.cpp" << endl;
         return 0.0;
     }
-    return (startVel * FLAT_SLIDE_PART / SLIDE_BALL_ACC);
+    return (startVel * FLAT_SLIDE_RATIO / SLIDE_BALL_ACC);
 }
 
 double CBallModel::flatSlideDist(double startVel) {
@@ -52,7 +54,7 @@ double CBallModel::flatSlideDist(double startVel) {
         cout << "Oh shit!!! Error startVel to calculate slide distance!!! ---CBallModel.cpp" << endl;
         return 0.0;
     }
-    return (pow(startVel, 2.0) - pow(startVel * (1.0 - FLAT_SLIDE_PART), 2.0)) / (2.0 * SLIDE_BALL_ACC);
+    return (pow(startVel, 2.0) - pow(startVel * FLAT_ROLL_RATIO, 2.0)) / (2.0 * SLIDE_BALL_ACC);
 }
 
 double CBallModel::flatRollDist(double startVel) {
@@ -60,11 +62,42 @@ double CBallModel::flatRollDist(double startVel) {
         cout << "Oh shit!!! Error startVel to calculate roll distance!!! ---CBallModel.cpp" << endl;
         return 0.0;
     }
-    return pow(startVel * (1.0 - FLAT_SLIDE_PART), 2.0) / (2.0 * ROLL_BALL_ACC);
+    return pow(startVel * FLAT_ROLL_RATIO, 2.0) / (2.0 * ROLL_BALL_ACC);
 }
 
 double CBallModel::flatStopTime(double startVel) {
     return flatRollTime(startVel) + flatSlideTime(startVel);
+}
+
+double CBallModel::flatMoveVel(const double initVel, const double time){
+    double ballVel = 0;
+    double slidingTime = flatSlideTime(initVel);
+    double totalTime = flatStopTime(initVel);
+    if(time > totalTime) ballVel = 0;
+    else if(time < slidingTime) ballVel = initVel - SLIDE_BALL_ACC * time;
+    else ballVel = initVel * FLAT_ROLL_RATIO - ROLL_BALL_ACC * (time - slidingTime);
+    return ballVel;
+}
+
+double CBallModel::flatMoveDist(const CVector initVel, const double time){
+    double moveDist = 0;
+    double velMod = initVel.mod();
+    double slidingTime = flatSlideTime(velMod);
+    double totalTime = flatStopTime(velMod);
+    if(time > totalTime) {
+        moveDist = flatRollDist(velMod) + flatSlideDist(velMod);
+    }
+    else if(time < slidingTime) {
+        moveDist = velMod * time - 0.5 * SLIDE_BALL_ACC * pow(time, 2.0);
+    }
+    else {
+        double slideDist = (pow(velMod, 2.0) - pow(velMod * FLAT_ROLL_RATIO, 2.0)) / (2.0 * SLIDE_BALL_ACC);
+        double rollStartVel = velMod * FLAT_ROLL_RATIO;
+        double rollTime = time - slidingTime;
+        double rollDist = rollStartVel * rollTime - 0.5 * ROLL_BALL_ACC * pow(rollTime, 2.0);
+        moveDist = slideDist + rollDist;
+    }
+    return moveDist;
 }
 
 CGeoPoint CBallModel::flatPos(CGeoPoint currentPos, CVector startVel, double t) {
@@ -73,22 +106,7 @@ CGeoPoint CBallModel::flatPos(CGeoPoint currentPos, CVector startVel, double t) 
         return CGeoPoint(1e8, 1e8);
     }
     double velMod = startVel.mod();
-    double slidingTime = flatSlideTime(velMod);
-    double totalTime = flatStopTime(velMod);
-    double moveDist = 0.0;
-    if(t > totalTime) {
-        moveDist = flatRollDist(velMod) + flatSlideDist(velMod);
-    }
-    else if(t < slidingTime) {
-        moveDist = velMod * t - 0.5 * SLIDE_BALL_ACC * pow(t, 2.0);
-    }
-    else {
-        double slideDist = (pow(velMod, 2.0) - pow(velMod * (1.0 - FLAT_SLIDE_PART), 2.0)) / (2.0 * SLIDE_BALL_ACC);
-        double rollStartVel = velMod * (1.0 - FLAT_SLIDE_PART);
-        double rollTime = t - slidingTime;
-        double rollDist = rollStartVel * rollTime - 0.5 * ROLL_BALL_ACC * pow(rollTime, 2.0);
-        moveDist = slideDist + rollDist;
-    }
+    double moveDist = flatMoveDist(startVel, t);
     startVel = startVel / velMod;
     return (currentPos + startVel * moveDist);
 }
@@ -123,4 +141,35 @@ double CBallModel::chipJumpTime(double chipPower) {
     double chipLength2 = chipSecondJumpDist(chipLength1);
     double chipTime2 = sqrt(2.0 * chipLength2 * tan(CHIP_SECOND_ANGLE) / G);
     return chipTime1;
+}
+
+double CBallModel::flatPassVel(const CVisionModule *pVision, CGeoPoint passPos, int receiver, double bufferTime, double angleError){
+    double passVel = 0;
+    CGeoPoint ballPos = pVision->Ball().Pos();
+    CVector passLine = passPos - ballPos;
+    double distance = ballPos.dist(passPos);
+    CGeoPoint abnormalPos1 = ballPos + Utils::Polar2Vector(distance, passLine.dir() + angleError*Param::Math::PI/180);
+    CGeoPoint abnormalPos2 = ballPos + Utils::Polar2Vector(distance, passLine.dir() - angleError*Param::Math::PI/180);
+    double abnormalTime = std::max(predictedTime(pVision->OurPlayer(receiver+1), abnormalPos1), predictedTime(pVision->OurPlayer(receiver+1), abnormalPos2));
+    double predictTime = std::max(predictedTime(pVision->OurPlayer(receiver+1), passPos), abnormalTime);
+    double arriveTime = predictTime + bufferTime;
+    arriveTime = std::max(arriveTime, 0.4);
+    double minPassVel = sqrt(ROLL_FRICTION*distance);
+    passVel = std::max((distance + 1/2* ROLL_BALL_ACC * pow(arriveTime, 2))/arriveTime, minPassVel);
+    passVel /= FLAT_ROLL_RATIO;
+    passVel = std::min(passVel, 500.0);
+    passVel = std::max(passVel, 200.0);
+    return passVel;
+}
+
+double CBallModel::chipPassVel(const CVisionModule *pVision, CGeoPoint passPos){
+    static const double CHIP_DIST_RATIO = 0.8;
+    double passVel = 0;
+    CGeoPoint ballPos = pVision->Ball().Pos();
+    double distance = ballPos.dist(passPos);
+    double chipDist = distance * CHIP_DIST_RATIO;
+    passVel = chipDist / CHIP_LENGTH_RATIO;
+    passVel = std::min(passVel, 400.0);
+    passVel = std::max(passVel, 50.0);
+    return passVel;
 }

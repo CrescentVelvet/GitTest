@@ -4,11 +4,9 @@
 namespace  {
 int fps = 1000/75;
 
+
 bool _stopped = true;
 }
-
-int rec_slider::now_frame = 0;
-
 rec_slider::rec_slider(QObject* parent)
     : QObject(parent) {
     connect(&_player, SIGNAL(positionChanged(int)), SLOT(updateTime(int)));
@@ -23,13 +21,14 @@ void rec_slider::loadFile(QString filename) {
 #endif
 
     if (_player.loadRec(filename, _maxFrame)) {
-        /*setmaxTime(QString("%1:%2.%3")
+
+        setmaxTime(QString("%1:%2.%3")
                    .arg((int) ((_maxFrame-1) * fps / 1E3) / 60)
                    .arg((int) ((_maxFrame-1) * fps / 1E3) % 60, 2, 10, QChar('0'))
-                   .arg((int) ((_maxFrame-1) * fps) % 1000, 3, 10, QChar('0')));*/
-        setmaxTime(QString("%1").arg((int) _maxFrame-1));
+                   .arg((int) ((_maxFrame-1) * fps) % 1000, 3, 10, QChar('0')));
         setmaximumValue(_maxFrame-1);
         setstepSize(1);
+
         setrecName(filename);
     }
 }
@@ -68,10 +67,8 @@ void rec_slider::seekFrame(int value) {
 
 void rec_slider::updateTime(int frame) {
     currentFrame = frame;
-    /*setdurTime(QString("%1:%2.%3")
+    setdurTime(QString("%1:%2.%3")
                .arg((int) (currentFrame* fps / 1E3) / 60)
                .arg((int) (currentFrame* fps / 1E3) % 60, 2, 10, QChar('0'))
-               .arg((int) (currentFrame* fps) % 1000, 3, 10, QChar('0')));*/
-    setdurTime(QString("%1").arg((int) currentFrame));
-    now_frame = (int) currentFrame;
+               .arg((int) (currentFrame* fps) % 1000, 3, 10, QChar('0')));
 }

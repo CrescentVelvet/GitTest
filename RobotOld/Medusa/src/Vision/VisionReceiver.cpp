@@ -114,8 +114,8 @@ void VisionReceiver::ReceiveVision() {
             visionSocket->readDatagram(buffer.data(), buffer.size());
             detectionFrame.ParseFromArray(buffer, buffer.size());
 
-            robots_blue_n = std::min(detectionFrame.robots_blue_size(), 8);
-            robots_yellow_n = std::min(detectionFrame.robots_yellow_size(), 8);
+            robots_blue_n = std::min(detectionFrame.robots_blue_size(), PARAM::SENDROBOTNUM);
+            robots_yellow_n = std::min(detectionFrame.robots_yellow_size(), PARAM::SENDROBOTNUM);
             InitInfo(temp);
 
             bool ballFound = detectionFrame.has_balls();

@@ -32,12 +32,6 @@ INCLUDEPATH += \
     src/vision \
     ../Medusa/share \
     ../Medusa/share/proto/cpp \
-#    ../Medusa/src/Utils \
-#    ../Medusa/src/MotionControl \
-#    ../Medusa/src/WorldModel \
-#    ../Medusa/src/Strategy/skill \
-#    ../Medusa/src/Wireless \
-#    ../Medusa/src/Simulator \
 
 HEADERS += \
     src/field.h \
@@ -111,21 +105,11 @@ HEADERS += \
     ../Medusa/share/proto/cpp/zss_train.pb.h \
     ../Medusa/share/proto/cpp/log_labeler_data.pb.h \
     ../Medusa/share/proto/cpp/log_labels.pb.h \
-#    ../Medusa/src/Utils/SkillUtils.h \
-#    ../Medusa/src/MotionControl/CMmotion.h \
-#    ../Medusa/src/WorldModel/WorldDefine.h \
-#    ../Medusa/src/Strategy/skill/GoImmortalRush.h \
-#    ../Medusa/src/Strategy/skill/PlayerTask.h \
-#    ../Medusa/src/Wireless/PlayerCommand.h \
-#    ../Medusa/src/Simulator/ServerInterface.h \
     src/vision/ballstate.h \
     src/display.h \
     src/refereethread.h \
     src/vision/log/logeventlabel.h \
-    src/networkinterfaces.h \
-    src/analysis_game.h \
-#    src/plugin.h \
-#    src/autoref.h
+    src/networkinterfaces.h
 
 SOURCES += \
     src/main.cpp \
@@ -194,16 +178,11 @@ SOURCES += \
     ../Medusa/share/proto/cpp/zss_train.pb.cc \
     ../Medusa/share/proto/cpp/log_labeler_data.pb.cc \
     ../Medusa/share/proto/cpp/log_labels.pb.cc \
-#    ../Medusa/src/Utils/SkillUtils.cpp \
-#    ../Medusa/src/MotionControl/CMmotion.cpp \
     src/vision/ballstate.cpp \
     src/display.cpp \
     src/refereethread.cpp \
     src/vision/log/logeventlabel.cpp \
-    src/networkinterfaces.cpp \
-    src/analysis_game.cpp \
-#    src/plugin.cpp \
-#    src/autoref.cpp
+    src/networkinterfaces.cpp
 
 win32 {
     PROTOBUF_INCLUDE_DIR = $${THIRD_PARTY_DIR}/protobuf/include

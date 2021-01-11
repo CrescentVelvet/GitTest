@@ -10,7 +10,8 @@ CGlobalSettings::CGlobalSettings(QObject *parent)
     ,selectCarMinX(0)
     ,selectCarMaxX(0)
     ,selectCarMinY(0)
-    ,selectCarMaxY(0){
+    ,selectCarMaxY(0)
+    ,oldLogFlag(1){
 
 }
 bool CGlobalSettings::inChosenArea(float x, float y){
@@ -52,4 +53,7 @@ void CGlobalSettings::resetSelectCarArea() {
     selectCarMaxX = 0;
     selectCarMinY = 0;
     selectCarMaxY = 0;
+}
+void CGlobalSettings::setOldLogFlag(bool old) {
+    oldLogFlag = old ? -1 : 1;
 }

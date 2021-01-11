@@ -98,6 +98,7 @@ private:
     string _state;
     string _laststate;
     string _leaderState;
+    QString _selfpass;
     CGeoPoint _passPos;
     CGeoPoint _receiverPos;
     CGeoPoint _leaderPos;
@@ -113,14 +114,12 @@ private:
     void judgeLeaderState();
     void judgeAttackerAmount();
     void generateLeaderPos();
-    void generatePassVel();
     bool confirmLeader();
     bool needReceivePos();
     bool needRunPos();
     void generateReceiverAndPos();
     void getPassPos();
     void generateOtherRunPos();
-    bool canShoot(CGeoPoint shootPos);
     bool canShootGuard();
 //move to worldModule
 //    int getEnemyAmountInArea(CGeoPoint center, int radius);

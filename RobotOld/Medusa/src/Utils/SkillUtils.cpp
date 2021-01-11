@@ -4,6 +4,7 @@
 #include "param.h"
 #include <cmath>
 #include "GoImmortalRush.h"
+#include "ballmodel.h"
 namespace {
     bool DEBUG = false;
     constexpr double TIME_FOR_OUR = 0.3;
@@ -89,7 +90,6 @@ bool SkillUtils::predictedInterTime(const CVisionModule* pVision, int robotNum, 
             interceptPoint = new_interceptPoint;
         }
     }
-
     return true;
 }
 
@@ -213,15 +213,13 @@ bool SkillUtils::isSafeShoot(const CVisionModule* pVision, double ballVel, CGeoP
 }
 
 bool SkillUtils::validShootPos(const CVisionModule *pVision, CGeoPoint shootPos, double shootVel, CGeoPoint target, const double responseTime, double ignoreCloseEnemyDist, bool ignoreTheirGoalie, bool ignoreTheirGuard, bool DEBUG_MODE) {
-    static const double BALL_ACC = FRICTION / 2;
-    constexpr double BALL_VEL_DECAY = 5.0 / 7.0;
     double AVOID_DIST = 4 * Param::Vehicle::V2::PLAYER_SIZE;
     if (Utils::InTheirPenaltyArea(target, 0)) AVOID_DIST = 2 * Param::Vehicle::V2::PLAYER_SIZE;
 
     const CVector passLine = target - shootPos;
     const double passLineDist = passLine.mod() - Param::Vehicle::V2::PLAYER_SIZE;
     const double passLineDir = passLine.dir();
-    const double originVel = shootVel;
+    const CVector vecVel = Utils::Polar2Vector(shootVel, passLineDir);
     if(DEBUG_MODE) GDebugEngine::Instance()->gui_debug_x(target, COLOR_CYAN);
 
     for(int robotNum = 1; robotNum <= Param::Field::MAX_PLAYER_NUM; robotNum++) {
@@ -238,18 +236,13 @@ bool SkillUtils::validShootPos(const CVisionModule *pVision, CGeoPoint shootPos,
         if(ignoreTheirGoalie && Utils::InTheirPenaltyArea(me.Pos(), 0)) continue;
         // 忽略对面的后卫
         if(ignoreTheirGuard && Utils::InTheirPenaltyArea(me.Pos(), 30)) continue;
-        // 初始化球速、加速度、球移动的距离、球初始位置
-        CGeoPoint ballPos = shootPos;
-        double ballVel = originVel;
+        // 初始化球
         double ballMoveTime = 0;
-        double ballMoveDist = 0;
         while (true) {
             ballMoveTime += DELTA_T;
-            ballVel = BALL_VEL_DECAY * originVel - BALL_ACC * ballMoveTime;
-            if (ballVel < 0) {
-                ballVel = 0;//球已静止
-            }
-            ballMoveDist = (ballVel + BALL_VEL_DECAY * originVel) * ballMoveTime / 2.0;
+            CGeoPoint ballPos = BallModel::instance()->flatPos(shootPos, vecVel, ballMoveTime);
+            double ballMoveDist = BallModel::instance()->flatMoveDist(vecVel, ballMoveTime);
+            double ballVel = BallModel::instance()->flatMoveVel(shootVel, ballMoveTime);
             //截球点坐标
             ballPos = shootPos + Utils::Polar2Vector(ballMoveDist, passLineDir);
             if(DEBUG_MODE) {
@@ -270,6 +263,7 @@ bool SkillUtils::validShootPos(const CVisionModule *pVision, CGeoPoint shootPos,
                 if(DEBUG_MODE) GDebugEngine::Instance()->gui_debug_msg(ballPos, QString("%1 %2").arg(meArriveTime).arg(ballMoveTime).toLatin1(), COLOR_CYAN);
                 return false;
             }
+            if(!interPosValid && ballVel < 1e-8) return false;
         }
     }
     return true;//for循环中所有车都不能截球，没有return false
