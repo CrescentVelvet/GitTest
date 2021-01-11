@@ -1,4 +1,4 @@
-IS_TEST_MODE = true
+IS_TEST_MODE = false
 IS_SIMULATION = CGetIsSimulation()
 USE_SWITCH = false
 USE_AUTO_REFEREE = false
@@ -10,7 +10,7 @@ DEBUG_MATCH = CGetSettings("Debug/RoleMatch","Bool")
 
 gStateFileNameString = string.format(os.date("%Y%m%d%H%M"))
 
-gTestPlay = "TestFivePass"
+gTestPlay = "TestSkill"
 
 gSwitchNum = {
         ["normal"]  = 8,
@@ -19,7 +19,7 @@ gSwitchNum = {
 }
 
 gRoleFixNum = {
-        ["Kicker"]   = {8},
+        ["Kicker"]   = {15},
         ["Goalie"]   = {},
         ["Tier"]     = {},
         -- ["Receiver"] = {} match before rolematch in messi by wangzai
@@ -151,6 +151,5 @@ gTestPlayTable = {
         "Test/TestSkill",
         -- "Test/TestMultiple",
         -- "Test/TestSkill2",
-        "Test/TestMessiFreeKick",
-        "Test/TestFivePass"
+        "Test/TestMessiFreeKick"
 }

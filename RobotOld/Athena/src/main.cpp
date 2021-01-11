@@ -35,14 +35,16 @@ void qmlRegister() {
     qmlRegisterType<ViewerInterface>("ZSS", 1, 0, "ViewerInterface");
     qmlRegisterType<LogSlider>("ZSS", 1, 0, "LogSlider");
     qmlRegisterType<LogEventLabel>("ZSS", 1, 0, "LogEventLabel");
-    //qmlRegisterType<Test>("ZSS", 1, 0, "Test");
+//    qmlRegisterType<Test>("ZSS", 1, 0, "Test");
     qmlRegisterSingletonType<MessageInfo>("ZSS", 1, 0, "MessageInfo", &MessageInfo::instance);
     qmlRegisterSingletonType<rec_slider>("ZSS", 1, 0, "RecSlider", &rec_slider::instance);
+
     ZCommunicator::instance();
     Simulator::instance();
     ZDebugger::instance();
     ZSS::LParamManager::instance()->clear();
 }
+
 
 int main(int argc, char *argv[]) {
     QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);

@@ -72,9 +72,9 @@ Page{
         TabButton {
             icon.source:"/source/referee.png";
         }
-//        TabButton {
-//            icon.source:"/source/viewer.png";
-//        }
+        TabButton {
+            icon.source:"/source/viewer.png";
+        }
         TabButton {
             icon.source:"/source/joy3.png";
         }
@@ -92,7 +92,7 @@ Page{
             padding: 5;
             topPadding: 15;
             width:controlLayout.width;
-            //height:controlLayout.height;
+            height:controlLayout.height;
             columns: 1;
             horizontalItemAlignment: Grid.AlignHCenter;
             verticalItemAlignment: Grid.AlignVCenter;
@@ -358,7 +358,7 @@ Page{
         }
         RefereeBox{
         }
-//        Viewer{}
+        Viewer{}
         /*****************************************/
         /*                  UDP                  */
         /*****************************************/

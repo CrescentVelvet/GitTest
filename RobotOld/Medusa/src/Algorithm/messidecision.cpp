@@ -31,6 +31,7 @@ bool ONLY_CHIPPOS = false;
 bool SIGNAL_TO_CUDA = false;
 bool IS_RIGHT = false;
 bool IS_SIMULATION = false;
+double VIEW_FREQUENCE = 0.2;
 //判断进攻车数量的参数
 enum Field {
     FrontField = 1,
@@ -147,6 +148,7 @@ CMessiDecision::CMessiDecision()
     ZSS::ZParamManager::instance()->loadParam(PASSVEL::CHIP_DIST_RATIO, "Messi/CHIP_DIST_RATIO", 0.8);
     ZSS::ZParamManager::instance()->loadParam(PASSVEL::bufferTime, "Messi/bufferTime", 0.4);
     ZSS::ZParamManager::instance()->loadParam(PASS::MAX_NO_KICK, "Messi/MAX_NO_KICK", 10);
+    ZSS::ZParamManager::instance()->loadParam(VIEW_FREQUENCE, "Debug/VIEW_FREQUENCE", 0.2);
     if(IS_SIMULATION)
         ZSS::ZParamManager::instance()->loadParam(PASSVEL::FRICTION, "AlertParam/Friction4Sim", 40.0);
     else

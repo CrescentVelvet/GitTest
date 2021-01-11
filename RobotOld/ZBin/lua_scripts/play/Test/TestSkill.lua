@@ -16,9 +16,9 @@ firstState = "run1_blue",
 ["run1_blue"] = {
   switch = function()
     -- if bufcnt(player.infraredOn("Goalie"),3,210) then
-    if 1 then
-      return "run1_blue"
-    end
+    -- if 1 then
+    --   return "run1_blue"
+    -- end
   end,
   -- Goalie = task.zget(_,_,_,flag.dribbling),
   -- Goalie = task.zpass(_,0),
@@ -26,7 +26,8 @@ firstState = "run1_blue",
   -- Goalie = task.goAndTurnKickV4(TARGET,_,flag.kick),
   -- Goalie = task.InterTouch(_, ORIGIN),
   -- Goalie = task.getBallV4(ORIGIN,POS),
-  Goalie = task.zget(),
+  -- Goalie = task.zget(),
+  Kicker = task.stop(),
 
   match = ""
 },

@@ -37,7 +37,7 @@ firstState = "run1",
 			return "run"..3
 		end
 	end,
-	Kicker = task.goCmuRush(pos[3],0, _, DSS_FLAG),
+	Kicker = task.goCmuRush(pos[3],math.pi, _, DSS_FLAG),
 	-- Kicker = task.goBezierRush(pos[4],math.pi, _, DSS_FLAG, _, vel),
 	match = ""
 },
@@ -57,7 +57,7 @@ firstState = "run1",
 			return "run"..1--math.random(4)
 		end
 	end,
-	Kicker = task.goCmuRush(pos[4],0, _, DSS_FLAG),
+	Kicker = task.goCmuRush(pos[4],math.pi, _, DSS_FLAG),
 	-- Kicker = task.goBezierRush(pos[2],math.pi, _, DSS_FLAG, _, vel),
 	match = ""
 },
