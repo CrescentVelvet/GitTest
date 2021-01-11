@@ -32,9 +32,14 @@ HEADERS += \
     ../Hera/share/staticparams.h \
     ../Hera/share/proto/cpp/vision_detection.pb.h
 
-PROTOBUF_INCLUDE_DIR = $$PWD/../3rdParty/protobuf/include
-PROTOBUF_LIB = $$PWD/../3rdParty/protobuf/lib/x64/libprotobuf.lib
-
+win32{
+    PROTOBUF_INCLUDE_DIR = $$PWD/../3rdParty/protobuf/include
+    PROTOBUF_LIB = $$PWD/../3rdParty/protobuf/lib/x64/libprotobuf.lib
+}
+unix:!macx{
+    PROTOBUF_INCLUDE_DIR = /usr/local/include
+    PROTOBUF_LIB = /usr/local/lib/libprotobuf.so
+}
 LIBS += $$PROTOBUF_LIB \
 
 INCLUDEPATH += $$PROTOBUF_INCLUDE_DIR \

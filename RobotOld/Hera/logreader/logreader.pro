@@ -64,11 +64,11 @@ win32 {
     EIGEN_INCLUDE_DIR = $${THIRD_PARTY_DIR}/Eigen
 
     CONFIG(release,debug|release){
-        PROTOBUF_LIB = $${THIRD_PARTY_DIR}/protobuf/lib/x64/libprotobuf.lib
+        PROTOBUF_LIB = $${THIRD_PARTY_DIR}/protobuf/lib/libprotobuf.lib
         ZLIB_LIB = $${THIRD_PARTY_DIR}/zlib/lib/x64/zlib.lib
     }
     CONFIG(debug,debug|release){
-        PROTOBUF_LIB = $${THIRD_PARTY_DIR}/protobuf/lib/x64/libprotobufD.lib
+        PROTOBUF_LIB = $${THIRD_PARTY_DIR}/protobuf/lib/libprotobufD.lib
         ZLIB_LIB = $${THIRD_PARTY_DIR}/zlib/lib/x64/zlibD.lib
     }
 }

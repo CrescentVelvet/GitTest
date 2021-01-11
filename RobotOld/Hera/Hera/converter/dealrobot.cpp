@@ -61,6 +61,7 @@ void CDealRobot::init() {
             robotSeqence[PARAM::YELLOW][roboId][camId].fill(-1, -32767, -32767, 0);
         }
 
+    int yellowSize = 0;
     for (int i = 0; i < PARAM::CAMERA; i++) {
         for (int j = 0; j < vm->camera[i][0].robotSize[PARAM::BLUE]; j++) {
             Robot robot = vm->camera[i][0].robot[PARAM::BLUE][j];
@@ -71,12 +72,17 @@ void CDealRobot::init() {
         }
         for (int j = 0; j < vm->camera[i][0].robotSize[PARAM::YELLOW]; j++) {
             Robot robot = vm->camera[i][0].robot[PARAM::YELLOW][j];
-            if ( robotPossible[PARAM::YELLOW][robot.id] < decidePossible)
+            if ( robotPossible[PARAM::YELLOW][robot.id] < decidePossible){
+                yellowSize++;
                 robotSeqence[PARAM::YELLOW][robot.id][i] = robot;
-            else if  (lastRobot[PARAM::YELLOW][robot.id].pos.dist(robot.pos) < DIFF_VECHILE_MAX_DIFF)
+            }else if  (lastRobot[PARAM::YELLOW][robot.id].pos.dist(robot.pos) < DIFF_VECHILE_MAX_DIFF){
+                yellowSize++;
                 robotSeqence[PARAM::YELLOW][robot.id][i] = robot;
+            }
         }
+//        std::cout << "yellow size : " << yellowSize  << "  camera : " << i<<std::endl;
     }
+
     for (int i = 0; i < PARAM::ROBOTMAXID - 1; i++) {
         Robot temp(-32767, -32767, 0, -1);
         sortTemp[PARAM::BLUE][i] = temp;
@@ -85,14 +91,19 @@ void CDealRobot::init() {
 }
 
 void CDealRobot::MergeRobot() {
+    int debug = 0;
+    int debug_b = 0;
     for (int roboId = 0; roboId < PARAM::ROBOTMAXID; roboId++) {
         bool foundBlue = false, foundYellow = false;
         double blueWeight = 0, yellowWeight = 0;
         CGeoPoint blueAverage(0, 0), yellowAverage(0, 0);
         double blueAngle = 0, yellowAngle = 0;
         for (int camId = 0; camId < PARAM::CAMERA; camId++) {
-            SingleCamera camera = vm->cameraMatrix[camId];
+//            SingleCamera camera = vm->cameraMatrix[camId];
             double _weight = 0;
+//            std::cout << "robotSeqence pos : " << robotSeqence[PARAM::YELLOW][roboId][camId].pos.x() << " , " <<robotSeqence[PARAM::YELLOW][roboId][camId].pos.y() <<std::endl;
+////            std::cout << "debug : " <<debug<<std::endl;
+//            std::cout << "seven : " << robotSeqence[PARAM::YELLOW][7][camId].pos.x() << " , " <<robotSeqence[PARAM::YELLOW][roboId][7].pos.y() <<std::endl;
             if(robotSeqence[PARAM::BLUE][roboId][camId].pos.x() > -30000 && robotSeqence[PARAM::BLUE][roboId][camId].pos.y() > -30000) {
                 foundBlue = true;
                 _weight = calculateWeight(camId, robotSeqence[PARAM::BLUE][roboId][camId].pos);
@@ -109,18 +120,24 @@ void CDealRobot::MergeRobot() {
                 yellowAverage.setX(yellowAverage.x() + robotSeqence[PARAM::YELLOW][roboId][camId].pos.x() * _weight);
                 yellowAverage.setY(yellowAverage.y() + robotSeqence[PARAM::YELLOW][roboId][camId].pos.y() * _weight);
                 yellowAngle = robotSeqence[PARAM::YELLOW][roboId][camId].angle;
-
             }
         }
         if (foundBlue) {
+            debug_b++;
             Robot ave(blueAverage.x() / blueWeight, blueAverage.y() / blueWeight, blueAngle, roboId);
             result.addRobot(PARAM::BLUE, ave);
+
         }
         if (foundYellow) {
+            debug++;
             Robot ave(yellowAverage.x() / yellowWeight, yellowAverage.y() / yellowWeight, yellowAngle, roboId);
             result.addRobot(PARAM::YELLOW, ave);
         }
+//        std::cout << "debug : " <<debug<<std::endl;
+//        std::cout << "/////////////////////////////////////////////" <<std::endl;
     }
+//    std::cout << "debug end: " <<debug<<std::endl;
+//    std::cout << "debug_b : " <<debug_b <<std::endl;
     if (PARAM::DEBUG) std::cout << "have found " << result.robotSize[PARAM::BLUE] << "blue car.\t" << result.robotSize[PARAM::YELLOW] << std::endl;
 }
 
@@ -175,6 +192,8 @@ void CDealRobot::run() {
     sortRobot(PARAM::YELLOW);
     result.init();
     //重新加入概率排序后的车
+//    std::cout << "validNum" <<validNum[PARAM::YELLOW]<<std::endl;
+//    std::cout << "valiblue" <<validNum[PARAM::BLUE] << std::endl;
     for (int i = 0; i < validNum[PARAM::BLUE]; i++)
         result.addRobot(PARAM::BLUE, sortTemp[PARAM::BLUE][i]);
     for (int i = 0; i < validNum[PARAM::YELLOW]; i++)

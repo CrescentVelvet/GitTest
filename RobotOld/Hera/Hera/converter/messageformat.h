@@ -59,6 +59,7 @@ struct Robot {
     double angle;
     CVector velocity;
     double rotateVel;
+    bool valid;
     Robot(): id(-1) {}
     Robot(double _x, double _y, double _angle, double _id = -1) {
         pos.setX(_x);
@@ -94,7 +95,7 @@ struct SingleCamera {
     CGeoPoint campos;
     double height;
     CameraEdge leftedge, rightedge, upedge, downedge;
-    SingleCamera(): height(300) {} //set 300cm as an example
+    SingleCamera(): height(350) {} //set 300cm as an example
     void fillCenter(double x, double y) {
         campos.fill(x, y);
         leftedge.min = rightedge.min = x;

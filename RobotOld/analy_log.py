@@ -17,8 +17,8 @@ for i, line in enumerate(f.readlines()):
         y_data.append(line.split()[0])
     if i % 4 is 0:
         z.append(line.split()[1])
-x_data = list(map(double, x_data))
-y_data = list(map(double, y_data))
+x_data = list(map(float, x_data))
+y_data = list(map(float, y_data))
 for i in range(len(x_data)):
     x_data[i] = round(x_data[i], 4)
     y_data[i] = round(y_data[i], 4)

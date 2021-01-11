@@ -9,7 +9,7 @@ Log converter
 | -i=nr         | get data from UDP                                          |
 | --ic          | log cutting with breakpoint imformation in **logclip.ini** |
 | -o=lw         | store data to files with logwriter                         |
-| --of=filename | store data to file **filename** (Only if ***-i=nr**)       |
+| --of=filename | store data to file **filename** (Only if ***-i=nr***)      |
 | --od=path     | store data to file in **PATH** when using ***-o=lw***      |
 | -o=ns         | send data from UDP                                         |
 | -p=number     | set vision port to **number**                              |

@@ -15,7 +15,7 @@ AnalyEsthetics::AnalyEsthetics(){
         yellow_robot[i].setX(-99999);
         yellow_robot[i].setY(-99999);
     }
-    teamname = NULL;
+    teamname = nullptr;
     analy_status = ANALY::Halt;
     analy_holdMsg = ANALY::Null;
     analy_blueside = ANALY::LEFT;
@@ -76,7 +76,7 @@ void AnalyEsthetics::analy_frame(void * ptr, int size){
             their_carnum[i] = their_carnum[i] / real_theirframe[i/2];
         }
         //保存队伍进攻性
-        FILE *fp = fopen("E:\\Temp Work\\GitTemp\\Sydney\\log_data.txt","a");
+        FILE *fp = fopen("../../log_data.txt","a");
         fprintf(fp,"%f\t",our_carnum[0]);
         fprintf(fp,"%s\n",teamname);
         fprintf(fp,"%f\n",our_carnum[2]);
@@ -103,9 +103,9 @@ void AnalyEsthetics::readFrame(int frac, int fraw, QString name){
     char *ptrname, *retptrname;
     QByteArray arrayname = name.toLatin1();
     ptrname=arrayname.data();
-    while((retptrname=strtok(ptrname,"/"))!=NULL){
+    while((retptrname=strtok(ptrname,"/"))!=nullptr){
         teamname = retptrname;
-        ptrname=NULL;
+        ptrname=nullptr;
     }
 }
 

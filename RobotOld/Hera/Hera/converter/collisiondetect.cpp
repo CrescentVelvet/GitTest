@@ -48,7 +48,7 @@ void CCollisionDetect::analyzeData(){
             if (!foundBlueCar) foundBlue=false;
             if (!foundYellowCar) foundYellow=false;
         }
-        if (foundBlue) {OurTouchNum = roboId;}
+        if (foundBlue) {OurTouchNum = roboId; }
         if (foundYellow) {TheirTouchNum = roboId;}
     }
 

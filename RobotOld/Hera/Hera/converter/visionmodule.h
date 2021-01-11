@@ -17,6 +17,13 @@
 #include "logwriter_global.h"
 #include "netsend.h"
 #include "netsend_global.h"
+#include <QMutex>
+#include "analyser/ref_event.h"
+#include "zss_debug.pb.h"
+
+namespace{
+    ZSS::Protocol::Debug_Msgs msgs;
+}
 
 enum ballState {received,
                 touched,
@@ -54,12 +61,14 @@ class VisionModule : public QObject {
   private:
     bool collectNewVision();
     bool dealWithData();
+    void setDebugMsg(double pos_x , double pos_y ,std::string text);
     CGlobalSettings globalsetting;
     Vision_DetectionFrame detectionFrame;
     Vision_DetectionBall* detectionBall;
     Vision_DetectionRobot* detectionRobot[2][PARAM::ROBOTMAXID];
 
-
+    QUdpSocket sendSocket;
+    QMutex debugMutex;
 
     void setCameraMatrix();
     void toProtobuf();

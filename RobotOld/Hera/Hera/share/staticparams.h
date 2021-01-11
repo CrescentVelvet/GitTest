@@ -36,14 +36,11 @@ const int CHIP_ANGLE = 1;
 const int BLUE_STATUS_PORT = 30011;
 const int YELLOW_STATUS_PORT = 30012;
 }
-namespace Analyser {
-const int ANALYSER_DEBUG_MSG_SEND = 30001;
-}
 namespace Athena {
 const int CONTROL_SEND[PARAM::TEAMS] = {10001, 10002};
 const int CONTROL_BACK_RECEIVE[PARAM::TEAMS] = {60001, 60002};
+const int RAW_VISION_SEND = 10030;
 const int VISION_SEND[PARAM::TEAMS] = {23333, 23334};
-const int LOG_SEND[PARAM::TEAMS] = {10030, 10031};
 const int SEND_TO_PYTHON = 41001;
 const int DEBUG_MSG_RECEIVE = 20001;
 const int SIM_SEND = 20011;

@@ -9,6 +9,7 @@ CONFIG -= app_bundle
 # deprecated API in order to know how to port your code away from it.
 DEFINES += QT_DEPRECATED_WARNINGS
 
+QMAKE_LFLAGS += -Wl,-rpath="'$$ORIGIN'"
 # You can also make your code fail to compile if you use deprecated APIs.
 # In order to do so, uncomment the following line.
 # You can also select to disable deprecated APIs only up to a certain version of Qt.
@@ -46,7 +47,15 @@ SOURCES += main.cpp \
     share/proto/cpp/zss_cmd.pb.cc \
     share/proto/cpp/zss_debug.pb.cc \
     share/proto/cpp/zss_train.pb.cc \
-    converter/analy_log.cpp
+    converter/analy_log.cpp \
+    analyser/out_event.cpp \
+    analyser/utils.cpp \
+    analyser/param.cpp \
+    analyser/aimlesskick.cpp \
+    analyser/collision.cpp \
+    analyser/overspeed.cpp \
+    analyser/ref_event.cpp \
+    analyser/referee.cpp
 
 INCLUDEPATH += \
     $$PWD/../logreader \
@@ -57,15 +66,23 @@ INCLUDEPATH += \
     $$PWD/share \
     $$PWD/share/proto/cpp
 
-LOGREADER_LIB = $$PWD/../bin/logreader.lib
-LOGWRITER_LIB = $$PWD/../bin/logwriter.lib
-NETSEND_LIB = $$PWD/../bin/netsend.lib
-NETRECEIVE_LIB = $$PWD/../bin/netreceive.lib
+win32 {
+    LOGREADER_LIB = $$PWD/../bin/logreader.lib
+    LOGWRITER_LIB = $$PWD/../bin/logwriter.lib
+    NETSEND_LIB = $$PWD/../bin/netsend.lib
+    NETRECEIVE_LIB = $$PWD/../bin/netreceive.lib
+}
+unix:!macx{
+    LOGREADER_LIB = $$PWD/../bin/liblogreader.so
+    LOGWRITER_LIB = $$PWD/../bin/liblogwriter.so
+    NETSEND_LIB = $$PWD/../bin/libnetsend.so
+    NETRECEIVE_LIB = $$PWD/../bin/libnetreceive.so
+}
 
 LIBS += $$LOGREADER_LIB \
         $$LOGWRITER_LIB \
-        $$NETSEND_LIB \
-        $$NETRECEIVE_LIB
+        $$NETRECEIVE_LIB \
+        $$NETSEND_LIB
 
 DESTDIR = $$PWD/../bin/
 
@@ -81,7 +98,6 @@ HEADERS += \
     converter/messageformat.h \
     converter/montage.h \
     converter/visionmodule.h \
-    converter/singleton.h \
     share/dataqueue.hpp \
     share/geometry.h \
     share/globalsettings.h \
@@ -108,7 +124,19 @@ HEADERS += \
     share/proto/cpp/zss_cmd.pb.h \
     share/proto/cpp/zss_debug.pb.h \
     share/proto/cpp/zss_train.pb.h \
-    converter/analy_log.h
+    converter/analy_log.h \
+    analyser/out_event.h \
+    analyser/utils.h \
+    analyser/param.h \
+    analyser/vmdata.h \
+    analyser/aimlesskick.h \
+    analyser/collision.h \
+    analyser/overspeed.h \
+    analyser/ref_event.h \
+    analyser/referee.h \
+    semaphore.h \
+    converter/semaphore.h \
+    converter/Semaphore.h
 
 # Third party library dir
 win32 {
@@ -147,7 +175,7 @@ macx {
     PROTOBUF_INCLUDE_DIR = $${THIRD_PARTY_DIR}/protobuf/2.6.1/include
     PROTOBUF_LIB = $${THIRD_PARTY_DIR}/protobuf/2.6.1/lib/libprotobuf.a
     ZLIB_INCLUDE_DIR = $${THIRD_PARTY_DIR}/zlib/include
-    ZLIB_LIB = $${THIRD_PARTY_DIR}/zlib/lib/zlib.a
+    ZLIB_LIB = $${THIRD_PARTY_DIR}/zlib/lib/x64/zlib.a
     EIGEN_INCLUDE_DIR = $${THIRD_PARTY_DIR}/Eigen
 }
 

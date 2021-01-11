@@ -179,6 +179,7 @@ void CDealBall::run() {
         lastBall = vm->maintain[0].ball[0];
         vm->lastPossible = 1;
     }
+
     vm->processBall.push(result);
 }
 

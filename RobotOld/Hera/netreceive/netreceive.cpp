@@ -1,7 +1,11 @@
 #include "../Hera/share/staticparams.h"
 #include "netreceive.h"
-#include "Windows.h"
-
+#ifdef _WINDOWS
+    #include "Windows.h"
+#endif
+#ifdef linux
+    #include "unistd.h"
+#endif
 NetReceive::NetReceive(int port, QObject *parent) : QObject(parent), vision_port(port){
     udpSocketConnect();
 }

@@ -10,7 +10,8 @@ NetSend::NetSend()
 
 void NetSend::udpSend(QByteArray buffer) {
 //    qDebug() << buffer.data();
-    udpSendSocket.writeDatagram(buffer.data(), buffer.size(), QHostAddress("127.0.0.1"), ZSS::Athena::LOG_SEND[0]);
-//    udpSendSocket.writeDatagram(buffer.data(), buffer.size(), QHostAddress("127.0.0.1"), ZSS::Athena::VISION_SEND[1]);
+    udpSendSocket.writeDatagram(buffer.data(), buffer.size(), QHostAddress("127.0.0.1"), ZSS::Athena::VISION_SEND[0]);
+    udpSendSocket.writeDatagram(buffer.data(), buffer.size(), QHostAddress("127.0.0.1"), ZSS::Athena::VISION_SEND[1]);
+//    udpSendSocket.writeDatagram(buffer.data(), buffer.size(), QHostAddress("127.0.0.1"), ZSS::Athena::RAW_VISION_SEND);
     udpSendSocket.writeDatagram(buffer.data(), buffer.size(), QHostAddress("127.0.0.1"), ZSS::Athena::SEND_TO_PYTHON);
 }
