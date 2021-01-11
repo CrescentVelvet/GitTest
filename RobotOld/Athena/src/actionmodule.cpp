@@ -217,7 +217,7 @@ void ActionModule::readData() {
     static qint64 last_receive_time[PARAM::ROBOTNUM];
     /***************/
     //初始化电量信息，参差不齐的电量
-    static double temp_battery[PARAM::ROBOTNUM];
+//    extern static double temp_battery[PARAM::ROBOTNUM];
     for (int i = 0; i < PARAM::ROBOTNUM; i++)
     {
         temp_battery[i] = i * 50;
@@ -236,6 +236,19 @@ void ActionModule::readData() {
 //        QElapsedTimer timer;
 //        timer.start();
         if (VIEW_DISPLAY){
+            for (int color = PARAM::BLUE; color <= PARAM::YELLOW; color++){
+                for (int i = 0; i < PARAM::ROBOTNUM; i++){
+                    robotInfoMutex.lock();
+//                    GlobalData::instance()->robotInformation[color][i].inexist = true;
+//                    GlobalData::instance()->robotInformation[color][i].battery = temp_battery[i]/1000;
+                    temp_battery[i] = temp_battery[i] + 0.05;
+                    if (temp_battery[i]>1000) {temp_battery[i]=0;}
+                    robotInfoMutex.unlock();
+                    emit receiveRobotInfo(color, i);
+                }
+            }
+        }
+            /*2019.10.8在场判断
             //设置回包信息,这一段是为了在仿真中显示变化的电量信息
             for (int color = PARAM::BLUE; color <= PARAM::YELLOW; color++){
 //                for (int i = 0; i < PARAM::ROBOTNUM; i++)
@@ -271,12 +284,14 @@ void ActionModule::readData() {
                     if (temp_battery[i]>1000) {temp_battery[i]=0;}
                     robotInfoMutex.unlock();
                     //emit一下
-                    emit receiveRobotInfo(color, i);
+                    emit receiveRobotInfo(color, i);*/
+
 
 //                    GlobalData::instance()->robotInformation[color][i].infrared = true;//把红外设置为true
 ////                    GlobalData::instance()->robotInformation[color][i].inexist = GlobalData::instance()->maintain[color].robot[color][i].valid;
 //                    int robot_id = robot.id;
-                    /*GlobalData::instance()->robotInformation[color][i].inexist = true;
+                    /*2019.9.30电量显示
+                    GlobalData::instance()->robotInformation[color][i].inexist = true;
                     GlobalData::instance()->robotInformation[color][i].battery = temp_battery[i]/1000;
                     temp_battery[i] = temp_battery[i] + 0.5;
                     if (temp_battery[i]>1000) {temp_battery[i]=0;}
@@ -295,12 +310,13 @@ void ActionModule::readData() {
 ////                    qDebug() << temp_battery[i]/1000;
 ////                    qDebug() << color << " = " << GlobalData::instance()->processRobot[color].robotSize[color];
 ////                    qDebug() << GlobalData::instance()->robotInformation[color][robot.id].infrared;
-                }
+//                }
 //                qDebug() << "mark fuck :" << timer.nsecsElapsed()/1000000.0 << "millisecond";
-            }
-        }
+//            }
+//        }
 //        qDebug() << "mark fuck :" << timer.nsecsElapsed()/1000000.0 << "millisecond";
         /***************/
+
         if(!IS_SIMULATION) {
             for (int color = PARAM::BLUE; color <= PARAM::YELLOW; color++) {
                 for (int j = 0; j < PARAM::ROBOTNUM; j++ ) {

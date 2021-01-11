@@ -20,6 +20,7 @@ class ActionModule : public QObject {
     bool disconnectRadio(int);
     void setSimulation(bool);
     int team[PARAM::TEAMS];
+    double temp_battery[PARAM::ROBOTNUM];
   private slots:
     void readData();
   private:

@@ -8,7 +8,6 @@
 #include "actionmodule.h"
 #include "simmodule.h"
 #include "parammanager.h"
-#include "thread"
 
 extern int width[];
 class Global : public QObject{
@@ -21,7 +20,12 @@ class ViewerInterface : public QAbstractListModel{
     Q_OBJECT
 //    QTime receive_current_time;
     qint64 min_sec_old[PARAM::ROBOTNUM*PARAM::TEAMS];
-//    int min_sec_new[PARAM::ROBOTNUM*PARAM::TEAMS];
+    double robot_battery_old[PARAM::ROBOTNUM*PARAM::TEAMS];
+    bool judge_inexist = false;
+    bool judge_battery = false;
+    bool judge_time = false;
+    bool judge_emit = false;
+    bool judge_inexist_old[PARAM::ROBOTNUM*PARAM::TEAMS];
 public slots:
     void changeRobotInfo(int team,int id);
 public:
@@ -36,7 +40,8 @@ public:
         robotInexist
     };
     Q_ENUM(Roles)
-    bool view_display(int team,int id);
+    void view_display();
+    void emit_display();
     QHash<int, QByteArray> roleNames() const;
     virtual int rowCount(const QModelIndex &parent = QModelIndex()) const override{
         return PARAM::ROBOTNUM*2;
