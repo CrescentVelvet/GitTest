@@ -7,7 +7,6 @@
 #include <chrono>
 #include <thread>
 #include <cmath>
-#include <QElapsedTimer>
 #include "staticparams.h"
 #include "networkinterfaces.h"
 namespace ZSS {
@@ -22,14 +21,10 @@ const double LOW_BATTERY = 196.0;
 const double FULL_CAPACITANCE = 254.0;
 const double LOW_CAPACITANCE = 29.0;
 auto zpm = ZSS::ZParamManager::instance();
-auto ypm = ZSS::ZParamManager::instance();
-auto xpm = ZSS::ZParamManager::instance();
-double VIEW_FREQUENCE;
-bool VIEW_DISPLAY;
 void encodeLegacy(const ZSS::Protocol::Robot_Command&, QByteArray&, int);
 quint8 kickStandardization(quint8, bool, quint16);
-const QString radioSendAddress[PARAM::TEAMS] = {"10.12.225.78", "10.12.225.78"};
-const QString radioReceiveAddress[PARAM::TEAMS] = {"10.12.225.79", "10.12.225.79"};
+const QString radioSendAddress[PARAM::TEAMS] = {"10.10.11.22", "10.10.11.22"};
+const QString radioReceiveAddress[PARAM::TEAMS] = {"10.10.11.23", "10.10.11.23"};
 int blue_sender_interface,blue_receiver_interface,yellow_sender_interface,yellow_receiver_interface;
 std::thread* receiveThread = nullptr;
 bool IS_SIMULATION;
@@ -39,6 +34,7 @@ ActionModule::ActionModule(QObject *parent) : QObject(parent), team{-1, -1} {
     blue_sender_interface = blue_receiver_interface = yellow_sender_interface = yellow_receiver_interface = 0;
     tx.resize(TRANSMIT_PACKET_SIZE);
     tx[0] = 0x40;
+//    QObject::connect(&receiveSocket, SIGNAL(readyRead()), this, SLOT(readData()), Qt::DirectConnection);
     if(receiveSocket.bind(QHostAddress::AnyIPv4, PORT_RECEIVE, QUdpSocket::ShareAddress | QUdpSocket::ReuseAddressHint)) {
         qDebug() << "****** start receive ! ******";
         receiveThread = new std::thread([ = ] {readData();});
@@ -46,8 +42,6 @@ ActionModule::ActionModule(QObject *parent) : QObject(parent), team{-1, -1} {
     } else {
         qDebug() << "Bind Error in action module !";
     }
-    ypm->loadParam(VIEW_FREQUENCE, "Debug/VIEW_FREQUENCE");
-    xpm->loadParam(VIEW_DISPLAY, "Debug/VIEW_DISPLAY");
 }
 
 ActionModule::~ActionModule() {
@@ -85,7 +79,6 @@ void ActionModule::sendStartPacket(int t, int frequency) {
     QByteArray startPacketSend(TRANSMIT_START_PACKET_SIZE, 0);
     QByteArray startPacketReceive(TRANSMIT_START_PACKET_SIZE, 0);
     if(frequency == 8) {
-
         startPacketSend[0] = (char)0xf0;
         startPacketSend[1] = (char)0x5a;
         startPacketSend[2] = (char)0x5a;
@@ -99,9 +92,7 @@ void ActionModule::sendStartPacket(int t, int frequency) {
         startPacketReceive[3] = (char)0x02;
         startPacketReceive[4] = (char)0x02;
         startPacketReceive[5] = (char)0xa8;
-
     } else if(frequency == 6) {
-
         startPacketSend[0] = (char)0xf0;
         startPacketSend[1] = (char)0x18;
         startPacketSend[2] = (char)0x5a;
@@ -115,9 +106,7 @@ void ActionModule::sendStartPacket(int t, int frequency) {
         startPacketReceive[3] = (char)0x02;
         startPacketReceive[4] = (char)0x02;
         startPacketReceive[5] = (char)0x24;
-
     } else if(frequency == 1) {
-
         startPacketSend[0] = (char)0xf0;
         startPacketSend[1] = (char)0x58;
         startPacketSend[2] = (char)0x58;
@@ -131,9 +120,7 @@ void ActionModule::sendStartPacket(int t, int frequency) {
         startPacketReceive[3] = (char)0x02;
         startPacketReceive[4] = (char)0x02;
         startPacketReceive[5] = (char)0xa4;
-
     } else if(frequency == 2) {
-
         startPacketSend[0] = (char)0xf0;
         startPacketSend[1] = (char)0x64;
         startPacketSend[2] = (char)0x64;
@@ -147,9 +134,7 @@ void ActionModule::sendStartPacket(int t, int frequency) {
         startPacketReceive[3] = (char)0x02;
         startPacketReceive[4] = (char)0x02;
         startPacketReceive[5] = (char)0xbc;
-
     }   else if(frequency == 11) {
-
         startPacketSend[0] = (char)0xf0;
         startPacketSend[1] = (char)0x66;
         startPacketSend[2] = (char)0x66;
@@ -201,7 +186,6 @@ void ActionModule::sendLegacy(int t, const ZSS::Protocol::Robots_Command& comman
         encodeLegacy(command, this->tx, count++);
     }
     //qDebug() << "sendLegacy : " << (t ? "Yellow" : "Blue") << id << "size:" << size;
-//    qDebug() << "sending: " << tx.toHex();
     socket.writeDatagram(tx.data(), TRANSMIT_PACKET_SIZE, QHostAddress(radioSendAddress[id]), PORT_SEND);
 }
 
@@ -214,144 +198,32 @@ void ActionModule::readData() {
             count[color][j] = 0;
         }
     }
-    static qint64 last_receive_time[PARAM::ROBOTNUM];
-    /***************/
-    //初始化电量信息，参差不齐的电量
-//    extern static double temp_battery[PARAM::ROBOTNUM];
-    for (int i = 0; i < PARAM::ROBOTNUM; i++)
-    {
-        temp_battery[i] = i * 50;
-    }
-//    for (int color = PARAM::BLUE; color <= PARAM::YELLOW; color++){
-//        for (int i = 0; i < GlobalData::instance()->processRobot[0].robotSize[color]; i++ ){
-//            GlobalData::instance()->robotInformation[color][i].inexist = false;
-//        }
-//    }
-    /***************/
-    std::vector<int>robot_id;
-    bool flag_robot_id = false;
     while(true) {
         std::this_thread::sleep_for(std::chrono::microseconds(500));
-        /***************/
-//        QElapsedTimer timer;
-//        timer.start();
-        //仿真情况下回包循环变化的电量信息
-        if (VIEW_DISPLAY){
-            for (int color = PARAM::BLUE; color <= PARAM::YELLOW; color++){
-                for (int i = 0; i < PARAM::ROBOTNUM; i++){
-                    robotInfoMutex.lock();
-//                    GlobalData::instance()->robotInformation[color][i].inexist = true;
-//                    GlobalData::instance()->robotInformation[color][i].battery = temp_battery[i]/1000;
-                    temp_battery[i] = temp_battery[i] + 0.05;
-                    if (temp_battery[i]>1000) {temp_battery[i]=0;}
-                    robotInfoMutex.unlock();
-                    emit receiveRobotInfo(color, i);
-                }
-            }
-        }
-        //时间随机数
-        /*static qint64 time_old[PARAM::ROBOTNUM];
-        QDateTime UTC(QDateTime::currentDateTimeUtc());
-        qint64 time_new = UTC.toMSecsSinceEpoch();
-        srand(time_new);
-        int send_flag_num = rand() % 4;
-        qDebug() << send_flag_num;*/
-            /*2019.10.8在场判断
-            //设置回包信息,这一段是为了在仿真中显示变化的电量信息
-            for (int color = PARAM::BLUE; color <= PARAM::YELLOW; color++){
-//                for (int i = 0; i < PARAM::ROBOTNUM; i++)
-                //先把场上所有车的车号存下来
-                robot_id.clear();
-                for (int i = 0; i < GlobalData::instance()->processRobot[0].robotSize[color]; i++){
-                    auto& robot = GlobalData::instance()->processRobot[0].robot[color][i];
-                    robot_id.push_back(robot.id);
-                }
-                //再根据车号来显示电量信息
-                for (int i = 0; i < PARAM::ROBOTNUM; i++){
-                    robotInfoMutex.lock();
-                    if (robot_id.size() != 0){
-                        for (int j = 0; j < robot_id.size(); j++){
-                            if (i == robot_id[j]){
-                                GlobalData::instance()->robotInformation[color][i].inexist = true;
-                                GlobalData::instance()->robotInformation[color][i].battery = temp_battery[i]/1000;
-                                flag_robot_id = true;
-                                break;
-                            }
-                        }
-                        if (!flag_robot_id){
-                            GlobalData::instance()->robotInformation[color][i].inexist = false;
-                            GlobalData::instance()->robotInformation[color][i].battery = 0;
-                        }
-                        flag_robot_id = false;
-                    }
-                    else{
-                        GlobalData::instance()->robotInformation[color][i].inexist = false;
-                        GlobalData::instance()->robotInformation[color][i].battery = 0;
-                    }
-                    temp_battery[i] = temp_battery[i] + 0.2;
-                    if (temp_battery[i]>1000) {temp_battery[i]=0;}
-                    robotInfoMutex.unlock();
-                    //emit一下
-                    emit receiveRobotInfo(color, i);*/
-
-
-//                    GlobalData::instance()->robotInformation[color][i].infrared = true;//把红外设置为true
-////                    GlobalData::instance()->robotInformation[color][i].inexist = GlobalData::instance()->maintain[color].robot[color][i].valid;
-//                    int robot_id = robot.id;
-                    /*2019.9.30电量显示
-                    GlobalData::instance()->robotInformation[color][i].inexist = true;
-                    GlobalData::instance()->robotInformation[color][i].battery = temp_battery[i]/1000;
-                    temp_battery[i] = temp_battery[i] + 0.5;
-                    if (temp_battery[i]>1000) {temp_battery[i]=0;}
-                    robotInfoMutex.unlock();
-                    emit receiveRobotInfo(color, i);*/
-//                }
-//                qDebug() << "mark fuck :" << timer.nsecsElapsed()/1000000.0 << "millisecond";
-//            }
-//        }
-//        qDebug() << "mark fuck :" << timer.nsecsElapsed()/1000000.0 << "millisecond";
-        /***************/
-
+//        ZSS::ZParamManager::instance()->loadParam(isSimulation, "Alert/IsSimulation", false);
         if(!IS_SIMULATION) {
-            for (int color = PARAM::BLUE; color <= PARAM::YELLOW; color++) {
+            for (int color = PARAM::BLUE; color < PARAM::TEAMS; color++) {
                 for (int j = 0; j < PARAM::ROBOTNUM; j++ ) {
-//                j = 5;
-                    QDateTime UTC(QDateTime::currentDateTimeUtc());
-                    qint64 now_receive_time = UTC.toMSecsSinceEpoch();
-                    //6秒钟没有回包就->0, 16秒钟没有回包就----
-                    if (now_receive_time - last_receive_time[j] > 6000 && now_receive_time - last_receive_time[j] < 16000) {
+                    if (count[color][j]++ > 1000) {
                         robotInfoMutex.lock();
                         GlobalData::instance()->robotInformation[color][j].infrared = false;
                         GlobalData::instance()->robotInformation[color][j].flat = false;
                         GlobalData::instance()->robotInformation[color][j].chip = false;
-                        GlobalData::instance()->robotInformation[color][j].battery = 0;
                         count[color][j] = 0;
-//                        last_receive_time[j] = 0;
+//                        qDebug() << "FUCK" << color << j;
                         robotInfoMutex.unlock();
                         emit receiveRobotInfo(color, j);
                     }
                 }
             }
         }
-//        qDebug() << "receiveSocket.state = " << receiveSocket.state();
-//        qDebug() << "BoundState = " << QUdpSocket::BoundState;
-//        qDebug() << "receiveSocket.hasPendingDatagrams = " << receiveSocket.hasPendingDatagrams();
         while (receiveSocket.state() == QUdpSocket::BoundState && receiveSocket.hasPendingDatagrams()) {
-//            qDebug() << "##############receive data !!!";
-//            qDebug() << "+";
-//            qDebug() << "+";
-//            qDebug() << "+";
-//            qDebug() << "+";
-//            qDebug() << "+";
-//            qDebug() << "+";
+            qDebug() << "receive data !!!";
             auto msgInfo = (MessageInfo*)(MessageInfo::instance());
-//            char newInfo = msgInfo->info() | 0x02;
-//                    msgInfo->setInfo(newInfo);
+            char newInfo = msgInfo->info() | 0x02;
+            //        msgInfo->setInfo(newInfo);
             rx.resize(receiveSocket.pendingDatagramSize());
-//            qDebug() << "size = " << receiveSocket.pendingDatagramSize();
             receiveSocket.readDatagram(rx.data(), rx.size(), &address);
-//            qDebug() << "size = " << rx.size();
-//            qDebug() << "id = " << rx[2] - 1;
             color = (address.toString() == radioReceiveAddress[0]) ? team[0] : team[1];
             if (color == -1) {
                 qDebug() << "Receive Error Message from:" << address << "in actionmodule.cpp";
@@ -367,16 +239,12 @@ void ActionModule::readData() {
             short wheelVel[4] = {0};
 
             if(data[0] == (char)0xff && data[1] == (char)0x02) {
-//            if(true){
-                //回包数据！！！！！！！！！！！！
                 id       = (quint8)data[2] - 1;//real robot 1-12 -> 0-11
                 infrared = (quint8)data[3] & 0x40;
-                //infrared = true;
                 flat     = (quint8)data[3] & 0x20;
                 chip     = (quint8)data[3] & 0x10;
                 battery  = (quint8)data[4];
                 capacitance = (quint8)data[5];
-//                capacitance = 1;
                 wheelVel[0] = (quint16)(data[6] << 8) + data[7];
                 wheelVel[1] = 1 + (short)~(data[8] << 8) + data[9];
                 wheelVel[2] = 1 + (short)~(data[10] << 8) + data[11];
@@ -387,29 +255,21 @@ void ActionModule::readData() {
                 GlobalData::instance()->robotInformation[color][id].infrared = infrared;
                 GlobalData::instance()->robotInformation[color][id].flat = flat;
                 GlobalData::instance()->robotInformation[color][id].chip = chip;
-                GlobalData::instance()->robotInformation[color][id].battery = battery/256.0;//std::min(std::max((battery - LOW_BATTERY) / (FULL_BATTERY - LOW_BATTERY), 0.0), 1.0);
+                GlobalData::instance()->robotInformation[color][id].battery = std::min(std::max((battery - LOW_BATTERY) / (FULL_BATTERY - LOW_BATTERY), 0.0), 1.0);
                 GlobalData::instance()->robotInformation[color][id].capacitance = std::min(std::max((capacitance - LOW_CAPACITANCE) / (FULL_CAPACITANCE - LOW_CAPACITANCE), 0.0), 1.0);
                 robotInfoMutex.unlock();
-//                qDebug() << id;
-//                qDebug() << "eee = " << GlobalData::instance()->robotInformation[color][id].battery;
-
                 emit receiveRobotInfo(color, id);
             }
-            QDateTime UTC(QDateTime::currentDateTimeUtc());
-            last_receive_time[id] = UTC.toMSecsSinceEpoch();
-
-//            qDebug() << rx.toHex();
-//            qDebug() << color << id << infrared << flat << address;
+            qDebug() << rx.toHex();
+            qDebug() << color << id << infrared << flat << address;
         }
     }
 }
 namespace {
 void encodeLegacy(const ZSS::Protocol::Robot_Command& command, QByteArray& tx, int num) {
     // send back to vision module
-    //发包！！！！！！！！！！！！
     // num 0 ~ 3
     // id  0 ~ 15
-
     quint8 id = (quint8)command.robot_id();
     double origin_vx = command.velocity_x();
     double origin_vy = command.velocity_y();
@@ -418,39 +278,14 @@ void encodeLegacy(const ZSS::Protocol::Robot_Command& command, QByteArray& tx, i
     double theta = - origin_vr * dt;
     CVector v(origin_vx, origin_vy);
     v = v.rotate(theta);
-
-    static qint64 time_old[PARAM::ROBOTNUM];
-    QDateTime UTC(QDateTime::currentDateTimeUtc());
-    qint64 time_new = UTC.toMSecsSinceEpoch();
-
-    int send_flag;
-    srand(time_new);
-    int send_flag_num1 = rand() % 4;
-    int send_flag_num2 = 3 - send_flag_num1;
-//    qDebug() << send_flag_num1;
-    if((time_new - time_old[id]) >= VIEW_FREQUENCE * 1000) {
-        send_flag = 1;
-        time_old[id] = time_new;
-//        ZSS::ZActionModule::instance()->send_flag_num = ZSS::ZActionModule::instance()->send_flag_num + 1;
-//        send::send_flag_num = send::send_flag_num + 1;
-
-    }
-    else {
-        send_flag = 0;
-    }
-    //一次发四个包，最多只有两个能回包。
-    if (num == send_flag_num1 || num == send_flag_num2) {send_flag = 0;}
-//    if (ZSS::ZActionModule::instance()->send_flag_num == 2) {send_flag = 0;}
-//    else if (ZSS::ZActionModule::instance()->send_flag_num == 3) {send_flag = 0; ZSS::ZActionModule::instance()->send_flag_num = 0;}
-//    if (send::send_flag_num == 2) {send_flag = 0;}
-//    else if (send::send_flag_num == 3) {send_flag = 0; send::send_flag_num = 0;}
-
     if (fabs(theta) > 0.00001) {
+        //            if (i==0) cout << theta << " " <<vx << " "<< vy << " ";
         v = v * theta / (2 * sin(theta / 2));
         origin_vx = v.x();
         origin_vy = v.y();
+        //            if (i==0) cout << vx << " "<< vy << " " << endl;
     }
-//    qDebug() << time_new << "=====" << time_old[id] << "=====" << send_flag;
+
 
     qint16 vx = (qint16)(origin_vx);
     qint16 vy = (qint16)(origin_vy);
@@ -458,6 +293,7 @@ void encodeLegacy(const ZSS::Protocol::Robot_Command& command, QByteArray& tx, i
     qint16 abs_vx = std::abs(vx);
     qint16 abs_vy = std::abs(vy);
     qint16 abs_vr = std::abs(vr);
+    //if(abs(vx) > 0.1) qDebug() << "id: " << id<< "  "<<num*4 + 1<< "  "<<vx;
     // flat&chip m/s -> cm/s
     // kick   1 : chip   0 : flat`
     bool kick = command.kick();
@@ -470,7 +306,7 @@ void encodeLegacy(const ZSS::Protocol::Robot_Command& command, QByteArray& tx, i
     // dribble -1 ~ +1 -> -3 ~ +3
     qint8 dribble = command.dribbler_spin() > 0.5 ? 3 : 0;
     tx[0] = (tx[0]) | (1 << (3 - num));
-    tx[num * 4 + 1] = (send_flag << 7) | ((quint8)kick << 6) | dribble << 4 | id;
+    tx[num * 4 + 1] = ((quint8)kick << 6) | dribble << 4 | id;
     tx[num * 4 + 2] = (vx >> 8 & 0x80) | (abs_vx & 0x7f);
     tx[num * 4 + 3] = (vy >> 8 & 0x80) | (abs_vy & 0x7f);
     tx[num * 4 + 4] = (vr >> 8 & 0x80) | (abs_vr & 0x7f);

@@ -3,8 +3,6 @@
 #include <QObject>
 #include <QMutex>
 #include <QUdpSocket>
-#include <QTimer>
-#include <QDateTime>
 #include "singleton.hpp"
 #include "zss_cmd.pb.h"
 

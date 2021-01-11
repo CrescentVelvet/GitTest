@@ -31,9 +31,6 @@ bool ONLY_CHIPPOS = false;
 bool SIGNAL_TO_CUDA = false;
 bool IS_RIGHT = false;
 bool IS_SIMULATION = false;
-double VIEW_FREQUENCE = 0.2;
-bool VIEW_DISPLAY = false;
-double VIEW_DISPLAY_FREQUENCE = 0.01;
 //判断进攻车数量的参数
 enum Field {
     FrontField = 1,
@@ -150,9 +147,6 @@ CMessiDecision::CMessiDecision()
     ZSS::ZParamManager::instance()->loadParam(PASSVEL::CHIP_DIST_RATIO, "Messi/CHIP_DIST_RATIO", 0.8);
     ZSS::ZParamManager::instance()->loadParam(PASSVEL::bufferTime, "Messi/bufferTime", 0.4);
     ZSS::ZParamManager::instance()->loadParam(PASS::MAX_NO_KICK, "Messi/MAX_NO_KICK", 10);
-    ZSS::ZParamManager::instance()->loadParam(VIEW_FREQUENCE, "Debug/VIEW_FREQUENCE", 0.2);
-    ZSS::ZParamManager::instance()->loadParam(VIEW_DISPLAY, "Debug/VIEW_DISPLAY", false);
-    ZSS::ZParamManager::instance()->loadParam(VIEW_DISPLAY_FREQUENCE, "Debug/VIEW_DISPLAY_FREQUENCE", 0.01);
     if(IS_SIMULATION)
         ZSS::ZParamManager::instance()->loadParam(PASSVEL::FRICTION, "AlertParam/Friction4Sim", 40.0);
     else
@@ -200,14 +194,7 @@ void CMessiDecision::generateAttackDecision(const CVisionModule* pVision) {
 
     // DEBUG INFO
     if(MESSI_DEBUG) {
-        /*************************************************************************************************************/
-        /*************************************************************************************************************/
-        /*************************************************************************************************************/
-        GDebugEngine::Instance()->gui_debug_msg(CGeoPoint(-300, 100), QString("This-selfpass").toLatin1(), COLOR_GREEN);
-        /*************************************************************************************************************/
-        /*************************************************************************************************************/
-        /*************************************************************************************************************/
-        GDebugEngine::Instance()->gui_debug_msg(_passPos, QString("PassPoint").toLatin1(), _isFlat ? COLOR_GREEN : COLOR_ORANGE);
+        GDebugEngine::Instance()->gui_debug_msg(_passPos, QString("PPPPPP").toLatin1(), _isFlat ? COLOR_GREEN : COLOR_ORANGE);
 //        GDebugEngine::Instance()->gui_debug_msg(_otherPos[0], QString("RUNPOS1").toLatin1(), COLOR_GREEN);
 //        GDebugEngine::Instance()->gui_debug_msg(_otherPos[1], QString("RUNPOS2").toLatin1(), COLOR_GREEN);
 //        GDebugEngine::Instance()->gui_debug_msg(_otherPos[2], QString("RUNPOS3").toLatin1(), COLOR_ORANGE);

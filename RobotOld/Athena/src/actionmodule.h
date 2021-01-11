@@ -1,16 +1,11 @@
 #ifndef ZACTIONMODULE_H
 #define ZACTIONMODULE_H
-#include <time.h>
 #include <QObject>
 #include <QMutex>
 #include <QUdpSocket>
-#include <QTimer>
-#include <QDateTime>
-#include <vector>
 #include "singleton.hpp"
 #include "zss_cmd.pb.h"
 #include "staticparams.h"
-//namespace send { static int send_flag_num; }
 namespace ZSS {
 class ActionModule : public QObject {
     Q_OBJECT
@@ -22,7 +17,6 @@ class ActionModule : public QObject {
     bool disconnectRadio(int);
     void setSimulation(bool);
     int team[PARAM::TEAMS];
-    double temp_battery[PARAM::ROBOTNUM];
   private slots:
     void readData();
   private:

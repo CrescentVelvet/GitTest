@@ -2,49 +2,41 @@
 #define VIEWERINTERFACE_H
 
 #include <QAbstractListModel>
-#include <QTimer>
-#include <QDateTime>
 #include "globaldata.h"
 #include "actionmodule.h"
 #include "simmodule.h"
 #include "parammanager.h"
 
-extern int width[];
-class Global : public QObject{
-    Q_OBJECT
-signals:
-    void changeRobotInfo(int);
-};
-
 class ViewerInterface : public QAbstractListModel{
     Q_OBJECT
-//    QTime receive_current_time;
-    qint64 min_sec_old[PARAM::ROBOTNUM*PARAM::TEAMS];
-    double robot_battery_old[PARAM::ROBOTNUM*PARAM::TEAMS];
-    bool judge_inexist = false;
-    bool judge_battery = false;
-    bool judge_time = false;
-    bool judge_emit = false;
-    bool judge_inexist_old[PARAM::ROBOTNUM*PARAM::TEAMS];
 public slots:
-    void changeRobotInfo(int team,int id);
+    void changeRobotInfo(int team,int id){
+        emit dataChanged(createIndex(team+id*PARAM::TEAMS,0),createIndex(team+id*PARAM::TEAMS,0));
+    }
 public:
-    explicit ViewerInterface(QObject *parent = Q_NULLPTR);
-    virtual ~ViewerInterface(){}
+    explicit ViewerInterface(QObject *parent = Q_NULLPTR){
+        QObject::connect(ZSS::ZActionModule::instance(),SIGNAL(receiveRobotInfo(int,int)),this,SLOT(changeRobotInfo(int,int)));
+        QObject::connect(ZSS::ZSimModule::instance(),SIGNAL(receiveSimInfo(int,int)),this,SLOT(changeRobotInfo(int,int)));
+    }
     enum Roles {
         robotID = Qt::UserRole + 1,
         robotTeam,
         robotBattery,
         robotCapacitance,
-        robotInfrared,
-        robotInexist
+        robotInfrared
     };
     Q_ENUM(Roles)
-    void view_display();
-    void emit_display();
-    QHash<int, QByteArray> roleNames() const;
+    QHash<int, QByteArray> roleNames() const {
+        QHash<int, QByteArray> result = QAbstractListModel::roleNames();
+        result.insert(robotID, ("mID"));
+        result.insert(robotTeam,("mTeam"));
+        result.insert(robotBattery, ("mBattery"));
+        result.insert(robotCapacitance, ("mCapacitance"));
+        result.insert(robotInfrared, ("mInfrared"));
+        return result;
+    }
     virtual int rowCount(const QModelIndex &parent = QModelIndex()) const override{
-        return PARAM::ROBOTNUM*2;
+        return 24;
     }
     virtual int columnCount(const QModelIndex &parent = QModelIndex()) const override{
         return 5;
@@ -64,8 +56,6 @@ public:
                 return GlobalData::instance()->robotInformation[team][id].capacitance;
             case robotInfrared:
                 return GlobalData::instance()->robotInformation[team][id].infrared;
-            case robotInexist:
-                return GlobalData::instance()->robotInformation[team][id].inexist;
             }
             return 0;
         }

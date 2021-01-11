@@ -72,9 +72,9 @@ Page{
         TabButton {
             icon.source:"/source/referee.png";
         }
-        TabButton {
-            icon.source:"/source/viewer.png";
-        }
+//        TabButton {
+//            icon.source:"/source/viewer.png";
+//        }
         TabButton {
             icon.source:"/source/joy3.png";
         }
@@ -358,7 +358,7 @@ Page{
         }
         RefereeBox{
         }
-        Viewer{}
+//        Viewer{}
         /*****************************************/
         /*                  UDP                  */
         /*****************************************/

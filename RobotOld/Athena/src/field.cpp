@@ -46,6 +46,7 @@ const static QColor COLOR_LIGHTBLUE(0,137,167, 50);
 const static QColor COLOR_GREEN(27,129,62);
 const static QColor COLOR_YELLOW(221,210,59);
 const static QColor COLOR_LIGHTYELLOW(221,210,59, 50);
+const int COLOR_USE_RGB = 10;
 const static qreal zoomStep = 0.05;
 const static qreal zoomMin = 0.1;
 const int ballRatio = 2;
@@ -829,7 +830,23 @@ void Field::drawDebugMessages(int team) {
     pixmapPainter.setBrush(QBrush(DEBUG_BRUSH_COLOR));
     for(int i = 0; i < msgs.msgs_size(); i++) {
         auto& msg = msgs.msgs(i);
-        pixmapPainter.setPen(QPen(DEBUG_COLOR[msg.color()], ::w(10)));
+        if(msg.color() == COLOR_USE_RGB) {
+                  int value = msg.rgb_value();
+                  int rgb[3];
+                  for(int i = 0; i < 3; i++) {
+                      rgb[2 - i] = value % 1000;
+                      value = (value - rgb[2 - i]) / 1000;
+                      if(rgb[2 - i]>255||rgb[2 - i]<0){//error value
+                          rgb[0]=0;
+                          rgb[1]=0;
+                          rgb[2]=0;
+                          break;
+                      }
+                  }
+                  pixmapPainter.setPen(QPen(QColor(rgb[0], rgb[1], rgb[2]), ::w(10)));
+              } else {
+                  pixmapPainter.setPen(QPen(QColor(DEBUG_COLOR[msg.color()]), ::w(10)));
+              }
         double x1, x2, y1, y2;
         double minx,miny,maxx,maxy;
         switch(msg.type()) {

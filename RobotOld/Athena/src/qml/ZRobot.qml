@@ -11,7 +11,6 @@ Grid{
     columns: 3;
     property alias battery : battery.value;
     property alias capacity : capacity.value;
-    property bool inexist: false;
     property bool infrared: false;
     property bool team : true;
     property int number : 0;
@@ -21,7 +20,6 @@ Grid{
         height:parent.height - parent.topPadding;
         radius: height/4;
         color : root.team ? "#f0ad4e" : "#337ab7";
-        opacity: root.inexist ? 1 : 0.2
 //        source:number == -1 ? "/robot/z.png" : ("/robot/" + root.color + root.number + ".png");
         Text{
             anchors.verticalCenter: parent.verticalCenter;
@@ -29,26 +27,17 @@ Grid{
             text :root.number;
             font.weight: Font.ExtraBold;
             font.pixelSize: parent.width*0.8;
-            opacity: 00.5;
+            opacity: 0.5;
         }
         Rectangle{
             x:0;
             y:0;
-            width:parent.width/2
-            height:parent.height/2
+            width:parent.width
+            height:parent.height
             radius: height/4;
             color: "#d9534f"
             opacity: root.infrared ? 1 : 0
         }
-//        Rectangle{
-//            x:parent.width/2;
-//            y:parent.height/2;
-//            width:parent.width/2
-//            height:parent.height/2
-//            radius: height/4;
-//            color: "#66ccff"
-//            opacity: root.infrared ? 1 : 0
-//        }
     }
     Grid{
         verticalItemAlignment: Grid.AlignVCenter;

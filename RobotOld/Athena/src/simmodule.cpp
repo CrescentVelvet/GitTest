@@ -13,10 +13,6 @@
 
 namespace ZSS {
 namespace {
-
-auto ypm = ZSS::ZParamManager::instance();
-double VIEW_FREQUENCE;
-
 bool trans_dribble(double dribble) {
     return dribble>1;
 }
@@ -164,23 +160,6 @@ void SimModule::sendSim(int t, ZSS::Protocol::Robots_Command& command) {
         auto id = commands.robot_id();
         grsim_robots[id]->set_id(id);
         grsim_robots[id]->set_wheelsspeed(false);
-
-//        QTime send_current_time;
-//        QDateTime send_current_temp;
-//        ypm->loadParam(VIEW_FREQUENCE, "Debug/VIEW_FREQUENCE");
-//        static int time_old[PARAM::ROBOTNUM];
-//        int send_flag;
-//        send_current_time = QTime::currentTime();
-//        send_current_temp = QDateTime::currentDateTime();
-//        int time_new = send_current_temp.toMSecsSinceEpoch();
-//        if((time_new - time_old[id]) >= VIEW_FREQUENCE * 1000) {//每隔VIEW_FREQUENCE秒输出一次
-//            send_flag = 1;
-//            time_old[id] = time_new;
-//        }
-//        else {
-//            send_flag = 0;
-//        }
-
         //set flatkick or chipk    ick
         if (!commands.kick()) {
             grsim_robots[id]->set_kickspeedz(0);

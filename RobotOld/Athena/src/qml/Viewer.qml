@@ -22,7 +22,6 @@ Item {
                 battery : mBattery;
                 capacity: mCapacitance;
                 infrared: mInfrared;
-                inexist: mInexist;
             }
         }
     }
