@@ -181,6 +181,10 @@ void CVisionModule::parse(void * ptr, int size) {
         }
         GlobalData::instance()->camera[message.camID].push(message);
         GlobalData::instance()->cameraUpdate[message.camID] = true;
+
+        dealWithData();
+        ZRecRecorder::instance()->store();
+        emit needDraw();
     }
     if (collectNewVision()) {
         checkCommand();

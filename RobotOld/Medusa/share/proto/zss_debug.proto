@@ -70,6 +70,7 @@ message Debug_Msg {
 		PURPLE = 	7;
 		GRAY = 		8;
 		BLACK = 	9;
+		USE_RGB =10;
 	}
 	required Color color = 2;
 	// one of the follow >>> need to be tested with TYPE <oneof> 
@@ -80,6 +81,7 @@ message Debug_Msg {
 	optional Debug_Curve_ curve = 	7;
 	optional Debug_Polygon polygon = 8;
 	optional Debug_Points points = 9;
+	optional int32 RGB_value =10; 
 }
 message Debug_Msgs{
 	repeated Debug_Msg msgs= 1;

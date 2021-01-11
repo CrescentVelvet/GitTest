@@ -1,13 +1,15 @@
 import numpy as np
 from matplotlib import pyplot as plt
 
-x1 = [1,2,3,4,5,]
-y1 = [2,4,5,6,7,]
-x2 = [5,4,3,2,1,]
-y2 = [2,4,5,6,7,]
-plt.title("demo")
-plt.xlabel("x axis")
-plt.ylabel("y axis")
-plt.plot(x1,y1,"ob",c="b")
-plt.plot(x2,y2,"ob",c="r")
+f = open("log_data.txt", "r")
+
+x = []
+y = []
+for i, line in enumerate(f.readlines()):
+    if i % 2 is 0:
+        x.append(line.split()[0])
+    if i % 2 is not 0:
+        y.append(line.split()[0])
+for i in range(len(x)):
+    plt.plot(x[i], y[i], 'o', c=(np.random.rand(), np.random.rand(), np.random.rand()))
 plt.show()

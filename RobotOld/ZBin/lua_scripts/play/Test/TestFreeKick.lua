@@ -30,10 +30,10 @@ end
 local initVariable = function()
 	pass_pos = messi:freeKickPos()
 	wait_pos = messi:freeKickWaitPos()
-	if math.abs(pass_pos:y()) < 1e-5 then
-		dirFlag  = math.abs(pass_pos:y()) / 1e-5
+	if pass_pos:y() > 0 then
+		dirFlag  = 1
 	else
-		dirFlag  = math.abs(pass_pos:y()) / pass_pos:y()
+		dirFlag  = -1
 	end
 	fake_pos = pos.getOtherPos(2)()
 	small_r  = 75
@@ -168,10 +168,10 @@ firstState = "initState",
 		end
 		if STOP_BALL_PLACE and not cond.ourBallPlace() then
 			pass_pos = messi:freeKickPos()
-			if math.abs(pass_pos:y()) < 1e-5 then
-				dirFlag  = math.abs(pass_pos:y()) / 1e-5
+			if pass_pos:y() > 0 then
+				dirFlag  = 1
 			else
-				dirFlag  = math.abs(pass_pos:y()) / pass_pos:y()
+				dirFlag  = -1
 			end
 			fake_pos = pos.getOtherPos(2)()
 			-- fake_pos = CGeoPoint:new_local(pass_pos:x(), pass_pos:y() + ball.posY() > 0 and -200 or 200)
