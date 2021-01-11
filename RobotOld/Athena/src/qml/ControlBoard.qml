@@ -36,7 +36,6 @@ Page{
 //            interfaces4YellowReceiver.updateModel();
         }
     }
-
     ZSS.LogSlider{
         id: log
     }
@@ -427,6 +426,46 @@ Page{
                 }
             }
             ZGroupBox{
+                title: qsTr("Analysis")
+                Grid{
+                    width:parent.width;
+                    property int itemWidth : width - 2*padding;
+                    ZButton {
+                            id:openBtnrs
+                            width: 35;
+                            icon.source:"/source/openfile.png";
+                            anchors.leftMargin: 10
+                            onClicked: {
+                                fdrls.open();
+                            }
+                        }
+                        Label {
+                            id: labelsrs
+                            text: qsTr("")
+                            height: 25
+                            anchors.left:openBtnrs.right
+                            anchors.leftMargin: 10
+                        }
+
+                        FileDialog {
+                            id:fdrls
+                            title: "Please select"
+                            selectExisting: true
+                            selectFolder: false
+                            selectMultiple: false
+                            nameFilters: ["Rec files (*.log)"]
+                            onAccepted: {
+                                console.log("You chose: " + fdrls.fileUrl);
+                                ZSS.Analysis.loadFile(fdrls.fileUrl);
+                            }
+                            onRejected: {
+                                labelsrs.text = "";
+                                console.log("Canceled");
+                            }
+                        }
+                }
+            }
+            ZGroupBox{
                 title: qsTr("RecReplay")
                 Column{
                     width:parent.width;
@@ -439,7 +478,7 @@ Page{
                         horizontalItemAlignment: Grid.AlignHCenter;
                         spacing: 5;
                         rowSpacing: 5;
-                        columns: 8;
+                        columns: 7;
                         ZButton {
                                 id:openBtnr
                                 width: 35;
@@ -523,21 +562,28 @@ Page{
                                 recslider.value = recslider.value + recPlaySpinBox.value * recslider.stepSize;
                             }
                         }
-                        ZButton{
-                            property bool oldFlag: false
-                            id: oldRepair
-                            width: 35;
-                            icon.source:"/source/repair.png";
-                            highlighted: oldRepair.oldFlag;
-                            onClicked: {
-                                oldRepair.oldFlag = !oldRepair.oldFlag;
-                                interaction4field.setOldLogFlag(oldRepair.oldFlag);
-                            }
-                        }
                         Text{
                             text: "Steps:";
                             color: "white";
                         }
+//                        TextField {
+//                            id:input;
+//                            height: 46
+//                            width:36
+//                            text: control.playspeed
+//                            color:"white";
+//                            font.pixelSize: 16;
+//                            font.family:"Arial";
+//                            leftPadding: 12;
+////                            verticalAlignment: Text.AlignVCenter
+//                            selectByMouse: true;
+//                            onAccepted:{
+//                                control.playspeed = text;
+//                                focus = false;
+//                                width= text.length*8 + 24
+//                                console.log(text.length)
+//                            }
+//                        }
                         SpinBox {
                             id:recPlaySpinBox;
                             height: 46
@@ -558,10 +604,24 @@ Page{
                         Slider{
                             id: recslider
                             width: parent.width - timeTextr.width;
+//                            value: ZSS.RecSlider.currentFrame;
                             onValueChanged: {
                                 if (recslider.value != ZSS.RecSlider.currentFrame)
                                     ZSS.RecSlider.seekFrame(recslider.value);
                             }
+
+//                            MouseArea {
+//                                property int pos
+//                                anchors.fill: parent
+//                                onClicked: {
+//                                    pos = ZSS.RecSlider.maximumValue * mouse.x/parent.width;
+//                                    recslider.value = pos;
+//                                }
+//                                onPressAndHold:  {
+//                                    pos = ZSS.RecSlider.maximumValue * mouse.x/parent.width;
+//                                    recslider.value = pos;
+//                                }
+//                            }
                         }
                         Text{
                             id: timeTextr;

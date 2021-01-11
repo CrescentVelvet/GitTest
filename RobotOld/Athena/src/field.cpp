@@ -46,7 +46,6 @@ const static QColor COLOR_LIGHTBLUE(0,137,167, 50);
 const static QColor COLOR_GREEN(27,129,62);
 const static QColor COLOR_YELLOW(221,210,59);
 const static QColor COLOR_LIGHTYELLOW(221,210,59, 50);
-const int COLOR_USE_RGB = 10;
 const static qreal zoomStep = 0.05;
 const static qreal zoomMin = 0.1;
 const int ballRatio = 2;
@@ -816,7 +815,6 @@ void Field::drawSelectedArea() {
     pixmapPainter.drawRect(QRectF(::x(GS->selectCarMinX), ::y(GS->selectCarMinY), ::w(GS->selectCarMaxX - GS->selectCarMinX), ::h(GS->selectCarMaxY - GS->selectCarMinY)));
 }
 void Field::drawDebugMessages(int team) {
-    int oldFlag = GlobalSettings::instance()->oldLogFlag;
     static qreal chordAngel = qRadiansToDegrees(qAcos(1.0 * carFaceWidth / carDiameter));
     static ZSS::Protocol::Debug_Msgs msgs;
     GlobalData::instance()->debugMutex.lock();
@@ -830,63 +828,39 @@ void Field::drawDebugMessages(int team) {
     pixmapPainter.setBrush(QBrush(DEBUG_BRUSH_COLOR));
     for(int i = 0; i < msgs.msgs_size(); i++) {
         auto& msg = msgs.msgs(i);
-        if(msg.color() == COLOR_USE_RGB) {
-                  int value = msg.rgb_value();
-                  int rgb[3];
-                  for(int i = 0; i < 3; i++) {
-                      rgb[2 - i] = value % 1000;
-                      value = (value - rgb[2 - i]) / 1000;
-                      if(rgb[2 - i]>255||rgb[2 - i]<0){//error value
-                          rgb[0]=0;
-                          rgb[1]=0;
-                          rgb[2]=0;
-                          break;
-                      }
-                  }
-                  pixmapPainter.setPen(QPen(QColor(rgb[0], rgb[1], rgb[2]), ::w(10)));
-              } else {
-                  pixmapPainter.setPen(QPen(QColor(DEBUG_COLOR[msg.color()]), ::w(10)));
-              }
-        double x1, x2, y1, y2;
-        double minx,miny,maxx,maxy;
+        pixmapPainter.setPen(QPen(DEBUG_COLOR[msg.color()], ::w(10)));
+        double radius;
         switch(msg.type()) {
         case ZSS::Protocol::Debug_Msg_Debug_Type_ARC:
-            x1 = msg.arc().rectangle().point1().x();
-            x2 = msg.arc().rectangle().point2().x();
-            y1 = msg.arc().rectangle().point1().y();
-            y2 = msg.arc().rectangle().point2().y();
-            minx = std::min(x1,x2);
-            miny = std::min(y1,y2);
-            maxx = std::max(x1,x2);
-            maxy = std::max(y1,y2);
-            pixmapPainter.drawArc(QRectF( ::x(double(minx) * 10),
-                                          ::y(double(miny * oldFlag) * 10),
-                                          ::w((maxx - minx) * 10),
-                                          ::h((maxy - miny) * oldFlag * 10)),
+            radius = (msg.arc().rectangle().point2().x() - msg.arc().rectangle().point1().x()) / 2;
+            pixmapPainter.drawArc(QRectF( ::x(double(msg.arc().rectangle().point1().x()) * 10),
+                                          ::y(double(-msg.arc().rectangle().point1().y()) * 10),
+                                          ::w(2 * radius * 10),
+                                          ::h(- 2 * radius * 10)),
                                   msg.arc().start() * 16,
                                   msg.arc().end() * 16);
 
             break;
         case ZSS::Protocol::Debug_Msg_Debug_Type_LINE:
-            pixmapPainter.drawLine(::x(msg.line().start().x() * 10), ::y(msg.line().start().y() * 10 * oldFlag), ::x(msg.line().end().x() * 10), ::y(msg.line().end().y() * 10 * oldFlag));
+            pixmapPainter.drawLine(::x(msg.line().start().x() * 10), ::y(-msg.line().start().y() * 10), ::x(msg.line().end().x() * 10), ::y(-msg.line().end().y() * 10));
             break;
         case ZSS::Protocol::Debug_Msg_Debug_Type_Points: {
             QVector<QLine> lines;
             for(int i = 0; i < msg.points().point_size(); i++) {
-                lines.push_back(QLine(::x((msg.points().point(i).x() + debugPointSize) * 10), ::y((msg.points().point(i).y() + debugPointSize) * oldFlag * 10), ::x((msg.points().point(i).x() - debugPointSize) * 10), ::y((msg.points().point(i).y() - debugPointSize) * 10)));
-                lines.push_back(QLine(::x((msg.points().point(i).x() - debugPointSize) * 10), ::y((msg.points().point(i).y() + debugPointSize) * oldFlag * 10), ::x((msg.points().point(i).x() + debugPointSize) * 10), ::y((msg.points().point(i).y() - debugPointSize) * 10)));
+                lines.push_back(QLine(::x((msg.points().point(i).x() + debugPointSize) * 10), ::y(-(msg.points().point(i).y() + debugPointSize) * 10), ::x((msg.points().point(i).x() - debugPointSize) * 10), ::y(-(msg.points().point(i).y() - debugPointSize) * 10)));
+                lines.push_back(QLine(::x((msg.points().point(i).x() - debugPointSize) * 10), ::y(-(msg.points().point(i).y() + debugPointSize) * 10), ::x((msg.points().point(i).x() + debugPointSize) * 10), ::y(-(msg.points().point(i).y() - debugPointSize) * 10)));
             }
             pixmapPainter.drawLines(lines);
             break;
         }
         case ZSS::Protocol::Debug_Msg_Debug_Type_TEXT:
-            pixmapPainter.drawText(QPointF(::x(msg.text().pos().x() * 10), ::y(msg.text().pos().y() * oldFlag * 10)), QString::fromStdString(msg.text().text()));
+            pixmapPainter.drawText(QPointF(::x(msg.text().pos().x() * 10), ::y(-msg.text().pos().y() * 10)), QString::fromStdString(msg.text().text()));
             break;
         case ZSS::Protocol::Debug_Msg_Debug_Type_ROBOT:
-            pixmapPainter.drawChord(QRectF(::x((msg.robot().pos().x() * 10) - 1.2*carDiameter / 2.0), ::y((msg.robot().pos().y() * oldFlag * 10) + 1.2*carDiameter / 2.0), ::w((1.2*carDiameter)), ::h(-(1.2*carDiameter))),::a(90.0 - chordAngel - msg.robot().dir()), ::r(180.0 + 2 * chordAngel));
+            pixmapPainter.drawChord(QRectF(::x((msg.robot().pos().x() * 10) - 1.2*carDiameter / 2.0), ::y((-msg.robot().pos().y() * 10) + 1.2*carDiameter / 2.0), ::w((1.2*carDiameter)), ::h(-(1.2*carDiameter))),::a(90.0 - chordAngel - msg.robot().dir()), ::r(180.0 + 2 * chordAngel));
             break;
-        //case Debug_Msg_Debug_Type_CURVE:
-        //case Debug_Msg_Debug_Type_POLYGON:
+        //case ZSS::Protocol::Debug_Msg_Debug_Type_CURVE:
+        //case ZSS::Protocol::Debug_Msg_Debug_Type_POLYGON:
         default:
             qDebug() << "debug message type not support!";
         }

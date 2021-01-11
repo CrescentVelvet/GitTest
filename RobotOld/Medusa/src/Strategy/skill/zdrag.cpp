@@ -124,6 +124,9 @@ void CZDrag::plan(const CVisionModule* pVision) {
     if (enemyNum > 0) {
         judgeNum = ((ball.x() - me.X()) * (pVision->TheirPlayer(enemyNum).Y() - me.Y())
                         - (pVision->TheirPlayer(enemyNum).X() - me.X()) * (ball.y() - me.Y())) * (purposeMode ? -1 : 1);//判断公式，正值为顺时针，负为逆时针 // purposeMode下需要反拉
+        if (std::fabs(judgeNum) < 1e-5) {
+            judgeNum = 1e-5;
+        }
         enemy2BallDist = pVision->TheirPlayer(enemyNum).Pos().dist(ball);
         enemy2meDist = pVision->TheirPlayer(enemyNum).Pos().dist(me.RawPos());
         enemy2InterPointDist = pVision->TheirPlayer(enemyNum).Pos().dist(interPoint);
@@ -132,7 +135,7 @@ void CZDrag::plan(const CVisionModule* pVision) {
     if (_state == MARKED) {
         if (me.Vel().mod() < 10) {
             v1.setVector(3 * (enemy2meDist > 50 ? enemy2meDist : 50), 0);
-            v1 = v1.rotate(me2BallAngle + (judgeNum > 0 ? 1 : -1) * 90 * Param::Math::PI / 180);
+            v1 = v1.rotate(me2BallAngle + (judgeNum / std::fabs(judgeNum)) * 90 * Param::Math::PI / 180);
             antiTarget = me.RawPos() + v1;
             if (purposeMode && pVision->TheirPlayer(enemyNum).Pos().dist(purposeTarget) - 20 > me.RawPos().dist(purposeTarget)) {
                 _state = ESCAPE;

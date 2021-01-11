@@ -4,6 +4,7 @@
 namespace {
 std::thread* blueDebuggerThread = nullptr;
 std::thread* yellowDebuggerThread = nullptr;
+//std::thread* analyserDebuggerThread = nullptr;
 }
 Debugger::Debugger(QObject *parent) : QObject(parent){
 //    QObject::connect(&receiverBlue,SIGNAL(readyRead()),this,SLOT(receiveBlue()),Qt::DirectConnection);
@@ -16,6 +17,11 @@ Debugger::Debugger(QObject *parent) : QObject(parent){
         yellowDebuggerThread = new std::thread([=] {receiveYellow();});
         yellowDebuggerThread->detach();
     }
+
+//    if(receiverAnalyser.bind(QHostAddress::AnyIPv4,ZSS::Athena::DEBUG_MSG_RECEIVE[2], QUdpSocket::ShareAddress | QUdpSocket::ReuseAddressHint)){
+//        analyserDebuggerThread = new std::thread([=] {receiveAnalyser();});
+//        analyserDebuggerThread->detach();
+//    }
 }
 
 void Debugger::receiveBlue(){
@@ -43,3 +49,16 @@ void Debugger::receiveYellow(){
         }
     }
 }
+
+//void Debugger::receiveAnalyser(){
+//    auto& datagram = GlobalData::instance()->debugAnalyserMessages;
+//    while(true){
+//        std::this_thread::sleep_for(std::chrono::microseconds(500));
+//        while (receiverAnalyser.state() == QUdpSocket::BoundState && receiverAnalyser.hasPendingDatagrams()) {
+//            GlobalData::instance()->debugMutex.lock();
+//            datagram.resize(receiverAnalyser.pendingDatagramSize());
+//            receiverYellow.readDatagram(datagram.data(),datagram.size());
+//            GlobalData::instance()->debugMutex.unlock();
+//        }
+//    }
+//}

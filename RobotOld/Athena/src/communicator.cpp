@@ -57,10 +57,6 @@ bool Communicator::disconnectMedusa(int t) {
     return true;
 }
 
-void Communicator::reloadSimulation(){
-    ZSS::ZParamManager::instance()->loadParam(isSimulation, "Alert/IsSimulation", false);
-}
-
 void Communicator::receiveCommand(int t) {
     QByteArray datagram;
     while(true) {

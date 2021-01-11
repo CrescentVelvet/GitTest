@@ -143,8 +143,6 @@ gTestPlayTable = {
         -- "Test/TestForFriction"
         -- "Test/TestTEB",
         "Test/TestRun",
-        "Test/TestDemo",
-        "Test/TestScript",
         -- "Test/TestMatch",
         -- "Test/TestDSS",
         "Test/TestFreeKick",

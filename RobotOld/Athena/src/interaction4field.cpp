@@ -15,9 +15,6 @@ void Interaction4Field::resetArea(){
 void Interaction4Field::setSize(int width,int height){
     Field::setSize(width,height);
 }
-void Interaction4Field::setOldLogFlag(bool old) {
-    GlobalSettings::instance()->setOldLogFlag(old);
-}
 //void Interaction4Field::setPlacementPoint(int x,int y){
 //    GlobalSettings::instance()->setBallPlacementPos(x,y);
 //}

@@ -1,16 +1,13 @@
-﻿#include "rec_player.h"
-#include "field.h"
-#include "zss_rec.pb.h"
-#include "globaldata.h"
-#include "zss_debug.pb.h"
-#include "globalsettings.h"
+#include "analysis_game.h"
 #include <QIODevice>
 #include <QDataStream>
-#include <QTime>
-namespace  {
-auto GS = GlobalSettings::instance();
-}
-RecPlayer::RecPlayer() {
+#include "zss_rec.pb.h"
+#include "zss_debug.pb.h"
+
+AnalysisGame::AnalysisGame(QObject* parent) : QObject(parent), realFrame(0),
+    Team(PARAM::BLUE), homeSide(Left), ourHoldFrame(0.0), theirHoldFrame(0.0), holdMsg(""){
+    HoldRate[PARAM::BLUE] = 0.0;
+    HoldRate[PARAM::YELLOW] = 0.0;
     for(int i = 0; i < 6; i++){
         our_car_num[i] = 0;
     }
@@ -25,168 +22,16 @@ RecPlayer::RecPlayer() {
     }
 }
 
-bool RecPlayer::loadRec(QString &filename, int &maxframe) {
-    replayFile = new QFile(filename);
-    packets.clear();
-    if (replayFile->open(QIODevice::ReadOnly)) {
-        QIODevice* recIO;
-        recIO = replayFile;
-        QDataStream stream(recIO);
-        while (!stream.atEnd()) {
-            QByteArray packet;
-            stream >> packet;
-            packets.append(packet);
-        }
-        maxframe = packets.size() - 1;
-//        replayFile->close();
-        delete replayFile;
-        replayFile = nullptr;
-        return true;
-    }
-    qDebug() << "open filed";
-    return false;
+void AnalysisGame::analy_status(const QByteArray& packet){
+    ZSS::Protocol::RecMessage recdata;
+    recdata.ParseFromArray(packet.data(), packet.size());
 }
 
-bool RecPlayer::start(int position) {
-    if (position > packets.size() - 1) {
-        return false;
-    }
-
-    _currentFrame = position;
-
-    _run = true;
-    QThread::start();
-
-    return true;
-}
-
-void RecPlayer::slowly(int position) {
-    if (position > packets.size() - 1) {
-        return;
-    }
-
-    _currentFrame = position;
-
-    QThread::start();
-}
-
-void RecPlayer::stop() {
-    _run = false;
-    QThread::wait();
-}
-
-bool RecPlayer::good() {
-    return packets.size() > 0;
-}
-
-void RecPlayer::sendMessage(const QByteArray& packet) {
-//    qDebug() << "sendmessage is called" ;
-    ZSS::Protocol::RecMessage recMsg;
-    recMsg.ParseFromArray(packet.data(), packet.size());
-    //ctrlc
-    GlobalData::instance()->ctrlCMutex.lock();
-    GlobalData::instance()->ctrlC = recMsg.ctrlc();
-    GlobalData::instance()->ctrlCMutex.unlock();
-    //selectedArea
-    GS->maximumX = recMsg.selectedarea().maxx();
-    GS->minimumX = recMsg.selectedarea().minx();
-    GS->maximumY = recMsg.selectedarea().maxy();
-    GS->minimumY = recMsg.selectedarea().miny();
-    //maintainVision
-    GlobalData::instance()->lastTouch = recMsg.maintainvision().lasttouchteam() == PARAM::BLUE ? recMsg.maintainvision().lasttouch() : recMsg.maintainvision().lasttouch() + PARAM::ROBOTMAXID;
-    ReceiveVisionMessage result;
-    for(int color = PARAM::BLUE; color <= PARAM::YELLOW; color++) {
-//        processMsg = recMsg->mutable_maintainvision()->add_processmsg();
-//        processMsg->set_size(robot_vision.robotSize[color]);
-        for(int j = 0; j < recMsg.maintainvision().processmsg(color).size(); j++) {
-            result.addRobot(color,
-                            recMsg.maintainvision().processmsg(color).robot(j).id(),
-                            recMsg.maintainvision().processmsg(color).robot(j).posx(),
-                            recMsg.maintainvision().processmsg(color).robot(j).posy(),
-                            recMsg.maintainvision().processmsg(color).robot(j).angle());
-        }
-    }
-    GlobalData::instance()->processRobot.push(result);
-//    qDebug() << "FUCKING MSG" << GlobalData::instance()->processRobot[0].robotSize[0];
-//    auto& maintainMsg = GlobalData::instance()->maintain[0];
-    ReceiveVisionMessage maintainResult;
-    for(int color = PARAM::BLUE; color <= PARAM::YELLOW; color++) {
-//        maintain = recMsg->mutable_maintainvision()->add_maintain();
-//        maintain->set_size(maintainMsg.robotSize[color]);
-        for(int j = 0; j < recMsg.maintainvision().maintain(color).size(); j++) {
-            maintainResult.addRobot(color,
-                                    recMsg.maintainvision().maintain(color).robot(j).id(),
-                                    recMsg.maintainvision().maintain(color).robot(j).posx(),
-                                    recMsg.maintainvision().maintain(color).robot(j).posy(),
-                                    recMsg.maintainvision().maintain(color).robot(j).angle());
-        }
-    }
-//    recMsg->mutable_maintainvision()->mutable_balls()->set_size(maintainMsg.ballSize);
-    for(int j = 0; j < recMsg.maintainvision().balls().size(); j++) {
-        maintainResult.addBall(recMsg.maintainvision().balls().ball(j).posx(),
-                               recMsg.maintainvision().balls().ball(j).posy());
-        maintainResult.ball[j].valid = recMsg.maintainvision().balls().ball(j).valid();
-    }
-    GlobalData::instance()->maintain.push(maintainResult);
-
-    //debugMsgs
-    GlobalData::instance()->debugMutex.lock();
-    ZSS::Protocol::Debug_Msgs debugMsgs;
-    for (int team = PARAM::BLUE; team <= PARAM::YELLOW; team++) {
-        debugMsgs = recMsg.debugmsgs(team);
-        int size = debugMsgs.ByteSize();
-        if (team == 0) {
-            GlobalData::instance()->debugBlueMessages.resize(size);
-            debugMsgs.SerializeToArray(GlobalData::instance()->debugBlueMessages.data(), size);
-//            std::cout << debugMsgs.msgs_size() << std::endl;
-        } else {
-            GlobalData::instance()->debugYellowMessages.resize(size);
-            debugMsgs.SerializeToArray(GlobalData::instance()->debugYellowMessages.data(), size);
-//            std::cout << debugMsgs.msgs_size() << std::endl;
-        }
-//        qDebug() << "FUCK DEBUG MESSAGE SIZE" <<  debugMsgs.ByteSize() << GlobalData::instance()->debugBlueMessages.size();
-    }
-    GlobalData::instance()->debugMutex.unlock();
-}
-
-void RecPlayer::run() {
-    QTime timer;
-    timer.start();
-    sendMessage(packets.at(_currentFrame));
-    emit positionChanged(_currentFrame);
-    GlobalSettings::instance()->needRepaint();
-    qDebug() << "start~~~analysing~~~running~~~";
-    QThread::currentThread()->msleep(12);
-//    qDebug() << _currentFrame;
-    judgeSide(packets.at(_currentFrame));
-    cal_our_carnum(packets.at(_currentFrame));
-//    qDebug() << _Team << "---" << _opTeam;
-    qDebug() << "our attack in ourball    =" << our_car_num[0] << " | their attack in theirball  =" << their_car_num[0];
-    qDebug() << "our defense in ourball   =" << our_car_num[1] << " | their defense in theirball =" << their_car_num[1];
-    qDebug() << "our attack in theirball  =" << our_car_num[2] << " | their attack in ourball    =" << their_car_num[2];
-    qDebug() << "our defense in theirball =" << our_car_num[3] << " | their defense in ourball   =" << their_car_num[3];
-    qDebug() << "our attack in bothball   =" << our_car_num[4] << " | their attack in bothball   =" << their_car_num[4];
-    qDebug() << "our defense in bothball  =" << our_car_num[5] << " | their defense in bothball  =" << their_car_num[5];
-    qDebug() << _currentFrame;
-    for (int i = 0; i < 6; i++) {
-        our_car_num[i] = 0;
-        their_car_num[i] = 0;
-    }
-    qDebug() << "end~~~analysing~~~running~~~";
-    /*while (_run && ++_currentFrame < packets.size() - 1 && this->isRunning()) {
-//        ourHoldRate();
-        sendMessage(packets.at(_currentFrame));
-        emit positionChanged(_currentFrame);
-        GlobalSettings::instance()->needRepaint();
-        QThread::currentThread()->msleep(12);
-    }*/
-}
-
-CVector RecPlayer::Polar2Vector(double m,double angle){
+CVector AnalysisGame::Polar2Vector(double m,double angle){
     return CVector(m*std::cos(angle),m*std::sin(angle));
 }
 
-CGeoPoint RecPlayer::analy_TheirInterPoint(CGeoPoint enemy, CGeoPoint ball){
+CGeoPoint AnalysisGame::analy_TheirInterPoint(CGeoPoint enemy, CGeoPoint ball){
     double FRICTION = 80.0;//simmodule = 152
     static const double ballAcc = FRICTION / 2;//球减速度
     constexpr double carAcc = 400;
@@ -198,41 +43,8 @@ CGeoPoint RecPlayer::analy_TheirInterPoint(CGeoPoint enemy, CGeoPoint ball){
     return enemy + Polar2Vector(enemy2point, (ball - enemy).dir());
 }
 
-void RecPlayer::judgeSide(const QByteArray& packet){
-    ZSS::Protocol::RecMessage recdata;
-    recdata.ParseFromArray(packet.data(), packet.size());
-    ZSS::Protocol::Debug_Msgs debugMsgs;
-    for(int team = PARAM::BLUE; team <= PARAM::YELLOW; team++){
-        debugMsgs = recdata.debugmsgs(team);
-        int size = debugMsgs.ByteSize();
-        if (team == PARAM::BLUE) {
-            GlobalData::instance()->debugBlueMessages.resize(size);
-            debugMsgs.SerializeToArray(GlobalData::instance()->debugBlueMessages.data(), size);
-            if(debugMsgs.msgs_size() != 0){
-                _Team = team;
-            }
-        } else {
-            GlobalData::instance()->debugYellowMessages.resize(size);
-            debugMsgs.SerializeToArray(GlobalData::instance()->debugYellowMessages.data(), size);
-            if(debugMsgs.msgs_size() != 0){
-                _Team = team;
-            }
-        }
-    }
-    for(int j = 0; j < recdata.maintainvision().maintain(_Team).robot().size() ; j++){
-        if(recdata.maintainvision().maintain(_Team).robot(j).posx() > 4800
-                && std::fabs(recdata.maintainvision().maintain(_Team).robot(j).posy()) < 1200){
-            _homeSide = Right;
-        }
-        if(recdata.maintainvision().maintain(_Team).robot(j).posx() < -4800
-                && std::fabs(recdata.maintainvision().maintain(_Team).robot(j).posy()) < 1200){
-            _homeSide = Left;
-        }
-    }
-    _Team == PARAM::BLUE ? _opTeam = PARAM::YELLOW : _opTeam = PARAM::BLUE;
-}
-
-bool RecPlayer::analy_marking(const QByteArray& packet, int team, int num){
+//判断一辆小车是否在盯人marking
+bool AnalysisGame::analy_marking(const QByteArray& packet, int team, int num){
     ZSS::Protocol::RecMessage recdata;
     recdata.ParseFromArray(packet.data(), packet.size());
     //找可信的球位置
@@ -245,8 +57,8 @@ bool RecPlayer::analy_marking(const QByteArray& packet, int team, int num){
     }
     //确定半场位置
     int side;
-    if(team == _Team){ side = _homeSide; }
-    else if(team == _opTeam){ side = (_homeSide == Right ? Left : Right); }
+    if(team == Team){ side = homeSide; }
+    else if(team == opTeam){ side = (homeSide == Right ? Left : Right); }
     else{ qDebug() << "error in analy_marking"; }
 //    qDebug() << team << side;
     //找小车传球点位置：位于后场且能拦截传球
@@ -274,15 +86,16 @@ bool RecPlayer::analy_marking(const QByteArray& packet, int team, int num){
     return false;
 }
 
-bool RecPlayer::analy_guarding(const QByteArray& packet, int team, int num){
+//判断一辆小车是否在后卫guarding
+bool AnalysisGame::analy_guarding(const QByteArray& packet, int team, int num){
     ZSS::Protocol::RecMessage recdata;
     recdata.ParseFromArray(packet.data(), packet.size());
     int opteam = 1 - team;
     int x = recdata.maintainvision().maintain(team).robot(num).posx();
     int y = recdata.maintainvision().maintain(team).robot(num).posy();
     int side;
-    if(team == _Team){ side = _homeSide; }
-    else if(team == _opTeam){ side = (_homeSide == Right ? Left : Right); }
+    if(team == Team){ side = homeSide; }
+    else if(team == opTeam){ side = (homeSide == Right ? Left : Right); }
     else{ qDebug() << "error in analy_guarding"; }
     if(recdata.maintainvision().maintain(PARAM::BLUE).has_size() && recdata.maintainvision().maintain(PARAM::YELLOW).has_size()){
         if(side == Right && x > param_width/4){
@@ -295,15 +108,16 @@ bool RecPlayer::analy_guarding(const QByteArray& packet, int team, int num){
     return false;
 }
 
-bool RecPlayer::analy_goalkeeping(const QByteArray& packet, int team, int num){
+//判断一辆小车是否在守门goalkeeping
+bool AnalysisGame::analy_goalkeeping(const QByteArray& packet, int team, int num){
     ZSS::Protocol::RecMessage recdata;
     recdata.ParseFromArray(packet.data(), packet.size());
     int opteam = 1 - team;
     int x = recdata.maintainvision().maintain(team).robot(num).posx();
     int y = recdata.maintainvision().maintain(team).robot(num).posy();
     int side;
-    if(team == _Team){ side = _homeSide; }
-    else if(team == _opTeam){ side = (_homeSide == Right ? Left : Right); }
+    if(team == Team){ side = homeSide; }
+    else if(team == opTeam){ side = (homeSide == Right ? Left : Right); }
     else{ qDebug() << "error in analy_goalkeeping"; }
     if(recdata.maintainvision().maintain(PARAM::BLUE).has_size() && recdata.maintainvision().maintain(PARAM::YELLOW).has_size()){
         if(side == Right && x > param_width/2 - param_penalty_area_l && fabs(y) < param_penalty_radius){
@@ -316,7 +130,14 @@ bool RecPlayer::analy_goalkeeping(const QByteArray& packet, int team, int num){
     return false;
 }
 
-void RecPlayer::cal_our_carnum(const QByteArray& packet){
+//判断一辆小车是否在截球tackling
+//判断一辆小车是否在带球dribbling
+//判断一辆小车是否在传球passing
+//判断一辆小车是否在接球catching
+//判断一辆小车是否在射门shooting
+
+//计算进攻性
+void AnalysisGame::cal_our_carnum(const QByteArray& packet){
     ZSS::Protocol::RecMessage recdata;
     recdata.ParseFromArray(packet.data(), packet.size());
     ZSS::Protocol::Debug_Msgs debugMsgs;
@@ -349,8 +170,8 @@ void RecPlayer::cal_our_carnum(const QByteArray& packet){
         }
     }
     //计算各种车数
-    int team = _Team;
-    int opteam = _opTeam;
+    int team = Team;
+    int opteam = opTeam;
     if(recdata.maintainvision().maintain(PARAM::BLUE).has_size()
             && recdata.maintainvision().maintain(PARAM::YELLOW).has_size()){
         for(int m = 0; m < recdata.maintainvision().maintain(team).robot().size(); m++){
@@ -436,4 +257,154 @@ void RecPlayer::cal_our_carnum(const QByteArray& packet){
             }else{ qDebug() << "has an error in our holdMsg!"; }
         }
     }else{ qDebug() << "has an error in our holdMsg!"; }
+}
+
+//计算控球数
+void AnalysisGame::Ball_ControlRate(const QByteArray& packet){
+    ZSS::Protocol::RecMessage debugText;
+    debugText.ParseFromArray(packet.data(), packet.size());
+    ZSS::Protocol::Debug_Msgs debugMsgs;
+    for(int k = 0; k < debugText.debugmsgs_size(); k++){
+        debugMsgs = debugText.debugmsgs(k);
+        for(int j = 0; j < debugMsgs.msgs_size(); j++){
+            if(debugMsgs.msgs(j).type() == ZSS::Protocol::Debug_Msg_Debug_Type_TEXT){
+                holdMsg = debugMsgs.msgs(j).text().text();
+                if(holdMsg == "OurHolding" ){
+                    ourHoldFrame++;
+                    break;
+                }
+                if(holdMsg == "TheirHolding" ){
+                    theirHoldFrame++;
+                    break;
+                }
+            }
+        }
+    }
+}
+
+//计算真正比赛总帧数
+bool AnalysisGame::cal_RealFrame(const QByteArray& packet){
+    ZSS::Protocol::RecMessage debugText;
+    debugText.ParseFromArray(packet.data(), packet.size());
+    ZSS::Protocol::Debug_Msgs debugMsgs;
+    std::string holdMsg;
+    bool isHalt = false;
+    bool empty = true;
+    for(int k = 0; k < debugText.debugmsgs_size(); k++){
+        if(isHalt){ break; }
+        debugMsgs = debugText.debugmsgs(k);
+        for(int j = 0; j < debugMsgs.msgs_size(); j++){
+            if(debugMsgs.msgs(j).type() == ZSS::Protocol::Debug_Msg_Debug_Type_TEXT){
+                holdMsg = debugMsgs.msgs(j).text().text();
+                if(holdMsg != ""){
+                    empty = false;
+                }
+                if(holdMsg == "halt"){
+                    isHalt = true;
+                    break;
+                }
+            }
+        }
+    }
+    if(!isHalt && !empty){ return true; }
+    else{ return false; }
+}
+
+//判断我方队伍的半场
+void AnalysisGame::judgeSide(const QByteArray& packet){
+    ZSS::Protocol::RecMessage recdata;
+    recdata.ParseFromArray(packet.data(), packet.size() );
+    ZSS::Protocol::Debug_Msgs debugMsgs;
+    for(int team = PARAM::BLUE; team <= PARAM::YELLOW; team++){
+        debugMsgs = recdata.debugmsgs(team);
+        int size = debugMsgs.ByteSize();
+        if (team == PARAM::BLUE) {
+            GlobalData::instance()->debugBlueMessages.resize(size);
+            debugMsgs.SerializeToArray(GlobalData::instance()->debugBlueMessages.data(), size);
+            if(debugMsgs.msgs_size() != 0){
+                Team = team;
+            }
+        } else {
+            GlobalData::instance()->debugYellowMessages.resize(size);
+            debugMsgs.SerializeToArray(GlobalData::instance()->debugYellowMessages.data(), size);
+            if(debugMsgs.msgs_size() != 0){
+                Team = team;
+            }
+        }
+    }
+    for(int j = 0; j < recdata.maintainvision().maintain(Team).robot().size() ; j++){
+        if(recdata.maintainvision().maintain(Team).robot(j).posx() > 4800
+                && std::fabs(recdata.maintainvision().maintain(Team).robot(j).posy()) < 1200){
+            homeSide = Right;
+        }
+        if(recdata.maintainvision().maintain(Team).robot(j).posx() < -4800
+                && std::fabs(recdata.maintainvision().maintain(Team).robot(j).posy()) < 1200){
+            homeSide = Left;
+        }
+    }
+    Team == PARAM::BLUE ? opTeam = PARAM::YELLOW : opTeam = PARAM::BLUE;
+}
+
+//计算进攻时对方留守后卫数
+
+
+
+
+
+bool AnalysisGame::loadRec(QString &filename){
+    replayFile = new QFile(filename);
+    packets.clear();
+    if(replayFile->open(QIODevice::ReadOnly)){
+        QIODevice* recIO;
+        recIO = replayFile;
+        QDataStream stream(recIO);
+        while(!stream.atEnd()){
+            QByteArray packet;
+            stream >> packet;
+            if(cal_RealFrame(packet)) { packets.append(packet); }
+        }
+        realFrame = packets.size() - 1;
+    }
+    replayFile->close();
+    delete replayFile;
+    replayFile = nullptr;
+    return true;
+}
+
+void AnalysisGame::loadFile(QString filename){
+#ifdef WIN32
+    filename.remove(QString("file:///"));
+#else
+    filename.remove(QString("file://"));
+#endif
+    realFrame = 0 ;
+    Team = PARAM::BLUE ;
+    homeSide = Left ;
+    holdMsg = "";
+    if(loadRec(filename)){ qDebug() << "start to analyse !!!!!"; }
+    else{ qDebug() << "open file failed !!!!!"; }
+    run();
+    qDebug() << "finish to analyse !!!!!";
+}
+
+void AnalysisGame::run(){
+    //开启逐帧分析
+    qDebug() << "analysing~~~running~~~start!";
+    for (int currentFrame = 0 ; currentFrame < realFrame ; currentFrame++) {
+        judgeSide(packets.at(currentFrame));
+        cal_our_carnum(packets.at(currentFrame));
+        if (currentFrame%100 == 0) { qDebug() << currentFrame; }
+    }
+    for (int i = 0; i < 6; i++) {
+        our_car_num[i] = our_car_num[i] / real_ourframe[i/2];
+        their_car_num[i] = their_car_num[i] / real_theirframe[i/2];
+    }
+    qDebug() << "我方进攻时候的进攻车数 =" << our_car_num[0] << " | 敌方进攻时候的进攻车数 =" << their_car_num[0];
+    qDebug() << "我方进攻时候的防守车数 =" << our_car_num[1] << " | 敌方进攻时候的防守车数 =" << their_car_num[1];
+    qDebug() << "我方防守时候的进攻车数 =" << our_car_num[2] << " | 敌方防守时候的进攻车数 =" << their_car_num[2];
+    qDebug() << "我方防守时候的防守车数 =" << our_car_num[3] << " | 敌方防守时候的防守车数 =" << their_car_num[3];
+    qDebug() << "我方争抢时候的进攻车数 =" << our_car_num[4] << " | 敌方争抢时候的进攻车数 =" << their_car_num[4];
+    qDebug() << "我方争抢时候的防守车数 =" << our_car_num[5] << " | 敌方争抢时候的防守车数 =" << their_car_num[5];
+    qDebug() << realFrame;
+    qDebug() << "analysing~~~running~~~end!";
 }
