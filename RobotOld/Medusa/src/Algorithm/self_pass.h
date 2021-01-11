@@ -20,19 +20,37 @@ class CSelfPass{
 public:
     CSelfPass();
     void draw_selfpassMsg(const CVisionModule *pVision, const int leader);
-    void cal_selfpassPoint(const CVisionModule* pVision, const int leader);
-    void cal_selfrunPoint(const CVisionModule* pVision, const int leader);
+    void cal_variousPoint(const CVisionModule* pVision, const int leader);
+    void cal_farEnemyPoint(const CVisionModule* pVision, const int leader);
+    void cal_orientatePoint(const CVisionModule* pVision, const int leader);
+    void cal_moveDirectPoint(const CVisionModule* pVision, const int leader);
+    void cal_anglenough_EnemyVel(const CVisionModule* pVision, const int leader);
+    bool is_angelpenaltyPoint(const CVisionModule *pVision, const int leader, double height);
+    bool is_anglenough_EnemyFar(const CVisionModule *pVision, const int leader, double xita);
+    bool is_anglenough_MeMove(const CVisionModule *pVision, const int leader, double xita);
+    bool is_anglenough_EnemyVel(const CVisionModule* pVision, const int leader, double xita);
     bool is_selfpassPoint(const CVisionModule *pVision, const int leader);
-    CGeoPoint bestPassPoint() const { return _bestPassPoint; }
-    CGeoPoint nowRunPoint() const { return _nowRunPoint; }
+    bool is_overBoundary(const CVisionModule *pVision, const int leader);
+    bool is_selfpass();
+    CGeoPoint farEnemyPoint() const { return _farEnemyPoint; }
+    CGeoPoint orientatePoint() const { return _orientatePoint; }
+    CGeoPoint moveDirectPoint() const { return _moveDirectPoint; }
     ~CSelfPass(){}
-    QString _selfpassStatus;
-    int _enemy_num;
 private:
     int _ballStatus;
     int _carStatus;
-    CGeoPoint _bestPassPoint;
-    CGeoPoint _nowRunPoint;
+    int _enemy_num;
+    double _distanceToEnemy;
+    double _angleToEnemy;
+    CGeoPoint temp_enemyVel;
+    CGeoPoint _farEnemyPoint;
+    CGeoPoint _orientatePoint;
+    CGeoPoint _moveDirectPoint;
+    CGeoPoint temp_farEnemyPoint;
+    CGeoPoint temp_orientatePoint;
+    CGeoPoint temp_moveDirectPoint;
+    QString _selfpassStatus;
+    QString _selfpassCannot;
 };
 typedef NormalSingleton<CSelfPass> SelfPass;
 #endif // SELF_PASS_H

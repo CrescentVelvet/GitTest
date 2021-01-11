@@ -76,6 +76,7 @@ class CMessiDecision {
     CGeoPoint freeKickWaitPos();
     bool canDirectKick();
     void reset();
+    void judge_selfpass();
 private:
     int _leader;
     int _receiver;

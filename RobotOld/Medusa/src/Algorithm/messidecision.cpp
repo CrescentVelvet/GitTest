@@ -164,6 +164,9 @@ void CMessiDecision::generateAttackDecision(const CVisionModule* pVision) {
     if (confirmLeader())
         _lastChangeLeaderCycle = _cycle;
 
+    //判断是否自传
+    judge_selfpass();
+
     //计算leader的截球点
     generateLeaderPos();
 
@@ -192,12 +195,7 @@ void CMessiDecision::generateAttackDecision(const CVisionModule* pVision) {
     }
     // SELF PASS
     SelfPass::Instance()->draw_selfpassMsg(_pVision, _leader);
-//    GDebugEngine::Instance()->gui_debug_msg(CGeoPoint(-580, 240), (SelfPass::Instance()->_selfpassStatus + QString("%1 canKick is %2").arg(SelfPass::Instance()->_enemy_num,2,10,QLatin1Char('0')).arg(_canKick)).toLatin1(), COLOR_YELLOW);
-//    GDebugEngine::Instance()->gui_debug_arc(SelfPass::Instance()->bestPassPoint(), 15, 0, 360, COLOR_YELLOW);
-//    GDebugEngine::Instance()->gui_debug_arc(SelfPass::Instance()->nowRunPoint(), 15, 0, 360, COLOR_GREEN);
     GDebugEngine::Instance()->gui_debug_msg(CGeoPoint(-580, 340) * (IS_RIGHT ? -1 : 1), (QString("recompute cycle: %1 %2  ").arg(_lastRecomputeCycle).arg(inValidCnt) + QString("condition: ").append(RECALCULATE::recomputeCondition)).toLatin1(), COLOR_ORANGE);
-//    GDebugEngine::Instance()->gui_debug_line(_pVision->OurPlayer(_leader+1).Pos(), SelfPass::Instance()->bestPassPoint(), COLOR_YELLOW);
-//    GDebugEngine::Instance()->gui_debug_line(_pVision->OurPlayer(_leader+1).Pos(), SelfPass::Instance()->nowRunPoint(), COLOR_GREEN);
     GDebugEngine::Instance()->gui_debug_x(_passPos, _isFlat ? COLOR_GREEN : COLOR_ORANGE);
     if(SHOW_PASSLINE){
         GDebugEngine::Instance()->gui_debug_line(_pVision->OurPlayer(_leader+1).Pos(), _passPos, _isFlat ? COLOR_GREEN : COLOR_ORANGE);
@@ -575,11 +573,10 @@ void CMessiDecision::getPassPos() {
         PASS::selfPass = false;
 #else
     ReceivePosModule::Instance()->generatePassPos(_pVision, _leader);
-    SelfPass::Instance()->cal_selfpassPoint(_pVision, _leader);
-    SelfPass::Instance()->cal_selfrunPoint(_pVision, _leader);
+    SelfPass::Instance()->cal_variousPoint(_pVision, _leader);
     _receiver = ReceivePosModule::Instance()->bestReceiver();
     if(PASS::selfPass){
-        _passPos = _receiverPos = SelfPass::Instance()->nowRunPoint();
+        _passPos = _receiverPos = SelfPass::Instance()->orientatePoint();
     }
     else{
         _passPos = _receiverPos = ReceivePosModule::Instance()->bestPassPoint();
@@ -642,7 +639,7 @@ CGeoPoint CMessiDecision::goaliePassPos() {
 // 判断leader状态
 void CMessiDecision::judgeLeaderState() {
     //计算传球力度
-    PASS::selfPass = true;
+//    PASS::selfPass = true;
     if(Utils::InTheirPenaltyArea(_passPos, 0))
         _passVel = 600;
     else if(_isFlat)
@@ -770,4 +767,8 @@ bool CMessiDecision::canDirectKick() {
     return (WorldModel::Instance()->getEnemyAmountInArea(Param::Field::PITCH_LENGTH / 2 - Param::Field::PENALTY_AREA_DEPTH, Param::Field::PITCH_LENGTH / 2, - Param::Field::PENALTY_AREA_WIDTH / 2, Param::Field::PENALTY_AREA_WIDTH / 2, enemyNumVec) > 1)
         && std::fabs(ballPos.y()) < Param::Field::PITCH_WIDTH / 4
         && std::fabs(ballPos.x()) > Param::Field::PITCH_LENGTH / 4;
+}
+
+void CMessiDecision::judge_selfpass() {
+    PASS::selfPass = SelfPass::Instance()->is_selfpass();
 }
