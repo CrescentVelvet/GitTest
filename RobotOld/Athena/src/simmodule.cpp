@@ -14,8 +14,8 @@
 namespace ZSS {
 namespace {
 
-//auto ypm = ZSS::ZParamManager::instance();
-//double VIEW_FREQUENCE;
+auto ypm = ZSS::ZParamManager::instance();
+double VIEW_FREQUENCE;
 
 bool trans_dribble(double dribble) {
     return dribble>1;

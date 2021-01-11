@@ -92,7 +92,7 @@ Page{
             padding: 5;
             topPadding: 15;
             width:controlLayout.width;
-            height:controlLayout.height;
+            //height:controlLayout.height;
             columns: 1;
             horizontalItemAlignment: Grid.AlignHCenter;
             verticalItemAlignment: Grid.AlignVCenter;

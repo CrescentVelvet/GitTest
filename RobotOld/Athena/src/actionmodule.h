@@ -5,6 +5,7 @@
 #include <QUdpSocket>
 #include <QTimer>
 #include <QDateTime>
+#include <vector>
 #include "singleton.hpp"
 #include "zss_cmd.pb.h"
 #include "staticparams.h"

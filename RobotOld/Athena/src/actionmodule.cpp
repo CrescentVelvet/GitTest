@@ -7,6 +7,7 @@
 #include <chrono>
 #include <thread>
 #include <cmath>
+#include <QElapsedTimer>
 #include "staticparams.h"
 #include "networkinterfaces.h"
 namespace ZSS {
@@ -22,7 +23,9 @@ const double FULL_CAPACITANCE = 254.0;
 const double LOW_CAPACITANCE = 29.0;
 auto zpm = ZSS::ZParamManager::instance();
 auto ypm = ZSS::ZParamManager::instance();
+auto xpm = ZSS::ZParamManager::instance();
 double VIEW_FREQUENCE;
+bool VIEW_DISPLAY;
 void encodeLegacy(const ZSS::Protocol::Robot_Command&, QByteArray&, int);
 quint8 kickStandardization(quint8, bool, quint16);
 const QString radioSendAddress[PARAM::TEAMS] = {"10.12.225.78", "10.12.225.78"};
@@ -44,6 +47,7 @@ ActionModule::ActionModule(QObject *parent) : QObject(parent), team{-1, -1} {
         qDebug() << "Bind Error in action module !";
     }
     ypm->loadParam(VIEW_FREQUENCE, "Debug/VIEW_FREQUENCE");
+    xpm->loadParam(VIEW_DISPLAY, "Debug/VIEW_DISPLAY");
 }
 
 ActionModule::~ActionModule() {
@@ -211,30 +215,100 @@ void ActionModule::readData() {
         }
     }
     static qint64 last_receive_time[PARAM::ROBOTNUM];
-//    static double temp_battery[PARAM::ROBOTNUM];
-//    for (int i = 0; i < PARAM::ROBOTNUM; i++)
-//    {
-//        temp_battery[i] = i * 50;
+    /***************/
+    //初始化电量信息，参差不齐的电量
+    static double temp_battery[PARAM::ROBOTNUM];
+    for (int i = 0; i < PARAM::ROBOTNUM; i++)
+    {
+        temp_battery[i] = i * 50;
+    }
+//    for (int color = PARAM::BLUE; color <= PARAM::YELLOW; color++){
+//        for (int i = 0; i < GlobalData::instance()->processRobot[0].robotSize[color]; i++ ){
+//            GlobalData::instance()->robotInformation[color][i].inexist = false;
+//        }
 //    }
+    /***************/
+    std::vector<int>robot_id;
+    bool flag_robot_id = false;
     while(true) {
         std::this_thread::sleep_for(std::chrono::microseconds(500));
-//        ZSS::ZParamManager::instance()->loadParam(isSimulation, "Alert/IsSimulation", false);
-        //设置回包信息
-//        for (int i = 0; i < PARAM::ROBOTNUM; i++)
-//        {
-//            GlobalData::instance()->robotInformation[0][i].infrared = true;//把红外设置为true
-//            GlobalData::instance()->robotInformation[0][i].battery = temp_battery[i]/1000;
-//            temp_battery[i] = temp_battery[i] + 0.5;
-//            if(temp_battery[i]>1000) {temp_battery[i]=0;}
-//            emit receiveRobotInfo(0, i);//emit一下
-//        }
+        /***************/
+//        QElapsedTimer timer;
+//        timer.start();
+        if (VIEW_DISPLAY){
+            //设置回包信息,这一段是为了在仿真中显示变化的电量信息
+            for (int color = PARAM::BLUE; color <= PARAM::YELLOW; color++){
+//                for (int i = 0; i < PARAM::ROBOTNUM; i++)
+                //先把场上所有车的车号存下来
+                robot_id.clear();
+                for (int i = 0; i < GlobalData::instance()->processRobot[0].robotSize[color]; i++){
+                    auto& robot = GlobalData::instance()->processRobot[0].robot[color][i];
+                    robot_id.push_back(robot.id);
+                }
+                //再根据车号来显示电量信息
+                for (int i = 0; i < PARAM::ROBOTNUM; i++){
+                    robotInfoMutex.lock();
+                    if (robot_id.size() != 0){
+                        for (int j = 0; j < robot_id.size(); j++){
+                            if (i == robot_id[j]){
+                                GlobalData::instance()->robotInformation[color][i].inexist = true;
+                                GlobalData::instance()->robotInformation[color][i].battery = temp_battery[i]/1000;
+                                flag_robot_id = true;
+                                break;
+                            }
+                        }
+                        if (!flag_robot_id){
+                            GlobalData::instance()->robotInformation[color][i].inexist = false;
+                            GlobalData::instance()->robotInformation[color][i].battery = 0;
+                        }
+                        flag_robot_id = false;
+                    }
+                    else{
+                        GlobalData::instance()->robotInformation[color][i].inexist = false;
+                        GlobalData::instance()->robotInformation[color][i].battery = 0;
+                    }
+                    temp_battery[i] = temp_battery[i] + 0.2;
+                    if (temp_battery[i]>1000) {temp_battery[i]=0;}
+                    robotInfoMutex.unlock();
+                    //emit一下
+                    emit receiveRobotInfo(color, i);
+
+//                    GlobalData::instance()->robotInformation[color][i].infrared = true;//把红外设置为true
+////                    GlobalData::instance()->robotInformation[color][i].inexist = GlobalData::instance()->maintain[color].robot[color][i].valid;
+//                    int robot_id = robot.id;
+                    /*GlobalData::instance()->robotInformation[color][i].inexist = true;
+                    GlobalData::instance()->robotInformation[color][i].battery = temp_battery[i]/1000;
+                    temp_battery[i] = temp_battery[i] + 0.5;
+                    if (temp_battery[i]>1000) {temp_battery[i]=0;}
+                    robotInfoMutex.unlock();
+                    emit receiveRobotInfo(color, i);*/
+////                    qDebug() << 15 << "===" << GlobalData::instance()->robotInformation[color][15].inexist;
+////                    qDebug() << 14 << "===" << GlobalData::instance()->robotInformation[color][14].inexist;
+////                    qDebug() << 13 << "===" << GlobalData::instance()->robotInformation[color][13].inexist;
+////                    qDebug() << 12 << "===" << GlobalData::instance()->robotInformation[color][12].inexist;
+////                    qDebug() << 11 << "===" << GlobalData::instance()->robotInformation[color][11].inexist;
+////                    qDebug() << 10 << "===" << GlobalData::instance()->robotInformation[color][10].inexist;
+////                    qDebug() << robot_id << "===" << GlobalData::instance()->robotInformation[color][robot_id].inexist;
+////                    qDebug() << robot_id << "=" << i;
+////                    qDebug() << robot.id << "=" << i;
+////                    qDebug() << robot.id << "===" << GlobalData::instance()->robotInformation[color][robot.id].battery;
+////                    qDebug() << temp_battery[i]/1000;
+////                    qDebug() << color << " = " << GlobalData::instance()->processRobot[color].robotSize[color];
+////                    qDebug() << GlobalData::instance()->robotInformation[color][robot.id].infrared;
+                }
+//                qDebug() << "mark fuck :" << timer.nsecsElapsed()/1000000.0 << "millisecond";
+            }
+        }
+//        qDebug() << "mark fuck :" << timer.nsecsElapsed()/1000000.0 << "millisecond";
+        /***************/
         if(!IS_SIMULATION) {
-            for (int color = PARAM::BLUE; color < PARAM::TEAMS; color++) {
+            for (int color = PARAM::BLUE; color <= PARAM::YELLOW; color++) {
                 for (int j = 0; j < PARAM::ROBOTNUM; j++ ) {
-//                int j = 5;
+//                j = 5;
                     QDateTime UTC(QDateTime::currentDateTimeUtc());
                     qint64 now_receive_time = UTC.toMSecsSinceEpoch();
-                    if (now_receive_time - last_receive_time[j] > 6000 && now_receive_time - last_receive_time[j] < 8000) {
+                    //6秒钟没有回包就->0, 16秒钟没有回包就----
+                    if (now_receive_time - last_receive_time[j] > 6000 && now_receive_time - last_receive_time[j] < 16000) {
                         robotInfoMutex.lock();
                         GlobalData::instance()->robotInformation[color][j].infrared = false;
                         GlobalData::instance()->robotInformation[color][j].flat = false;
@@ -248,13 +322,25 @@ void ActionModule::readData() {
                 }
             }
         }
+//        qDebug() << "receiveSocket.state = " << receiveSocket.state();
+//        qDebug() << "BoundState = " << QUdpSocket::BoundState;
+//        qDebug() << "receiveSocket.hasPendingDatagrams = " << receiveSocket.hasPendingDatagrams();
         while (receiveSocket.state() == QUdpSocket::BoundState && receiveSocket.hasPendingDatagrams()) {
-            qDebug() << "##############receive data !!!";
+//            qDebug() << "##############receive data !!!";
+//            qDebug() << "+";
+//            qDebug() << "+";
+//            qDebug() << "+";
+//            qDebug() << "+";
+//            qDebug() << "+";
+//            qDebug() << "+";
             auto msgInfo = (MessageInfo*)(MessageInfo::instance());
-            char newInfo = msgInfo->info() | 0x02;
+//            char newInfo = msgInfo->info() | 0x02;
 //                    msgInfo->setInfo(newInfo);
             rx.resize(receiveSocket.pendingDatagramSize());
+//            qDebug() << "size = " << receiveSocket.pendingDatagramSize();
             receiveSocket.readDatagram(rx.data(), rx.size(), &address);
+//            qDebug() << "size = " << rx.size();
+//            qDebug() << "id = " << rx[2] - 1;
             color = (address.toString() == radioReceiveAddress[0]) ? team[0] : team[1];
             if (color == -1) {
                 qDebug() << "Receive Error Message from:" << address << "in actionmodule.cpp";
@@ -270,8 +356,8 @@ void ActionModule::readData() {
             short wheelVel[4] = {0};
 
             if(data[0] == (char)0xff && data[1] == (char)0x02) {
-            //if(true){
-                //回包数据！！！！！！！！！！！！！！！
+//            if(true){
+                //回包数据！！！！！！！！！！！！
                 id       = (quint8)data[2] - 1;//real robot 1-12 -> 0-11
                 infrared = (quint8)data[3] & 0x40;
                 //infrared = true;
@@ -279,6 +365,7 @@ void ActionModule::readData() {
                 chip     = (quint8)data[3] & 0x10;
                 battery  = (quint8)data[4];
                 capacitance = (quint8)data[5];
+//                capacitance = 1;
                 wheelVel[0] = (quint16)(data[6] << 8) + data[7];
                 wheelVel[1] = 1 + (short)~(data[8] << 8) + data[9];
                 wheelVel[2] = 1 + (short)~(data[10] << 8) + data[11];
@@ -292,21 +379,23 @@ void ActionModule::readData() {
                 GlobalData::instance()->robotInformation[color][id].battery = battery/256.0;//std::min(std::max((battery - LOW_BATTERY) / (FULL_BATTERY - LOW_BATTERY), 0.0), 1.0);
                 GlobalData::instance()->robotInformation[color][id].capacitance = std::min(std::max((capacitance - LOW_CAPACITANCE) / (FULL_CAPACITANCE - LOW_CAPACITANCE), 0.0), 1.0);
                 robotInfoMutex.unlock();
+//                qDebug() << id;
+//                qDebug() << "eee = " << GlobalData::instance()->robotInformation[color][id].battery;
 
                 emit receiveRobotInfo(color, id);
             }
             QDateTime UTC(QDateTime::currentDateTimeUtc());
             last_receive_time[id] = UTC.toMSecsSinceEpoch();
 
-            qDebug() << rx.toHex();
-            qDebug() << color << id << infrared << flat << address;
+//            qDebug() << rx.toHex();
+//            qDebug() << color << id << infrared << flat << address;
         }
     }
 }
 namespace {
 void encodeLegacy(const ZSS::Protocol::Robot_Command& command, QByteArray& tx, int num) {
     // send back to vision module
-    //发包！！！！！！！！！！！！！！！
+    //发包！！！！！！！！！！！！
     // num 0 ~ 3
     // id  0 ~ 15
 
@@ -337,6 +426,7 @@ void encodeLegacy(const ZSS::Protocol::Robot_Command& command, QByteArray& tx, i
         origin_vx = v.x();
         origin_vy = v.y();
     }
+//    qDebug() << time_new << "=====" << time_old[id] << "=====" << send_flag;
 
     qint16 vx = (qint16)(origin_vx);
     qint16 vy = (qint16)(origin_vy);

@@ -140,7 +140,7 @@ function receiverTask (p,d)
 end
 
 gPlayTable.CreatePlay{
-firstState = "test",
+firstState = "initState",
 
 ["test"] = {
 	switch = function ()

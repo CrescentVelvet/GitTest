@@ -8,11 +8,12 @@
 #include <QMutex>
 struct RobotInformation {
     bool infrared;
+    bool inexist;
     bool flat;
     bool chip;
     double battery;
     double capacitance;
-    RobotInformation(): infrared(false), flat(false), chip(false), battery(0), capacitance(0) {}
+    RobotInformation(): infrared(false), inexist(false), flat(false), chip(false), battery(0), capacitance(0) {}
 };
 struct RobotSpeed {
     float vx;

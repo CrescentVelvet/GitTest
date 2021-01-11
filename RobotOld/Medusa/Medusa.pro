@@ -452,8 +452,7 @@ SOURCES += \
     src/PathPlan/KDTreeNew.cpp \
     src/PathPlan/RRTPathPlannerNew.cpp \
     src/Strategy/skill/SmartGotoPositionV3.cpp \
-    src/Algorithm/ballmodel.cpp \
-    src/Algorithm/selfpass.cpp
+    src/Algorithm/ballmodel.cpp
 
 
 
@@ -677,7 +676,6 @@ HEADERS += \
     src/PathPlan/RRTPathPlannerNew.h \
     src/Strategy/skill/SmartGotoPositionV3.h \
     src/Algorithm/ballmodel.h\
-    src/Algorithm/selfpass.h
 
 
 
