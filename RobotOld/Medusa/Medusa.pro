@@ -11,7 +11,7 @@ DEFINES += QT_DEPRECATED_WARNINGS
 # python module for windows and linux
 # if you change this switch, you may need to clear the cache
 #DEFINES += USE_PYTHON_MODULE
-#DEFINES += USE_CUDA_MODULE
+DEFINES += USE_CUDA_MODULE
 #DEFINES += USE_OPENMP
 
 ZSS_LIBS =

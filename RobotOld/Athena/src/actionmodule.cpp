@@ -235,6 +235,7 @@ void ActionModule::readData() {
         /***************/
 //        QElapsedTimer timer;
 //        timer.start();
+        //仿真情况下回包循环变化的电量信息
         if (VIEW_DISPLAY){
             for (int color = PARAM::BLUE; color <= PARAM::YELLOW; color++){
                 for (int i = 0; i < PARAM::ROBOTNUM; i++){
@@ -248,6 +249,13 @@ void ActionModule::readData() {
                 }
             }
         }
+        //时间随机数
+        /*static qint64 time_old[PARAM::ROBOTNUM];
+        QDateTime UTC(QDateTime::currentDateTimeUtc());
+        qint64 time_new = UTC.toMSecsSinceEpoch();
+        srand(time_new);
+        int send_flag_num = rand() % 4;
+        qDebug() << send_flag_num;*/
             /*2019.10.8在场判断
             //设置回包信息,这一段是为了在仿真中显示变化的电量信息
             for (int color = PARAM::BLUE; color <= PARAM::YELLOW; color++){
@@ -297,19 +305,6 @@ void ActionModule::readData() {
                     if (temp_battery[i]>1000) {temp_battery[i]=0;}
                     robotInfoMutex.unlock();
                     emit receiveRobotInfo(color, i);*/
-////                    qDebug() << 15 << "===" << GlobalData::instance()->robotInformation[color][15].inexist;
-////                    qDebug() << 14 << "===" << GlobalData::instance()->robotInformation[color][14].inexist;
-////                    qDebug() << 13 << "===" << GlobalData::instance()->robotInformation[color][13].inexist;
-////                    qDebug() << 12 << "===" << GlobalData::instance()->robotInformation[color][12].inexist;
-////                    qDebug() << 11 << "===" << GlobalData::instance()->robotInformation[color][11].inexist;
-////                    qDebug() << 10 << "===" << GlobalData::instance()->robotInformation[color][10].inexist;
-////                    qDebug() << robot_id << "===" << GlobalData::instance()->robotInformation[color][robot_id].inexist;
-////                    qDebug() << robot_id << "=" << i;
-////                    qDebug() << robot.id << "=" << i;
-////                    qDebug() << robot.id << "===" << GlobalData::instance()->robotInformation[color][robot.id].battery;
-////                    qDebug() << temp_battery[i]/1000;
-////                    qDebug() << color << " = " << GlobalData::instance()->processRobot[color].robotSize[color];
-////                    qDebug() << GlobalData::instance()->robotInformation[color][robot.id].infrared;
 //                }
 //                qDebug() << "mark fuck :" << timer.nsecsElapsed()/1000000.0 << "millisecond";
 //            }
@@ -429,13 +424,26 @@ void encodeLegacy(const ZSS::Protocol::Robot_Command& command, QByteArray& tx, i
     qint64 time_new = UTC.toMSecsSinceEpoch();
 
     int send_flag;
+    srand(time_new);
+    int send_flag_num1 = rand() % 4;
+    int send_flag_num2 = 3 - send_flag_num1;
+//    qDebug() << send_flag_num1;
     if((time_new - time_old[id]) >= VIEW_FREQUENCE * 1000) {
         send_flag = 1;
         time_old[id] = time_new;
+//        ZSS::ZActionModule::instance()->send_flag_num = ZSS::ZActionModule::instance()->send_flag_num + 1;
+//        send::send_flag_num = send::send_flag_num + 1;
+
     }
     else {
         send_flag = 0;
     }
+    //一次发四个包，最多只有两个能回包。
+    if (num == send_flag_num1 || num == send_flag_num2) {send_flag = 0;}
+//    if (ZSS::ZActionModule::instance()->send_flag_num == 2) {send_flag = 0;}
+//    else if (ZSS::ZActionModule::instance()->send_flag_num == 3) {send_flag = 0; ZSS::ZActionModule::instance()->send_flag_num = 0;}
+//    if (send::send_flag_num == 2) {send_flag = 0;}
+//    else if (send::send_flag_num == 3) {send_flag = 0; send::send_flag_num = 0;}
 
     if (fabs(theta) > 0.00001) {
         v = v * theta / (2 * sin(theta / 2));

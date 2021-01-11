@@ -1,5 +1,6 @@
 #ifndef ZACTIONMODULE_H
 #define ZACTIONMODULE_H
+#include <time.h>
 #include <QObject>
 #include <QMutex>
 #include <QUdpSocket>
@@ -9,6 +10,7 @@
 #include "singleton.hpp"
 #include "zss_cmd.pb.h"
 #include "staticparams.h"
+//namespace send { static int send_flag_num; }
 namespace ZSS {
 class ActionModule : public QObject {
     Q_OBJECT
