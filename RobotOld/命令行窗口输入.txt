@@ -1,0 +1,1 @@
+.訇話Hera.exe -i=lr --if=E簸瘍訇話ProgramFilesBig訇話HeraLOG訇話2019-07-03_14-09_ER-Force-vs-TIGERs_Mannheim.log -o=ns

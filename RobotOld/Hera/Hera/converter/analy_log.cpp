@@ -75,6 +75,7 @@ void AnalyEsthetics::analy_frame(void * ptr, int size){
             our_carnum[i] = our_carnum[i] / real_ourframe[i/2];
             their_carnum[i] = their_carnum[i] / real_theirframe[i/2];
         }
+        //保存队伍进攻性
         FILE *fp = fopen("E:\\Temp Work\\GitTemp\\Sydney\\log_data.txt","a");
         fprintf(fp,"%f\t",our_carnum[0]);
         fprintf(fp,"%s\n",teamname);
