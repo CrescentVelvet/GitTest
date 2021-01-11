@@ -27,11 +27,12 @@ private:
     CVector Polar2Vector(double m,double angle);
     CGeoPoint analy_TheirInterPoint(CGeoPoint enemy, CGeoPoint ball);
     void judgeSide(const QByteArray& packet);
+    int cal_nearest(const QByteArray& packet, int team);
+    void cal_holdMsg(const QByteArray& packet);
     bool analy_marking(const QByteArray& packet, int team, int num);
     bool analy_guarding(const QByteArray& packet, int team, int num);
     bool analy_goalkeeping(const QByteArray& packet, int team, int num);
     void cal_our_carnum(const QByteArray& packet);
-//    ========
     QList <QByteArray> packets;
     int _Team;
     int _homeSide;

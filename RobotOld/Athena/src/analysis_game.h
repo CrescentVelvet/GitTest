@@ -31,6 +31,8 @@ private:
     CVector Polar2Vector(double m,double angle);
     CGeoPoint analy_TheirInterPoint(CGeoPoint enemy, CGeoPoint ball);
     void Ball_ControlRate(const QByteArray& packet);
+    int cal_nearest(const QByteArray& packet, int team);
+    void cal_holdMsg(const QByteArray& packet);
     bool loadRec(QString& filename);
     bool cal_RealFrame(const QByteArray& packet);
     void judgeSide(const QByteArray& packet);
@@ -44,8 +46,8 @@ private:
     double ourHoldFrame;
     double theirHoldFrame;
     int realFrame;
-    int Team;
-    int opTeam;
+    int _Team;
+    int _opTeam;
     int homeSide;
     QFile* replayFile;
     QList <QByteArray> packets;

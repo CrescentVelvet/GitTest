@@ -11,6 +11,7 @@ namespace  {
 auto GS = GlobalSettings::instance();
 }
 RecPlayer::RecPlayer() {
+    holdMsg = "Null";
     for(int i = 0; i < 6; i++){
         our_car_num[i] = 0;
     }
@@ -130,7 +131,7 @@ void RecPlayer::sendMessage(const QByteArray& packet) {
     GlobalData::instance()->maintain.push(maintainResult);
 
     //debugMsgs
-    GlobalData::instance()->debugMutex.lock();
+    /*GlobalData::instance()->debugMutex.lock();
     ZSS::Protocol::Debug_Msgs debugMsgs;
     for (int team = PARAM::BLUE; team <= PARAM::YELLOW; team++) {
         debugMsgs = recMsg.debugmsgs(team);
@@ -146,40 +147,7 @@ void RecPlayer::sendMessage(const QByteArray& packet) {
         }
 //        qDebug() << "FUCK DEBUG MESSAGE SIZE" <<  debugMsgs.ByteSize() << GlobalData::instance()->debugBlueMessages.size();
     }
-    GlobalData::instance()->debugMutex.unlock();
-}
-
-void RecPlayer::run() {
-    QTime timer;
-    timer.start();
-    sendMessage(packets.at(_currentFrame));
-    emit positionChanged(_currentFrame);
-    GlobalSettings::instance()->needRepaint();
-    qDebug() << "start~~~analysing~~~running~~~";
-    QThread::currentThread()->msleep(12);
-//    qDebug() << _currentFrame;
-    judgeSide(packets.at(_currentFrame));
-    cal_our_carnum(packets.at(_currentFrame));
-//    qDebug() << _Team << "---" << _opTeam;
-    qDebug() << "our attack in ourball    =" << our_car_num[0] << " | their attack in theirball  =" << their_car_num[0];
-    qDebug() << "our defense in ourball   =" << our_car_num[1] << " | their defense in theirball =" << their_car_num[1];
-    qDebug() << "our attack in theirball  =" << our_car_num[2] << " | their attack in ourball    =" << their_car_num[2];
-    qDebug() << "our defense in theirball =" << our_car_num[3] << " | their defense in ourball   =" << their_car_num[3];
-    qDebug() << "our attack in bothball   =" << our_car_num[4] << " | their attack in bothball   =" << their_car_num[4];
-    qDebug() << "our defense in bothball  =" << our_car_num[5] << " | their defense in bothball  =" << their_car_num[5];
-    qDebug() << _currentFrame;
-    for (int i = 0; i < 6; i++) {
-        our_car_num[i] = 0;
-        their_car_num[i] = 0;
-    }
-    qDebug() << "end~~~analysing~~~running~~~";
-    /*while (_run && ++_currentFrame < packets.size() - 1 && this->isRunning()) {
-//        ourHoldRate();
-        sendMessage(packets.at(_currentFrame));
-        emit positionChanged(_currentFrame);
-        GlobalSettings::instance()->needRepaint();
-        QThread::currentThread()->msleep(12);
-    }*/
+    GlobalData::instance()->debugMutex.unlock();*/
 }
 
 CVector RecPlayer::Polar2Vector(double m,double angle){
@@ -201,7 +169,7 @@ CGeoPoint RecPlayer::analy_TheirInterPoint(CGeoPoint enemy, CGeoPoint ball){
 void RecPlayer::judgeSide(const QByteArray& packet){
     ZSS::Protocol::RecMessage recdata;
     recdata.ParseFromArray(packet.data(), packet.size());
-    ZSS::Protocol::Debug_Msgs debugMsgs;
+    /*ZSS::Protocol::Debug_Msgs debugMsgs;
     for(int team = PARAM::BLUE; team <= PARAM::YELLOW; team++){
         debugMsgs = recdata.debugmsgs(team);
         int size = debugMsgs.ByteSize();
@@ -218,14 +186,17 @@ void RecPlayer::judgeSide(const QByteArray& packet){
                 _Team = team;
             }
         }
-    }
+    }*/
+    //team就是蓝队，opteam就是黄队，没得商量
+    _Team = PARAM::BLUE;
+    _opTeam = PARAM::YELLOW;
     for(int j = 0; j < recdata.maintainvision().maintain(_Team).robot().size() ; j++){
-        if(recdata.maintainvision().maintain(_Team).robot(j).posx() > 4800
-                && std::fabs(recdata.maintainvision().maintain(_Team).robot(j).posy()) < 1200){
+        if(recdata.maintainvision().processmsg(_Team).robot(j).posx() > 4800
+                && std::fabs(recdata.maintainvision().processmsg(_Team).robot(j).posy()) < 1200){
             _homeSide = Right;
         }
-        if(recdata.maintainvision().maintain(_Team).robot(j).posx() < -4800
-                && std::fabs(recdata.maintainvision().maintain(_Team).robot(j).posy()) < 1200){
+        if(recdata.maintainvision().processmsg(_Team).robot(j).posx() < -4800
+                && std::fabs(recdata.maintainvision().processmsg(_Team).robot(j).posy()) < 1200){
             _homeSide = Left;
         }
     }
@@ -251,15 +222,15 @@ bool RecPlayer::analy_marking(const QByteArray& packet, int team, int num){
 //    qDebug() << team << side;
     //找小车传球点位置：位于后场且能拦截传球
     int opteam = 1 - team;
-    CGeoPoint me(recdata.maintainvision().maintain(team).robot(num).posx(),
-                 recdata.maintainvision().maintain(team).robot(num).posy());
+    CGeoPoint me(recdata.maintainvision().processmsg(team).robot(num).posx(),
+                 recdata.maintainvision().processmsg(team).robot(num).posy());
     CGeoPoint ball(recdata.maintainvision().balls().ball(validNum).posx(),
                    recdata.maintainvision().balls().ball(validNum).posy());
-    if(recdata.maintainvision().maintain(PARAM::BLUE).has_size()
-            && recdata.maintainvision().maintain(PARAM::YELLOW).has_size()){
-        for(int j = 0; j < recdata.maintainvision().maintain(opteam).robot().size(); j++){
-            CGeoPoint enemy(recdata.maintainvision().maintain(opteam).robot(j).posx(),
-                            recdata.maintainvision().maintain(opteam).robot(j).posy());
+    if(recdata.maintainvision().processmsg(PARAM::BLUE).size() > 0
+            && recdata.maintainvision().processmsg(PARAM::YELLOW).size() > 0){
+        for(int j = 0; j < recdata.maintainvision().processmsg(opteam).robot().size(); j++){
+            CGeoPoint enemy(recdata.maintainvision().processmsg(opteam).robot(j).posx(),
+                            recdata.maintainvision().processmsg(opteam).robot(j).posy());
             CGeoPoint pass_point = analy_TheirInterPoint(enemy, ball);
             double distance_me = me.dist(pass_point);
             double distance_enemy = enemy.dist(pass_point);
@@ -278,13 +249,14 @@ bool RecPlayer::analy_guarding(const QByteArray& packet, int team, int num){
     ZSS::Protocol::RecMessage recdata;
     recdata.ParseFromArray(packet.data(), packet.size());
     int opteam = 1 - team;
-    int x = recdata.maintainvision().maintain(team).robot(num).posx();
-    int y = recdata.maintainvision().maintain(team).robot(num).posy();
+    int x = recdata.maintainvision().processmsg(team).robot(num).posx();
+    int y = recdata.maintainvision().processmsg(team).robot(num).posy();
     int side;
     if(team == _Team){ side = _homeSide; }
     else if(team == _opTeam){ side = (_homeSide == Right ? Left : Right); }
     else{ qDebug() << "error in analy_guarding"; }
-    if(recdata.maintainvision().maintain(PARAM::BLUE).has_size() && recdata.maintainvision().maintain(PARAM::YELLOW).has_size()){
+    if(recdata.maintainvision().processmsg(PARAM::BLUE).size() > 0
+            && recdata.maintainvision().processmsg(PARAM::YELLOW).size() > 0){
         if(side == Right && x > param_width/4){
             return true;
         }
@@ -299,13 +271,14 @@ bool RecPlayer::analy_goalkeeping(const QByteArray& packet, int team, int num){
     ZSS::Protocol::RecMessage recdata;
     recdata.ParseFromArray(packet.data(), packet.size());
     int opteam = 1 - team;
-    int x = recdata.maintainvision().maintain(team).robot(num).posx();
-    int y = recdata.maintainvision().maintain(team).robot(num).posy();
+    int x = recdata.maintainvision().processmsg(team).robot(num).posx();
+    int y = recdata.maintainvision().processmsg(team).robot(num).posy();
     int side;
     if(team == _Team){ side = _homeSide; }
     else if(team == _opTeam){ side = (_homeSide == Right ? Left : Right); }
     else{ qDebug() << "error in analy_goalkeeping"; }
-    if(recdata.maintainvision().maintain(PARAM::BLUE).has_size() && recdata.maintainvision().maintain(PARAM::YELLOW).has_size()){
+    if(recdata.maintainvision().processmsg(PARAM::BLUE).size() > 0
+            && recdata.maintainvision().processmsg(PARAM::YELLOW).size() > 0){
         if(side == Right && x > param_width/2 - param_penalty_area_l && fabs(y) < param_penalty_radius){
             return true;
         }
@@ -319,7 +292,6 @@ bool RecPlayer::analy_goalkeeping(const QByteArray& packet, int team, int num){
 void RecPlayer::cal_our_carnum(const QByteArray& packet){
     ZSS::Protocol::RecMessage recdata;
     recdata.ParseFromArray(packet.data(), packet.size());
-    ZSS::Protocol::Debug_Msgs debugMsgs;
     //找可信的球位置
     int validNum = 0;
     for(int k = 0; k < recdata.maintainvision().balls().size(); k++){
@@ -329,6 +301,7 @@ void RecPlayer::cal_our_carnum(const QByteArray& packet){
         }
     }
     //找当前状态
+    /*ZSS::Protocol::Debug_Msgs debugMsgs;
     for(int k = 0; k < recdata.debugmsgs_size(); k++){
         debugMsgs = recdata.debugmsgs(k);
 //        qDebug() << "recdata.debugmsgs().size() =" << recdata.debugmsgs().size();
@@ -347,21 +320,17 @@ void RecPlayer::cal_our_carnum(const QByteArray& packet){
                 || holdMsg == "Both" || holdMsg == "BothHolding"){
             break;
         }
-    }
+    }*/
     //计算各种车数
     int team = _Team;
     int opteam = _opTeam;
-    if(recdata.maintainvision().maintain(PARAM::BLUE).has_size()
-            && recdata.maintainvision().maintain(PARAM::YELLOW).has_size()){
-        for(int m = 0; m < recdata.maintainvision().maintain(team).robot().size(); m++){
+    if(recdata.maintainvision().processmsg(PARAM::BLUE).size() > 0
+            && recdata.maintainvision().processmsg(PARAM::YELLOW).size() > 0){
+        for(int m = 0; m < recdata.maintainvision().processmsg(team).robot().size(); m++){
             if(holdMsg == "OurHolding"){
                 real_ourframe[0]++;
-//                qDebug() << m << "get ball in" << CGeoPoint(recdata.maintainvision().maintain(team).robot(m).posx(),
-//                                      recdata.maintainvision().maintain(team).robot(m).posy())
-//                                 .dist(CGeoPoint(recdata.maintainvision().balls().ball(validNum).posx(),
-//                                                 recdata.maintainvision().balls().ball(validNum).posy()));
-                if(CGeoPoint(recdata.maintainvision().maintain(team).robot(m).posx(),
-                             recdata.maintainvision().maintain(team).robot(m).posy())
+                if(CGeoPoint(recdata.maintainvision().processmsg(team).robot(m).posx(),
+                             recdata.maintainvision().processmsg(team).robot(m).posy())
                         .dist(CGeoPoint(recdata.maintainvision().balls().ball(validNum).posx(),
                                         recdata.maintainvision().balls().ball(validNum).posy()))
                         < 400){
@@ -396,11 +365,11 @@ void RecPlayer::cal_our_carnum(const QByteArray& packet){
                 }
             }else{ qDebug() << "has an error in our holdMsg!"; }
         }
-        for(int m = 0; m < recdata.maintainvision().maintain(opteam).robot().size(); m++){
+        for(int m = 0; m < recdata.maintainvision().processmsg(opteam).robot().size(); m++){
             if(holdMsg == "TheirHolding"){
                 real_theirframe[0]++;
-                if(CGeoPoint(recdata.maintainvision().maintain(opteam).robot(m).posx(),
-                             recdata.maintainvision().maintain(opteam).robot(m).posy())
+                if(CGeoPoint(recdata.maintainvision().processmsg(opteam).robot(m).posx(),
+                             recdata.maintainvision().processmsg(opteam).robot(m).posy())
                         .dist(CGeoPoint(recdata.maintainvision().balls().ball(validNum).posx(),
                                         recdata.maintainvision().balls().ball(validNum).posy()))
                         < 400){
@@ -436,4 +405,132 @@ void RecPlayer::cal_our_carnum(const QByteArray& packet){
             }else{ qDebug() << "has an error in our holdMsg!"; }
         }
     }else{ qDebug() << "has an error in our holdMsg!"; }
+}
+
+//找距离球最近的小车
+int RecPlayer::cal_nearest(const QByteArray& packet, int team){
+    ZSS::Protocol::RecMessage recdata;
+    recdata.ParseFromArray(packet.data(), packet.size());
+    //找可信的球位置
+    int validNum = 0;
+    for(int k = 0; k < recdata.maintainvision().balls().size(); k++){
+        if(recdata.maintainvision().balls().ball(k).valid()){
+            validNum = k;
+            break;
+        }
+    }
+    int nearest_num = 0;
+    if(recdata.maintainvision().processmsg(team).size() > 0){
+        double nearest_dis = CGeoPoint(recdata.maintainvision().processmsg(team).robot(nearest_num).posx(),
+                                    recdata.maintainvision().processmsg(team).robot(nearest_num).posy())
+                              .dist(CGeoPoint(recdata.maintainvision().balls().ball(validNum).posx(),
+                                              recdata.maintainvision().balls().ball(validNum).posy()));
+        double temp_nearest_dis;
+        for(int j = 0; j < recdata.maintainvision().processmsg(team).robot().size(); j++){
+            temp_nearest_dis = CGeoPoint(recdata.maintainvision().processmsg(team).robot(j).posx(),
+                                        recdata.maintainvision().processmsg(team).robot(j).posy())
+                                  .dist(CGeoPoint(recdata.maintainvision().balls().ball(validNum).posx(),
+                                                  recdata.maintainvision().balls().ball(validNum).posy()));
+            if(temp_nearest_dis < nearest_dis){
+                nearest_num = j;
+                nearest_dis = temp_nearest_dis;
+            }
+        }
+    }else{ qDebug() << "error in cal_nearest"; }
+//    qDebug() << recdata.maintainvision().processmsg(team).robot(nearest_num).id() << "_______" << nearest_num << "in" << team;
+//    return recdata.maintainvision().processmsg(team).robot(nearest_num).id();
+    return nearest_num;
+}
+
+//计算球的状态
+void RecPlayer::cal_holdMsg(const QByteArray& packet){
+    ZSS::Protocol::RecMessage recdata;
+    recdata.ParseFromArray(packet.data(), packet.size());
+    //找可信的球位置
+    int validNum = 0;
+    for(int k = 0; k < recdata.maintainvision().balls().size(); k++){
+        if(recdata.maintainvision().balls().ball(k).valid()){
+            validNum = k;
+            break;
+        }
+    }
+    if(recdata.maintainvision().processmsg(PARAM::BLUE).size() > 0
+            && recdata.maintainvision().processmsg(PARAM::YELLOW).size() > 0){
+        double temp_our_nearest = CGeoPoint(recdata.maintainvision().processmsg(_Team).robot(cal_nearest(packet, _Team)).posx(),
+                                            recdata.maintainvision().processmsg(_Team).robot(cal_nearest(packet, _Team)).posy())
+                                      .dist(CGeoPoint(recdata.maintainvision().balls().ball(validNum).posx(),
+                                                      recdata.maintainvision().balls().ball(validNum).posy()));
+        double temp_their_nearest = CGeoPoint(recdata.maintainvision().processmsg(_opTeam).robot(cal_nearest(packet, _opTeam)).posx(),
+                                              recdata.maintainvision().processmsg(_opTeam).robot(cal_nearest(packet, _opTeam)).posy())
+                                        .dist(CGeoPoint(recdata.maintainvision().balls().ball(validNum).posx(),
+                                                        recdata.maintainvision().balls().ball(validNum).posy()));
+        if(temp_our_nearest < 150 && temp_their_nearest > 200){
+            holdMsg = "OurHolding";
+            qDebug() << "OurHolding";
+        }
+        else if(temp_their_nearest < 150 && temp_our_nearest > 200){
+            holdMsg = "TheirHolding";
+            qDebug() << "TheirHolding";
+        }
+        else if(temp_our_nearest < 150 || temp_their_nearest < 150){
+            holdMsg = "BothHolding";
+            qDebug() << "BothHolding";
+        }
+        else{
+            if(temp_our_nearest - temp_their_nearest < -200){
+                holdMsg = "Our";
+                qDebug() << "Our";
+            }
+            else if(temp_our_nearest - temp_their_nearest > 200){
+                holdMsg = "Their";
+                qDebug() << "Their";
+            }
+            else{
+                holdMsg = "Both";
+                qDebug() << "Both";
+            }
+        }
+    }
+    else{
+        holdMsg = "Null";
+        qDebug() << "Null";
+    }
+}
+
+void RecPlayer::run() {
+    QTime timer;
+    timer.start();
+    sendMessage(packets.at(_currentFrame));
+    emit positionChanged(_currentFrame);
+    GlobalSettings::instance()->needRepaint();
+    qDebug() << "start~~~analysing~~~running~~~";
+    QThread::currentThread()->msleep(12);
+//    qDebug() << _currentFrame;
+    judgeSide(packets.at(_currentFrame));
+    cal_holdMsg(packets.at(_currentFrame));
+    cal_our_carnum(packets.at(_currentFrame));
+//    qDebug() << _Team << "---" << _opTeam;
+    ZSS::Protocol::RecMessage recdata;
+    recdata.ParseFromArray(packets.at(_currentFrame).data(), packets.at(_currentFrame).size());
+    qDebug() << "our nearest is " << recdata.maintainvision().processmsg(_Team).robot(cal_nearest(packets.at(_currentFrame),_Team)).id()
+             << "their nearest is " << recdata.maintainvision().processmsg(_opTeam).robot(cal_nearest(packets.at(_currentFrame),_opTeam)).id();
+    qDebug() << "our attack in ourball    =" << our_car_num[0] << " | their attack in theirball  =" << their_car_num[0];
+    qDebug() << "our defense in ourball   =" << our_car_num[1] << " | their defense in theirball =" << their_car_num[1];
+    qDebug() << "our attack in theirball  =" << our_car_num[2] << " | their attack in ourball    =" << their_car_num[2];
+    qDebug() << "our defense in theirball =" << our_car_num[3] << " | their defense in ourball   =" << their_car_num[3];
+    qDebug() << "our attack in bothball   =" << our_car_num[4] << " | their attack in bothball   =" << their_car_num[4];
+    qDebug() << "our defense in bothball  =" << our_car_num[5] << " | their defense in bothball  =" << their_car_num[5];
+    qDebug() << _currentFrame;
+    for (int i = 0; i < 6; i++) {
+        our_car_num[i] = 0;
+        their_car_num[i] = 0;
+    }
+    qDebug() << "end~~~analysing~~~running~~~";
+    /*while (_run && ++_currentFrame < packets.size() - 1 && this->isRunning()) {
+//        ourHoldRate();
+        sendMessage(packets.at(_currentFrame));
+        emit positionChanged(_currentFrame);
+        GlobalSettings::instance()->needRepaint();
+        QThread::currentThread()->msleep(12);
+    }*/
 }
