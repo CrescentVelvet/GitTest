@@ -27,8 +27,16 @@ end
 gPlayTable.CreatePlay{
 
 firstState = "run0",
-["run0"] = {
+["run0"] = {--随机跑位
     switch = function()
+    --球到达目标，保存数据
+        if ball.toPointDist(target_point) < 800 and shoot_flag == 1 then
+            writeFile('../shoot_data.txt','ball_pos\n')
+            writeFile('../shoot_data.txt','ball_posX'..'\t'..ball.posX()..'\n')
+            writeFile('../shoot_data.txt','ball_posY'..'\t'..ball.posY()..'\n')
+            writeFile('../shoot_data.txt','000000000'..'\t'..'000000000'..'\n')
+            shoot_flag = 0
+        end
         if bufcnt(player.toTargetDist("Kicker")<200,timerun) then
             return "get"..0
         end
@@ -37,7 +45,7 @@ firstState = "run0",
     Kicker = task.goCmuRush(pos.getOtherPos(1),0,_,DSS),
     match = ""
 },
-["run1"] = {
+["run1"] = {--绕过球门后
     switch = function ()
         if ball.posY() > 0 then
             runres_flag = 1
@@ -60,7 +68,16 @@ firstState = "run0",
     Kicker = task.goCmuRush(CGeoPoint(6400,4000*runres_flag),0,_,DSS),
     match = ""
 },
-["get0"] = {
+["get0"] = {--拿球
+    switch = function()
+        if bufcnt(player.infraredOn("Kicker"),40,200) then
+            return "get"..1
+        end
+    end,
+    Kicker = task.zget(target_point,_,_,flag.kick+flag.dribble),
+    match = ""
+},
+["get1"] = {--有初速射球
     switch = function()
         if ball.posX() > GATE_X
             and ball.posY() > -GATE_Y and ball.posY() < GATE_Y then
@@ -88,19 +105,20 @@ firstState = "run0",
             return "res"..0
         end
     end,
-    Kicker = task.zget(target_point,_,_,flag.kick),
+    -- Kicker = task.zget(target_point,_,_,flag.kick),
+    Kicker = task.speed(0,0,4),
     match = ""
 },
-["res0"] = {
+["res0"] = {--界外捡球
     switch = function()
         --球到达目标，保存数据
-        if ball.toPointDist(target_point) < 500 and shoot_flag == 1 then
-            writeFile('../shoot_data.txt','ball_pos\n')
-            writeFile('../shoot_data.txt','ball_posX'..'\t'..ball.posX()..'\n')
-            writeFile('../shoot_data.txt','ball_posY'..'\t'..ball.posY()..'\n')
-            writeFile('../shoot_data.txt','000000000'..'\t'..'000000000'..'\n')
-            shoot_flag = 0
-        end
+        -- if ball.toPointDist(target_point) < 800 and shoot_flag == 1 then
+        --     writeFile('../shoot_data.txt','ball_pos\n')
+        --     writeFile('../shoot_data.txt','ball_posX'..'\t'..ball.posX()..'\n')
+        --     writeFile('../shoot_data.txt','ball_posY'..'\t'..ball.posY()..'\n')
+        --     writeFile('../shoot_data.txt','000000000'..'\t'..'000000000'..'\n')
+        --     shoot_flag = 0
+        -- end
         if player.posY("Kicker") > -GATE_Y and player.posY("Kicker") < GATE_Y
             and player.posX("Kicker") < GATE_X and ball.posX() > GATE_X
             and ball.posY() > -PENTY_Y and ball.posY() < PENTY_Y then
