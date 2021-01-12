@@ -13,7 +13,7 @@ gStateFileNameString = string.format(os.date("%Y%m%d%H%M"))
 gTestPlay = "TestShootAlter"
 
 gRoleFixNum = {
-        ["Kicker"]   = {16},
+        ["Kicker"]   = {5},
         ["Goalie"]   = {},
         ["Tier"]     = {},
         -- ["Receiver"] = {} match before rolematch in messi by wangzai

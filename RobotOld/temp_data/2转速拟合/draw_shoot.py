@@ -24,7 +24,6 @@ def readData(filename):
     car_posX = []
     car_posY = []
     car_dis = []
-    car_dir = []
     ball_posX = []
     ball_posY = []
     ball_dis = []
@@ -35,7 +34,6 @@ def readData(filename):
             # 去除粗大误差
             # if (float(temp10[-7])<-3500) or (float(temp10[-7])>3500) or (float(temp10[-6])<-2500) or (float(temp10[-6])>2500):
                 # continue
-            # car_dir.append(temp10[-8])
             car_posX.append(temp10[-7])
             car_posY.append(temp10[-6])
             car_rotVel.append(temp10[-3])
@@ -64,26 +62,22 @@ def readData(filename):
     # 到目标点距离转换踢球速度
     shoot_vel = np.zeros(len(car_dis))
     for i in range(len(car_dis)):
-        # if IS_SIMULATION == 1:
-        #     shoot_vel[i] = car_dis[i] * 1.7 + 100
-        # else:
-        #     shoot_vel[i] = car_dis[i] * 0.8 + 100
         if IS_SIMULATION == 1:
-            shoot_vel[i] = car_dis[i] * 1 + 200
+            shoot_vel[i] = car_dis[i] * 1.7 + 100
         else:
-            shoot_vel[i] = car_dis[i] * 1 + 200
-    # 输入为rotvel与vel的tan值(转动)
+            shoot_vel[i] = car_dis[i] * 0.8 + 100
+    # 输入为rotvel与vel的tan值
     shoot_input = np.zeros(len(shoot_vel))
     for i in range(len(shoot_vel)):
         shoot_input[i] = car_rotVel[i] / shoot_vel[i]
         shoot_input[i] = math.atan(shoot_input[i])
-    # 输出output
+    # 输出
     shoot_output = np.zeros(len(ball_posX))
     shoot_output = shoot_xita
-    # 输入输出弧度转换角度(角度仅用于观察，计算还得是弧度)
-    # for i in range(len(shoot_output)):
-        # shoot_input[i] = math.degrees(shoot_input[i])
-        # shoot_output[i] = math.degrees(shoot_output[i])
+    # 输入输出弧度转换角度
+    for i in range(len(shoot_output)):
+        shoot_input[i] = math.degrees(shoot_input[i])
+        shoot_output[i] = math.degrees(shoot_output[i])
     # 计算平均值
     shoot_average = 0
     shoot_error = 0
@@ -131,14 +125,14 @@ def drawData(filename,num):
     ax.set_title(filename)
     ax.set_xlabel(round(linear_reg.coef_[0],2))
     ax.set_ylabel(round(linear_reg.intercept_,2))
-    # plt.ylim(-30,30)
+    plt.ylim(-30,30)
 
 # plt.ion()
 fig = plt.figure()
-# drawData('shoot_data_00000.txt',231)
-# drawData('shoot_data_04002.txt',232)
-# drawData('shoot_data_76501.txt',233)
-# drawData('shoot_data=00000.txt',234)
-# drawData('shoot_data=13800.txt',235)
-drawData('shoot_data=00000.txt',111)
+drawData('shoot_data_00000.txt',231)
+drawData('shoot_data_04002.txt',232)
+drawData('shoot_data_76501.txt',233)
+drawData('shoot_data=00000.txt',234)
+drawData('shoot_data=13800.txt',235)
+drawData('shoot_data.txt',236)
 plt.show()

@@ -6,14 +6,14 @@ local FIELD_X1 = 3500
 local FIELD_X2 = -3500
 local FIELD_Y1 = 2500
 local FIELD_Y2 = -2500
-local CENTER_X = 1000
-local CENTER_Y = 1000
+local CENTER_X = 500
+local CENTER_Y = 500
 local PENTY_X = 4700
 local PENTY_Y = 1250
 local GATE_X = 6200
 local GATE_Y = 600
 local timerun = 10
-local timeget = 1000
+local timeget = 20000
 local shoot_flag = 0
 local runres_flag = -1
 local target_point = CGeoPoint(0,0)
@@ -101,7 +101,9 @@ firstState = "run0",
 },
 ["get0"] = {--拿球
     switch = function()
-        if bufcnt(player.infraredOn("Kicker"),10,timeget) then
+        print(player.infraredOn("Kicker"))
+        if bufcnt(player.infraredOn("Kicker"),3,timeget) then
+            print(player.infraredOn("Kicker"))
             return "get"..1
         end
     end,
@@ -123,11 +125,13 @@ firstState = "run0",
             return "res"..0
         -- 丢球判定
         elseif math.sqrt((ball.posX()-player.posX("Kicker"))*(ball.posX()-player.posX("Kicker"))
-            +(ball.posY()-player.posY("Kicker"))*(ball.posY()-player.posY("Kicker"))) > 500 then
+            +(ball.posY()-player.posY("Kicker"))*(ball.posY()-player.posY("Kicker"))) > 800 and player.infraredOn("Kicker") == 0 then
+            print('11111')
             return "get"..0
         -- 球出手，保存数据
         elseif bufcnt(player.kickBall("Kicker"),1,timeget) then
-            writeFile('../shoot_data.txt','car_pos\n')
+            writeFile('../shoot_data.txt','car_pos'..'\n')
+            writeFile('../shoot_data.txt','car_dir   '..'\t'..player.dir("Kicker")..'\n')
             writeFile('../shoot_data.txt','car_posX  '..'\t'..player.posX("Kicker")..'\n')
             writeFile('../shoot_data.txt','car_posY  '..'\t'..player.posY("Kicker")..'\n')
             writeFile('../shoot_data.txt','car_velMod'..'\t'..player.velMod("Kicker")..'\n')
@@ -150,22 +154,15 @@ firstState = "run0",
         end
     end,
     -- Kicker = task.zget(target_point,_,_,flag.kick),
-    -- 转速在3和5之间随机
+    -- 转速在-3和3之间随机
+    Kicker = task.speed(0,0,3,target_point),
     -- Kicker = task.speed(0,0,rot_rand(),target_point),
     -- Kicker = task.speed(-500,500,1,target_point),
-    Kicker = task.speed(velx_rand(),vely_rand(),rot_rand(),target_point),
+    -- Kicker = task.speed(velx_rand(),vely_rand(),rot_rand(),target_point),
     match = ""
 },
 ["res0"] = {--界外捡球
     switch = function()
-        --球到达目标，保存数据
-        -- if ball.toPointDist(target_point) < 800 and shoot_flag == 1 then
-        --     writeFile('../shoot_data.txt','ball_pos\n')
-        --     writeFile('../shoot_data.txt','ball_posX'..'\t'..ball.posX()..'\n')
-        --     writeFile('../shoot_data.txt','ball_posY'..'\t'..ball.posY()..'\n')
-        --     writeFile('../shoot_data.txt','000000000'..'\t'..'000000000'..'\n')
-        --     shoot_flag = 0
-        -- end
         if player.posY("Kicker") > -GATE_Y and player.posY("Kicker") < GATE_Y
             and player.posX("Kicker") < GATE_X and ball.posX() > GATE_X
             and ball.posY() > -PENTY_Y and ball.posY() < PENTY_Y then
