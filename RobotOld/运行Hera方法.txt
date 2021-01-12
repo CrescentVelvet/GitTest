@@ -1,3 +1,5 @@
 .Hera.exe -i=lr --if=EProgramFilesBigHeraLOG2019-07-03_14-09_ER-Force-vs-TIGERs_Mannheim.log -o=ns
 实际上的运行方法：
 .斜杠Hera.exe -i=lr --if=E冒号斜杠ProgramFilesBig斜杠HeraLOG斜杠2019-07-03_14-09_ER-Force-vs-TIGERs_Mannheim.log -o=ns
+使用起来就是：
+ .\Hera\bin\Hera.exe -i=lr --if=E:\\ProgramFilesBig\HeraLOG\2019-07-03_14-09_ER-Force-vs-TIGERs_Mannheim.log -o=ns 

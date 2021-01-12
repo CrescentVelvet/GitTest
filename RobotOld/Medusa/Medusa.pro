@@ -11,7 +11,7 @@ DEFINES += QT_DEPRECATED_WARNINGS
 # python module for windows and linux
 # if you change this switch, you may need to clear the cache
 #DEFINES += USE_PYTHON_MODULE
-#DEFINES += USE_CUDA_MODULE
+DEFINES += USE_CUDA_MODULE
 #DEFINES += USE_OPENMP
 
 ZSS_LIBS =
@@ -453,8 +453,7 @@ SOURCES += \
     src/PathPlan/KDTreeNew.cpp \
     src/PathPlan/RRTPathPlannerNew.cpp \
     src/Strategy/skill/SmartGotoPositionV3.cpp \
-    src/Algorithm/ballmodel.cpp \
-    src/Algorithm/self_pass.cpp
+    src/Algorithm/ballmodel.cpp
 
 
 
@@ -679,7 +678,6 @@ HEADERS += \
     src/PathPlan/RRTPathPlannerNew.h \
     src/Strategy/skill/SmartGotoPositionV3.h \
     src/Algorithm/ballmodel.h\
-    src/Algorithm/self_pass.h
 
 
 

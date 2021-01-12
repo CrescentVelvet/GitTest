@@ -21,7 +21,6 @@ gOppoConfig = {
 	PenaltyKick = "Ref_PenaltyKickV3", --"Ref_PenaltyKickV3",   --Ref_PenaltyKick2017V2
 	PenaltyDef  = "Ref_PenaltyDefV1",    --V2
 	
-	--NorPlay     = IS_YELLOW and "TestRun" or "NormalPlayMessi",
 	NorPlay     = "NormalPlayMessi",
 	IfHalfField = false,
 	USE_ZPASS = false
