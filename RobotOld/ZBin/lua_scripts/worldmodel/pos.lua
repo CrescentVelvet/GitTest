@@ -224,7 +224,7 @@ end
 -- 	return function()
 -- 		local p = assistPoint:getBestAssistPoint(vision,gRoleNum[role1],gRoleNum[role2]);
 -- 		return p
--- 	end 
+-- 	end
 -- end
 
 function advance()
@@ -388,11 +388,11 @@ end
 -- x, y分别为相对于球的偏移量, yys 2014-06-11
 function reflectPos(x, y)
 	return function ()
-	    if ball.posY()<0 then 
+	    if ball.posY()<0 then
 			return (ball.refAntiYPos(CGeoPoint:new_local(ball.posX() + x, -(math.abs(ball.posY()) + y) )))()
 		end
-		if ball.posY()>=0 then 
-			return (ball.refSyntYPos(CGeoPoint:new_local(ball.posX() + x, math.abs(ball.posY()) + y )))()	
+		if ball.posY()>=0 then
+			return (ball.refSyntYPos(CGeoPoint:new_local(ball.posX() + x, math.abs(ball.posY()) + y )))()
 		end
 	end
 end

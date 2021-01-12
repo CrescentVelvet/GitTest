@@ -32,10 +32,6 @@ local function rot_rand()
     return Rotrand
 end
 
-local function Rot_rand(a)
-    return a():x()%200/100+3
-end
-
 gPlayTable.CreatePlay{
 
 firstState = "run0",
@@ -126,7 +122,7 @@ firstState = "run0",
     end,
     -- Kicker = task.zget(target_point,_,_,flag.kick),
     -- 转速在3和5之间随机
-    Kicker = task.speed(0,0,rot_rand()),
+    Kicker = task.speed(0,0,rot_rand(),target_point),
     match = ""
 },
 ["res0"] = {--界外捡球

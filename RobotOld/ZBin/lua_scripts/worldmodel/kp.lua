@@ -32,7 +32,7 @@ function toTarget(p)
 		end
 		local pw
 		if IS_SIMULATION then
-			pw =  player.toPointDist(role, target)*1 + 200
+			pw = player.toPointDist(role, target)*1 + 200
 		else
 			pw = player.toPointDist(role, target)*1 + 200
 		end

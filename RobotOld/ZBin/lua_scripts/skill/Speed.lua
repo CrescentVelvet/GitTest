@@ -3,7 +3,8 @@ function Speed(task)
 	local mspeedX = task.speedX or 0
 	local mspeedY = task.speedY or 0
 	local mspeedW = task.speedW or 0
-	
+	local mkick_power = task.kick_power or 0
+
 	execute = function(runner)
 		if type(task.speedX) == "function" then
 			mspeedX = task.speedX()
@@ -17,6 +18,10 @@ function Speed(task)
 			mspeedW = task.speedW()
 		end
 
+		if type(task.kick_power) == "function" then
+			mkick_power = task.kick_power(runner)
+		end
+
 		if task.dir ~= nil then
 			local mdir
 			if type(task.dir) == "function" then
@@ -27,8 +32,8 @@ function Speed(task)
 			mspeedX = task.mod * math.cos(mdir)
 			mspeedY = task.mod * math.sin(mdir)
 		end
-		
-		return CSpeed(runner, mspeedX, mspeedY, mspeedW)
+
+		return CSpeed(runner, mspeedX, mspeedY, mspeedW, mkick_power)
 	end
 
 	matchPos = function()

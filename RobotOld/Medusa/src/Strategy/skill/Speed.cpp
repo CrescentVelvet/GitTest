@@ -19,7 +19,8 @@ void CSpeed::plan(const CVisionModule* pVision)
 CPlayerCommand* CSpeed::execute(const CVisionModule* pVision)
 {
     int myNum = task().executor;
-    int power = 3000;
+    double power = task().player.rotdir;
+//    qDebug()<<power;
     const PlayerVisionT& me = pVision->ourPlayer(myNum);
     const MobileVisionT& ball = pVision->ball();
 	double myDir = pVision->ourPlayer(myNum).Dir();

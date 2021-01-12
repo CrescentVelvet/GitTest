@@ -120,7 +120,7 @@ namespace PlayerRole{
 
     extern CPlayerTask* makeItInterKickV2(const int num, const double dir, const int flags, const bool isChip = false);
     extern CPlayerTask* makeItInterKickV3(const int num, const double dir, const int flags, const bool kickway = 0);
-    extern CPlayerTask* makeItRun(const int num, const double speedX, const double speedY, const double rotSpeed, int flags = 0);
+    extern CPlayerTask* makeItRun(const int num, const double speedX, const double speedY, const double rotSpeed, int flags = 0, const double kick_power = 3000);
     extern CPlayerTask* makeItOpenRun(const int num, const double speedX, const double speedY, const double rotSpeed, int flags = 0);
     extern CPlayerTask* makeItCrazyPush(const int num, double faceDir);
     extern CPlayerTask* makeItNoneTrajGetBall(const int num,const double dir,CVector finalVel = CVector(0.0,0.0),int flags = 0,double StopDist = -2, CTRL_METHOD mode = CMU_TRAJ);

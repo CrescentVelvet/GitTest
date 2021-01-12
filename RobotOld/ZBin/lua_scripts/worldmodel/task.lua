@@ -970,7 +970,7 @@ function zget(target, waitpos, p, f,freekickflag, precision)
 
 	ifreekickflag = freekickflag
 
-	local mexe, mpos = GetBallV4{ pos=itarget, waitpos = ipos, power = ipower, flag = iflag, freekickflag = ifreekickflag, precision = iprecision}
+	local mexe, mpos = GetBallV4{ pos = itarget, waitpos = ipos, power = ipower, flag = iflag, freekickflag = ifreekickflag, precision = iprecision}
 	return {mexe, mpos}
 end
 -- 注意，此处的点是用来做匹配的
@@ -1085,7 +1085,7 @@ function openSpeed(vx, vy, vdir)
 	return {mexe, mpos}
 end
 
-function speed(vx, vy, vdir)
+function speed(vx, vy, vdir, vtarget_point)
 	local spdX = function()
 		return vx
 	end
@@ -1098,8 +1098,15 @@ function speed(vx, vy, vdir)
 		-- return vdir
 	-- end
 	local spdW = vdir
+	local itarget_point = vtarget_point
 
-	local mexe, mpos = Speed{speedX = spdX, speedY = spdY, speedW = spdW}
+	if itarget_point ~= nil then
+        ipower = kp.toTarget(itarget_point)
+    else
+        ipower = 3000
+    end
+
+	local mexe, mpos = Speed{speedX = spdX, speedY = spdY, speedW = spdW, kick_power = ipower}
 	return {mexe, mpos}
 end
 
