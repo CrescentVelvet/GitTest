@@ -18,6 +18,7 @@
 #ifdef USE_CUDA_MODULE
 #include "CUDAModule/CUDAModule.h"
 #include <stdlib.h>
+#include <QDateTime>
 Semaphore messi_to_cuda(0);
 #endif
 
@@ -179,10 +180,19 @@ void CMessiDecision::generateAttackDecision(const CVisionModule* pVision) {
         generateOtherRunPos();
     }
 
+    //ShootAlterPoint
+    QDateTime SHOOT(QDateTime::currentDateTimeUtc());
+    static qint64 shoot_time_new = SHOOT.toMSecsSinceEpoch();
     std::srand((unsigned)time(nullptr));
-    //_otherPos[0] = CGeoPoint(std::rand()%2000+2000,std::rand()%6000-3000);
-    _otherPos[0] = CGeoPoint(std::rand()%1000+3000,std::rand()%1000-2000);
-    //qDebug()<<_otherPos[0].x();
+    int temp_x = std::rand()%5000-2500;
+    int temp_y = std::rand()%3000-1500;
+    if(temp_x>0){temp_x+=1000;}else {temp_x-=1000;}
+    if(temp_y>0){temp_y+=1000;}else {temp_y-=1000;}
+    if(SHOOT.toMSecsSinceEpoch() - shoot_time_new > 3000){
+        _otherPos[0] = CGeoPoint(temp_x,temp_y);
+        shoot_time_new = SHOOT.toMSecsSinceEpoch();
+//        qDebug()<<"fuck";
+    }
 
     // DEBUG INFO
     if(MESSI_DEBUG) {

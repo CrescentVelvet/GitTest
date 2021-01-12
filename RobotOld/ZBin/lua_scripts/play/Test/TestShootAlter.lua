@@ -1,11 +1,13 @@
 local DSS = bit:_or(flag.allow_dss,flag.dodge_ball)
 local DIST_PENALTY = 91
 local LENGTH_X = 6000
-local LENGTH_Y = 4475
-local FIELD_X1 = 4000
-local FIELD_X2 = 2000
-local FIELD_Y1 = 3000
-local FIELD_Y2 = -3000
+local LENGTH_Y = 4500
+local FIELD_X1 = 3500
+local FIELD_X2 = -3500
+local FIELD_Y1 = 2500
+local FIELD_Y2 = -2500
+local CENTER_X = 1000
+local CENTER_Y = 1000
 local PENTY_X = 4700
 local PENTY_Y = 1250
 local GATE_X = 6200
@@ -14,6 +16,7 @@ local timerun = 10
 local timeget = 1000
 local shoot_flag = 0
 local runres_flag = -1
+local target_point = CGeoPoint(0,0)
 
 local function writeFile(fileName,content)
     local f = assert(io.open(fileName,'a'))
@@ -26,10 +29,11 @@ gPlayTable.CreatePlay{
 firstState = "run0",
 ["run0"] = {
     switch = function()
-        if bufcnt(player.toTargetDist("Kicker")<600,timerun) then
+        if bufcnt(player.toTargetDist("Kicker")<200,timerun) then
             return "get"..0
         end
     end,
+    --跑位随机点（+-3500，+-2500）减去（+-1000，+-1000）
     Kicker = task.goCmuRush(pos.getOtherPos(1),0,_,DSS),
     match = ""
 },
@@ -40,7 +44,7 @@ firstState = "run0",
         else
             runres_flag = -1
         end
-        if bufcnt(player.toTargetDist("Kicker")<600,timerun) then
+        if bufcnt(player.toTargetDist("Kicker")<200,timerun) then
             return "run"..2
         end
     end,
@@ -49,7 +53,7 @@ firstState = "run0",
 },
 ["run2"] = {
     switch = function ()
-        if bufcnt(player.toTargetDist("Kicker")<400,timerun) then
+        if bufcnt(player.toTargetDist("Kicker")<200,timerun) then
             return "res"..0
         end
     end,
@@ -61,6 +65,10 @@ firstState = "run0",
         if ball.posX() > GATE_X
             and ball.posY() > -GATE_Y and ball.posY() < GATE_Y then
             return "run"..1
+        elseif ball.posX() > -CENTER_X and ball.posX() < CENTER_X
+            and ball.posY() > -CENTER_Y and ball.posY() < CENTER_Y then
+            return "res"..0
+        --球出手，保存数据
         elseif bufcnt(player.kickBall("Kicker"),1,timeget) then
             writeFile('../shoot_data.txt','car_pos\n')
             writeFile('../shoot_data.txt','car_posX  '..'\t'..player.posX("Kicker")..'\n')
@@ -70,21 +78,23 @@ firstState = "run0",
             writeFile('../shoot_data.txt','car_rotVel'..'\t'..player.rotVel("Kicker")..'\n')
             shoot_flag = 1
             return "res"..0
+        --出界判定
         elseif ball.posX() > LENGTH_X or ball.posX() < -LENGTH_X then
             return "res"..0
         elseif ball.posY() > LENGTH_Y or ball.posY() < -LENGTH_Y then
             return "res"..0
+        --禁区判定
         elseif ball.posX() > PENTY_X and ball.posY() > -PENTY_Y and ball.posY() < PENTY_Y then
             return "res"..0
         end
     end,
-    Kicker = task.zget(CGeoPoint(6000,0),_,_,flag.kick),
+    Kicker = task.zget(target_point,_,_,flag.kick),
     match = ""
 },
 ["res0"] = {
     switch = function()
-        if ball.posX() > LENGTH_X-100 and ball.posX() < LENGTH_X+100
-            and shoot_flag == 1 then
+        --球到达目标，保存数据
+        if ball.toPointDist(target_point) < 500 and shoot_flag == 1 then
             writeFile('../shoot_data.txt','ball_pos\n')
             writeFile('../shoot_data.txt','ball_posX'..'\t'..ball.posX()..'\n')
             writeFile('../shoot_data.txt','ball_posY'..'\t'..ball.posY()..'\n')
@@ -97,7 +107,10 @@ firstState = "run0",
             return "run"..1
         elseif ball.posX() > FIELD_X2 and ball.posX() < FIELD_X1
             and ball.posY() > FIELD_Y2 and ball.posY() < FIELD_Y1 then
-            return "run"..0
+            if not (ball.posX() > -CENTER_X and ball.posX() < CENTER_X
+                and ball.posY() > -CENTER_Y and ball.posY() < CENTER_Y) then
+                return "run"..0
+            end
         end
     end,
     Kicker = task.fetchBall(pos.getOtherPos(1),_,true),

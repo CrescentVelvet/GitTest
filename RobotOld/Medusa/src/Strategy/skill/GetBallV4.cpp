@@ -407,6 +407,11 @@ void CGetBallV4::plan(const CVisionModule* pVision) {
 //    GDebugEngine::Instance()->gui_debug_msg(me.Pos()+ Utils::Polar2Vector(1.5*DEBUG_TEXT_HIGH, -Param::Math::PI/2), QString("KP: %1").arg(power).toLatin1(), COLOR_ORANGE);
     if(power > 500*10) power = power - 0.8 * std::max(0.0, me.RawVel().mod()*cos(fabs(Utils::Normalize(me.RawDir() - me.RawVel().dir()))));
 //    GDebugEngine::Instance()->gui_debug_msg(me.Pos()+ Utils::Polar2Vector(2*DEBUG_TEXT_HIGH, -Param::Math::PI/2), QString("new KP: %1").arg(power).toLatin1(), COLOR_ORANGE);
+//    qDebug()<<"----------------";
+//    qDebug()<<needkick;
+//    qDebug()<<(fabs(Utils::Normalize(me.RawDir() - getballTask.player.angle)) < precision*Param::Math::PI/180.0);
+//    qDebug()<<(getBallMode != INTER);
+//    qDebug()<<power;
     if (needkick && fabs(Utils::Normalize(me.RawDir() - getballTask.player.angle)) < precision*Param::Math::PI/180.0 && getBallMode != INTER) {
         if(!chip) KickStatus::Instance()->setKick(robotNum, power);
         else if(fraredOn >= 20) KickStatus::Instance()->setChipKick(robotNum, power);

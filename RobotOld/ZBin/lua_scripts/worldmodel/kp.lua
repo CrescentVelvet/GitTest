@@ -24,7 +24,7 @@ function toTarget(p)
 		local target
 		local inSpeed = 450 -- 需要的入嘴速度
 		if type(p) == "function" then
-			target = p() 
+			target = p()
 		elseif type(p) == "userdata" then
 			target = p
 		else
@@ -32,14 +32,14 @@ function toTarget(p)
 		end
 		local pw
 		if IS_SIMULATION then
-			pw =  player.toPointDist(role, target)*1 + 100
+			pw =  player.toPointDist(role, target)*1 + 200
 		else
-			pw = player.toPointDist(role, target)*1 + 100
+			pw = player.toPointDist(role, target)*1 + 200
 		end
-		if pw < 200 then    --50 --> 250 Modified by Soap, 2015/4/11
-			pw = 200 					--50 --> 250 Modified by Soap, 2015/4/11
-		elseif pw > 750 then
-			pw = 750
+		if pw < 2000 then    --50 --> 250 Modified by Soap, 2015/4/11
+			pw = 2000 					--50 --> 250 Modified by Soap, 2015/4/11
+		elseif pw > 7500 then
+			pw = 7500
 		end
 		return pw
 	end
@@ -62,10 +62,10 @@ function toTargetNormalPlay(p)
 		else
 			pw = player.toPointDist(role, target)*0.8+100
 		end
-		if pw < 200 then    --50 --> 250 Modified by Soap, 2015/4/11
-			pw = 200 					--50 --> 250 Modified by Soap, 2015/4/11
-		elseif pw > 750 then
-			pw = 750
+		if pw < 2000 then    --50 --> 250 Modified by Soap, 2015/4/11
+			pw = 2000 					--50 --> 250 Modified by Soap, 2015/4/11
+		elseif pw > 7500 then
+			pw = 7500
 		end
 			return pw
 			-- local pw = -0.0068*dist*dist + 5.5774*dist - 287.8

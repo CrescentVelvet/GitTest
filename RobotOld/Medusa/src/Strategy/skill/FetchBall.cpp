@@ -81,7 +81,7 @@ void CFetchBall::plan(const CVisionModule* pVision) {
         if(fraredOn < 2*BPFraredOn && cnt == 0){//not have ball
             if(verbose) GDebugEngine::Instance()->gui_debug_msg(me.Pos()+ Utils::Polar2Vector(DEBUG_TEXT_HIGH, -Param::Math::PI/1.5), "GetBall", COLOR_WHITE);
             GDebugEngine::Instance()->gui_debug_msg(me.Pos(),"4444444444");
-            setSubTask(PlayerRole::makeItGoto(vecNumber, ball.RawPos(), me2ball.dir(), CVector(0, 0), 0, 900, 50, 1000, 50, PlayerStatus::ALLOW_DSS|PlayerStatus::NOT_AVOID_PENALTY));
+            setSubTask(PlayerRole::makeItGoto(vecNumber, ball.RawPos(), me2ball.dir(), CVector(0, 0), 0, 1800, 50, 6000, 50, PlayerStatus::ALLOW_DSS|PlayerStatus::NOT_AVOID_PENALTY));
         }
         else{//have ball
             if(!SAFEMODE){
@@ -113,7 +113,7 @@ void CFetchBall::plan(const CVisionModule* pVision) {
                 else{
                     if(verbose) GDebugEngine::Instance()->gui_debug_msg(me.Pos()+ Utils::Polar2Vector(DEBUG_TEXT_HIGH, -Param::Math::PI/1.5), "PushBall", COLOR_WHITE);
                     GDebugEngine::Instance()->gui_debug_msg(me.Pos(),"7777777777");
-                    setSubTask(PlayerRole::makeItGoto(vecNumber, target + Utils::Polar2Vector(-Param::Vehicle::V2::PLAYER_CENTER_TO_BALL_CENTER, me2target.dir()), me2target.dir(), CVector(0, 0), 0, 900, 20, 3000, 10, PlayerStatus::ALLOW_DSS|PlayerStatus::NOT_AVOID_PENALTY));
+                    setSubTask(PlayerRole::makeItGoto(vecNumber, target + Utils::Polar2Vector(-Param::Vehicle::V2::PLAYER_CENTER_TO_BALL_CENTER, me2target.dir()), me2target.dir(), CVector(0, 0), 0, 1800, 20, 6000, 10, PlayerStatus::ALLOW_DSS|PlayerStatus::NOT_AVOID_PENALTY));
                 }
             }
         }
