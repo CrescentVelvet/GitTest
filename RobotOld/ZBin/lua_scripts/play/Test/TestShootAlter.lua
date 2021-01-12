@@ -38,7 +38,7 @@ firstState = "run0",
 ["run0"] = {--随机跑位
     switch = function()
     --球到达目标，保存数据
-        if ball.toPointDist(target_point) < 800 and shoot_flag == 1 then
+        if ball.toPointDist(target_point) < 1000 and shoot_flag == 1 then
             writeFile('../shoot_data.txt','ball_pos\n')
             writeFile('../shoot_data.txt','ball_posX'..'\t'..ball.posX()..'\n')
             writeFile('../shoot_data.txt','ball_posY'..'\t'..ball.posY()..'\n')

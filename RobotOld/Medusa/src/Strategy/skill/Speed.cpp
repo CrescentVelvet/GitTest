@@ -32,15 +32,17 @@ CPlayerCommand* CSpeed::execute(const CVisionModule* pVision)
     CVector ball2target = task().player.pos - ball.RawPos();
     double target_Dir = ball2target.dir();
     double precision = 0.01;//传球精度
-    double prediction = 22*atan(rotSpeed/power) + 0.2;//预测提前量(弧度)
+    double prediction = 76.29*atan(rotSpeed/power) + 0.107;//预测提前量(弧度)
+//    prediction = 0;
 	CVector globalVel(speed_x, speed_y); // 全局坐标系中的速度矢量
     CVector localVel = globalVel.rotate(-myDir);
 //    qDebug()<<Utils::Normalize(me.RawDir());
 //    qDebug()<<Utils::Normalize(target_Dir);
 //    qDebug()<<fabs(Utils::Normalize(me.RawDir() - target_Dir));
 //    qDebug()<<fabs(Utils::Normalize(target_Dir - me.RawDir() - prediction));
-    qDebug()<<rotSpeed;
-    qDebug()<<power;
+//    qDebug()<<rotSpeed;
+//    qDebug()<<power;
+    qDebug()<<fabs(Utils::Normalize(target_Dir - me.RawDir() - prediction));
     if (fabs(Utils::Normalize(target_Dir - me.RawDir() - prediction)) < precision) {
         KickStatus::Instance()->setKick(myNum, power);
 //        qDebug()<<"fuck"<<fabs(Utils::Normalize(me.RawDir() - target_Dir));
