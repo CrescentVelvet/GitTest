@@ -129,14 +129,14 @@ double CCompensate::getKickDir(int playerNum, CGeoPoint kickTarget){
 //核心接口
 double CCompensate::checkCompensate(double ballspeed,double rawdir){
 	double compensate = 0;
-    if (ballspeed<1950){
+	if (ballspeed<195){
 		ballspeed = 195;
 	}
-    if (ballspeed > 6500){
-        ballspeed = 6500;
+	if (ballspeed > 650){
+		ballspeed = 650;
 	}
 	int column = ceil(rawdir/5);
-    int  row =ceil((ballspeed-1950)/5);
+	int  row =ceil((ballspeed-195)/5);
 	if (column > 17)
 		column = 1;
 	if (row<1){
@@ -147,8 +147,8 @@ double CCompensate::checkCompensate(double ballspeed,double rawdir){
 	}
 	double distleft = rawdir -(column-1)*5;
 	double distright = column*5 - rawdir;
-    double distup = ballspeed - ((row -1)*5+1950);
-    double distdown = row*5+1950 - ballspeed;
+	double distup = ballspeed - ((row -1)*5+195);
+	double distdown = row*5+195 - ballspeed;
 	double leftfactor = distright/5;
 	double rightfactor = distleft/5;
 	double upfactor = distdown/5;

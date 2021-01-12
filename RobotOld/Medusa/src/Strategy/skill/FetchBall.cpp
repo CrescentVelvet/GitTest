@@ -55,8 +55,7 @@ void CFetchBall::plan(const CVisionModule* pVision) {
     if(ball.Valid() && !Utils::IsInField(ball.RawPos(), 2*PARAM::Vehicle::V2::PLAYER_SIZE)){//ball out of field
         if(fraredOn < 2*BPFraredOn){//not have ball
             if(goBackBall){
-//                CGeoPoint gotoPoint = Utils::MakeInField(ball.RawPos(), 2*PARAM::Vehicle::V2::PLAYER_SIZE);
-                CGeoPoint gotoPoint = ball.RawPos();
+                CGeoPoint gotoPoint = Utils::MakeInField(ball.RawPos(), 2*PARAM::Vehicle::V2::PLAYER_SIZE);
                 if((me.RawPos() - gotoPoint).mod() < 2){
                     goBackBall = false;
                 }
@@ -70,7 +69,7 @@ void CFetchBall::plan(const CVisionModule* pVision) {
         }
         else{//have ball
             if(verbose) GDebugEngine::Instance()->gui_debug_msg(me.Pos()+ Utils::Polar2Vector(DEBUG_TEXT_HIGH, -PARAM::Math::PI/1.5), "MakeInField", COLOR_WHITE);
-            setSubTask(PlayerRole::makeItGoto(vecNumber, Utils::MakeInField(me.RawPos(), 500), me.RawDir(), CVector(0, 0), 0, 3000, 5, 3000, 5, PlayerStatus::ALLOW_DSS|PlayerStatus::NOT_AVOID_PENALTY));
+            setSubTask(PlayerRole::makeItGoto(vecNumber, Utils::MakeInField(me.RawPos(), 50), me.RawDir(), CVector(0, 0), 0, 3000, 5, 3000, 5, PlayerStatus::ALLOW_DSS|PlayerStatus::NOT_AVOID_PENALTY));
         }
     }
     else{

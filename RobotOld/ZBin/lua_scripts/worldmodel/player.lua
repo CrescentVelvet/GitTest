@@ -3,7 +3,8 @@ module(..., package.seeall)
 function instance(role)
 	local realIns
 	if type(role) == "string" then
-		realIns = vision:ourPlayer(gRoleNum[role]) elseif type(role) == "number" then
+		realIns = vision:ourPlayer(gRoleNum[role])
+	elseif type(role) == "number" then
 --	and	role >= 1 and role <= param.maxPlayer then
 		realIns = vision:ourPlayer(role)
 	else
@@ -55,10 +56,6 @@ end
 
 function rotVel(role)
 	return instance(role):RotVel()
-end
-
-function rawrotVel(role)
-    return instance(role):RawRotVel()
 end
 
 function valid(role)
@@ -555,11 +552,11 @@ function stayPos4ballplace(role)
                    local projectPoint=CGeoPoint:new_local(seg:projection(player.pos(role)):x(),seg:projection(player.pos(role)):y())
                     myposX = (projectPoint + Utils.Polar2Vector(-thereShouldDist,player.toPointDir(projectPoint,role))):x()
                     myposY =(projectPoint + Utils.Polar2Vector(-thereShouldDist,player.toPointDir(projectPoint,role))):y()
-                    if ((math.abs(myposX)>(param.pitchLength/2-param.penaltyDepth)) and
+                    if ((math.abs(myposX)>(param.pitchLength/2-param.penaltyDepth)) and 
                       math.abs(myposY)<(param.penaltyWidth/2))
-                      or (math.abs(myposX) > param.pitchLength/2)
-                      or (math.abs(myposY) > param.pitchWidth/2)
-                      then
+                      or (math.abs(myposX) > param.pitchLength/2) 
+                      or (math.abs(myposY) > param.pitchWidth/2) 
+                      then 
                       myposX = (projectPoint + Utils.Polar2Vector(thereShouldDist,player.toPointDir(projectPoint,role))):x()
                       myposY =(projectPoint + Utils.Polar2Vector(thereShouldDist,player.toPointDir(projectPoint,role))):y()
                     end

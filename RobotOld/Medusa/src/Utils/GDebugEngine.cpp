@@ -14,13 +14,13 @@ CGDebugEngine::~CGDebugEngine(){
 
 void CGDebugEngine::gui_debug_x(const CGeoPoint& p, int debug_color,int RGB_value){
 	CGeoPoint basePos = p;
-
-    const CGeoPoint p1 = basePos + CVector(3, 3);
-    const CGeoPoint p2 = basePos + CVector(-3,-3);
+    static const int x_line_length = 30;
+    const CGeoPoint p1 = basePos + CVector( x_line_length, x_line_length);
+    const CGeoPoint p2 = basePos + CVector(-x_line_length,-x_line_length);
     gui_debug_line(p1, p2, debug_color,RGB_value);
 
-    const CGeoPoint p3 = basePos + CVector(3,-3);
-    const CGeoPoint p4 = basePos + CVector(-3, 3);
+    const CGeoPoint p3 = basePos + CVector( x_line_length,-x_line_length);
+    const CGeoPoint p4 = basePos + CVector(-x_line_length, x_line_length);
     gui_debug_line(p3,p4, debug_color,RGB_value);
 }
 void CGDebugEngine::gui_debug_points(const std::vector<CGeoPoint> points, int debug_color,int RGB_value){

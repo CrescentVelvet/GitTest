@@ -396,6 +396,7 @@ namespace PlayerRole {
         return TaskFactoryV2::Instance()->SmartGotoPosition(playerTask);
     }
 
+
 	CPlayerTask* makeItCrazyPush(const int num, double faceDir)
 	{
 		static TaskT playerTask;
@@ -403,8 +404,7 @@ namespace PlayerRole {
 		playerTask.player.angle = faceDir;
 		return TaskFactoryV2::Instance()->CarzyPush(playerTask);
 	}
-
-    CPlayerTask* makeItRun(const int num, const double speedX, const double speedY, const double rotSpeed, int flags, const double kick_power)
+	CPlayerTask* makeItRun(const int num, const double speedX, const double speedY, const double rotSpeed, int flags)
 	{
 		static TaskT playerTask;
 		playerTask.executor = num;
@@ -412,10 +412,8 @@ namespace PlayerRole {
 		playerTask.player.speed_y = speedY;
 		playerTask.player.rotate_speed = rotSpeed;
 		playerTask.player.flag = flags;
-        playerTask.player.rotdir = kick_power;
 		return TaskFactoryV2::Instance()->Speed(playerTask);
 	}
-
     CPlayerTask* makeItOpenRun(const int num, const double speedX, const double speedY, const double rotSpeed, int flags)
     {
         static TaskT playerTask;

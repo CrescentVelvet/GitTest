@@ -1,4 +1,4 @@
-IS_TEST_MODE = true
+IS_TEST_MODE = false
 IS_SIMULATION = CGetIsSimulation()
 USE_SWITCH = false
 USE_AUTO_REFEREE = false
@@ -10,7 +10,7 @@ DEBUG_MATCH = CGetSettings("Debug/RoleMatch","Bool")
 
 gStateFileNameString = string.format(os.date("%Y%m%d%H%M"))
 
-gTestPlay = "TestShootAlter"
+gTestPlay = "TestRun"
 
 gRoleFixNum = {
         ["Kicker"]   = {15},
@@ -120,7 +120,7 @@ gRefPlayTable = {
 
 gBayesPlayTable = {
         -- "Nor/NormalPlayPP",
-        "Nor/NormalPlayZ",
+        "Nor/NormalPlayZ", 
         "Nor/NormalPlayMessi"
         -- "Nor/NormalPlay4"
 }
@@ -145,5 +145,4 @@ gTestPlayTable = {
         "Test/TestSkill",
         -- "Test/TestMultiple",
         -- "Test/TestSkill2",
-        "Test/TestShootAlter"
 }

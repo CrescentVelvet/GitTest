@@ -56,13 +56,13 @@ void CRobotPredictor::updateVision(int cycle, const VehicleInfoT& player, const 
     dir = invert ? Utils::Normalize(player.dir + PARAM::Math::PI) : Utils::Normalize(player.dir);
     rawdir = invert ? Utils::Normalize(player.rawdir + PARAM::Math::PI) : Utils::Normalize(player.rawdir);
 
-//    if(fabs(player.dirvel) > 6 || fabs(player.raw_dirVel) > 6) {
-//        dirVel = 0;
-//        rawDirVel = 0;
-//    } else {
-        dirVel = invert ? -player.dirvel : player.dirvel;
-        rawDirVel = invert ? -player.raw_dirVel : player.raw_dirVel;
-//    }
+    if(fabs(player.dirvel) > 6 || fabs(player.raw_dirVel) > 6) {
+        dirVel = 0;
+        rawDirVel = 0;
+    } else {
+        dirVel = invert ? Utils::Normalize(-player.dirvel) : Utils::Normalize(player.dirvel);
+        rawDirVel = invert ? Utils::Normalize(-player.raw_dirVel) : Utils::Normalize(player.raw_dirVel);
+    }
 
     _collisionSimulator.reset(ball.RawPos(), ball.Vel()); // 初始化球的信息(对手没有朝向信息)
 

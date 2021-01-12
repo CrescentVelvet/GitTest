@@ -1,6 +1,5 @@
 #ifndef Speed_h__
 #define Speed_h__
-#include <WorldDefine.h>
 
 #include <skill/PlayerTask.h>
 /************************************************************************/

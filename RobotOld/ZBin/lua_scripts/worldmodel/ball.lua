@@ -52,6 +52,8 @@ function toEnemyDir(role)
     return (enemy.pos(role)-pos()):dir()
 end
 
+
+
 -- role为接球车
 function toPlayerHeadDir(recver)
     return function (passer)
