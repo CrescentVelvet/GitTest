@@ -24,6 +24,18 @@ local function writeFile(fileName,content)
     f:close()
 end
 
+local function rot_rand()
+    local Rotrand = function ()
+        local rotrand = pos.getOtherPos(1)():x()%200/100+3
+        return rotrand
+    end
+    return Rotrand
+end
+
+local function Rot_rand(a)
+    return a():x()%200/100+3
+end
+
 gPlayTable.CreatePlay{
 
 firstState = "run0",
@@ -79,13 +91,20 @@ firstState = "run0",
 },
 ["get1"] = {--有初速射球
     switch = function()
+        -- print(CGeoPoint(1,1):x())
+        -- print(pos.getOtherPos(1)():x())
+        -- print(pos.getOtherPos(1)():x()%200/100+3)
+        -- math.randomseed(tostring(os.time()):reverse():sub(1,7))
+        -- rot_rand = math.random(30,50)/10
+        -- print(rot_rand)
+        -- print(math.random(30,50)/10)
         if ball.posX() > GATE_X
             and ball.posY() > -GATE_Y and ball.posY() < GATE_Y then
             return "run"..1
         elseif ball.posX() > -CENTER_X and ball.posX() < CENTER_X
             and ball.posY() > -CENTER_Y and ball.posY() < CENTER_Y then
             return "res"..0
-        --球出手，保存数据
+        -- 球出手，保存数据
         elseif bufcnt(player.kickBall("Kicker"),1,timeget) then
             writeFile('../shoot_data.txt','car_pos\n')
             writeFile('../shoot_data.txt','car_posX  '..'\t'..player.posX("Kicker")..'\n')
@@ -95,18 +114,19 @@ firstState = "run0",
             writeFile('../shoot_data.txt','car_rotVel'..'\t'..player.rotVel("Kicker")..'\n')
             shoot_flag = 1
             return "res"..0
-        --出界判定
+        -- 出界判定
         elseif ball.posX() > LENGTH_X or ball.posX() < -LENGTH_X then
             return "res"..0
         elseif ball.posY() > LENGTH_Y or ball.posY() < -LENGTH_Y then
             return "res"..0
-        --禁区判定
+        -- 禁区判定
         elseif ball.posX() > PENTY_X and ball.posY() > -PENTY_Y and ball.posY() < PENTY_Y then
             return "res"..0
         end
     end,
     -- Kicker = task.zget(target_point,_,_,flag.kick),
-    Kicker = task.speed(0,0,4),
+    -- 转速在3和5之间随机
+    Kicker = task.speed(0,0,rot_rand()),
     match = ""
 },
 ["res0"] = {--界外捡球

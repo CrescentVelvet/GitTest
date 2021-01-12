@@ -26,11 +26,9 @@ for i, line in enumerate(f.readlines()):
         continue
     if line.split()[1] == '000000000':
         #去除粗大误差
-        # if (float(temp10[-7])<0) or (float(temp10[-7])>4800) or (abs(float(temp10[-1])) > 500):
-            # continue
         if (float(temp10[-7])<-3500) or (float(temp10[-7])>3500) or (float(temp10[-6])<-2500) or (float(temp10[-6])>2500):
             continue
-        if (float(temp10[-5])!=0):
+        if (int(temp10[-5])!=0):
             continue
         car_posX.append(temp10[-7])
         car_posY.append(temp10[-6])
@@ -125,9 +123,9 @@ for i, line in enumerate(f.readlines()):
         continue
     if line.split()[1] == '000000000':
         #去除粗大误差
-        if (float(temp10_test[-7]) < 0) or (float(temp10_test[-7]) > 4800) or (abs(float(temp10_test[-1])) > 500):
+        if (float(temp10_test[-7])<-3500) or (float(temp10_test[-7])>3500) or (float(temp10_test[-6])<-2500) or (float(temp10_test[-6])>2500):
             continue
-        if (float(temp10_test[-5])!=0):
+        if (int(temp10_test[-5])!=0):
             continue
         car_posX_test.append(temp10_test[-7])
         car_posY_test.append(temp10_test[-6])

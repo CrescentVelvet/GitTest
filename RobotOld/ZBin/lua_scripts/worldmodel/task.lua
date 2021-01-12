@@ -37,7 +37,7 @@ function chaseNew()
 end
 
 
--- p1是截球目标点 默认为当前位置 p2是射门点或传球角色 p是力度 b是截球的缓冲距离 f是是否挑射 
+-- p1是截球目标点 默认为当前位置 p2是射门点或传球角色 p是力度 b是截球的缓冲距离 f是是否挑射
 function InterTouch(p1, p2, p, b, f)
 	local ipos
 	local itarget  --add by Wang in 2018/06/18
@@ -337,7 +337,7 @@ function chipPass(p, c, f, anti)
 	elseif type(p) == "function" then
 		if f == nil or f == true then
 			idir = p
-		elseif anti == false then 
+		elseif anti == false then
 			idir = function (role)
 				return (p() - player.pos(role)):dir()
 			end
@@ -402,11 +402,11 @@ function flatPass(roleorp, power)
 			ipower = kp.specified( ppower )
 			local mexe, mpos = ChaseKickV2{ pos = ball.pos, dir = idir}
 			return {mexe, mpos, kick.flat, idir, pre.high, ipower, cp.full, flag.nothing}
-		end	
+		end
 	else
 		ipower = kp.specified(power)
 	end
-	
+
 	local mexe, mpos = ChaseKickV2{ pos = ball.pos, dir = idir}
 	return {mexe, mpos, kick.flat, idir, pre.high, ipower, cp.full, flag.nothing}
 end
@@ -485,7 +485,7 @@ function goAndTurnKickV4(p, pow, d, f)
 	end
 
 	--射门力度
-	if pow == nil and f ~= nil then 
+	if pow == nil and f ~= nil then
 		if bit:_and(f, flag.chip) ~= 0 then
 			mpower = cp.toTarget(mpos)
 		elseif bit:_and(f, flag.kick) ~= 0 then
@@ -498,7 +498,7 @@ function goAndTurnKickV4(p, pow, d, f)
 	else
 		mpower = pow
 	end
-	
+
 	local mexe, mpos = GoAndTurnKickV4{ pos=mpos, power = mpower, dir = mdir, flag = f}
 	return {mexe, mpos}
 end
@@ -858,7 +858,7 @@ function getBallV4(p, waitpos, pow, f)
 		ipos2 = waitpos
 	end
 	--射门力度
-	if pow == nil and f ~= nil then 
+	if pow == nil and f ~= nil then
 		if bit:_and(f, flag.chip) ~= 0 then
 			ipower = cp.toTarget(ipos1)
 		else
@@ -880,7 +880,7 @@ end
 -- 	local itarget--目标点
 --     local iflag = f
 --     local isChip
-	
+
 -- 	isChip = bit:_and(iflag,flag.chip)
 
 -- 	if type(waitpos) == "function" then
@@ -987,10 +987,10 @@ function staticGetBall(p, anti, f)
 		ipos = player.pos(p)
 	elseif type(p) == "userdata" then
 		ipos = ball.backPos(p, _, _, anti)
-	elseif type(p) =="function" then --add 
+	elseif type(p) =="function" then --add
 		ipos = p()
 	end
-	
+
 	idir = ball.backDir(p, anti)
 
 	local mexe, mpos = StaticGetBall{ pos = ipos, dir = idir, flag = f}
@@ -1028,7 +1028,7 @@ function slowGetBall(p, f, anti)
 	elseif type(p) == "function" then
 		if f == nil or f == true then
 			idir = p
-		elseif anti == false then 
+		elseif anti == false then
 			idir = function (role)
 				return (p() - player.pos(role)):dir()
 			end
@@ -1076,7 +1076,7 @@ function openSpeed(vx, vy, vdir)
 	local spdY = function()
 		return vy
 	end
-	
+
 	local spdW = function()
 		return vdir
 	end
@@ -1093,10 +1093,11 @@ function speed(vx, vy, vdir)
 	local spdY = function()
 		return vy
 	end
-	
-	local spdW = function()
-		return vdir
-	end
+
+	-- local spdW = function()
+		-- return vdir
+	-- end
+	local spdW = vdir
 
 	local mexe, mpos = Speed{speedX = spdX, speedY = spdY, speedW = spdW}
 	return {mexe, mpos}
@@ -1119,7 +1120,7 @@ function  zgetPass(t, w, p, f)
 			end
 			return  {_,matchPos}
 		else
-			local target = t	
+			local target = t
 			if target == nil then
 				target = CGeoPoint:new_local(param.pitchLength/2.0,0)
 			else
@@ -1129,12 +1130,12 @@ function  zgetPass(t, w, p, f)
 					target = t
 				end
 			end
-			
+
 			if player.infraredOn(runner) then
 				infraredCnt = infraredCnt < 100 and infraredCnt + 1 or 100
 			else
 				infraredCnt = 0
-			end 
+			end
 
 			if (Utils.InTheirPenaltyArea(target, 10*10) and player.toPointDist(runner, CGeoPoint:new_local(param.pitchLength/2.0,0)) < 250*10) or zpassBuf > 0 then
 				-- print("zgetPass", world:canShootOnBallPos(vision:getCycle(),runner), (infraredCnt <= 3))
@@ -1146,7 +1147,7 @@ function  zgetPass(t, w, p, f)
 					else
 						zpassBuf = zpassBuf - 1*10
 					end
-					return zpass()	
+					return zpass()
 				-- end
 			else
 				return zget(t,w,p,f)
@@ -1156,7 +1157,7 @@ function  zgetPass(t, w, p, f)
 end
 
 function dirrble4ballplace(p)
-	local dribblepos 
+	local dribblepos
 	local DRIBBLE_BALL_POS = function()
  	 return ball.pos() + Utils.Polar2Vector(-5,dir.playerToBall("Special"))
 	end
@@ -1177,10 +1178,10 @@ function dirrble4ballplace(p)
 			if not player.faceball2target("Special",TargetPos()) then
 				return task.goCmuRush(player.pos("Special"),player.toPointDir(TargetPos),50,flag.our_ball_placement+flag.dribbling)
 			--球入场后，吸球转身朝向target
-			else 
+			else
 				return task.stop()
 			end
-		else 
+		else
 		--球还未入场，吸球后退
 			return task.goCmuRush(dribblepos,player.toBallDir,50,flag.our_ball_placement+flag.dribbling)
 		end
