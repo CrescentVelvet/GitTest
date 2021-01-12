@@ -70,8 +70,8 @@ for i in range(len(car_dis)):
     else:
         shoot_vel[i] = car_dis[i] * 0.8 + 100
 # 转向角速度转换线速度
-for i in range(len(car_rotVel)):
-    car_rotVel[i] = car_rotVel[i] * 50
+# for i in range(len(car_rotVel)):
+    # car_rotVel[i] = car_rotVel[i] * 50
 # 设置输入输出值
 # 输入为rotvel与vel的二维向量
 # shoot_input = np.zeros((len(shoot_vel),2))
@@ -80,7 +80,7 @@ for i in range(len(car_rotVel)):
 # 输入为rotvel与vel的tan的一维向量
 shoot_input = np.zeros(len(shoot_vel))
 for i in range(len(shoot_vel)):
-    shoot_input[i] = math.tan(car_rotVel[i] / shoot_vel[i])
+    shoot_input[i] = car_rotVel[i] / shoot_vel[i]
 # 输出
 shoot_output = np.zeros(len(ball_posX))
 shoot_output = shoot_tan
@@ -116,13 +116,33 @@ print("intercept:",linear_reg.intercept_)
 # 绘制图像
 fig = plt.figure()
 # 参数调整
-a_xielv = 4
+a_xielv = 22
 b_jiejv = 0.2
+# 动态绘图
+# while True:
+#     # 绘制二维图像
+#     plt.clf()
+#     ax = fig.add_subplot(121)
+#     ax.scatter(shoot_input,shoot_output,s=5,c='g',marker='^')
+#     ax.scatter(shoot_input,linear_reg.predict(shoot_input.reshape(-1,1)),s=5,c='m',marker='.')
+#     ax.scatter(shoot_input,a_xielv*shoot_input+b_jiejv,s=5,c='r',marker='.')
+#     plt.xlabel('Input')
+#     plt.ylabel('Output')
+#     # 绘制三维图像
+#     ax = fig.add_subplot(122,projection='3d')
+#     ax.scatter(car_rotVel,shoot_vel,shoot_output,s=10,c='g',marker='^')
+#     ax.scatter(car_rotVel,shoot_vel,linear_reg.predict(shoot_input.reshape(-1,1)),s=10,c='m')
+#     ax.scatter(car_rotVel,shoot_vel,a_xielv*shoot_input+b_jiejv,s=10,c='r')
+#     plt.xlabel('rotVel')
+#     plt.ylabel('Vel')
+#     plt.pause(1)
+#     plt.ioff()
+# 静态绘图
 # 绘制二维图像
 ax = fig.add_subplot(121)
-ax.scatter(shoot_input,shoot_output,s=5,c='b',marker='.')
-ax.scatter(shoot_input,linear_reg.predict(shoot_input.reshape(-1,1)),s=5,c='m')
-ax.scatter(shoot_input,a_xielv*shoot_input+b_jiejv,s=5,c='r')
+ax.scatter(shoot_input,shoot_output,s=5,c='g',marker='^')
+ax.scatter(shoot_input,linear_reg.predict(shoot_input.reshape(-1,1)),s=5,c='m',marker='.')
+ax.scatter(shoot_input,a_xielv*shoot_input+b_jiejv,s=5,c='r',marker='.')
 plt.xlabel('Input')
 plt.ylabel('Output')
 # 绘制三维图像
@@ -191,8 +211,8 @@ for i in range(len(car_dis_test)):
     else:
         shoot_vel_test[i] = car_dis_test[i] * 0.8 + 100
 # 转向角速度转换线速度
-for i in range(len(car_rotVel_test)):
-    car_rotVel_test[i] = car_rotVel_test[i] * 50
+# for i in range(len(car_rotVel_test)):
+    # car_rotVel_test[i] = car_rotVel_test[i] * 50
 # 设置输入输出值
 # 输入为rotvel与vel的二维向量
 # shoot_input_test = np.zeros((len(shoot_vel_test),2))
@@ -201,7 +221,7 @@ for i in range(len(car_rotVel_test)):
 # 输入为rotvel与vel的tan的一维向量
 shoot_input_test = np.zeros(len(shoot_vel_test))
 for i in range(len(shoot_vel_test)):
-    shoot_input_test[i] = math.tan(car_rotVel_test[i] / shoot_vel_test[i])
+    shoot_input_test[i] = car_rotVel_test[i] / shoot_vel_test[i]
 # 输出
 shoot_output_test = np.zeros(len(ball_posX_test))
 shoot_output_test = shoot_tan_test
