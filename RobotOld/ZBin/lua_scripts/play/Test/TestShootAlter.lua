@@ -43,6 +43,9 @@ firstState = "run0",
             writeFile('../shoot_data.txt','ball_posX'..'\t'..ball.posX()..'\n')
             writeFile('../shoot_data.txt','ball_posY'..'\t'..ball.posY()..'\n')
             writeFile('../shoot_data.txt','000000000'..'\t'..'000000000'..'\n')
+            print('ball_posX'..'\t'..ball.posX()..'\n')
+            print('ball_posY'..'\t'..ball.posY()..'\n')
+            print('000000000'..'\t'..'000000000'..'\n')
             shoot_flag = 0
         end
         if bufcnt(player.toTargetDist("Kicker")<200,timerun) then
@@ -108,6 +111,8 @@ firstState = "run0",
             writeFile('../shoot_data.txt','car_velMod'..'\t'..player.velMod("Kicker")..'\n')
             writeFile('../shoot_data.txt','car_velDir'..'\t'..player.velDir("Kicker")..'\n')
             writeFile('../shoot_data.txt','car_rotVel'..'\t'..player.rotVel("Kicker")..'\n')
+            print('car_posX  '..'\t'..player.posX("Kicker")..'\n')
+            print('car_posY  '..'\t'..player.posY("Kicker")..'\n')
             shoot_flag = 1
             return "res"..0
         -- 出界判定

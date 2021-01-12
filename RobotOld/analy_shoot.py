@@ -69,6 +69,9 @@ for i in range(len(car_dis)):
         shoot_vel[i] = car_dis[i] * 1.7 + 100
     else:
         shoot_vel[i] = car_dis[i] * 0.8 + 100
+# 转向角速度转换线速度
+for i in range(len(car_rotVel)):
+    car_rotVel[i] = car_rotVel[i] * 50
 # 设置输入输出值
 # 输入为rotvel与vel的二维向量
 # shoot_input = np.zeros((len(shoot_vel),2))
@@ -81,10 +84,16 @@ for i in range(len(shoot_vel)):
 # 输出
 shoot_output = np.zeros(len(ball_posX))
 shoot_output = shoot_tan
+# 输入输出tan正切转换弧度转换角度
+for i in range(len(shoot_input)):
+    # shoot_input[i] = math.atan(shoot_input[i])
+    # shoot_output[i] = math.atan(shoot_output[i])
+    shoot_input[i] = math.degrees(math.atan(shoot_input[i]))
+    shoot_output[i] = math.degrees(math.atan(shoot_output[i]))
 
 # 建立回归模型
 # poly_reg = PolynomialFeatures(degree=4)# 线性转换非线性回归
-# shoot_input_poly = poly_reg.fit_transform(shoot_input)
+# shoot_input_poly = poly_reg.fit_transform(shoot_input.reshape(-1,1))
 # linear_reg = linear_model.ARDRegression()# 各种模型
 # linear_reg = linear_model.BayesianRidge()
 # linear_reg = linear_model.ElasticNet()
@@ -99,26 +108,34 @@ shoot_output = shoot_tan
 linear_reg = linear_model.LinearRegression()
 linear_reg.fit(shoot_input.reshape(-1,1),shoot_output)
 # linear_reg.fit(shoot_input_poly,shoot_output)
-# print("coefficients:",linear_reg.coef_)
-# print("intercept:",linear_reg.intercept_)
+a_xielv = linear_reg.coef_
+b_jiejv = linear_reg.intercept_
+print("coefficients:",linear_reg.coef_[0])
+print("intercept:",linear_reg.intercept_)
 
 # 绘制图像
 fig = plt.figure()
+# 参数调整
+a_xielv = 4
+b_jiejv = 0.2
 # 绘制二维图像
 ax = fig.add_subplot(121)
 ax.scatter(shoot_input,shoot_output,s=5,c='b',marker='.')
-ax.scatter(shoot_input,linear_reg.predict(shoot_input.reshape(-1,1)),s=5,c='r')
+ax.scatter(shoot_input,linear_reg.predict(shoot_input.reshape(-1,1)),s=5,c='m')
+ax.scatter(shoot_input,a_xielv*shoot_input+b_jiejv,s=5,c='r')
 plt.xlabel('Input')
 plt.ylabel('Output')
 # 绘制三维图像
 ax = fig.add_subplot(122,projection='3d')
 ax.scatter(car_rotVel,shoot_vel,shoot_output,s=10,c='g',marker='^')
+ax.scatter(car_rotVel,shoot_vel,linear_reg.predict(shoot_input.reshape(-1,1)),s=10,c='m')
+ax.scatter(car_rotVel,shoot_vel,a_xielv*shoot_input+b_jiejv,s=10,c='r')
 plt.xlabel('rotVel')
 plt.ylabel('Vel')
 # 绘制图像
 plt.show()
 
-# 测试数据
+# 读取测试数据
 f = open("shoot_data_test.txt", "r")
 temp10_test = []
 car_rotVel_test = []
@@ -173,6 +190,9 @@ for i in range(len(car_dis_test)):
         shoot_vel_test[i] = car_dis_test[i] * 1.7 + 100
     else:
         shoot_vel_test[i] = car_dis_test[i] * 0.8 + 100
+# 转向角速度转换线速度
+for i in range(len(car_rotVel_test)):
+    car_rotVel_test[i] = car_rotVel_test[i] * 50
 # 设置输入输出值
 # 输入为rotvel与vel的二维向量
 # shoot_input_test = np.zeros((len(shoot_vel_test),2))
@@ -185,12 +205,20 @@ for i in range(len(shoot_vel_test)):
 # 输出
 shoot_output_test = np.zeros(len(ball_posX_test))
 shoot_output_test = shoot_tan_test
+# 输入输出tan正切转换弧度转换角度
+for i in range(len(shoot_input_test)):
+    shoot_input_test[i] = math.atan(shoot_input_test[i])
+    shoot_output_test[i] = math.atan(shoot_output_test[i])
+    # shoot_input_test[i] = math.degrees(math.atan(shoot_input_test[i]))
+    # shoot_output_test[i] = math.degrees(math.atan(shoot_output_test[i]))
 
 # 预测结果
 x_pred = shoot_input_test
 y_pred = np.zeros(len(x_pred))
 ero_pred = np.zeros(len(x_pred))
-y_pred = linear_reg.predict(x_pred.reshape(-1,1))
+# y_pred = linear_reg.predict(x_pred.reshape(-1,1))
+for i in range(len(x_pred)):
+    y_pred[i] = a_xielv*x_pred[i]+b_jiejv
 # y_pred = linear_reg.predict(poly_reg.fit_transform([x_pred]))
 for i in range(len(y_pred)):
     ero_pred[i] = y_pred[i] - shoot_output_test[i]
