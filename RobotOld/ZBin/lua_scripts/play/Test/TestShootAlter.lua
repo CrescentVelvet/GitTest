@@ -91,6 +91,7 @@ firstState = "run0",
 },
 ["get1"] = {--有初速射球
     switch = function()
+        print(player.rawrotVel("Kicker"))
         -- 门后判定
         if ball.posX() > GATE_X
             and ball.posY() > -GATE_Y and ball.posY() < GATE_Y then

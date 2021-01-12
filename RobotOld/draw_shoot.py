@@ -85,7 +85,7 @@ def readData(filename):
     for i in range(len(shoot_output)):
         shoot_average += shoot_output[i]
     shoot_average /= len(shoot_output)
-    # print(shoot_average)
+    print(shoot_average)
     for i in tqdm(range(len(shoot_output))):
         if abs(shoot_average - shoot_output[i]) > 15:
             np.delete(shoot_output,i)
@@ -131,6 +131,6 @@ drawData('shoot_data_00000.txt',231)
 drawData('shoot_data_04002.txt',232)
 drawData('shoot_data_27002.txt',233)
 drawData('shoot_data_76020.txt',234)
-drawData('shoot_data_77010.txt',235)
+drawData('shoot_data_76010.txt',235)
 drawData('shoot_data.txt',236)
 plt.show()
