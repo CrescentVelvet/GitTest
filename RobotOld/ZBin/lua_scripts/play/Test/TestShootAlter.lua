@@ -81,28 +81,28 @@ firstState = "run0",
 },
 ["get0"] = {--拿球
     switch = function()
-        if bufcnt(player.infraredOn("Kicker"),40,200) then
+        if bufcnt(player.infraredOn("Kicker"),10,timeget) then
             return "get"..1
         end
     end,
-    Kicker = task.zget(target_point,_,_,flag.kick+flag.dribble),
+    -- Kicker = task.zget(target_point,_,_,flag.kick+flag.dribble),
+    Kicker = task.fetchBall(pos.getOtherPos(1),_,true),
     match = ""
 },
 ["get1"] = {--有初速射球
     switch = function()
-        -- print(CGeoPoint(1,1):x())
-        -- print(pos.getOtherPos(1)():x())
-        -- print(pos.getOtherPos(1)():x()%200/100+3)
-        -- math.randomseed(tostring(os.time()):reverse():sub(1,7))
-        -- rot_rand = math.random(30,50)/10
-        -- print(rot_rand)
-        -- print(math.random(30,50)/10)
+        -- 门后判定
         if ball.posX() > GATE_X
             and ball.posY() > -GATE_Y and ball.posY() < GATE_Y then
             return "run"..1
+        -- 白圈判定
         elseif ball.posX() > -CENTER_X and ball.posX() < CENTER_X
             and ball.posY() > -CENTER_Y and ball.posY() < CENTER_Y then
             return "res"..0
+        -- 丢球判定
+        elseif math.sqrt((ball.posX()-player.posX("Kicker"))*(ball.posX()-player.posX("Kicker"))
+            +(ball.posY()-player.posY("Kicker"))*(ball.posY()-player.posY("Kicker"))) > 500 then
+            return "get"..0
         -- 球出手，保存数据
         elseif bufcnt(player.kickBall("Kicker"),1,timeget) then
             writeFile('../shoot_data.txt','car_pos\n')
@@ -114,7 +114,8 @@ firstState = "run0",
             print('car_posX  '..'\t'..player.posX("Kicker")..'\n')
             print('car_posY  '..'\t'..player.posY("Kicker")..'\n')
             shoot_flag = 1
-            return "res"..0
+            -- return "res"..0
+            return "run"..0
         -- 出界判定
         elseif ball.posX() > LENGTH_X or ball.posX() < -LENGTH_X then
             return "res"..0
@@ -144,12 +145,16 @@ firstState = "run0",
             and player.posX("Kicker") < GATE_X and ball.posX() > GATE_X
             and ball.posY() > -PENTY_Y and ball.posY() < PENTY_Y then
             return "run"..1
-        elseif ball.posX() > FIELD_X2 and ball.posX() < FIELD_X1
-            and ball.posY() > FIELD_Y2 and ball.posY() < FIELD_Y1 then
-            if not (ball.posX() > -CENTER_X and ball.posX() < CENTER_X
-                and ball.posY() > -CENTER_Y and ball.posY() < CENTER_Y) then
-                return "run"..0
-            end
+        -- elseif ball.posX() > FIELD_X2 and ball.posX() < FIELD_X1
+        --     and ball.posY() > FIELD_Y2 and ball.posY() < FIELD_Y1 then
+            -- if not (ball.posX() > -CENTER_X and ball.posX() < CENTER_X
+            --     and ball.posY() > -CENTER_Y and ball.posY() < CENTER_Y) then
+            --     -- return "run"..0
+            --     return "get"..0
+            -- end
+        -- end
+        elseif bufcnt(ball.toPointDist(pos.getOtherPos(1))<200,timerun) then
+            return "get"..0
         end
     end,
     Kicker = task.fetchBall(pos.getOtherPos(1),_,true),
