@@ -188,7 +188,7 @@ void CMessiDecision::generateAttackDecision(const CVisionModule* pVision) {
     int temp_y = std::rand()%3000-1500;
     if(temp_x>0){temp_x+=1000;}else {temp_x-=1000;}
     if(temp_y>0){temp_y+=1000;}else {temp_y-=1000;}
-    if(SHOOT.toMSecsSinceEpoch() - shoot_time_new > 3000){
+    if(SHOOT.toMSecsSinceEpoch() - shoot_time_new > 5000){
         _otherPos[0] = CGeoPoint(temp_x,temp_y);
         shoot_time_new = SHOOT.toMSecsSinceEpoch();
 //        qDebug()<<"fuck";

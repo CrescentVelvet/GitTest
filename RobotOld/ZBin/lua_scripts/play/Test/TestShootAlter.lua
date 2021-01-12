@@ -19,17 +19,37 @@ local runres_flag = -1
 local target_point = CGeoPoint(0,0)
 
 local function writeFile(fileName,content)
-    local f = assert(io.open(fileName,'a'))
-    f:write(content)
-    f:close()
+    local file = assert(io.open(fileName,'a'))
+    file:write(content)
+    file:close()
 end
 
 local function rot_rand()
     local Rotrand = function ()
-        local rotrand = pos.getOtherPos(1)():x()%200/100+3
+        -- local rotrand = pos.getOtherPos(1)():x()%200/100+3
+        math.randomseed(tostring(os.time()):reverse():sub(1, 6))
+        local rotrand = math.random()*(3.0+3.0)-3.0
         return rotrand
     end
     return Rotrand
+end
+
+local function velx_rand()
+    local Velxrand = function ()
+        math.randomseed(tostring(os.time()):reverse():sub(1, 6)+1)
+        local velxrand = math.random()*(800+800)-800
+        return velxrand
+    end
+    return Velxrand
+end
+
+local function vely_rand()
+    local Velyrand = function ()
+        math.randomseed(tostring(os.time()):reverse():sub(1, 6)+2)
+        local velyrand = math.random()*(800+800)-800
+        return velyrand
+    end
+    return Velyrand
 end
 
 gPlayTable.CreatePlay{
@@ -91,7 +111,8 @@ firstState = "run0",
 },
 ["get1"] = {--有初速射球
     switch = function()
-        print(player.rawrotVel("Kicker"))
+        -- print(player.rawrotVel("Kicker"))
+        -- print(rot_rand()()*(3.0-0.5)+0.5)
         -- 门后判定
         if ball.posX() > GATE_X
             and ball.posY() > -GATE_Y and ball.posY() < GATE_Y then
@@ -111,9 +132,10 @@ firstState = "run0",
             writeFile('../shoot_data.txt','car_posY  '..'\t'..player.posY("Kicker")..'\n')
             writeFile('../shoot_data.txt','car_velMod'..'\t'..player.velMod("Kicker")..'\n')
             writeFile('../shoot_data.txt','car_velDir'..'\t'..player.velDir("Kicker")..'\n')
-            writeFile('../shoot_data.txt','car_rotVel'..'\t'..player.rotVel("Kicker")..'\n')
-            print('car_posX  '..'\t'..player.posX("Kicker")..'\n')
-            print('car_posY  '..'\t'..player.posY("Kicker")..'\n')
+            -- writeFile('../shoot_data.txt','car_rotVel'..'\t'..player.rotVel("Kicker")..'\n')
+            writeFile('../shoot_data.txt','car_rotVel'..'\t'..player.rawrotVel("Kicker")..'\n')
+            print('car_vel  '..'\t'..player.velMod("Kicker")..'\n')
+            print('car_rot  '..'\t'..player.rawrotVel("Kicker")..'\n')
             shoot_flag = 1
             -- return "res"..0
             return "run"..0
@@ -129,7 +151,9 @@ firstState = "run0",
     end,
     -- Kicker = task.zget(target_point,_,_,flag.kick),
     -- 转速在3和5之间随机
-    Kicker = task.speed(0,0,rot_rand(),target_point),
+    -- Kicker = task.speed(0,0,rot_rand(),target_point),
+    -- Kicker = task.speed(-500,500,1,target_point),
+    Kicker = task.speed(velx_rand(),vely_rand(),rot_rand(),target_point),
     match = ""
 },
 ["res0"] = {--界外捡球

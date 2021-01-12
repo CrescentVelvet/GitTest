@@ -34,8 +34,6 @@ def readData(filename):
             # 去除粗大误差
             if (float(temp10[-7])<-3500) or (float(temp10[-7])>3500) or (float(temp10[-6])<-2500) or (float(temp10[-6])>2500):
                 continue
-            if (int(temp10[-5])!=0):
-                continue
             car_posX.append(temp10[-7])
             car_posY.append(temp10[-6])
             car_rotVel.append(temp10[-3])
@@ -68,7 +66,7 @@ def readData(filename):
             shoot_vel[i] = car_dis[i] * 1.7 + 100
         else:
             shoot_vel[i] = car_dis[i] * 0.8 + 100
-    # 输入为rotvel与vel的tan的一维向量
+    # 输入为rotvel与vel的tan值
     shoot_input = np.zeros(len(shoot_vel))
     for i in range(len(shoot_vel)):
         shoot_input[i] = car_rotVel[i] / shoot_vel[i]
@@ -81,29 +79,28 @@ def readData(filename):
         shoot_input[i] = math.degrees(shoot_input[i])
         shoot_output[i] = math.degrees(shoot_output[i])
     # 去除粗大误差
-    shoot_average = 0
-    for i in range(len(shoot_output)):
-        shoot_average += shoot_output[i]
-    shoot_average /= len(shoot_output)
-    print(shoot_average)
-    for i in tqdm(range(len(shoot_output))):
-        if abs(shoot_average - shoot_output[i]) > 15:
-            np.delete(shoot_output,i)
-            np.delete(shoot_input,i)
-            # print(shoot_output[i])
+    # shoot_average = 0
+    # for i in range(len(shoot_output)):
+    #     shoot_average += shoot_output[i]
+    # shoot_average /= len(shoot_output)
+    # print(shoot_average)
+    # for i in tqdm(range(len(shoot_output))):
+    #     if abs(shoot_average - shoot_output[i]) > 15:
+    #         np.delete(shoot_output,i)
+    #         np.delete(shoot_input,i)
         # sleep(0.0001)
 
     out = [shoot_input,shoot_output]
     return out
 
 def drawData(filename,num):
-    a_xielv = 22
-    b_jiejv = 0.2
+    a_xielv = 138
+    b_jiejv = 0
     ax = fig.add_subplot(num)
     shoot_input = readData(filename)[0]
     shoot_output = readData(filename)[1]
     # 建立回归模型
-    poly_reg = PolynomialFeatures(degree=4)# 线性转换非线性回归
+    poly_reg = PolynomialFeatures(degree=1)# 线性转换非线性回归
     shoot_input_poly = poly_reg.fit_transform(shoot_input.reshape(-1,1))
     # linear_reg = linear_model.ARDRegression()# 各种模型
     # linear_reg = linear_model.BayesianRidge()
@@ -118,19 +115,20 @@ def drawData(filename,num):
     # linear_reg = linear_model.LassoLarsIC()
     linear_reg = linear_model.LinearRegression()
     linear_reg.fit(shoot_input.reshape(-1,1),shoot_output)
-    ax.scatter(shoot_input,shoot_output,s=5,c='g',marker='^')
-    ax.scatter(shoot_input,a_xielv*shoot_input+b_jiejv,s=5,c='r',marker='.')
-    ax.scatter(shoot_input,linear_reg.predict(shoot_input.reshape(-1,1)),s=5,c='m',marker='.')
+    ax.scatter(shoot_input,shoot_output,s=5,c='limegreen',marker='^')
+    ax.scatter(shoot_input,a_xielv*shoot_input+b_jiejv,s=5,c='orangered',marker='.')
+    ax.scatter(shoot_input,linear_reg.predict(shoot_input.reshape(-1,1)),s=5,c='violet',marker='.')
     ax.set_title(filename)
     ax.set_xlabel(round(linear_reg.coef_[0],2))
     ax.set_ylabel(round(linear_reg.intercept_,2))
     plt.ylim(-30,30)
 
+# plt.ion()
 fig = plt.figure()
 drawData('shoot_data_00000.txt',231)
 drawData('shoot_data_04002.txt',232)
-drawData('shoot_data_27002.txt',233)
-drawData('shoot_data_76020.txt',234)
-drawData('shoot_data_76010.txt',235)
+drawData('shoot_data_76501.txt',233)
+drawData('shoot_data=00000.txt',234)
+drawData('shoot_data=13800.txt',235)
 drawData('shoot_data.txt',236)
 plt.show()

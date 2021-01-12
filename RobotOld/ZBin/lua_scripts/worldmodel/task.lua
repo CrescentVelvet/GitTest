@@ -1086,17 +1086,19 @@ function openSpeed(vx, vy, vdir)
 end
 
 function speed(vx, vy, vdir, vtarget_point)
-	local spdX = function()
-		return vx
-	end
+	-- local spdX = function()
+	-- 	return vx
+	-- end
 
-	local spdY = function()
-		return vy
-	end
+	-- local spdY = function()
+	-- 	return vy
+	-- end
 
 	-- local spdW = function()
 		-- return vdir
 	-- end
+	local spdX = vx
+	local spdY = vy
 	local spdW = vdir
 	local itarget_point = vtarget_point
 

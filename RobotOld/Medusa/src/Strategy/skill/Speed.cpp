@@ -27,24 +27,29 @@ CPlayerCommand* CSpeed::execute(const CVisionModule* pVision)
     double myDir = pVision->ourPlayer(myNum).Dir();
 	double speed_x = task().player.speed_x; // x方向平动速度
 	double speed_y = task().player.speed_y; // y方向平动速度
+    double rad_vel = speed_x*cos(myDir) + speed_y*sin(myDir);// 径向平动速度
+//    double tan_vel = (speed_x*sin(myDir) - speed_y*cos(myDir)) / 50 * -1 * (sin(myDir)/fabs(sin(myDir)));// 切向平动速度
+    double tan_vel = (speed_y*cos(myDir) - speed_x*sin(myDir)) / 50 * 0.35;// 切向平动速度
     double rotSpeed = task().player.rotate_speed; // 转动速度
-    double real_rotSpeed = me.RawRotVel();
+    double real_rotSpeed = me.RawRotVel();// 从图像信息读取真正的转动角速度
     double dribblePower = 3;
     CVector ball2target = task().player.pos - ball.RawPos();
     double target_Dir = ball2target.dir();
-    double precision = 0.01;//传球精度
-    double prediction = 76.5*atan(rotSpeed/power) + 0.1;//预测提前量(弧度)
+    double precision = 0.01;// 精度
+//    double prediction = 138*atan(real_rotSpeed/power) + 0;// 预测提前量(弧度)(仅考虑转动)
+    double prediction = 138*atan((real_rotSpeed+tan_vel)/(power+rad_vel)) + 0;// 预测提前量(弧度)(还考虑平动)
 //    prediction = 0;
 	CVector globalVel(speed_x, speed_y); // 全局坐标系中的速度矢量
     CVector localVel = globalVel.rotate(-myDir);
 //    qDebug()<<Utils::Normalize(me.RawDir());
 //    qDebug()<<Utils::Normalize(target_Dir);
-//    qDebug()<<fabs(Utils::Normalize(me.RawDir() - target_Dir));
-//    qDebug()<<fabs(Utils::Normalize(target_Dir - me.RawDir() - prediction));
-//    qDebug()<<rotSpeed;
-//    qDebug()<<power;
 //    qDebug()<<fabs(Utils::Normalize(target_Dir - me.RawDir() - prediction));
 //    qDebug()<<real_rotSpeed;
+//    qDebug()<<tan_vel;
+//    qDebug()<<real_rotSpeed;
+//    qDebug()<<Utils::Normalize(target_Dir - me.RawDir());
+//    qDebug()<<prediction;
+//    std::cout<<Utils::Normalize(target_Dir - me.RawDir())<<'\t'<<prediction<<'\n';
     if (fabs(Utils::Normalize(target_Dir - me.RawDir() - prediction)) < precision) {
         KickStatus::Instance()->setKick(myNum, power);
 //        qDebug()<<"fuck"<<fabs(Utils::Normalize(me.RawDir() - target_Dir));
