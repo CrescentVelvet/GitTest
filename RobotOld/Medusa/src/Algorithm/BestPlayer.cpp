@@ -44,9 +44,9 @@
 //namespace {
 //	/// Threshold
 //	bool VERBOSE_MODE = false;									// 输出调试信息
-//	const double RobotSize = Param::Vehicle::V2::PLAYER_SIZE;	// 小车大小，单位是厘米
-//	const double BallSize = Param::Field::BALL_SIZE;			// 黄球大小，单位是厘米
-//	const int playNum = Param::Field::MAX_PLAYER;				//
+//	const double RobotSize = PARAM::Vehicle::V2::PLAYER_SIZE;	// 小车大小，单位是厘米
+//	const double BallSize = PARAM::Field::BALL_SIZE;			// 黄球大小，单位是厘米
+//	const int playNum = PARAM::Field::MAX_PLAYER;				//
 //	const double BALL_CONTROL_BUFFER = 0.1;						// 避免频繁切换
 //	const double Robot_Ability_Diff = 1;						// 用来表示敌我双方能力值
 
@@ -57,7 +57,7 @@
 //	int theirGoalie = 0;
 //	bool theirGoalieChanged = false;
 //	double theirGoalieRadius = 65;
-//	const double extralRadiusDiff = 1*Param::Vehicle::V2::PLAYER_SIZE;
+//	const double extralRadiusDiff = 1*PARAM::Vehicle::V2::PLAYER_SIZE;
 //	const double theirGoalieRadiusMin = 65;
 //	const double theirGoalieRadiusMax = theirGoalieRadiusMin + extralRadiusDiff;
 //	const double theirGoalieRadiusStep = 2;
@@ -76,9 +76,9 @@
 
 //	// Default
 //	double OurBallControlDefaultPotential = 0.0;				// 我方默认最小使能值
-//	double OurPlayerLoseDefualtPotential = 1.0;					// 我方默认最大使能值
+//	double ourPlayerLoseDefualtPotential = 1.0;					// 我方默认最大使能值
 //	double TheirBallControlDefaultPotential = 0.0;				// 对方默认最小使能值
-//	double TheirPlayerLoseDefualtPotential = 1.0;				// 对方默认最大使能值
+//	double theirPlayerLoseDefualtPotential = 1.0;				// 对方默认最大使能值
 		
 //	/// Print
 //	const bool RecordOurPotential = false;
@@ -105,8 +105,8 @@
 //				playerPos = pVision->ourPlayer(robotNum).Pos();
 //				playerValid = pVision->ourPlayer(robotNum).Valid();
 //			} else {
-//				playerPos = pVision->TheirPlayer(robotNum).Pos();
-//				playerValid = pVision->TheirPlayer(robotNum).Valid();
+//				playerPos = pVision->theirPlayer(robotNum).Pos();
+//				playerValid = pVision->theirPlayer(robotNum).Valid();
 //			}
 //		}
 
@@ -147,8 +147,8 @@
 //		TheirPotentialFile.open(TheirPotentialName.c_str(),ios::out);
 //	}
 
-//	theirGoal = CGeoPoint(Param::Field::PITCH_LENGTH/2.0,0.0);
-//	memset(_Potentials,0,Param::Field::MAX_PLAYER*7*sizeof(double));
+//	theirGoal = CGeoPoint(PARAM::Field::PITCH_LENGTH/2.0,0.0);
+//	memset(_Potentials,0,PARAM::Field::MAX_PLAYER*7*sizeof(double));
 //}
 
 //void CBestPlayer::update(const CVisionModule *pVision)
@@ -162,10 +162,10 @@
 //	/// 第二步：更新双方相关的信息，注意顺序
 //	updateBothGoalie(pVision);				// 更新门将
 //	updateBall(pVision);					// 更新球
-//	updateOurPlayerList(pVision,biases);	// 更新队员
+//	updateourPlayerList(pVision,biases);	// 更新队员
 //	updateOurBestPlayer(pVision);			// 更新我方最佳球员
 
-//	updateTheirPlayerList(pVision,biases);	// 更新对手
+//	updatetheirPlayerList(pVision,biases);	// 更新对手
 //	updateTheirBestPlayer(pVision);			// 更新对方最佳球员
 	
 //	return;
@@ -194,11 +194,11 @@
 //	bool needReCal = false;
 //	theirGoalieChanged = false;
 //	if (0 != lastTheirGoalie) {
-//		if (! pVision->TheirPlayer(lastTheirGoalie).Valid()) {
+//		if (! pVision->theirPlayer(lastTheirGoalie).Valid()) {
 //			needReCal = true;
 //		}
 
-//		if (theirGoal.dist(pVision->TheirPlayer(lastTheirGoalie).Pos()) > theirGoalieRadius) {
+//		if (theirGoal.dist(pVision->theirPlayer(lastTheirGoalie).Pos()) > theirGoalieRadius) {
 //			needReCal = true;
 //		}
 //	} else {
@@ -206,12 +206,12 @@
 //	}
 //	// 进行重新计算：是否在虚拟半径表征的禁区内
 //	if (needReCal) {
-//		for (int i = 1; i <= Param::Field::MAX_PLAYER; i++) {
-//			if (! pVision->TheirPlayer(i).Valid()) {
+//		for (int i = 0; i < PARAM::Field::MAX_PLAYER; i++) {
+//			if (! pVision->theirPlayer(i).Valid()) {
 //				continue;
 //			}
 //			// 只考虑和对方球门中心的距离，需要改进
-//			if (theirGoal.dist(pVision->TheirPlayer(i).Pos()) <= theirGoalieRadius) {
+//			if (theirGoal.dist(pVision->theirPlayer(i).Pos()) <= theirGoalieRadius) {
 //				if (i != theirGoalie) {
 //					theirGoalieChanged = true;
 //				}
@@ -238,7 +238,7 @@
 //	/* 第一步：更新球当前的位置								           */
 //	/************************************************************************/
 //	BallPos = pVision->RawBall().Pos();
-//	for (int i = 1; i <= Param::Field::MAX_PLAYER; i ++) {
+//	for (int i = 0; i < PARAM::Field::MAX_PLAYER; i ++) {
 //		_ourPlayerBallLooseControl[i-1] = false;
 //		_theirPlayerBallLooseControl[i-1] = false;
 //		_ourPlayerBallStrictControl[i-1] = false;
@@ -249,7 +249,7 @@
 //	/* 第二步：获取这个周期的 MAXDIST 作为归一化的距离量，门将除外    */
 //	/************************************************************************/
 //	MaxToBallDist = BaseToBallDist;
-//	for (int i = 1; i <= Param::Field::MAX_PLAYER; i ++) {
+//	for (int i = 0; i < PARAM::Field::MAX_PLAYER; i ++) {
 //		if (pVision->ourPlayer(i).Valid() && i != goalieNumber) {
 //			CVector playerToBall = BallPos- pVision->ourPlayer(i).RawPos();
 //			double distPlayerToBall = playerToBall.mod();
@@ -257,8 +257,8 @@
 //				MaxToBallDist = distPlayerToBall;
 //			}
 //		}
-//		if (pVision->TheirPlayer(i).Valid() && i != theirGoalie) {
-//			CVector oppToBall = BallPos- pVision->TheirPlayer(i).Pos();
+//		if (pVision->theirPlayer(i).Valid() && i != theirGoalie) {
+//			CVector oppToBall = BallPos- pVision->theirPlayer(i).Pos();
 //			double distPlayerToBall = oppToBall.mod();
 //			if (distPlayerToBall > MaxToBallDist) {
 //				MaxToBallDist = distPlayerToBall;
@@ -272,11 +272,11 @@
 //	// 此部分需要进一步调试
 //	bool isOurLooseCtrlBall = false;
 //	bool isOurStrictCtrlBall = false;
-//	double OurLooseBallCtrlDist = Param::Vehicle::V2::PLAYER_SIZE + Param::Field::BALL_SIZE + 3.5;
-//	double OurLooseBallCtrlAngle = Param::Math::PI*15/180;
-//	double OurStrictBallCtrlDist = Param::Vehicle::V2::PLAYER_SIZE + Param::Field::BALL_SIZE + 1.5;
-//	double OurStrictBallCtrlAngle = Param::Math::PI*10/180;
-//	for (int i = 1; i <= Param::Field::MAX_PLAYER; i ++) {
+//	double OurLooseBallCtrlDist = PARAM::Vehicle::V2::PLAYER_SIZE + PARAM::Field::BALL_SIZE + 3.5;
+//	double OurLooseBallCtrlAngle = PARAM::Math::PI*15/180;
+//	double OurStrictBallCtrlDist = PARAM::Vehicle::V2::PLAYER_SIZE + PARAM::Field::BALL_SIZE + 1.5;
+//	double OurStrictBallCtrlAngle = PARAM::Math::PI*10/180;
+//	for (int i = 0; i < PARAM::Field::MAX_PLAYER; i ++) {
 //		bool ourPlayerValid = pVision->ourPlayer(i).Valid();
 //		if (! ourPlayerValid) {
 //			_ourPlayerBallLooseControl[i-1] = false;
@@ -313,21 +313,21 @@
 
 //	bool isTheirLooseCtrlBall = false;
 //	bool isTheirStrictCtrlBall = false;
-//	double TheirLooseBallCtrlDist = Param::Vehicle::V2::PLAYER_SIZE + Param::Field::BALL_SIZE + 15.5;
-//	double TheirLooseBallCtrlAngle = Param::Math::PI*45/180;
-//	double TheirStrictBallCtrlDist = Param::Vehicle::V2::PLAYER_SIZE + Param::Field::BALL_SIZE + 8.5;
-//	double TheirStrictBallCtrlAngle = Param::Math::PI*30/180;
-//	for (int i = 1; i <= Param::Field::MAX_PLAYER; i ++) {
-//		bool theirPlayerValid = pVision->TheirPlayer(i).Valid();
+//	double TheirLooseBallCtrlDist = PARAM::Vehicle::V2::PLAYER_SIZE + PARAM::Field::BALL_SIZE + 15.5;
+//	double TheirLooseBallCtrlAngle = PARAM::Math::PI*45/180;
+//	double TheirStrictBallCtrlDist = PARAM::Vehicle::V2::PLAYER_SIZE + PARAM::Field::BALL_SIZE + 8.5;
+//	double TheirStrictBallCtrlAngle = PARAM::Math::PI*30/180;
+//	for (int i = 0; i < PARAM::Field::MAX_PLAYER; i ++) {
+//		bool theirPlayerValid = pVision->theirPlayer(i).Valid();
 //		if (! theirPlayerValid) {
 //			_theirPlayerBallLooseControl[i-1] = false;
 //			_theirPlayerBallStrictControl[i-1] = false;
 //			continue ;
 //		}
 
-//		CVector player2Ball = BallPos - pVision->TheirPlayer(i).Pos();
+//		CVector player2Ball = BallPos - pVision->theirPlayer(i).Pos();
 //		double distPlayer2Ball = player2Ball.mod();
-//		double dAnglePlayer2Ball = fabs(Utils::Normalize(player2Ball.dir() - pVision->TheirPlayer(i).Dir()));
+//		double dAnglePlayer2Ball = fabs(Utils::Normalize(player2Ball.dir() - pVision->theirPlayer(i).Dir()));
 //		//double dAnglePlayer2Ball = 0.0;
 
 //		bool ballLooseCtrl = (distPlayer2Ball < TheirLooseBallCtrlDist && dAnglePlayer2Ball < TheirLooseBallCtrlAngle);
@@ -380,15 +380,15 @@
 //	return ;
 //}
 
-//void CBestPlayer::updateOurPlayerList(const CVisionModule *pVision,const double* biases)
+//void CBestPlayer::updateourPlayerList(const CVisionModule *pVision,const double* biases)
 //{
 //	/************************************************************************/
 //	/* 第一步：备份，获取上次结果除我方门将外势能最小者作为最佳者		*/
 //	/************************************************************************/
 //	// a. 势能拷贝
-//	double _Last_Potentials[Param::Field::MAX_PLAYER][7];
-//	memset(_Last_Potentials,0,Param::Field::MAX_PLAYER*7*sizeof(double));
-//	memcpy(_Last_Potentials,_Potentials,Param::Field::MAX_PLAYER*7*sizeof(double));
+//	double _Last_Potentials[PARAM::Field::MAX_PLAYER][7];
+//	memset(_Last_Potentials,0,PARAM::Field::MAX_PLAYER*7*sizeof(double));
+//	memcpy(_Last_Potentials,_Potentials,PARAM::Field::MAX_PLAYER*7*sizeof(double));
 //	// b. 队列拷贝
 //	PlayerList _ourLastFastestPlayerToBallList;
 //	_ourLastFastestPlayerToBallList.clear();
@@ -418,13 +418,13 @@
 //	/* 第二步：进行势能计算，综合考虑历史记录结果						*/
 //	/************************************************************************/
 //	// 清空初始化
-//	memset(_Potentials,0,Param::Field::MAX_PLAYER*7*sizeof(double));
+//	memset(_Potentials,0,PARAM::Field::MAX_PLAYER*7*sizeof(double));
 //	_ourFastestPlayerToBallList.clear();
 
 //	// 进行更新
-////	double antiShootDir=Utils::Normalize((theirGoal-pVision->Ball().RawPos()).dir()+Param::Math::PI);
+////	double antiShootDir=Utils::Normalize((theirGoal-pVision->Ball().RawPos()).dir()+PARAM::Math::PI);
 //	CGeoPoint ball=pVision->Ball().RawPos();
-//	for (int i = 1; i <= Param::Field::MAX_PLAYER; ++ i) {
+//	for (int i = 0; i < PARAM::Field::MAX_PLAYER; ++ i) {
 //		if (pVision->ourPlayer(i).Valid()) {
 //			// 计算Potentials
 //			//CGeoPoint predictBallPos=BallSpeedModel::Instance()->posForTime(15,pVision);
@@ -434,7 +434,7 @@
 //			//	playerToBall=predictBallPos-_ourPlayer;
 //			//}
 ////			double DistPlayerToBall = playerToBall.mod(); //c  0~1
-//			CGeoPoint theirGoal=CGeoPoint(Param::Field::PITCH_LENGTH/2,0);
+//			CGeoPoint theirGoal=CGeoPoint(PARAM::Field::PITCH_LENGTH/2,0);
 //			double kickDir=(ball-theirGoal).dir();
 //			CGeoPoint kickPos=ball+Utils::Polar2Vector(8,kickDir);
 //			CVector playerToKickPos=kickPos-_ourPlayer;
@@ -479,14 +479,14 @@
 //			if (i != goalieNumber) {
 //				CGeoPoint me=_ourPlayer+Utils::Polar2Vector(8,playerToBall.dir());
 //				CGeoSegment metoBallSeg=CGeoSegment(me,ball);
-//				for (int j=1;j<=Param::Field::MAX_PLAYER;j++)
+//				for (int j=0;j<PARAM::Field::MAX_PLAYER;j++)
 //				{
 //					if (pVision->ourPlayer(j).Valid()&&j!=i){
 //						CGeoPoint proj=metoBallSeg.projection(pVision->ourPlayer(j).RawPos());
 //						double dist = proj.dist(pVision->ourPlayer(j).RawPos());
 //						double distMe = proj.dist(me);
 //						double metoBlockerDist=proj.dist(me);
-//						if (metoBallSeg.IsPointOnLineOnSegment(proj)&&dist<25&&metoBlockerDist<80&&distMe>Param::Vehicle::V2::PLAYER_SIZE*2){
+//						if (metoBallSeg.IsPointOnLineOnSegment(proj)&&dist<25&&metoBlockerDist<80&&distMe>PARAM::Vehicle::V2::PLAYER_SIZE*2){
 // 							_Potentials[i-1][0] +=0.3;
 //						}
 //					}
@@ -502,14 +502,14 @@
 //				_Potentials[i-1][0] = 1.5*_Potentials[i-1][0] + 1;
 //			}
 //		} else {
-//			_Potentials[i-1][0] = OurPlayerLoseDefualtPotential;
+//			_Potentials[i-1][0] = ourPlayerLoseDefualtPotential;
 //		}
 
 //		// 综合前后两次的计算进行统一
 //		double current_potential = OurEvaluateAlpha * _Potentials[i-1][0] + (1.0-OurEvaluateAlpha) * _Last_Potentials[i-1][0];
 		
-//		//if (current_potential >= OurPlayerLoseDefualtPotential) {
-//		//	current_potential = OurPlayerLoseDefualtPotential;
+//		//if (current_potential >= ourPlayerLoseDefualtPotential) {
+//		//	current_potential = ourPlayerLoseDefualtPotential;
 //		//} else if (current_potential <= OurBallControlDefaultPotential) {
 //		//	current_potential = OurBallControlDefaultPotential;
 //		//}
@@ -532,7 +532,7 @@
 //	//	int tempBestPlayer=NormalPlayUtils::getOurMostClosetoPos(pVision,BallPos);
 //	//	int patcherOne=NormalPlayUtils::patchForBestPlayer(pVision,_ourLastBestPlayer);
 //	//	if (patcherOne!=0&&tempBestPlayer!=patcherOne){
-//	//		CGeoPoint theirGoal=CGeoPoint(Param::Field::PITCH_LENGTH/2,0);
+//	//		CGeoPoint theirGoal=CGeoPoint(PARAM::Field::PITCH_LENGTH/2,0);
 //	//		double lasttoGoalDir=(theirGoal-pVision->ourPlayer(tempBestPlayer).RawPos()).dir();
 //	//		double lasttoBallDir=(BallPos-pVision->ourPlayer(tempBestPlayer).RawPos()).dir();
 //	//		double lastDiff=fabs(Utils::Normalize(lasttoBallDir-0));
@@ -540,7 +540,7 @@
 //	//		double patchertoGoalDir=(theirGoal-pVision->ourPlayer(patcherOne).RawPos()).dir();
 //	//		double patchertoBallDir=(BallPos-pVision->ourPlayer(patcherOne).RawPos()).dir();
 //	//		double patcherDiff=fabs(Utils::Normalize(patchertoBallDir-0));
-//	//		if (lastDiff-patcherDiff>Param::Math::PI/3){
+//	//		if (lastDiff-patcherDiff>PARAM::Math::PI/3){
 //	//			tempBestPlayer=patcherOne;
 //	//		}
 //	//	}
@@ -548,7 +548,7 @@
 //	//}
 
 
-//	for (int i = 1; i <= Param::Field::MAX_PLAYER; ++ i) {
+//	for (int i = 0; i < PARAM::Field::MAX_PLAYER; ++ i) {
 //		_ourFastestPlayerToBallList.push_back(ToBallPotentialPair(i, getOurPotential(i)));
 //	}
 
@@ -604,7 +604,7 @@
 //		_ourChangeCycle = pVision->Cycle();
 //	} else {
 //		if (_ourChangeFlag) {
-//			if (pVision->Cycle() - _ourChangeCycle > 0.1*Param::Vision::FRAME_RATE) {
+//			if (pVision->Cycle() - _ourChangeCycle > 0.1*PARAM::Vision::FRAME_RATE) {
 //				_ourChangeFlag = false;
 //			}
 //		}
@@ -613,16 +613,16 @@
 //	return ;
 //}
 
-//void CBestPlayer::updateTheirPlayerList(const CVisionModule *pVision,const double *biases)
+//void CBestPlayer::updatetheirPlayerList(const CVisionModule *pVision,const double *biases)
 //{
 //	/************************************************************************/
 //	/* 第一步 备份： 获取在上次更新结果中除我方门将以外势能最小者作为最佳者 */
 //	/************************************************************************/
 //	// a. 势能拷贝
 //	//const MobileVisionT& ball = pVision->Ball();
-//	double _Last_theirPotentials[Param::Field::MAX_PLAYER][6];
-//	memset(_Last_theirPotentials,0,Param::Field::MAX_PLAYER*6*sizeof(double));
-//	memcpy(_Last_theirPotentials,_theirPotentials,Param::Field::MAX_PLAYER*6*sizeof(double));
+//	double _Last_theirPotentials[PARAM::Field::MAX_PLAYER][6];
+//	memset(_Last_theirPotentials,0,PARAM::Field::MAX_PLAYER*6*sizeof(double));
+//	memcpy(_Last_theirPotentials,_theirPotentials,PARAM::Field::MAX_PLAYER*6*sizeof(double));
 //	// b. 判断当前图像下历史最优队员
 //	PlayerList _theirLastFastestPlayerToBallList;
 //	_theirLastFastestPlayerToBallList.clear();
@@ -637,7 +637,7 @@
 //			continue;
 //		}
 //		// 跳过情况二 ： 球员本周期看不见
-//		if (! pVision->TheirPlayer(tempFastNum).Valid()) {
+//		if (! pVision->theirPlayer(tempFastNum).Valid()) {
 //			continue;
 //		}
 
@@ -654,20 +654,20 @@
 //	/* 第二步：进行势能计算，综合考虑历史记录结果                     */
 //	/************************************************************************/
 //	// 清空初始化
-//	memset(_theirPotentials,0,Param::Field::MAX_PLAYER*6*sizeof(double));
+//	memset(_theirPotentials,0,PARAM::Field::MAX_PLAYER*6*sizeof(double));
 //	_theirFastestPlayerToBallList.clear(); // 清空列表
 //	// 进行更新
-//	for (int i = 1; i <= Param::Field::MAX_PLAYER; ++ i) {
-//		if (pVision->TheirPlayer(i).Valid()) {
+//	for (int i = 0; i < PARAM::Field::MAX_PLAYER; ++ i) {
+//		if (pVision->theirPlayer(i).Valid()) {
 //			//计算Potentials
-//			CGeoPoint _theirPlayer = pVision->TheirPlayer(i).Pos();
+//			CGeoPoint _theirPlayer = pVision->theirPlayer(i).Pos();
 //			CVector playerToBall = BallPos- _theirPlayer;
-////			double diff_dribble_ball = Utils::Normalize(playerToBall.dir() - pVision->TheirPlayer(i).Dir());
+////			double diff_dribble_ball = Utils::Normalize(playerToBall.dir() - pVision->theirPlayer(i).Dir());
 ////			double DistPlayerToBall = playerToBall.mod();//c  0~1
 
 //			if (tempBiases[0] != 0) {
 //				_theirPotentials[i-1][1] = Robot_Ability_Diff*distBallToPlayer(playerToBall,tempBiases,MaxToBallDist);
-//				_theirPotentials[i-1][5] = Robot_Ability_Diff*velBallToPlayer(pVision->TheirPlayer(i),pVision->Ball(),tempBiases,MaxToBallDist);
+//				_theirPotentials[i-1][5] = Robot_Ability_Diff*velBallToPlayer(pVision->theirPlayer(i),pVision->Ball(),tempBiases,MaxToBallDist);
 
 //				//cout << "Player: " << i  <<  " "<<"ballMovingCost: " << 	_theirPotentials[i-1][5] << " "<<"distcost: "<<_theirPotentials[i-1][1] <<endl;
 //				/*if (_theirPotentials[i-1][1]+_theirPotentials[i-1][5] < 0) {
@@ -681,7 +681,7 @@
 //				_theirPotentials[i-1][3] = 0;//theirClearPath(pVision,_theirPlayer,BallPos,tempBiases);
 //			}
 //			if (tempBiases[3] != 0) {
-//				_theirPotentials[i-1][4] = 0;//anglePlayerToBall(pVision->TheirPlayer(i),BallPos,tempBiases);
+//				_theirPotentials[i-1][4] = 0;//anglePlayerToBall(pVision->theirPlayer(i),BallPos,tempBiases);
 
 //			}
 //			_theirPotentials[i-1][0] = _theirPotentials[i-1][1]+_theirPotentials[i-1][2]+_theirPotentials[i-1][3]+_theirPotentials[i-1][4]+_theirPotentials[i-1][5];
@@ -703,18 +703,18 @@
 //				_theirPotentials[i-1][0] = 1.5*_theirPotentials[i-1][0] + 0.2;
 //			}
 //		} else {
-//			_theirPotentials[i-1][0] = TheirPlayerLoseDefualtPotential;
+//			_theirPotentials[i-1][0] = theirPlayerLoseDefualtPotential;
 //		}
 
 //		double current_their_potential = TheirEvaluateAlpha * _theirPotentials[i-1][0] + (1.0-TheirEvaluateAlpha) * _Last_theirPotentials[i-1][0];
-//		//if (current_their_potential >= TheirPlayerLoseDefualtPotential) {
-//		//	current_their_potential = TheirPlayerLoseDefualtPotential;
+//		//if (current_their_potential >= theirPlayerLoseDefualtPotential) {
+//		//	current_their_potential = theirPlayerLoseDefualtPotential;
 //		//} else if (current_their_potential <= TheirBallControlDefaultPotential) {
 //		//	current_their_potential = TheirBallControlDefaultPotential;
 //		//}
 
 //		//add by twj
-//		if (!pVision->TheirPlayer(i).Valid()){
+//		if (!pVision->theirPlayer(i).Valid()){
 //			current_their_potential=current_their_potential+1;
 //		}
 
@@ -780,7 +780,7 @@
 //{
 //	//计算角度的影响*用余弦定理和2倍角公式
 //	int side = flag?1:-1;
-//	const CGeoPoint GoalCenter(flag*Param::Field::PITCH_LENGTH/2,0); //正负号不再需要调整
+//	const CGeoPoint GoalCenter(flag*PARAM::Field::PITCH_LENGTH/2,0); //正负号不再需要调整
 //	CVector playerToBall = ball- _ourPlayer;
 //	double DistPlayerToBall = playerToBall.mod();//c
 //	double DistBallToGoal = (GoalCenter-ball).mod();//a
@@ -797,9 +797,9 @@
 //	double DistPlayerToBall = playerToBall.mod();//c  0~1
 //	double tempPotential=0;
 //	for (int j=1;j<=playNum;j++)
-//	if (pVision->TheirPlayer(j).Valid())
+//	if (pVision->theirPlayer(j).Valid())
 //	{
-//		CVector playerToOpp = pVision->TheirPlayer(j).Pos() - _ourPlayer;
+//		CVector playerToOpp = pVision->theirPlayer(j).Pos() - _ourPlayer;
 //		double DistPlayerToOpp = playerToOpp.mod();
 //		if (DistPlayerToOpp < DistPlayerToBall && std::abs(std::sin(Utils::Normalize(playerToBall.dir()-playerToOpp.dir())))*DistPlayerToOpp<RobotSize)
 //		{
@@ -823,7 +823,7 @@
 //			}
 //			else{
 //				if (fabs(Th) > 0.000001) {
-//					AngleParam = std::cos((Param::Math::PI/2/Th)*AngleDiff);//1～0
+//					AngleParam = std::cos((PARAM::Math::PI/2/Th)*AngleDiff);//1～0
 //				} else {
 //					AngleParam = 0.0;
 //				}
@@ -876,7 +876,7 @@
 //			}
 //			else{
 //				if (fabs(Th) > 0.000001) {
-//					AngleParam = std::cos((Param::Math::PI/2/Th)*AngleDiff);//1～0
+//					AngleParam = std::cos((PARAM::Math::PI/2/Th)*AngleDiff);//1～0
 //				} else {
 //					AngleParam = 0.0;
 //				}
@@ -931,7 +931,7 @@
 //	double angleDiff = Utils::Normalize(diffVel.dir() - playerToBall.dir());
 //	// 计算值
 //	double ballMovingCost = diffVel.mod() * cos(angleDiff);
-//	//ballMovingCost += diffVel.mod() * fabs(sin(Param::Math::PI-fabs(angleDiff)));
+//	//ballMovingCost += diffVel.mod() * fabs(sin(PARAM::Math::PI-fabs(angleDiff)));
 
 	
 //	if (ballMovingCost >= maxDist) {
@@ -963,7 +963,7 @@
 //	}
 
 //  double finalBallFactor;
-//  if (fabs(ball.Vel().dir()) > Param::Math::PI * 100 / 180) {
+//  if (fabs(ball.Vel().dir()) > PARAM::Math::PI * 100 / 180) {
 //    double yTime;
 //    double yVel = (player.Vel().mod() * cos((proj - player.Pos()).dir() - player.Vel().dir()));
 //    if (yVel > 0)

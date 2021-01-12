@@ -32,10 +32,10 @@ inline stateNew CRRTPathPlannerNew::generateRandomState() {
     stateNew randomState;
     if(!_searchInCircle) {
         double factor1 = doubleTypeRandomMinusOneToOne(), factor2 = doubleTypeRandomMinusOneToOne();
-        randomState.pos = CGeoPoint((Param::Field::PITCH_LENGTH / 2.0 + Param::Field::GOAL_DEPTH) * factor1, (Param::Field::PITCH_LENGTH / 2.0 + Param::Field::GOAL_DEPTH) * factor2);
+        randomState.pos = CGeoPoint((PARAM::Field::PITCH_LENGTH / 2.0 + PARAM::Field::GOAL_DEPTH) * factor1, (PARAM::Field::PITCH_LENGTH / 2.0 + PARAM::Field::GOAL_DEPTH) * factor2);
     } else {
         double r = doubleTypeRandomZeroToOne() * _circleRadius;
-        double angle = doubleTypeRandomMinusOneToOne() * Param::Math::PI;
+        double angle = doubleTypeRandomMinusOneToOne() * PARAM::Math::PI;
         randomState.pos = CGeoPoint(_circleCenter.x() + r * cos(angle), _circleCenter.y() + r * sin(angle));
     }
     randomState.orient = 0.0;
@@ -153,15 +153,15 @@ void CRRTPathPlannerNew::initPlanner(int maxNodesNum, int maxWayPointsNum, int m
     this->_pathPointsRev.reserve(_maxPathPointsNum);
 
     if(planInOurField) {
-        this->_searchAreaLeftBound = -Param::Field::PITCH_LENGTH / 2 - Param::Field::GOAL_DEPTH - Param::Vehicle::V2::PLAYER_SIZE;
-        this->_searchAreaRightBound = -Param::Vehicle::V2::PLAYER_SIZE;
-        this->_searchAreaLowerBound = -Param::Field::PITCH_WIDTH - Param::Vehicle::V2::PLAYER_SIZE;
-        this->_searchAreaUpperBound = Param::Field::PITCH_WIDTH + Param::Vehicle::V2::PLAYER_SIZE;
+        this->_searchAreaLeftBound = -PARAM::Field::PITCH_LENGTH / 2 - PARAM::Field::GOAL_DEPTH - PARAM::Vehicle::V2::PLAYER_SIZE;
+        this->_searchAreaRightBound = -PARAM::Vehicle::V2::PLAYER_SIZE;
+        this->_searchAreaLowerBound = -PARAM::Field::PITCH_WIDTH - PARAM::Vehicle::V2::PLAYER_SIZE;
+        this->_searchAreaUpperBound = PARAM::Field::PITCH_WIDTH + PARAM::Vehicle::V2::PLAYER_SIZE;
     } else {
-        this->_searchAreaLeftBound = -Param::Field::PITCH_LENGTH / 2 - Param::Field::GOAL_DEPTH - Param::Vehicle::V2::PLAYER_SIZE;
-        this->_searchAreaRightBound = Param::Field::PITCH_LENGTH / 2 + Param::Field::GOAL_DEPTH + Param::Vehicle::V2::PLAYER_SIZE;
-        this->_searchAreaLowerBound = -Param::Field::PITCH_WIDTH - Param::Vehicle::V2::PLAYER_SIZE;
-        this->_searchAreaUpperBound = Param::Field::PITCH_WIDTH + Param::Vehicle::V2::PLAYER_SIZE;
+        this->_searchAreaLeftBound = -PARAM::Field::PITCH_LENGTH / 2 - PARAM::Field::GOAL_DEPTH - PARAM::Vehicle::V2::PLAYER_SIZE;
+        this->_searchAreaRightBound = PARAM::Field::PITCH_LENGTH / 2 + PARAM::Field::GOAL_DEPTH + PARAM::Vehicle::V2::PLAYER_SIZE;
+        this->_searchAreaLowerBound = -PARAM::Field::PITCH_WIDTH - PARAM::Vehicle::V2::PLAYER_SIZE;
+        this->_searchAreaUpperBound = PARAM::Field::PITCH_WIDTH + PARAM::Vehicle::V2::PLAYER_SIZE;
     }
 
     this->_searchInCircle = searchInCircle;

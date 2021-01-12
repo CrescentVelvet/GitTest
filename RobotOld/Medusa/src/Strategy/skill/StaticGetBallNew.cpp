@@ -8,7 +8,7 @@ namespace {
 	const double newVehicleBuffer = 0.6;
 	const double directGetBallDist = 35;
 	const double StopDist = 12;
-	const double directGetBallDirLimit = Param::Math::PI / 4;
+	const double directGetBallDirLimit = PARAM::Math::PI / 4;
 	bool needAvoidBall;
 }
 CStaticGetBallNew::CStaticGetBallNew()
@@ -48,31 +48,31 @@ void CStaticGetBallNew::plan(const CVisionModule * pVision)
 	staticDir = getStaticDir(pVision, staticDir);
 	if (needAvoidBall) {
 		if (Verbose) GDebugEngine::Instance()->gui_debug_msg(CGeoPoint(120, -150), "AVOID BALL", COLOR_CYAN);
-		if (fabs(me2BallDirDiff) > Param::Math::PI / 3) {
+		if (fabs(me2BallDirDiff) > PARAM::Math::PI / 3) {
 			if (Verbose) GDebugEngine::Instance()->gui_debug_msg(CGeoPoint(80, -150), "beside ball", COLOR_CYAN);
-			double avoidDir = Utils::Normalize(ball2Me.dir() + staticDir * Param::Math::PI / 4);
+			double avoidDir = Utils::Normalize(ball2Me.dir() + staticDir * PARAM::Math::PI / 4);
 			static_get_task.player.pos = ball.Pos() + Utils::Polar2Vector(30, avoidDir);
 		}
 		else {
 			if (Verbose) GDebugEngine::Instance()->gui_debug_msg(CGeoPoint(80, -150), "behind ball", COLOR_CYAN);
-			double directDist = Param::Vehicle::V2::PLAYER_FRONT_TO_CENTER + newVehicleBuffer + Param::Field::BALL_SIZE + StopDist - 2.5;
-			static_get_task.player.pos = ball.Pos() + Utils::Polar2Vector(directDist, Utils::Normalize(finalAngel - Param::Math::PI));
+			double directDist = PARAM::Vehicle::V2::PLAYER_FRONT_TO_CENTER + newVehicleBuffer + PARAM::Field::BALL_SIZE + StopDist - 2.5;
+			static_get_task.player.pos = ball.Pos() + Utils::Polar2Vector(directDist, Utils::Normalize(finalAngel - PARAM::Math::PI));
 			if (fabs(me2BallDirDiff) < 0.2)
-				static_get_task.player.pos = ball.Pos() + Utils::Polar2Vector(directDist, Utils::Normalize(finalAngel - Param::Math::PI));
+				static_get_task.player.pos = ball.Pos() + Utils::Polar2Vector(directDist, Utils::Normalize(finalAngel - PARAM::Math::PI));
 		}
 	}
 	else {
 		if (Verbose) GDebugEngine::Instance()->gui_debug_msg(CGeoPoint(120, -150), "GO TO", COLOR_CYAN);
-		if (fabs(me2BallDirDiff) > Param::Math::PI / 2) {
+		if (fabs(me2BallDirDiff) > PARAM::Math::PI / 2) {
 			if (Verbose) GDebugEngine::Instance()->gui_debug_msg(CGeoPoint(80, -150), "in front of ball", COLOR_CYAN);
-			double gotoDir = Utils::Normalize(finalAngel + staticDir * Param::Math::PI * 3 / 5);
+			double gotoDir = Utils::Normalize(finalAngel + staticDir * PARAM::Math::PI * 3 / 5);
 			static_get_task.player.pos = ball.Pos() + Utils::Polar2Vector(30, gotoDir);
 			static_get_task.player.vel = Utils::Polar2Vector(100, (static_get_task.player.pos - me.Pos()).dir());
 		}
 		else {
 			if (Verbose) GDebugEngine::Instance()->gui_debug_msg(CGeoPoint(80, -150), "behind ball", COLOR_CYAN);
-			double directDist = Param::Vehicle::V2::PLAYER_FRONT_TO_CENTER + newVehicleBuffer + Param::Field::BALL_SIZE + StopDist - 2.5;
-			static_get_task.player.pos = ball.Pos() + Utils::Polar2Vector(directDist, Utils::Normalize(finalAngel - Param::Math::PI));
+			double directDist = PARAM::Vehicle::V2::PLAYER_FRONT_TO_CENTER + newVehicleBuffer + PARAM::Field::BALL_SIZE + StopDist - 2.5;
+			static_get_task.player.pos = ball.Pos() + Utils::Polar2Vector(directDist, Utils::Normalize(finalAngel - PARAM::Math::PI));
 		}
     }
 	/*
@@ -80,8 +80,8 @@ void CStaticGetBallNew::plan(const CVisionModule * pVision)
 	static_get_task.player.angle = 0;
 
 	if (me2Ball.mod() < 50) {
-		if (abs(Utils::Normalize(me2Ball.dir() - finalAngel)) <= Param::Math::PI / 2) {		//下半侧
-			if (me2Ball.mod() < 30 && abs(Utils::Normalize(me2Ball.dir() - finalAngel)) < Param::Math::PI / 4)
+		if (abs(Utils::Normalize(me2Ball.dir() - finalAngel)) <= PARAM::Math::PI / 2) {		//下半侧
+			if (me2Ball.mod() < 30 && abs(Utils::Normalize(me2Ball.dir() - finalAngel)) < PARAM::Math::PI / 4)
 			{
 				GDebugEngine::Instance()->gui_debug_msg(CGeoPoint(100, 100), "DOWN DIRECT", COLOR_RED);
 				static_get_task.player.pos = ball.Pos();
@@ -92,13 +92,13 @@ void CStaticGetBallNew::plan(const CVisionModule * pVision)
 			}
 		}		//上半侧
 		else {
-			if (abs(Utils::Normalize(me2Ball.dir() - finalAngel - Param::Math::PI / 2)) < Param::Math::PI / 2) {
+			if (abs(Utils::Normalize(me2Ball.dir() - finalAngel - PARAM::Math::PI / 2)) < PARAM::Math::PI / 2) {
 				GDebugEngine::Instance()->gui_debug_msg(CGeoPoint(100, 100), "UP CLOCK", COLOR_CYAN);
-				static_get_task.player.pos = ball.Pos() + Utils::Polar2Vector(45, finalAngel - Param::Math::PI / 9 * 5);
+				static_get_task.player.pos = ball.Pos() + Utils::Polar2Vector(45, finalAngel - PARAM::Math::PI / 9 * 5);
 			}
 			else {
 				GDebugEngine::Instance()->gui_debug_msg(CGeoPoint(100, 100), "UP RE-CLOCK", COLOR_CYAN);
-				static_get_task.player.pos = ball.Pos() + Utils::Polar2Vector(45, finalAngel + Param::Math::PI / 9 * 5);
+				static_get_task.player.pos = ball.Pos() + Utils::Polar2Vector(45, finalAngel + PARAM::Math::PI / 9 * 5);
 			}
 		}
 	}
@@ -109,7 +109,7 @@ void CStaticGetBallNew::plan(const CVisionModule * pVision)
 
 	/*
 	if (me2Ball.mod() < 20) { 
-		if (abs(Utils::Normalize(me2Ball.dir() - finalAngel)) < Param::Math::PI / 3) {
+		if (abs(Utils::Normalize(me2Ball.dir() - finalAngel)) < PARAM::Math::PI / 3) {
 			GDebugEngine::Instance()->gui_debug_msg(CGeoPoint(100, 100), "20 GET BALL", COLOR_RED);
 			static_get_task.player.pos = ball.Pos();
 			setSubTask(TaskFactoryV2::Instance()->GotoPosition(static_get_task));
@@ -121,7 +121,7 @@ void CStaticGetBallNew::plan(const CVisionModule * pVision)
 		}
 	}
 	else if (me2Ball.mod() < 30) {
-		if (abs(Utils::Normalize(me2Ball.dir() - finalAngel)) < Param::Math::PI / 3) {
+		if (abs(Utils::Normalize(me2Ball.dir() - finalAngel)) < PARAM::Math::PI / 3) {
 			GDebugEngine::Instance()->gui_debug_msg(CGeoPoint(100, 100), "30 GET BALL", COLOR_CYAN);
 			cout <<"30getball" << endl;
 			static_get_task.player.pos = ball.Pos() + Utils::Polar2Vector(15, -finalAngel);
@@ -129,8 +129,8 @@ void CStaticGetBallNew::plan(const CVisionModule * pVision)
 		}
 		else {
 			GDebugEngine::Instance()->gui_debug_msg(CGeoPoint(100, 100), "30 AVOID BALL", COLOR_CYAN);
-			cout << me2Ball.mod() <<" "<< me2Ball.dir()<<" "<< -me2Ball.dir() + Param::Math::PI / 5<< endl;
-			static_get_task.player.pos = ball.Pos() + Utils::Polar2Vector(25, -me2Ball.dir() + Param::Math::PI / 2);
+			cout << me2Ball.mod() <<" "<< me2Ball.dir()<<" "<< -me2Ball.dir() + PARAM::Math::PI / 5<< endl;
+			static_get_task.player.pos = ball.Pos() + Utils::Polar2Vector(25, -me2Ball.dir() + PARAM::Math::PI / 2);
 			setSubTask(TaskFactoryV2::Instance()->GotoPosition(static_get_task));
 		}
 	}

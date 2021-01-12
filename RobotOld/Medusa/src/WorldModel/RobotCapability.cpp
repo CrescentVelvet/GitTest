@@ -7,21 +7,21 @@ namespace{
 	protected:
     	OmniAuto()
         {
-        ZSS::ZParamManager::instance()->loadParam(TRANSLATION_SPEED_LIMIT,"CGotoPositionV2/NormalSpeedLimit",400); //下发速度最大限制，守门员、后卫除外
-	    ZSS::ZParamManager::instance()->loadParam(MAX_TRANSLATION_SPEED,"CGotoPositionV2/MNormalSpeed",300);
-	    ZSS::ZParamManager::instance()->loadParam(MAX_TRANSLATION_ACC,"CGotoPositionV2/MNormalAcc",450);
-	    ZSS::ZParamManager::instance()->loadParam(MAX_TRANSLATION_DEC,"CGotoPositionV2/MNormalDec",450);
-	    ZSS::ZParamManager::instance()->loadParam(MAX_TRANSLATION_SPEED_BACK,"CGotoPositionV2/MBackSpeed",300);
-	    ZSS::ZParamManager::instance()->loadParam(MAX_TRANSLATION_ACC_BACK,"CGotoPositionV2/MBackAcc",450);
-	    ZSS::ZParamManager::instance()->loadParam(MAX_TRANSLATION_DEC_BACK,"CGotoPositionV2/MBackDec",450);
-	    ZSS::ZParamManager::instance()->loadParam(MAX_TRANSLATION_SPEED_GOALIE,"CGotoPositionV2/MGoalieSpeed",300);
-	    ZSS::ZParamManager::instance()->loadParam(MAX_TRANSLATION_ACC_GOALIE,"CGotoPositionV2/MGoalieAcc",450);
-	    ZSS::ZParamManager::instance()->loadParam(MAX_TRANSLATION_DEC_GOALIE,"CGotoPositionV2/MGoalieDec",450);
+        ZSS::ZParamManager::instance()->loadParam(TRANSLATION_SPEED_LIMIT,"CGotoPositionV2/NormalSpeedLimit",4000); //下发速度最大限制，守门员、后卫除外
+        ZSS::ZParamManager::instance()->loadParam(MAX_TRANSLATION_SPEED,"CGotoPositionV2/MNormalSpeed",3000);
+        ZSS::ZParamManager::instance()->loadParam(MAX_TRANSLATION_ACC,"CGotoPositionV2/MNormalAcc",4500);
+        ZSS::ZParamManager::instance()->loadParam(MAX_TRANSLATION_DEC,"CGotoPositionV2/MNormalDec",4500);
+        ZSS::ZParamManager::instance()->loadParam(MAX_TRANSLATION_SPEED_BACK,"CGotoPositionV2/MBackSpeed",3000);
+        ZSS::ZParamManager::instance()->loadParam(MAX_TRANSLATION_ACC_BACK,"CGotoPositionV2/MBackAcc",4500);
+        ZSS::ZParamManager::instance()->loadParam(MAX_TRANSLATION_DEC_BACK,"CGotoPositionV2/MBackDec",4500);
+        ZSS::ZParamManager::instance()->loadParam(MAX_TRANSLATION_SPEED_GOALIE,"CGotoPositionV2/MGoalieSpeed",3000);
+        ZSS::ZParamManager::instance()->loadParam(MAX_TRANSLATION_ACC_GOALIE,"CGotoPositionV2/MGoalieAcc",4500);
+        ZSS::ZParamManager::instance()->loadParam(MAX_TRANSLATION_DEC_GOALIE,"CGotoPositionV2/MGoalieDec",4500);
 	    ZSS::ZParamManager::instance()->loadParam(MAX_ROTATION_SPEED,"CGotoPositionV2/RotationSpeed",15);
 	    ZSS::ZParamManager::instance()->loadParam(MAX_ROTATION_ACC,"CGotoPositionV2/RotationAcc",15);
         ZSS::ZParamManager::instance()->loadParam(MAX_ROTATION_DEC,"CGotoPositionV2/RotationAcc",15);
         ZSS::ZParamManager::instance()->loadParam(SAO_ACTION,"Alert/SaoAction",0);
-        ZSS::ZParamManager::instance()->loadParam(MAX_RUSH_TRANSLATION_SPEED,"CGotoPositionV2/MRushTranslationSpeed", 400);
+        ZSS::ZParamManager::instance()->loadParam(MAX_RUSH_TRANSLATION_SPEED,"CGotoPositionV2/MRushTranslationSpeed", 4000);
 
 			//if (SAO_ACTION == 2) {
 			//	MAX_TRANSLATION_SPEED *= 1.5;
@@ -99,7 +99,7 @@ namespace{
 	// 击球的特性
 	class KickAuto{
 	protected:
-		KickAuto() : MinShootAngleWidth(Param::Field::BALL_SIZE*1.5)
+		KickAuto() : MinShootAngleWidth(PARAM::Field::BALL_SIZE*1.5)
 		{}
 		double minShootAngleWidth() const { return MinShootAngleWidth; }
 	private:
@@ -143,7 +143,7 @@ CRobotCapFactory::CRobotCapFactory()
 	_robotCaps.push_back(new VehicleAuto); // 类型0
 
 	// 小车的类型, 0表示10系的, 1表示9系的
-	for( int i=0; i<=Param::Field::MAX_PLAYER; ++i ){
+	for( int i=0; i<PARAM::Field::MAX_PLAYER; ++i ){
 		LeftRobotType[i] = 0;
 		RightRobotType[i] = 0;
 	}

@@ -12,12 +12,12 @@
 #include "WorldDefine.h"
 #include <vector>
 #include <server.h>
-#include <param.h>
+#include "staticparams.h"
 #include <ServerInterface.h>
 namespace {
 const int VALID_NUM = 7;   //  做最小二乘需要的帧数
 const double MAX_SPEED =  1000;
-const double MAX_DIST = 1000.0 / Param::Vision::FRAME_RATE * 4;
+const double MAX_DIST = 1000.0 / PARAM::Vision::FRAME_RATE * 4;
 const int MAX_LOGS = 16;
 }
 

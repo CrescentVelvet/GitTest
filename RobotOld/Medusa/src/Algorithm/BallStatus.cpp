@@ -7,6 +7,7 @@
 #include "NormalPlayUtils.h"
 #include "BallSpeedModel.h"
 #include "parammanager.h"
+#include "staticparams.h"
 namespace{
 	bool isNearPlayer = false;
 	bool isEnemyTouch = false;
@@ -23,7 +24,7 @@ namespace{
 
     bool IS_SIMULATION = false;
 
-    const int KICK_OUT_MIN_VELOCITY = 75;
+    const int KICK_OUT_MIN_VELOCITY = 750;
 }
 
 CBallStatus::CBallStatus(void):_chipkickstate(false)
@@ -59,13 +60,13 @@ void CBallStatus::UpdateBallMoving(const CVisionModule* pVision)
 {
 	const MobileVisionT& ball = pVision->ball(); // 球	
 	isNearPlayer = false;
-	for (int i=1; i<=Param::Field::MAX_PLAYER*2; i++){
-		if (pVision->allPlayer(i).Valid() && pVision->allPlayer(i).Pos().dist(ball.Pos())< Param::Field::MAX_PLAYER_SIZE/2+5){
+	for (int i=0; i<PARAM::Field::MAX_PLAYER*2; i++){
+		if (pVision->allPlayer(i).Valid() && pVision->allPlayer(i).Pos().dist(ball.Pos())< PARAM::Field::MAX_PLAYER_SIZE/2+5){
 			isNearPlayer = true;
 			break;
 		}
 	}
-	if (false == isNearPlayer && ball.Vel().mod()>2){
+    if (false == isNearPlayer && ball.Vel().mod()>20){
 		// 只有当球不在车附近时,才使用预测后的球速来更新; 以免球在车附近时,将球速设为0;
 		_ballMovingVel = ball.Vel();
 	}
@@ -80,7 +81,7 @@ void CBallStatus::UpdateBallMoving(const CVisionModule* pVision)
 // 从PlayInterface中移出的球状态部分
 void CBallStatus::initializeCmdStored()
 {
-	for (int i=1; i<Param::Field::MAX_PLAYER+1; i++){
+	for (int i=0; i<PARAM::Field::MAX_PLAYER; i++){
 		for (int j=0; j<MAX_CMD_STORED; j++){
 			_kickCmd[i][j].setKickCmd(i,0,0,0);
 		}
@@ -98,7 +99,7 @@ void CBallStatus::setCommand(int num, int normalKick, int chipKick, unsigned cha
 
 void CBallStatus::clearKickCmd() 
 {
-	for (int i=1; i<Param::Field::MAX_PLAYER+1; i++){
+	for (int i=0; i<PARAM::Field::MAX_PLAYER; i++){
 		for (int j=0; j<MAX_CMD_STORED; j++){
 			_kickCmd[i][j].clear();
 		}
@@ -109,7 +110,7 @@ void CBallStatus::CheckKickOutBall(const CVisionModule* pVision)
 {
 	_isKickedOut = false;
 	_isChipKickOut = false;
-	for (int num=1; num <= Param::Field::MAX_PLAYER; num++){
+	for (int num=0; num < PARAM::Field::MAX_PLAYER; num++){
         //利用通讯信息
 //            bool sensorValid = RobotSensor::Instance()->IsInfoValid(num);
 //            bool isBallInFoot = RobotSensor::Instance()->IsInfraredOn(num);
@@ -128,7 +129,7 @@ void CBallStatus::CheckKickOutBall(const CVisionModule* pVision)
             break;
         }
 	}
-	if ((pVision->allPlayer(_ballToucher).RawPos() - pVision->rawBall().Pos()).mod()<9.8) {
+    if ((pVision->allPlayer(_ballToucher).RawPos() - pVision->rawBall().Pos()).mod()<98) {
 		_ballChipLine = CGeoLine(pVision->allPlayer(_ballToucher).RawPos(), pVision->allPlayer(_ballToucher).Dir());
 	}
 }
@@ -194,77 +195,77 @@ string CBallStatus::checkBallState(const CVisionModule* pVision,int meNum){
 	const double distHe2ball=he2ball.mod();
 
 	const double dAngleMeBall2BallVelDir = fabs(Utils::Normalize(ball2self.dir() - ballVelDir));	//球车向量与球速线夹角
-	const CGeoSegment ballMovingSeg = CGeoSegment(rawBallPos+Utils::Polar2Vector(10,Utils::Normalize(ballVelDir)),rawBallPos+Utils::Polar2Vector(800,Utils::Normalize(ballVelDir)));	
+    const CGeoSegment ballMovingSeg = CGeoSegment(rawBallPos+Utils::Polar2Vector(100,Utils::Normalize(ballVelDir)),rawBallPos+Utils::Polar2Vector(8000,Utils::Normalize(ballVelDir)));
 	const CGeoPoint projMe = ballMovingSeg.projection(me.Pos());					//小车在球移动线上的投影点
 	double projDist = projMe.dist(me.Pos());
 
-	const CGeoSegment balltoMeSeg = CGeoSegment(rawBallPos+Utils::Polar2Vector(20,Utils::Normalize(ballVelDir)),rawBallPos+Utils::Polar2Vector(dist2ball+30,Utils::Normalize(ballVelDir)));	
+    const CGeoSegment balltoMeSeg = CGeoSegment(rawBallPos+Utils::Polar2Vector(200,Utils::Normalize(ballVelDir)),rawBallPos+Utils::Polar2Vector(dist2ball+300,Utils::Normalize(ballVelDir)));
 	const CGeoPoint projHe = ballMovingSeg.projection(he.Pos());
 	double projDistHe =projHe.dist(he.Pos());
 
-	double antiHeDir=Utils::Normalize(he.Dir()+Param::Math::PI);
+	double antiHeDir=Utils::Normalize(he.Dir()+PARAM::Math::PI);
 //	const double shootDir=KickDirection::Instance()->getRealKickDir();
 	CGeoPoint predictBallPos=BallSpeedModel::Instance()->posForTime(30,pVision);
 
 	const double metoBallAngle=(rawBallPos-me.Pos()).dir();
 	const double antiMetoBallAngle=(me.Pos()-rawBallPos).dir();
-	const CGeoSegment metoBallSeg=CGeoSegment(me.Pos()+Utils::Polar2Vector(10,antiMetoBallAngle),me.Pos()+Utils::Polar2Vector(100,metoBallAngle));
+    const CGeoSegment metoBallSeg=CGeoSegment(me.Pos()+Utils::Polar2Vector(100,antiMetoBallAngle),me.Pos()+Utils::Polar2Vector(1000,metoBallAngle));
 	const CGeoPoint projHeInMetoBallSeg=metoBallSeg.projection(he.Pos());
-	const CGeoPoint meHead=me.Pos()+Utils::Polar2Vector(Param::Vehicle::V2::PLAYER_FRONT_TO_CENTER,me.Dir());
+	const CGeoPoint meHead=me.Pos()+Utils::Polar2Vector(PARAM::Vehicle::V2::PLAYER_FRONT_TO_CENTER,me.Dir());
 	//isOurBall
 	double diffAngleMeToBall2Me=fabs(Utils::Normalize(me.Dir()-metoBallAngle));
-	double allowInfrontAngleBuffer = (dist2ball/(Param::Vehicle::V2::PLAYER_SIZE))*Param::Vehicle::V2::KICK_ANGLE < Param::Math::PI/5.0?
-		(dist2ball/(Param::Vehicle::V2::PLAYER_SIZE))*Param::Vehicle::V2::KICK_ANGLE:Param::Math::PI/5.0;
-	double allowInfrontAngleBufferHe = (distHe2ball/(Param::Vehicle::V2::PLAYER_SIZE))*Param::Vehicle::V2::KICK_ANGLE < Param::Math::PI/5.0?
-		(distHe2ball/(Param::Vehicle::V2::PLAYER_SIZE))*Param::Vehicle::V2::KICK_ANGLE:Param::Math::PI/5.0;
+	double allowInfrontAngleBuffer = (dist2ball/(PARAM::Vehicle::V2::PLAYER_SIZE))*PARAM::Vehicle::V2::KICK_ANGLE < PARAM::Math::PI/5.0?
+		(dist2ball/(PARAM::Vehicle::V2::PLAYER_SIZE))*PARAM::Vehicle::V2::KICK_ANGLE:PARAM::Math::PI/5.0;
+	double allowInfrontAngleBufferHe = (distHe2ball/(PARAM::Vehicle::V2::PLAYER_SIZE))*PARAM::Vehicle::V2::KICK_ANGLE < PARAM::Math::PI/5.0?
+		(distHe2ball/(PARAM::Vehicle::V2::PLAYER_SIZE))*PARAM::Vehicle::V2::KICK_ANGLE:PARAM::Math::PI/5.0;
 
 	bool isBallInFront = fabs(Utils::Normalize(self2ball.dir()-me.Dir())) < allowInfrontAngleBuffer
-		&& dist2ball < (2.5*Param::Vehicle::V2::PLAYER_SIZE + Param::Field::BALL_SIZE);
+		&& dist2ball < (2.5*PARAM::Vehicle::V2::PLAYER_SIZE + PARAM::Field::BALL_SIZE);
 	bool isBallInHeFront =fabs(Utils::Normalize(he2ball.dir()-he.Dir())) < allowInfrontAngleBufferHe
-		&& distHe2ball < (dist2ball+Param::Vehicle::V2::PLAYER_SIZE + Param::Field::BALL_SIZE);
+		&& distHe2ball < (dist2ball+PARAM::Vehicle::V2::PLAYER_SIZE + PARAM::Field::BALL_SIZE);
 
-	bool isBallJustInFront=ball.Vel().mod()<10 && fabs(Utils::Normalize(self2ball.dir()-me.Dir()))<Param::Math::PI/15 
-		&& meHead.dist(rawBallPos)<8 && fabs(me.Dir())<Param::Math::PI/3;
+    bool isBallJustInFront=ball.Vel().mod()<100 && fabs(Utils::Normalize(self2ball.dir()-me.Dir()))<PARAM::Math::PI/15
+        && meHead.dist(rawBallPos)<80 && fabs(me.Dir())<PARAM::Math::PI/3;
 
-//	bool isHeInMeFront = fabs(Utils::Normalize(metoHeDir-me.Dir())) < Param::Math::PI/3
-//		&& metoHeDist <dist2ball+4*Param::Vehicle::V2::PLAYER_SIZE ;
+//	bool isHeInMeFront = fabs(Utils::Normalize(metoHeDir-me.Dir())) < PARAM::Math::PI/3
+//		&& metoHeDist <dist2ball+4*PARAM::Vehicle::V2::PLAYER_SIZE ;
 
-	bool isBallMovtoMe=ballSpeed<400&&ballSpeed>120&&(dAngleMeBall2BallVelDir<Param::Math::PI/4||projDist<50)
-		&&ballMovingSeg.IsPointOnLineOnSegment(projMe)&&projMe.dist(rawBallPos)>30
-		&&NormalPlayUtils::noEnemyInPassLine(pVision,rawBallPos,me.Pos(),20);
+    bool isBallMovtoMe=ballSpeed<4000&&ballSpeed>1200&&(dAngleMeBall2BallVelDir<PARAM::Math::PI/4||projDist<500)
+        &&ballMovingSeg.IsPointOnLineOnSegment(projMe)&&projMe.dist(rawBallPos)>300
+        &&NormalPlayUtils::noEnemyInPassLine(pVision,rawBallPos,me.Pos(),200);
 
-//	bool isBallMovtoHe=balltoMeSeg.IsPointOnLineOnSegment(projHe)&&projDistHe<projDist+35&&Utils::Normalize(antiHeDir-ball.Vel().dir())<Param::Math::PI/3;
+//	bool isBallMovtoHe=balltoMeSeg.IsPointOnLineOnSegment(projHe)&&projDistHe<projDist+35&&Utils::Normalize(antiHeDir-ball.Vel().dir())<PARAM::Math::PI/3;
 
 
 	//standOff
-	bool isHeFrontToMe=fabs(Utils::Normalize(me.Dir()-antiHeDir))<Param::Math::PI/3&&me.Pos().dist(he.Pos())<40;
-	bool isMeHeStandOff=isHeFrontToMe&&me.Pos().dist(he.Pos())<35;
-	bool isStandOff=(ball.Valid()&&ballSpeed<50&&isBallInFront&&self2ball.mod()<15||!ball.Valid())&&isMeHeStandOff
-		||(me.Pos().dist(he.Pos())<35&&ballSpeed<30&&(metoBallSeg.IsPointOnLineOnSegment(projHeInMetoBallSeg)||diffAngleMeToBall2Me>Param::Math::PI/2));
-	int judgeRange=30;
-	if (dist2ball>150){
-		judgeRange=50;
-	}else if (dist2ball>80){
-		judgeRange=40;
-	}else if (dist2ball>30){
-		judgeRange=30;
+    bool isHeFrontToMe=fabs(Utils::Normalize(me.Dir()-antiHeDir))<PARAM::Math::PI/3&&me.Pos().dist(he.Pos())<400;
+    bool isMeHeStandOff=isHeFrontToMe&&me.Pos().dist(he.Pos())<350;
+    bool isStandOff=(ball.Valid()&&ballSpeed<500&&isBallInFront&&self2ball.mod()<150||!ball.Valid())&&isMeHeStandOff
+        ||(me.Pos().dist(he.Pos())<305&&ballSpeed<300&&(metoBallSeg.IsPointOnLineOnSegment(projHeInMetoBallSeg)||diffAngleMeToBall2Me>PARAM::Math::PI/2));
+    int judgeRange=300;
+    if (dist2ball>1500){
+        judgeRange=500;
+    }else if (dist2ball>800){
+        judgeRange=400;
+    }else if (dist2ball>300){
+        judgeRange=300;
 	}else{
-		judgeRange=25;
+        judgeRange=250;
 	}
 	
 
-	bool canGiveUpAdvance=getBallToucher()>Param::Field::MAX_PLAYER
-		&&ball.Vel().mod()>80&&Utils::OutOfField(predictBallPos,-10)
-		&&fabs(ball.Vel().dir())>Param::Math::PI*80/180
-		&&he.Pos().dist(rawBallPos)>me.Pos().dist(rawBallPos)+30
-		&&!NormalPlayUtils::isEnemyFrontToBall(pVision,30)
+	bool canGiveUpAdvance=getBallToucher()>PARAM::Field::MAX_PLAYER
+        &&ball.Vel().mod()>800&&!Utils::IsInField(predictBallPos,-100)
+		&&fabs(ball.Vel().dir())>PARAM::Math::PI*80/180
+        &&he.Pos().dist(rawBallPos)>me.Pos().dist(rawBallPos)+300
+        &&!NormalPlayUtils::isEnemyFrontToBall(pVision,300)
 		&&!NormalPlayUtils::ballMoveToOurDefendArea(pVision)
 		//&&me.Pos().dist(rawBallPos)/200>0.5
 		;
 
 	
 	double heSpeedInBallVel=heSpeed*cos(Utils::Normalize(he.Vel().dir()-ball.Vel().dir()))*1.5;
-	bool notHeGetBallBefore=projDistHe>projDist+35||Utils::Normalize(he2ball.dir()-he.Dir())>Param::Math::PI/2;
+    bool notHeGetBallBefore=projDistHe>projDist+350||Utils::Normalize(he2ball.dir()-he.Dir())>PARAM::Math::PI/2;
 	if (balltoMeSeg.IsPointOnLineOnSegment(projHe)){
 		notHeGetBallBefore=notHeGetBallBefore||projDist/ballSpeed<projDistHe/(ballSpeed+heSpeedInBallVel);
 	}else if(!ballMovingSeg.IsPointOnLineOnSegment(projHe)){
@@ -279,13 +280,13 @@ string CBallStatus::checkBallState(const CVisionModule* pVision,int meNum){
 		(isBallMovtoMe && notHeGetBallBefore
 			||isBallJustInFront&&!isHeFrontToMe
 			||(!canGiveUpAdvance&&!isBallInHeFront
-			&&(balltoHeDist-balltoMeDist>judgeRange || balltoHeDist>balltoMeDist+15 && isBallInFront)
-			&&ball.Pos().dist(theirClosedCar)>balltoMeDist+15
+            &&(balltoHeDist-balltoMeDist>judgeRange || balltoHeDist>balltoMeDist+150 && isBallInFront)
+            &&ball.Pos().dist(theirClosedCar)>balltoMeDist+150
 			)
 		);
 	//cout<<isBallMovtoMe<<" "<<isBallJustInFront<<" "<<isHeFrontToMe<<" "<<isBallInHeFront<<endl;
 	//waitTouch
-	bool canWaitAdvance=ballSpeed>350&&fabs(ballVelDir)<Param::Math::PI/3;
+    bool canWaitAdvance=ballSpeed>3500&&fabs(ballVelDir)<PARAM::Math::PI/3;
 	canWaitAdvance=false;
 	//giveUpAdvance
 
@@ -317,7 +318,7 @@ string CBallStatus::checkBallState(const CVisionModule* pVision,int meNum){
 	switch (_ballState)
 	{
 	case None:
-		//if (IsBallKickedOut()&&fabs(Utils::Normalize(me.Dir()-shootDir))<Param::Math::PI/10){
+		//if (IsBallKickedOut()&&fabs(Utils::Normalize(me.Dir()-shootDir))<PARAM::Math::PI/10){
 		//	memset(stateCouter,0,StateMaxNum*sizeof(int));
 		//	stateCouter[WaitAdvance]=keepThreshold[WaitAdvance];
 		//	_ballState=WaitAdvance;
@@ -339,7 +340,7 @@ string CBallStatus::checkBallState(const CVisionModule* pVision,int meNum){
 		}
 		break;
 	case OurBall:
-		//if (IsBallKickedOut()&&fabs(Utils::Normalize(me.Dir()-shootDir))<Param::Math::PI/10){
+		//if (IsBallKickedOut()&&fabs(Utils::Normalize(me.Dir()-shootDir))<PARAM::Math::PI/10){
 		//	memset(stateCouter,0,StateMaxNum*sizeof(int));
 		//	stateCouter[WaitAdvance]=keepThreshold[WaitAdvance];
 		//	_ballState=WaitAdvance;

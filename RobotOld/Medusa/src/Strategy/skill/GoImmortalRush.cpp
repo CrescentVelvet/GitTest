@@ -32,14 +32,14 @@ namespace {
     double MAX_RUSH_ROTATE_SPEED;
     double MAX_RUSH_MIDROTATE_SPEED;
 
-    int startedFlag[Param::Field::MAX_PLAYER];
-    int rushFlag[Param::Field::MAX_PLAYER];
-    int arrivedFlag[Param::Field::MAX_PLAYER];
-    double rushTime[Param::Field::MAX_PLAYER];
+    int startedFlag[PARAM::Field::MAX_PLAYER];
+    int rushFlag[PARAM::Field::MAX_PLAYER];
+    int arrivedFlag[PARAM::Field::MAX_PLAYER];
+    double rushTime[PARAM::Field::MAX_PLAYER];
     int SAO_ACTION;
-    const double penaltyAvoidDist = Param::Vehicle::V2::PLAYER_SIZE;
+    const double penaltyAvoidDist = PARAM::Vehicle::V2::PLAYER_SIZE;
 }
-using namespace Param::Vehicle::V2;
+using namespace PARAM::Vehicle::V2;
 
 /// 构造函数 ： 参数初始化
 CGoImmortalRush::CGoImmortalRush()
@@ -69,7 +69,7 @@ void CGoImmortalRush::plan(const CVisionModule* pVision)
 /// 执行接口
 CPlayerCommand* CGoImmortalRush::execute(const CVisionModule* pVision)
 {
-	if (pVision->getCycle() - _lastCycle > Param::Vision::FRAME_RATE * 0.1) {
+	if (pVision->getCycle() - _lastCycle > PARAM::Vision::FRAME_RATE * 0.1) {
         startedFlag[task().executor] = 0;
         rushFlag[task().executor] = 0;
         arrivedFlag[task().executor] = 0;
@@ -111,7 +111,7 @@ CPlayerCommand* CGoImmortalRush::execute(const CVisionModule* pVision)
                     target = Utils::MakeOutOfOurPenaltyArea(target, extra_out_dist);
                     bool checkOk = true;
 
-                for (int teammate = 1; teammate <= Param::Field::MAX_PLAYER; ++teammate) {
+                for (int teammate = 0; teammate < PARAM::Field::MAX_PLAYER; ++teammate) {
                     if (teammate != vecNumber) {
                         if (pVision->ourPlayer(teammate).Pos().dist(target) < thisPenaltyAvoidDist * 4) {
                             checkOk = false;
@@ -139,7 +139,7 @@ CPlayerCommand* CGoImmortalRush::execute(const CVisionModule* pVision)
             while (extraOutDist < 200) {
                 target = Utils::MakeOutOfTheirPenaltyArea(target, extraOutDist);
                 bool checkOk = true;
-                for (int teammate = 1; teammate <= Param::Field::MAX_PLAYER; ++teammate) {
+                for (int teammate = 0; teammate < PARAM::Field::MAX_PLAYER; ++teammate) {
                     if (teammate != vecNumber) {
                         if (pVision->ourPlayer(teammate).Pos().dist(target) < thisPenaltyAvoidDist * 4) {
                             checkOk = false;
@@ -196,7 +196,7 @@ CPlayerCommand* CGoImmortalRush::execute(const CVisionModule* pVision)
 void CGoImmortalRush::calcZeroRush(const CVisionModule *pVision, CVector &nextVel, double &nextRotVel, double &nextAngle) {
     const PlayerVisionT& self = pVision->ourPlayer(task().executor);
     if (!startedFlag[task().executor] && !rushFlag[task().executor]  && (self.Pos() - _target).mod() > 20) {
-        if (abs(Utils::Normalize((_target - self.Pos()).dir() + Param::Math::PI) - self.Dir()) < 0.8) startedFlag[task().executor] = 1;
+        if (abs(Utils::Normalize((_target - self.Pos()).dir() + PARAM::Math::PI) - self.Dir()) < 0.8) startedFlag[task().executor] = 1;
         arrivedFlag[task().executor] = 0;
         if (verbose) GDebugEngine::Instance()->gui_debug_msg(CGeoPoint(-580, 430), "START", COLOR_PURPLE);
         getStartRotate(pVision, nextVel, nextRotVel, nextAngle);
@@ -232,7 +232,7 @@ void CGoImmortalRush::getMiddleRush(const CVisionModule *pVision, CVector &nextV
     const PlayerVisionT& self = pVision->ourPlayer(task().executor);
     CGeoPoint target = task().player.pos;
 //    cout << self.Vel().mod() << endl;
-    double targetDir = (self.Pos() - _target).dir();//Utils::Normalize((_target - self.Pos()).dir() + Param::Math::PI);//(self.Pos() - target).dir();
+    double targetDir = (self.Pos() - _target).dir();//Utils::Normalize((_target - self.Pos()).dir() + PARAM::Math::PI);//(self.Pos() - target).dir();
     CVector targetVel = Utils::Polar2Vector(task().player.vel.mod(), (_target - self.Pos()).dir());
     PlayerPoseT final;
     final.SetPos(target);
@@ -289,7 +289,7 @@ double calcImmortalTime(const CVisionModule *pVision, const int robotNum, const 
 
 bool CGoImmortalRush::canGoto(const CVisionModule* pVision, const int player, const CGeoPoint& target)
 {
-	if (target.x() < -Param::Field::PITCH_LENGTH / 2 || target.x() > Param::Field::PITCH_LENGTH / 2) {
+	if (target.x() < -PARAM::Field::PITCH_LENGTH / 2 || target.x() > PARAM::Field::PITCH_LENGTH / 2) {
 		return false;
 	}
 	bool _canGo = true;
@@ -325,31 +325,24 @@ PlayerCapabilityT CGoImmortalRush::setCapability(const CVisionModule* pVision) {
 		}
 	}
 
-    if (playerFlag & PlayerStatus::SLOWLY) {
-        capability.maxSpeed = 140;
-        capability.maxAccel *= SlowFactor;
-        capability.maxDec *= SlowFactor;
-        capability.maxAngularSpeed *= SlowFactor;
-        capability.maxAngularAccel *= SlowFactor;
-        capability.maxAngularDec *= SlowFactor;
-    }
+
 	return capability;
 }
 
 //void CGoImmortalRush::LeavePenaltyArea(const CVisionModule* pVision, CGeoPoint myPos, CGeoPoint target)
 //{
 //    double dis_buff = 15;
-//    CGeoPoint left_top(-Param::Field::PITCH_LENGTH / 2 + Param::Field::PENALTY_AREA_DEPTH + dis_buff, -Param::Field::PENALTY_AREA_WIDTH/2 - dis_buff);
-//    CGeoPoint right_top(-Param::Field::PITCH_LENGTH / 2 + Param::Field::PENALTY_AREA_DEPTH + dis_buff, Param::Field::PENALTY_AREA_WIDTH / 2 + dis_buff);
-//    double top_dis = -Param::Field::PITCH_LENGTH / 2 + Param::Field::PENALTY_AREA_DEPTH - myPos.x();//到上边距离
-//    double left_dis = myPos.y() + Param::Field::PENALTY_AREA_WIDTH / 2;//到左边距离
-//    double right_dis = Param::Field::PENALTY_AREA_WIDTH / 2 - myPos.y();//到右边距离
-//    if (Utils::InOurPenaltyArea(target, Param::Vehicle::V2::PLAYER_SIZE)) {//目标点还在禁区内
+//    CGeoPoint left_top(-PARAM::Field::PITCH_LENGTH / 2 + PARAM::Field::PENALTY_AREA_DEPTH + dis_buff, -PARAM::Field::PENALTY_AREA_WIDTH/2 - dis_buff);
+//    CGeoPoint right_top(-PARAM::Field::PITCH_LENGTH / 2 + PARAM::Field::PENALTY_AREA_DEPTH + dis_buff, PARAM::Field::PENALTY_AREA_WIDTH / 2 + dis_buff);
+//    double top_dis = -PARAM::Field::PITCH_LENGTH / 2 + PARAM::Field::PENALTY_AREA_DEPTH - myPos.x();//到上边距离
+//    double left_dis = myPos.y() + PARAM::Field::PENALTY_AREA_WIDTH / 2;//到左边距离
+//    double right_dis = PARAM::Field::PENALTY_AREA_WIDTH / 2 - myPos.y();//到右边距离
+//    if (Utils::InOurPenaltyArea(target, PARAM::Vehicle::V2::PLAYER_SIZE)) {//目标点还在禁区内
 //        if (target.y() > 0) _target = right_top;
 //        else _target = left_top;
 //        return;
 //    }
-//    if (target.x() > -Param::Field::PITCH_LENGTH / 2 + Param::Field::PENALTY_AREA_DEPTH) {//1.目标点在上方
+//    if (target.x() > -PARAM::Field::PITCH_LENGTH / 2 + PARAM::Field::PENALTY_AREA_DEPTH) {//1.目标点在上方
 //        if (top_dis <= left_dis && top_dis <= right_dis) //1.1距离上边近
 //            _target = target;
 //        else if (left_dis <= right_dis)//1.2距离左边近
@@ -378,17 +371,17 @@ PlayerCapabilityT CGoImmortalRush::setCapability(const CVisionModule* pVision) {
 //void CGoImmortalRush::LeaveTheirPenaltyArea(const CVisionModule* pVision, CGeoPoint myPos, CGeoPoint target)
 //{
 //    double dis_buff = 30;
-//    CGeoPoint left_bottom(Param::Field::PITCH_LENGTH / 2 - Param::Field::PENALTY_AREA_DEPTH - dis_buff, -Param::Field::PENALTY_AREA_WIDTH / 2 - dis_buff);
-//    CGeoPoint right_bottom(Param::Field::PITCH_LENGTH / 2 - Param::Field::PENALTY_AREA_DEPTH - dis_buff, Param::Field::PENALTY_AREA_WIDTH / 2 + dis_buff);
-//    double bottom_dis = myPos.x()-(Param::Field::PITCH_LENGTH / 2 - Param::Field::PENALTY_AREA_DEPTH);//到下边距离
-//    double left_dis = myPos.y() + Param::Field::PENALTY_AREA_WIDTH / 2;//到左边距离
-//    double right_dis = Param::Field::PENALTY_AREA_WIDTH / 2 - myPos.y();//到右边距离
-//    if (Utils::InTheirPenaltyArea(target, Param::Vehicle::V2::PLAYER_SIZE)) {//目标点还在禁区内
+//    CGeoPoint left_bottom(PARAM::Field::PITCH_LENGTH / 2 - PARAM::Field::PENALTY_AREA_DEPTH - dis_buff, -PARAM::Field::PENALTY_AREA_WIDTH / 2 - dis_buff);
+//    CGeoPoint right_bottom(PARAM::Field::PITCH_LENGTH / 2 - PARAM::Field::PENALTY_AREA_DEPTH - dis_buff, PARAM::Field::PENALTY_AREA_WIDTH / 2 + dis_buff);
+//    double bottom_dis = myPos.x()-(PARAM::Field::PITCH_LENGTH / 2 - PARAM::Field::PENALTY_AREA_DEPTH);//到下边距离
+//    double left_dis = myPos.y() + PARAM::Field::PENALTY_AREA_WIDTH / 2;//到左边距离
+//    double right_dis = PARAM::Field::PENALTY_AREA_WIDTH / 2 - myPos.y();//到右边距离
+//    if (Utils::InTheirPenaltyArea(target, PARAM::Vehicle::V2::PLAYER_SIZE)) {//目标点还在禁区内
 //        if (target.y() > 0) _target = right_bottom;
 //        else _target = left_bottom;
 //        return;
 //    }
-//    if (target.x() < Param::Field::PITCH_LENGTH / 2 - Param::Field::PENALTY_AREA_DEPTH) {//1.目标点在下方
+//    if (target.x() < PARAM::Field::PITCH_LENGTH / 2 - PARAM::Field::PENALTY_AREA_DEPTH) {//1.目标点在下方
 //        if (bottom_dis <= left_dis && bottom_dis <= right_dis) //1.1距离下边近
 //            _target = target;
 //        else if (left_dis <= right_dis)//1.2距离左边近
@@ -417,53 +410,53 @@ PlayerCapabilityT CGoImmortalRush::setCapability(const CVisionModule* pVision) {
 void CGoImmortalRush::LeavePenaltyArea(const CVisionModule* pVision, const int player)
 {
     const CGeoPoint& vecPos = pVision->ourPlayer(player).Pos();
-    const double keepDistance = Param::Field::MAX_PLAYER_SIZE + 10;
-    if( Utils::InOurPenaltyArea(vecPos, Param::Field::MAX_PLAYER_SIZE) ){
+    const double keepDistance = PARAM::Field::MAX_PLAYER_SIZE + 10;
+    if( Utils::InOurPenaltyArea(vecPos, PARAM::Field::MAX_PLAYER_SIZE) ){
         // 在我方禁区里面,在禁区线上找一些点，找距离最近的挡不住的路线
-        const CGeoPoint ourGoal(-Param::Field::PITCH_LENGTH/2, 0);
+        const CGeoPoint ourGoal(-PARAM::Field::PITCH_LENGTH/2, 0);
         const CVector goal2player(vecPos - ourGoal);
         const double goal2playerDir = goal2player.dir();
         CGeoPoint leaveTarget;
-        if( Param::Rule::Version == 2003 ){
-            leaveTarget = ourGoal +  CVector(Param::Field::PITCH_MARGIN + Param::Field::PENALTY_AREA_DEPTH + keepDistance, vecPos.y());
-        }else if (Param::Rule::Version == 2004){
-            leaveTarget = ourGoal + Utils::Polar2Vector(Param::Field::PENALTY_AREA_WIDTH/2 + keepDistance, goal2playerDir);
-        }else if (Param::Rule::Version == 2008 || Param::Rule::Version == 2019){
+        if( PARAM::Rule::Version == 2003 ){
+            leaveTarget = ourGoal +  CVector(PARAM::Field::PITCH_MARGIN + PARAM::Field::PENALTY_AREA_DEPTH + keepDistance, vecPos.y());
+        }else if (PARAM::Rule::Version == 2004){
+            leaveTarget = ourGoal + Utils::Polar2Vector(PARAM::Field::PENALTY_AREA_WIDTH/2 + keepDistance, goal2playerDir);
+        }else if (PARAM::Rule::Version == 2008 || PARAM::Rule::Version == 2019){
             leaveTarget = Utils::GetOutSidePenaltyPos(goal2playerDir,keepDistance,ourGoal);
         }
         if( canGoto(pVision, player,leaveTarget) ){
             return;
         }
-        const double angleStep = Param::Math::PI/12 * Utils::Sign(vecPos.y());
+        const double angleStep = PARAM::Math::PI/12 * Utils::Sign(vecPos.y());
         const double distStep = 15 * Utils::Sign(vecPos.y());
         for( int i=1; i<3; ++i ){
-            if( Param::Rule::Version == 2003 ){
-                leaveTarget = ourGoal + CVector(Param::Field::PITCH_MARGIN + Param::Field::PENALTY_AREA_DEPTH + keepDistance, vecPos.y() + i * distStep);
-            }else if(Param::Rule::Version == 2004){
-                leaveTarget = ourGoal + Utils::Polar2Vector(Param::Field::PENALTY_AREA_WIDTH/2 + keepDistance, goal2playerDir + i * angleStep);
-            }else if (Param::Rule::Version == 2008 || Param::Rule::Version == 2019){
+            if( PARAM::Rule::Version == 2003 ){
+                leaveTarget = ourGoal + CVector(PARAM::Field::PITCH_MARGIN + PARAM::Field::PENALTY_AREA_DEPTH + keepDistance, vecPos.y() + i * distStep);
+            }else if(PARAM::Rule::Version == 2004){
+                leaveTarget = ourGoal + Utils::Polar2Vector(PARAM::Field::PENALTY_AREA_WIDTH/2 + keepDistance, goal2playerDir + i * angleStep);
+            }else if (PARAM::Rule::Version == 2008 || PARAM::Rule::Version == 2019){
                 leaveTarget = Utils::GetOutSidePenaltyPos(goal2playerDir + i * angleStep,keepDistance,ourGoal);
             }
             if( canGoto(pVision, player, leaveTarget) ){
                 return;
             }
 
-            if( Param::Rule::Version == 2003 ){
-                leaveTarget = ourGoal + CVector(Param::Field::PITCH_MARGIN + Param::Field::PENALTY_AREA_DEPTH + keepDistance, vecPos.y() - i * distStep);
-            }else if(Param::Rule::Version == 2004){
-                leaveTarget = ourGoal + Utils::Polar2Vector(Param::Field::PENALTY_AREA_WIDTH/2 + keepDistance, goal2playerDir - i * angleStep);
-            }else if (Param::Rule::Version == 2008 || Param::Rule::Version == 2019){
+            if( PARAM::Rule::Version == 2003 ){
+                leaveTarget = ourGoal + CVector(PARAM::Field::PITCH_MARGIN + PARAM::Field::PENALTY_AREA_DEPTH + keepDistance, vecPos.y() - i * distStep);
+            }else if(PARAM::Rule::Version == 2004){
+                leaveTarget = ourGoal + Utils::Polar2Vector(PARAM::Field::PENALTY_AREA_WIDTH/2 + keepDistance, goal2playerDir - i * angleStep);
+            }else if (PARAM::Rule::Version == 2008 || PARAM::Rule::Version == 2019){
                 leaveTarget = Utils::GetOutSidePenaltyPos(goal2playerDir - i * angleStep,keepDistance,ourGoal);
             }
             if( canGoto(pVision, player, leaveTarget) ){
                 return;
             }
         }
-        if( Param::Rule::Version == 2003 ){
-            leaveTarget = ourGoal + CVector(Param::Field::PITCH_MARGIN + Param::Field::PENALTY_AREA_DEPTH + keepDistance, vecPos.y());
-        }else if(Param::Rule::Version == 2004){
-            _target = ourGoal + Utils::Polar2Vector(Param::Field::PENALTY_AREA_WIDTH/2 + keepDistance, goal2playerDir); // 只能向前冲
-        }else if(Param::Rule::Version == 2008 || Param::Rule::Version == 2019){
+        if( PARAM::Rule::Version == 2003 ){
+            leaveTarget = ourGoal + CVector(PARAM::Field::PITCH_MARGIN + PARAM::Field::PENALTY_AREA_DEPTH + keepDistance, vecPos.y());
+        }else if(PARAM::Rule::Version == 2004){
+            _target = ourGoal + Utils::Polar2Vector(PARAM::Field::PENALTY_AREA_WIDTH/2 + keepDistance, goal2playerDir); // 只能向前冲
+        }else if(PARAM::Rule::Version == 2008 || PARAM::Rule::Version == 2019){
             _target = Utils::GetOutSidePenaltyPos(goal2playerDir,keepDistance,ourGoal);
         }
     }else{
@@ -476,20 +469,20 @@ void CGoImmortalRush::LeaveTheirPenaltyArea(const CVisionModule* pVision,
                                             const int player) {
     const CGeoPoint& vecPos = pVision->ourPlayer(player).Pos();
     // 在对方禁区里面,在禁区线上找一些点，找距离最近的挡不住的路线
-    CGeoPoint theirGoal(Param::Field::PITCH_LENGTH/2, 0);
+    CGeoPoint theirGoal(PARAM::Field::PITCH_LENGTH/2, 0);
     CVector goal2player(vecPos - theirGoal);
     double goal2playerDir = goal2player.dir();
-    double angleStep = Param::Math::PI / 12 * Utils::Sign(vecPos.y());
+    double angleStep = PARAM::Math::PI / 12 * Utils::Sign(vecPos.y());
 //	double distStep = 15 * Utils::Sign(vecPos.y());
-    double keepDistance = Param::Field::MAX_PLAYER_SIZE*1.5;
+    double keepDistance = PARAM::Field::MAX_PLAYER_SIZE*1.5;
 
     for (int i = 0;  i < 3; ++i) {
         CGeoPoint leaveTarget =
                 Utils::GetOutTheirSidePenaltyPos(goal2playerDir + i*angleStep,
                                                  keepDistance, theirGoal);
         if (Utils::canGo(pVision, player, leaveTarget, 0, 0) == true
-                && leaveTarget.x() > -Param::Field::PITCH_LENGTH/2
-                && leaveTarget.x() < Param::Field::PITCH_LENGTH/2) {
+                && leaveTarget.x() > -PARAM::Field::PITCH_LENGTH/2
+                && leaveTarget.x() < PARAM::Field::PITCH_LENGTH/2) {
             _target = leaveTarget;
             return;
         }
@@ -498,8 +491,8 @@ void CGoImmortalRush::LeaveTheirPenaltyArea(const CVisionModule* pVision,
                                                  keepDistance,
                                                  theirGoal);
         if (Utils::canGo(pVision, player, leaveTarget, 0, 0) == true
-                && leaveTarget.x() > -Param::Field::PITCH_LENGTH/2
-                && leaveTarget.x() < Param::Field::PITCH_LENGTH/2) {
+                && leaveTarget.x() > -PARAM::Field::PITCH_LENGTH/2
+                && leaveTarget.x() < PARAM::Field::PITCH_LENGTH/2) {
             _target = leaveTarget;
             return;
         }

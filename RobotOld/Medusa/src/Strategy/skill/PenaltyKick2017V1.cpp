@@ -11,7 +11,7 @@
 #include "KickDirection.h"
 #include "DribbleStatus.h"
 #include "RobotSensor.h"
-#include "param.h"
+#include "staticparams.h"
 
 namespace {
 	bool VERBOSE_MODE = false;
@@ -22,7 +22,7 @@ namespace {
 	CGeoPoint ourGoal;
 	CGeoPoint leftGoal;
 	CGeoPoint rightGoal;
-	double ROTATE_ANGLE = Param::Math::PI / 3;
+	double ROTATE_ANGLE = PARAM::Math::PI / 3;
 	enum PenaltyKickState {
 		PREPARING = 1, // 走到踢球点
 		CHIPKICK = 2,
@@ -32,9 +32,9 @@ namespace {
 
 CPenaltyKick2017V1::CPenaltyKick2017V1()
 {
-	ourGoal = CGeoPoint(Param::Field::PITCH_LENGTH / 2, 0);
-	leftGoal = CGeoPoint(Param::Field::PITCH_LENGTH / 2, -Param::Field::GOAL_WIDTH / 2 + goalBuffer);
-	rightGoal = CGeoPoint(Param::Field::PITCH_LENGTH / 2, Param::Field::GOAL_WIDTH / 2 - goalBuffer);
+	ourGoal = CGeoPoint(PARAM::Field::PITCH_LENGTH / 2, 0);
+	leftGoal = CGeoPoint(PARAM::Field::PITCH_LENGTH / 2, -PARAM::Field::GOAL_WIDTH / 2 + goalBuffer);
+	rightGoal = CGeoPoint(PARAM::Field::PITCH_LENGTH / 2, PARAM::Field::GOAL_WIDTH / 2 - goalBuffer);
 	_lastCycle = 0;
 	_theirGoalie = 0;
 	_targetside = 0;
@@ -53,7 +53,7 @@ void CPenaltyKick2017V1::plan(const CVisionModule* pVision)
 		_canShoot = 0;
 		_getball = 0;
 		_theirGoalie = 0;
-		for (int i = 1; i <= Param::Field::MAX_PLAYER; i++) {
+		for (int i = 0; i < PARAM::Field::MAX_PLAYER; i++) {
 			if (Utils::InTheirPenaltyArea(pVision->theirPlayer(i).Pos(), 0)) {
 				_theirGoalie = i;
 			}
@@ -143,7 +143,7 @@ void CPenaltyKick2017V1::planChipKick(const CVisionModule * pVision)
 		if (VERBOSE_MODE) cout << "getball" << endl;
 		myTask.player.pos = ball.Pos() + Utils::Polar2Vector(-10, ball2Goal.dir());
 		myTask.player.angle = ball2Goal.dir();
-		myTask.player.flag |= PlayerStatus::DRIBBLING | PlayerStatus::DO_NOT_STOP;
+        myTask.player.flag |= PlayerStatus::DRIBBLING;
 		KickStatus::Instance()->clearAll();
 		setSubTask(TaskFactoryV2::Instance()->GotoPosition(myTask));
 	}
@@ -152,7 +152,6 @@ void CPenaltyKick2017V1::planChipKick(const CVisionModule * pVision)
 		if (VERBOSE_MODE) cout << "kick" << endl;
 		myTask.player.pos = ball.Pos();
 		myTask.player.angle = ball2Goal.dir();
-		myTask.player.flag = PlayerStatus::DO_NOT_STOP;
 		KickStatus::Instance()->setKick(rolenum, 9999);
 		setSubTask(TaskFactoryV2::Instance()->GotoPosition(myTask));
 	}
@@ -172,7 +171,6 @@ void CPenaltyKick2017V1::planDirectKick(const CVisionModule * pVision)
 		if (VERBOSE_MODE) cout << "light kick" << endl;
 		myTask.player.pos = ball.Pos();
 		myTask.player.angle = ball2Goal.dir();
-		myTask.player.flag |= PlayerStatus::QUICKLY;
 		KickStatus::Instance()->setKick(rolenum, 10);
 		setSubTask(TaskFactoryV2::Instance()->GotoPosition(myTask));
 	}
@@ -181,7 +179,7 @@ void CPenaltyKick2017V1::planDirectKick(const CVisionModule * pVision)
 			cout << "move " << ball.Pos().y() << endl;
 			myTask.player.pos = CGeoPoint(150, 100);
 			myTask.player.angle = ball2Goal.dir();
-			myTask.player.flag |= PlayerStatus::DRIBBLING | PlayerStatus::QUICKLY;
+            myTask.player.flag |= PlayerStatus::DRIBBLING;
 			KickStatus::Instance()->clearAll();
 			DribbleStatus::Instance()->setDribbleCommand(rolenum, 3);
 			setSubTask(TaskFactoryV2::Instance()->GotoPosition(myTask));
@@ -190,7 +188,7 @@ void CPenaltyKick2017V1::planDirectKick(const CVisionModule * pVision)
 			if (VERBOSE_MODE) cout << "getball " << ball.Pos().y() << endl;
 			myTask.player.pos = ball.Pos() + Utils::Polar2Vector(-8, ball2Goal.dir());
 			myTask.player.angle = ball2Goal.dir();
-			myTask.player.flag |= PlayerStatus::DRIBBLING | PlayerStatus::DO_NOT_STOP;
+            myTask.player.flag |= PlayerStatus::DRIBBLING;
 			KickStatus::Instance()->clearAll();
 			DribbleStatus::Instance()->setDribbleCommand(rolenum, 3);
 			setSubTask(TaskFactoryV2::Instance()->GotoPosition(myTask));
@@ -210,7 +208,7 @@ void CPenaltyKick2017V1::planDirectKick(const CVisionModule * pVision)
 		}
 		myTask.player.angle = (targetPoint - ball.Pos()).dir();
 		CGeoLine ballVelLine(ball.Pos(), myTask.player.angle);
-		CGeoLine gateLine(ourGoal, Param::Math::PI / 2);
+		CGeoLine gateLine(ourGoal, PARAM::Math::PI / 2);
 		CGeoLineLineIntersection gateInter(ballVelLine, gateLine);
 		if (VERBOSE_MODE) cout << "kick " << gateInter.IntersectPoint() << endl;
 		myTask.player.flag |= PlayerStatus::DRIBBLING;
@@ -228,7 +226,7 @@ bool CPenaltyKick2017V1::canShoot(const CVisionModule* pVision)
 	bool distAble = ball.Pos().dist2(me.Pos()) < 60;
 
 	CGeoLine me2BallLine(me.Pos(), (ball.Pos() - me.Pos()).dir());
-	CGeoLine goalLine(CGeoPoint(Param::Field::PITCH_LENGTH / 2, 0), Param::Math::PI / 2);
+	CGeoLine goalLine(CGeoPoint(PARAM::Field::PITCH_LENGTH / 2, 0), PARAM::Math::PI / 2);
 	CGeoLineLineIntersection taskInter(me2BallLine, goalLine);
 	bool dirAble = (fabs(taskInter.IntersectPoint().y()) < 45);
 

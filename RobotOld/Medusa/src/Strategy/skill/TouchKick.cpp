@@ -8,7 +8,7 @@
 namespace{
 	///> 球速预测阈值
 	const int TouchDist = 30;
-	const double TouchAngle = Param::Math::PI / 36;
+	const double TouchAngle = PARAM::Math::PI / 36;
 	const int MaxPreFrame = 60;
 }
 
@@ -28,10 +28,10 @@ void CTouchKick::plan(const CVisionModule* pVision)
 	CGeoPoint myHead = me.Pos() + Utils::Polar2Vector(11, me.Dir());
 	const CVector me2ball = ball.Pos() - me.Pos();
 	const CVector ball2myHead = myHead - ball.Pos();
-	const double antiBallVelDir = Utils::Normalize(ball.Vel().dir() + Param::Math::PI);
+	const double antiBallVelDir = Utils::Normalize(ball.Vel().dir() + PARAM::Math::PI);
 	double kick_dir;
 
-	if ( pVision->getCycle() - _lastCycle > Param::Vision::FRAME_RATE * 0.1 
+	if ( pVision->getCycle() - _lastCycle > PARAM::Vision::FRAME_RATE * 0.1 
 		|| BallStatus::Instance()->IsBallKickedOut(runner)){
 		_reach_pre_flag = false;
 		PreFrame = MaxPreFrame;
@@ -39,18 +39,18 @@ void CTouchKick::plan(const CVisionModule* pVision)
 
 	///> 2.生成踢球的方向		
 	kick_dir = task().player.angle;
-	//cout<<pVision->Cycle()<<"  "<<kick_dir*180/Param::Math::PI<<endl;
+	//cout<<pVision->Cycle()<<"  "<<kick_dir*180/PARAM::Math::PI<<endl;
 	///> 3.生成站位点：依赖于上面计算的踢球方向
 	// 进行球速时间预测
 	double diff_antiBallVelDir_kickDir = fabs(Utils::Normalize(antiBallVelDir - kick_dir));
-	PreFrame = 30 + diff_antiBallVelDir_kickDir * 90 / Param::Math::PI;
+	PreFrame = 30 + diff_antiBallVelDir_kickDir * 90 / PARAM::Math::PI;
 	CGeoPoint prePos = BallSpeedModel::Instance()->posForTime(PreFrame, pVision);
-	if(Utils::OutOfField(prePos,0) && ball.Vel().mod()>10){
+	if(!Utils::IsInField(prePos,0) && ball.Vel().mod()>10){
 		CGeoLine ballMovingLine = CGeoLine(ball.Pos(),ball.Pos()+ball.Vel());
 		prePos = ballMovingLine.projection(me.Pos());
 	}
 
-	prePos = prePos + Utils::Polar2Vector( Param::Vehicle::V2::TOUCH_SHIFT_DIST,Utils::Normalize(kick_dir + Param::Math::PI));
+	prePos = prePos + Utils::Polar2Vector( PARAM::Vehicle::V2::TOUCH_SHIFT_DIST,Utils::Normalize(kick_dir + PARAM::Math::PI));
 	double me2prePosDist = me.Pos().dist(prePos);
 	double diffAngle = fabs(Utils::Normalize((ball2myHead.dir() - pVision->ball().Vel().dir())));
 

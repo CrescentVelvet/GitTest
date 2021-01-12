@@ -11,7 +11,7 @@
 /************************************************************************/
 
 #include "CornerAreaPos.h"
-#include "param.h"
+#include "staticparams.h"
 #include "utils.h"
 #include "WorldModel.h"
 #include "GDebugEngine.h"
@@ -33,8 +33,8 @@ namespace{
 	const double OPP_PRE_TIME = 1.5;//对敌人的带速度位置预测时间
 	const double OPP_REAL_PRE_TIME = 0.2;//对敌人真实位置的预测时间
 	const double DEAL_HIT_DIST = 35;//待联防的两车较近的时候再进入状态
-	const double BOTTOM_EXTREME_ANGLE = Param::Math::PI * 80 / 180;
-	const double MIDDLE_EXTREME_ANGLE = Param::Math::PI * 7 / 180;
+	const double BOTTOM_EXTREME_ANGLE = PARAM::Math::PI * 80 / 180;
+	const double MIDDLE_EXTREME_ANGLE = PARAM::Math::PI * 7 / 180;
 };
 
 CCornerAreaPos::CCornerAreaPos()
@@ -42,9 +42,9 @@ CCornerAreaPos::CCornerAreaPos()
 	//本算法的初始化
 	_CAPos = CGeoPoint(0,0);
 	_lastCAPos = CGeoPoint(0,0);
-	GOAL_LEFT_POS = CGeoPoint(-Param::Field::PITCH_LENGTH / 2, -Param::Field::GOAL_WIDTH / 2 - GoalBuffer);
-	GOAL_RIGHT_POS = CGeoPoint(-Param::Field::PITCH_LENGTH / 2, Param::Field::GOAL_WIDTH / 2 + GoalBuffer);
-	GOAL_CENTRE_POS = CGeoPoint(-Param::Field::PITCH_LENGTH / 2,0);
+	GOAL_LEFT_POS = CGeoPoint(-PARAM::Field::PITCH_LENGTH / 2, -PARAM::Field::GOAL_WIDTH / 2 - GoalBuffer);
+	GOAL_RIGHT_POS = CGeoPoint(-PARAM::Field::PITCH_LENGTH / 2, PARAM::Field::GOAL_WIDTH / 2 + GoalBuffer);
+	GOAL_CENTRE_POS = CGeoPoint(-PARAM::Field::PITCH_LENGTH / 2,0);
 	_lastCycle = 0;
 	//_forMarkingPos = CGeoPoint(0,0);
 	//_headAttackEnemy = 0;
@@ -122,7 +122,7 @@ CGeoPoint CCornerAreaPos::generatePos(const CVisionModule* pVision)
 			bool markWell = true;
 			double markerDistFactor = DefenceInfo::Instance()->getOppPlayerByNum(enemyNum)->getAttributeValue("AMarkerDistFactor");
 			double markerDirFactor = DefenceInfo::Instance()->getOppPlayerByNum(enemyNum)->getAttributeValue("AMarkerDirFactor");
-			if (markerDirFactor > Param::Math::PI * 100 / 180 || markerDistFactor > 250 || sin(markerDirFactor) * markerDistFactor > 30)
+			if (markerDirFactor > PARAM::Math::PI * 100 / 180 || markerDistFactor > 250 || sin(markerDirFactor) * markerDistFactor > 30)
 			{
 				markWell = false;
 			}
@@ -141,10 +141,10 @@ CGeoPoint CCornerAreaPos::generatePos(const CVisionModule* pVision)
 	CGeoPoint targetPos = CGeoPoint(0,0);
 	if (POS_SIDE_LEFT == ballSide)
 	{
-		targetPos = CGeoPoint(-(Param::Field::PITCH_LENGTH/2-Param::Field::PENALTY_AREA_DEPTH),Param::Field::PENALTY_AREA_WIDTH/2); // 已修改为Brazil zhyaic
+		targetPos = CGeoPoint(-(PARAM::Field::PITCH_LENGTH/2-PARAM::Field::PENALTY_AREA_DEPTH),PARAM::Field::PENALTY_AREA_WIDTH/2); // 已修改为Brazil zhyaic
 	} else if (POS_SIDE_RIGHT == ballSide)
 	{
-		targetPos = CGeoPoint(-(Param::Field::PITCH_LENGTH/2-Param::Field::PENALTY_AREA_DEPTH),-Param::Field::PENALTY_AREA_WIDTH/2); // 已修改为Brazil zhyaic
+		targetPos = CGeoPoint(-(PARAM::Field::PITCH_LENGTH/2-PARAM::Field::PENALTY_AREA_DEPTH),-PARAM::Field::PENALTY_AREA_WIDTH/2); // 已修改为Brazil zhyaic
 	}
 
 	if (0 != enemyBreakMe)//敌人存在
@@ -156,19 +156,19 @@ CGeoPoint CCornerAreaPos::generatePos(const CVisionModule* pVision)
 		{
 			if (angle_goal2target >= BOTTOM_EXTREME_ANGLE)
 			{
-				targetPos = GOAL_CENTRE_POS + Utils::Polar2Vector(150*Param::Field::RATIO,BOTTOM_EXTREME_ANGLE);
+				targetPos = GOAL_CENTRE_POS + Utils::Polar2Vector(150*PARAM::Field::RATIO,BOTTOM_EXTREME_ANGLE);
 			}else if (angle_goal2target <= MIDDLE_EXTREME_ANGLE)
 			{
-				targetPos = GOAL_CENTRE_POS + Utils::Polar2Vector(150*Param::Field::RATIO,MIDDLE_EXTREME_ANGLE);
+				targetPos = GOAL_CENTRE_POS + Utils::Polar2Vector(150*PARAM::Field::RATIO,MIDDLE_EXTREME_ANGLE);
 			}
 		}else if (POS_SIDE_RIGHT == ballSide)
 		{
 			if (angle_goal2target <= -1*BOTTOM_EXTREME_ANGLE)
 			{
-				targetPos = GOAL_CENTRE_POS + Utils::Polar2Vector(150*Param::Field::RATIO,-1*BOTTOM_EXTREME_ANGLE);
+				targetPos = GOAL_CENTRE_POS + Utils::Polar2Vector(150*PARAM::Field::RATIO,-1*BOTTOM_EXTREME_ANGLE);
 			}else if (angle_goal2target >= -1*MIDDLE_EXTREME_ANGLE)
 			{
-				targetPos = GOAL_CENTRE_POS + Utils::Polar2Vector(150*Param::Field::RATIO,-1*MIDDLE_EXTREME_ANGLE);
+				targetPos = GOAL_CENTRE_POS + Utils::Polar2Vector(150*PARAM::Field::RATIO,-1*MIDDLE_EXTREME_ANGLE);
 			}
 		}		
 	}

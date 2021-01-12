@@ -3,7 +3,7 @@
 #include "DefendUtils.h"
 
 namespace{
-	CGeoPoint theirGoal =CGeoPoint(Param::Field::PITCH_LENGTH /2.0 ,0); 
+	CGeoPoint theirGoal =CGeoPoint(PARAM::Field::PITCH_LENGTH /2.0 ,0); 
 
 }
 
@@ -39,32 +39,32 @@ bool CEnemyDefendTacticArea::isInCircleArea(CGeoPoint & enemyCarPos)
 bool CEnemyDefendTacticArea::isInLongCircle(CGeoPoint & enemyCarPos)
 {
 	////LongCirclr为禁区，传入有效量表示：  circleCenter：球门中心；outerRadius：两个1/4圆的半径;jointLength:两个半圆连接长度
-	const CGeoPoint leftC = CGeoPoint(Param::Field::PITCH_LENGTH/2, -Param::Field::PENALTY_AREA_L/2);
-	const CGeoPoint rightC = CGeoPoint(Param::Field::PITCH_LENGTH/2, Param::Field::PENALTY_AREA_L/2);
+	const CGeoPoint leftC = CGeoPoint(PARAM::Field::PITCH_LENGTH/2, -PARAM::Field::PENALTY_AREA_L/2);
+	const CGeoPoint rightC = CGeoPoint(PARAM::Field::PITCH_LENGTH/2, PARAM::Field::PENALTY_AREA_L/2);
 	if (Utils::InTheirPenaltyArea(enemyCarPos, 10)) return true;
 	return false;
 
-	/*if (abs(enemyCarPos.y()) < Param::Field::PENALTY_AREA_DEPTH / 2.0)// 如果y在禁区范围内
+	/*if (abs(enemyCarPos.y()) < PARAM::Field::PENALTY_AREA_DEPTH / 2.0)// 如果y在禁区范围内
 	{
-		if ((enemyCarPos - theirGoal ).mod() <  ( Param::Field::PENALTY_AREA_DEPTH - 10 ))
+		if ((enemyCarPos - theirGoal ).mod() <  ( PARAM::Field::PENALTY_AREA_DEPTH - 10 ))
 		{
 			return true;
 		}else
 		{
 			return false;
 		}
-	}else if (abs(enemyCarPos.y()) > (Param::Field::PENALTY_AREA_WIDTH / 2.0 ))
+	}else if (abs(enemyCarPos.y()) > (PARAM::Field::PENALTY_AREA_WIDTH / 2.0 ))
 	{
 		return false;
 	}else if(enemyCarPos.y() > 0)
 	{
-		if ( CVector(enemyCarPos - rightC).mod() < Param::Field::PENALTY_AREA_R - 10)
+		if ( CVector(enemyCarPos - rightC).mod() < PARAM::Field::PENALTY_AREA_R - 10)
 		{
 			return true;
 		}else{return false;}
 	}else if (enemyCarPos.y() < 0)
 	{
-		if (CVector(enemyCarPos - leftC).mod() < Param::Field::PENALTY_AREA_R - 10)
+		if (CVector(enemyCarPos - leftC).mod() < PARAM::Field::PENALTY_AREA_R - 10)
 		{
 			return true;
 		}else return false;
@@ -79,59 +79,59 @@ bool CEnemyDefendTacticArea::isInAnnulus(CGeoPoint & enemyCarPos)
 //	bool inInterCircle = false;
 //	bool inOuterCicle =false;
 
-//	const CGeoPoint leftC = CGeoPoint(Param::Field::PITCH_LENGTH/2, -Param::Field::PENALTY_AREA_L/2);
-//	const CGeoPoint rightC = CGeoPoint(Param::Field::PITCH_LENGTH/2, Param::Field::PENALTY_AREA_L/2);
+//	const CGeoPoint leftC = CGeoPoint(PARAM::Field::PITCH_LENGTH/2, -PARAM::Field::PENALTY_AREA_L/2);
+//	const CGeoPoint rightC = CGeoPoint(PARAM::Field::PITCH_LENGTH/2, PARAM::Field::PENALTY_AREA_L/2);
 	if (Utils::InTheirPenaltyArea(enemyCarPos, 10)) return true;
 	return false;
  ////内圆判断
 	/*
-	if (abs(enemyCarPos.y()) < Param::Field::PENALTY_AREA_L / 2.0)
+	if (abs(enemyCarPos.y()) < PARAM::Field::PENALTY_AREA_L / 2.0)
 	{
-		if ((enemyCarPos - theirGoal ).mod() <  ( Param::Field::PENALTY_AREA_DEPTH - 10 ))
+		if ((enemyCarPos - theirGoal ).mod() <  ( PARAM::Field::PENALTY_AREA_DEPTH - 10 ))
 		{
 			inInterCircle = true;
 		}else
 		{
 			inInterCircle = false;
 		}
-	}else if (abs(enemyCarPos.y()) > (Param::Field::PENALTY_AREA_L / 2.0 + Param::Field::PENALTY_AREA_R))
+	}else if (abs(enemyCarPos.y()) > (PARAM::Field::PENALTY_AREA_L / 2.0 + PARAM::Field::PENALTY_AREA_R))
 	{
 		inInterCircle = false;
 	}else if(enemyCarPos.y() > 0)
 	{
-		if (CVector(enemyCarPos - rightC).mod() < Param::Field::PENALTY_AREA_R - 10)
+		if (CVector(enemyCarPos - rightC).mod() < PARAM::Field::PENALTY_AREA_R - 10)
 		{
 			inInterCircle = true;
 		}else{inInterCircle = false;}
 	}else if (enemyCarPos.y() < 0)
 	{
-		if (CVector(enemyCarPos - leftC).mod() < Param::Field::PENALTY_AREA_R - 10)
+		if (CVector(enemyCarPos - leftC).mod() < PARAM::Field::PENALTY_AREA_R - 10)
 		{
 			inInterCircle = true;
 		}else inInterCircle = false;
 	}
 	////外圆判断
-	if (abs(enemyCarPos.y()) < Param::Field::PENALTY_AREA_L / 2.0)
+	if (abs(enemyCarPos.y()) < PARAM::Field::PENALTY_AREA_L / 2.0)
 	{
-		if ((enemyCarPos - theirGoal ).mod() <  ( Param::Field::PENALTY_AREA_DEPTH + buffer ))
+		if ((enemyCarPos - theirGoal ).mod() <  ( PARAM::Field::PENALTY_AREA_DEPTH + buffer ))
 		{
 			inOuterCicle = true;
 		}else
 		{
 			inOuterCicle = false;
 		}
-	}else if (abs(enemyCarPos.y()) > (Param::Field::PENALTY_AREA_L / 2.0 + Param::Field::PENALTY_AREA_R + buffer))
+	}else if (abs(enemyCarPos.y()) > (PARAM::Field::PENALTY_AREA_L / 2.0 + PARAM::Field::PENALTY_AREA_R + buffer))
 	{
 		inOuterCicle = false;
 	}else if(enemyCarPos.y() > 0)
 	{
-		if (CVector(enemyCarPos - rightC).mod() < Param::Field::PENALTY_AREA_R +buffer)
+		if (CVector(enemyCarPos - rightC).mod() < PARAM::Field::PENALTY_AREA_R +buffer)
 		{
 			inOuterCicle = true;
 		}else{inOuterCicle = false;}
 	}else if (enemyCarPos.y() < 0)
 	{
-		if (CVector(enemyCarPos - leftC).mod() < Param::Field::PENALTY_AREA_R + buffer)
+		if (CVector(enemyCarPos - leftC).mod() < PARAM::Field::PENALTY_AREA_R + buffer)
 		{
 			inOuterCicle = true;
 		}else inOuterCicle = false;
@@ -153,8 +153,8 @@ bool CEnemyDefendTacticArea::isMarkingOurCar(int enemyCarNum,const CVisionModule
 	double me2Goal =Utils::Normalize((theirGoal - ourCar.Pos()).dir());
 	double me2Ball = Utils::Normalize((ball.Pos() - ourCar.Pos()).dir());
 
-	bool oppBetweenMeAndGoal = abs(Utils::Normalize(me2Goal - me2oppDir)) < Param::Math::PI / 6;
-	bool oppBetweenMeAndBall = abs(Utils::Normalize(me2oppDir - me2Ball)) < Param::Math::PI / 6;
+	bool oppBetweenMeAndGoal = abs(Utils::Normalize(me2Goal - me2oppDir)) < PARAM::Math::PI / 6;
+	bool oppBetweenMeAndBall = abs(Utils::Normalize(me2oppDir - me2Ball)) < PARAM::Math::PI / 6;
 	return (oppBetweenMeAndBall || oppBetweenMeAndGoal);
 }
 

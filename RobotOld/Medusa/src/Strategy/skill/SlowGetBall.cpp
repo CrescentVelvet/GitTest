@@ -22,7 +22,7 @@ namespace{
 	const int dribblePower =3;// 1;                        // 控球力度
 	const double low_speed = 10;//10                       // 最后上前的小速度
 	const double stopDist = 3; //3
-	const double getBallOverDist = Param::Vehicle::V2::PLAYER_FRONT_TO_CENTER + newVehicleBuffer + Param::Field::BALL_SIZE + stopDist - 2.5;
+	const double getBallOverDist = PARAM::Vehicle::V2::PLAYER_FRONT_TO_CENTER + newVehicleBuffer + PARAM::Field::BALL_SIZE + stopDist - 2.5;
 	const int steadyCycle = 10;                         // 确定控制住球的帧数
 	static CGeoPoint startPoint = CGeoPoint(0,0);
 	//>开关量
@@ -54,7 +54,7 @@ void CSlowGetBall::plan(const CVisionModule* pVision)
 		}
 	}
 	//动作中断时间过长，状态重置
-	if ( pVision->getCycle() - _lastCycle > Param::Vision::FRAME_RATE * 0.1 ){
+	if ( pVision->getCycle() - _lastCycle > PARAM::Vision::FRAME_RATE * 0.1 ){
 		//cout << "Clear: get into SLOW_GET_BALL !" << endl;
 		setState(BEGINNING);
 		catchBallCount = 0;
@@ -67,14 +67,14 @@ void CSlowGetBall::plan(const CVisionModule* pVision)
 	const int robotNum = task().executor;
 	const int flags = task().player.flag;
 	const PlayerVisionT& me = pVision->ourPlayer(robotNum);
-	const CGeoPoint myhead = me.Pos()+Utils::Polar2Vector(Param::Vehicle::V2::PLAYER_FRONT_TO_CENTER + newVehicleBuffer,me.Dir());
+	const CGeoPoint myhead = me.Pos()+Utils::Polar2Vector(PARAM::Vehicle::V2::PLAYER_FRONT_TO_CENTER + newVehicleBuffer,me.Dir());
 	const double finalDir = task().player.angle;
-	const CGeoLine myheadLine = CGeoLine(myhead,Utils::Normalize(me.Dir() + Param::Math::PI/2.0));
+	const CGeoLine myheadLine = CGeoLine(myhead,Utils::Normalize(me.Dir() + PARAM::Math::PI/2.0));
 	const CGeoPoint ball2myheadLine_ProjPoint = myheadLine.projection(ball.Pos());
 	
 	//状态判断模块
 	bool isBallFrontOfMyhead = myhead.dist(ball2myheadLine_ProjPoint) < 3.5 ? true : false;                            //2.0
-	bool dirReached = fabs(Utils::Normalize(finalDir - me.Dir())) < Param::Math::PI*7/180.0 ? true : false;  //Param::Math::PI*5/180.0
+	bool dirReached = fabs(Utils::Normalize(finalDir - me.Dir())) < PARAM::Math::PI*7/180.0 ? true : false;  //PARAM::Math::PI*5/180.0
 	bool speedReached = me.Vel().mod() < 10.0 ? true : false;                                                           //5.0
 	bool distReached = me.Pos().dist(ball.Pos()) < getBallOverDist + 5.0 ? true : false;                               //getBallOverDist + 2.0
 	bool getballComplete = isBallFrontOfMyhead && dirReached && speedReached && distReached;   //判断是否跳转到S_GOTOWARD状态
@@ -109,7 +109,7 @@ void CSlowGetBall::plan(const CVisionModule* pVision)
 	//调试输出
 	if (Verbose)
 	{
-		cout << "check kick status : !!!!!!!!!!! " << ((flags & PlayerStatus::FORCE_KICK) | (flags & PlayerStatus::KICK_WHEN_POSSIABLE)) << endl;
+        cout << "check kick status : !!!!!!!!!!! " << (flags & PlayerStatus::FORCE_KICK) << endl;
 		//cout<<isBallFrontOfMyhead<<dirReached<<speedReached<<distReached<<"   getBallComplete: "<<getballComplete<<endl;
 		//cout<<fraredOn<<ballControled<<"   ballCatched: "<<ballCatched<<"   catchBallCount : "<<catchBallCount<<"   trueCatchBall: "<<trueBallCatched<<endl<<endl;
 	}

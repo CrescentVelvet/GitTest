@@ -1,5 +1,5 @@
 #include "DefenceInfo.h"
-#include "param.h"
+#include "staticparams.h"
 #include "AttributeSet.h"
 #include "Trigger.h"
 #include "OppPlayer.h"
@@ -13,25 +13,25 @@
 //#include <atlstr.h>
 namespace{
 	bool DEFENCE_DEBUG_MODE = true;
-	const double ballTakedDist = Param::Vehicle::V2::PLAYER_FRONT_TO_CENTER + 5; //是否拿球拿稳的距离判据
-	const double ballTakedAngle = Param::Math::PI / 3.0;						 //是否拿球拿稳的角度判据
+	const double ballTakedDist = PARAM::Vehicle::V2::PLAYER_FRONT_TO_CENTER + 5; //是否拿球拿稳的距离判据
+	const double ballTakedAngle = PARAM::Math::PI / 3.0;						 //是否拿球拿稳的角度判据
 }
 RegisterPair ClassFactory::m_vec[];
 CDefenceInfo::CDefenceInfo(){
     ZSS::ZParamManager::instance()->loadParam(DEFENCE_DEBUG_MODE,"Debug/DefenceSequence",true);
 
 	_lastCycle = 0;
-	for(int i = 0;i <= Param::Field::MAX_PLAYER;i++)_markCycle[i] = 0;
-	for(int i = 0;i <= Param::Field::MAX_PLAYER;i++)_isMarked[i] = false;
-	for(int i = 0;i <= Param::Field::MAX_PLAYER;i++)_markMode[i] = false;
-	_markList.reserve(Param::Field::MAX_PLAYER);
+    for(int i = 0;i < PARAM::Field::MAX_PLAYER;i++)_markCycle[i] = 0;
+    for(int i = 0;i < PARAM::Field::MAX_PLAYER;i++)_isMarked[i] = false;
+    for(int i = 0;i < PARAM::Field::MAX_PLAYER;i++)_markMode[i] = false;
+	_markList.reserve(PARAM::Field::MAX_PLAYER);
 	_markList.clear();
 	_trigger.clear();
 
 	_attackerNum = 0;
-	for(int i = 0;i < Param::Field::MAX_PLAYER;i++)_attackArray[i] = 0;
-	for(int i = 0;i < Param::Field::MAX_PLAYER;i++)_steadyAttackArray[i] = 0;
-	for(int i = 0;i <= Param::Field::MAX_PLAYER;i++)_oplayer[i] = new COppPlayer();
+	for(int i = 0;i < PARAM::Field::MAX_PLAYER;i++)_attackArray[i] = 0;
+	for(int i = 0;i < PARAM::Field::MAX_PLAYER;i++)_steadyAttackArray[i] = 0;
+    for(int i = 0;i < PARAM::Field::MAX_PLAYER;i++)_oplayer[i] = new COppPlayer();
 	initialization();
 	_ballTaken = false;
 	
@@ -41,8 +41,8 @@ CDefenceInfo::CDefenceInfo(){
 	_normalNoMarkList.clear();
 
 	_noChangeAttackNum = 0;
-	for(int i = 0;i < Param::Field::MAX_PLAYER;i++)_noChangeAttackArray[i] = 0;
-	for(int i = 0;i <= Param::Field::MAX_PLAYER;i++)_noChangeOplayer[i] = new COppPlayer();
+	for(int i = 0;i < PARAM::Field::MAX_PLAYER;i++)_noChangeAttackArray[i] = 0;
+    for(int i = 0;i < PARAM::Field::MAX_PLAYER;i++)_noChangeOplayer[i] = new COppPlayer();
 	_markingFrontNum = 0;
 }
 
@@ -53,7 +53,7 @@ CDefenceInfo::~CDefenceInfo()
 
 void CDefenceInfo::changeAttrSet(CAttributeSet& as)
 {
-	for (int i = 0; i <= Param::Field::MAX_PLAYER;++i)
+	for (int i = 0; i < PARAM::Field::MAX_PLAYER;++i)
 	{
 		_oplayer[i]->setProperty(i,as);
 	}
@@ -84,7 +84,7 @@ void CDefenceInfo::initialization(){
 }
 
 void CDefenceInfo::updateDefenceInfo(const CVisionModule *pVision){
-	for (int i = 1; i <= Param::Field::MAX_PLAYER;i++)
+	for (int i = 0; i < PARAM::Field::MAX_PLAYER;i++)
 	{
 		if (pVision->theirPlayer(i).Valid())
 		{
@@ -116,9 +116,9 @@ void CDefenceInfo::updateDefenceInfo(const CVisionModule *pVision){
         attackSteadyInform.append(QString("%1:").arg(getAttackNum()));
         for(int i=0;i<getAttackNum();i++)
             attackSteadyInform.append(QString(" %1").arg(_attackArray[i]-1));
-        GDebugEngine::Instance()->gui_debug_msg(CGeoPoint(100,-Param::Field::PITCH_WIDTH * 2 / 3),attackInform.toLatin1(),COLOR_YELLOW);
-        GDebugEngine::Instance()->gui_debug_msg(CGeoPoint(100,-Param::Field::PITCH_WIDTH * 2 / 3 - 300),attackSteadyInform.toLatin1(),COLOR_YELLOW);
-		for(int i = 1;i<=Param::Field::MAX_PLAYER;++i)
+        GDebugEngine::Instance()->gui_debug_msg(CGeoPoint(100,-PARAM::Field::PITCH_WIDTH * 2 / 3),attackInform.toLatin1(),COLOR_YELLOW);
+        GDebugEngine::Instance()->gui_debug_msg(CGeoPoint(100,-PARAM::Field::PITCH_WIDTH * 2 / 3 - 300),attackSteadyInform.toLatin1(),COLOR_YELLOW);
+		for(int i = 0;i<PARAM::Field::MAX_PLAYER;++i)
 		{
 		    CGeoPoint playerPos = pVision->theirPlayer(i).Pos();
 		    char oppRoleName[2];
@@ -166,8 +166,8 @@ void CDefenceInfo::setMarkList(const CVisionModule* pVision,int myNum,int enemyN
             cout << "enemyNum = 0 in the function 'setMarkList'('DefenceInfo.cpp:166')" << endl;//add 2016.12.18
 			return;
         }
-        if(!pVision->ourPlayer(myNum).Valid()) cout <<"OurPlayer invalid :" <<myNum <<" in CDefenceInfo::setMarkList" <<endl;
-        if(!pVision->theirPlayer(enemyNum).Valid()) cout <<"TheirPlayer invalid :" <<myNum <<" in CDefenceInfo::setMarkList" <<endl;
+        if(!pVision->ourPlayer(myNum).Valid()) cout <<"ourPlayer invalid :" <<myNum <<" in CDefenceInfo::setMarkList" <<endl;
+        if(!pVision->theirPlayer(enemyNum).Valid()) cout <<"theirPlayer invalid :" <<myNum <<" in CDefenceInfo::setMarkList" <<endl;
 		return;
 	}
 	_markCycle[enemyNum] = pVision->getCycle();
@@ -206,7 +206,7 @@ void CDefenceInfo::updateAttackArray(const CVisionModule* pVision)//更新进攻
 	AttackerList attackerTempList;
 	attackerTempList.clear();
 	_attackerNum = 0;
-	for (int i = 1;i <= Param::Field::MAX_PLAYER;++i)
+	for (int i = 0;i < PARAM::Field::MAX_PLAYER;++i)
 	{
 		if (!pVision->theirPlayer(i).Valid())continue;
 		if (_oplayer[i]->getThreatenPri() < PRIORITY_DEFENCE)
@@ -282,7 +282,7 @@ void CDefenceInfo::setNoMarkingNum(int enemyNum)
 
 void CDefenceInfo::updateMarkPair(const CVisionModule* pVision)
 {
-	for (int i = 1;i <= Param::Field::MAX_PLAYER;i++)
+	for (int i = 0;i < PARAM::Field::MAX_PLAYER;i++)
 	{
 		if (!pVision->theirPlayer(i).Valid() )				          
 		{
@@ -305,7 +305,7 @@ void CDefenceInfo::updateMarkPair(const CVisionModule* pVision)
 
 void CDefenceInfo::updateSteadyAttackArray()
 {
-	for(int i = 0;i < Param::Field::MAX_PLAYER;i++)_steadyAttackArray[i] = _attackArray[i];
+	for(int i = 0;i < PARAM::Field::MAX_PLAYER;i++)_steadyAttackArray[i] = _attackArray[i];
 }
 
 void CDefenceInfo::updateBallTaken(const CVisionModule* pVision)
@@ -432,9 +432,9 @@ void CDefenceInfo::clearAll()
 
 void CDefenceInfo::checkSteadyAttack(const CVisionModule* pVision, AttackerList attackerList)
 {
-	int tmpSteadyAttack[Param::Field::MAX_PLAYER] = {0,0,0,0,0,0};
+	int tmpSteadyAttack[PARAM::Field::MAX_PLAYER] = {0,0,0,0,0,0};
 	int index = 0;
-	for (int i =0;i< Param::Field::MAX_PLAYER;i++){
+	for (int i =0;i< PARAM::Field::MAX_PLAYER;i++){
 		for (AttackerList::iterator ar = attackerList.begin();ar != attackerList.end();ar++){
 			if (_steadyAttackArray[i] == (*ar).num){
 				tmpSteadyAttack[index] = _steadyAttackArray[i];
@@ -442,7 +442,7 @@ void CDefenceInfo::checkSteadyAttack(const CVisionModule* pVision, AttackerList 
 			}
 		}
 	}
-	for (int i=0;i<Param::Field::MAX_PLAYER;i++){
+	for (int i=0;i<PARAM::Field::MAX_PLAYER;i++){
 		_steadyAttackArray[i] = 0;
 	}
 	for (int i=0;i<index;i++){
@@ -469,11 +469,11 @@ int CDefenceInfo::getMarkingTouchNum(CGeoPoint upLeft,CGeoPoint downRight)
 void CDefenceInfo::setNoChangeFlag()
 {
 	_noChangeFlag = true;
-	for (int i = 1; i <= Param::Field::MAX_PLAYER;i++)
+	for (int i = 0; i < PARAM::Field::MAX_PLAYER;i++)
 	{
 		_noChangeOplayer[i] = _oplayer[i];
-		_noChangeAttackArray[i-1] = _attackArray[i-1];
-		_noChangeSteadyAttackArray[i-1] = _steadyAttackArray[i-1];
+        _noChangeAttackArray[i] = _attackArray[i];
+        _noChangeSteadyAttackArray[i] = _steadyAttackArray[i];
 		_noChangeAttackNum = _attackerNum;
 		//cout<<_noChangeAttackArray[i-1];
 	}

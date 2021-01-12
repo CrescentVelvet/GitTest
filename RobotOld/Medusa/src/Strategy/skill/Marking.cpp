@@ -18,22 +18,22 @@ namespace{
 
 	CGeoPoint ourGoalPoint;       //我方球门
 
-	const double simpleGotoDirLimt = Param::Math::PI*150/180;
+	const double simpleGotoDirLimt = PARAM::Math::PI*150/180;
 	const double enemyPredictTime = 3;											//敌人的位置预测
-	const double simpleGotoStrictDirLimt = Param::Math::PI * 70/180;			//更加严厉的角度限制
+	const double simpleGotoStrictDirLimt = PARAM::Math::PI * 70/180;			//更加严厉的角度限制
 	const double PATH_PLAN_CHANGE_DIST = 75;									//修改该值以获得更好的速度规划变动点!!!
 	const double FRIENDLY_DIST_LIMIT = 10;										//友好模式 距离限制
 
-	bool kickOffSide[Param::Field::MAX_PLAYER+1] = {0};
+	bool kickOffSide[PARAM::Field::MAX_PLAYER] = {0};
 
-	const double kMarkingFrontMinDist = Param::Field::PITCH_WIDTH * 2 / 3;
-	const CGeoPoint kOurGoal = CGeoPoint(-Param::Field::PITCH_LENGTH / 2, 0);
+	const double kMarkingFrontMinDist = PARAM::Field::PITCH_WIDTH * 2 / 3;
+	const CGeoPoint kOurGoal = CGeoPoint(-PARAM::Field::PITCH_LENGTH / 2, 0);
 	const double kEnemyReceiverOffsetThresholdIn = 25;
 	const double kEnemyRecieverOffsetThresholdOut = 40;
 }
 CMarking::CMarking()
 {
-	ourGoalPoint = CGeoPoint(-Param::Field::PITCH_LENGTH/2,0);
+	ourGoalPoint = CGeoPoint(-PARAM::Field::PITCH_LENGTH/2,0);
 	enemyNum = 1;
 	_lastCycle = 0;
 
@@ -73,7 +73,7 @@ void CMarking::plan(const CVisionModule* pVision)
 	static bool is_first = true;
 	
 	//内部状态进行重置
-	if ( pVision->getCycle() - _lastCycle > Param::Vision::FRAME_RATE * 0.1 )
+	if ( pVision->getCycle() - _lastCycle > PARAM::Vision::FRAME_RATE * 0.1 )
 	{
 		setState(BEGINNING);
 	}
@@ -111,16 +111,12 @@ void CMarking::plan(const CVisionModule* pVision)
 	CVector markPos2ourGoal = ourGoalPoint - markPos;
 
 	double me2ballDir = CVector(ball.Pos() - mePos).dir();
-	double me2theirGoalDir = CVector(CGeoPoint(Param::Field::PITCH_LENGTH/2.0,0) - mePos).dir();
+	double me2theirGoalDir = CVector(CGeoPoint(PARAM::Field::PITCH_LENGTH/2.0,0) - mePos).dir();
 	TaskT MarkingTask(task());
 	//避禁区
 	MarkingTask.player.flag |= PlayerStatus::DODGE_OUR_DEFENSE_BOX;
 	//定位球避开开球50cm区域
 	const string refMsg = WorldModel::Instance()->CurrentRefereeMsg();
-	if ("TheirIndirectKick" == refMsg || "TheirDirectKick" == refMsg || "TheirKickOff" == refMsg || "GameStop" == refMsg)
-	{
-		MarkingTask.player.flag |= PlayerStatus::DODGE_REFEREE_AREA;
-	}
 
 	//路径规划设置
 	if (me.Pos().dist(markPos) < PATH_PLAN_CHANGE_DIST)
@@ -136,7 +132,7 @@ void CMarking::plan(const CVisionModule* pVision)
 	double angle_oppVel_opp2Goal = fabs(Utils::Normalize(opp2ourGoalVector.dir() - oppVel.dir()));
 	double sinPre = std::sin(angle_oppVel_opp2Goal);
 //	double cosPre = std::cos(angle_oppVel_opp2Goal);
-//	double dist = fabs(pVision->TheirPlayer(enemyNum).Y() - mePos.y());
+//	double dist = fabs(pVision->theirPlayer(enemyNum).Y() - mePos.y());
 	//cout<<sinPre<<" "<<oppVel.mod()<<" "<<dist<<endl;
 	
 	//避障设置
@@ -168,7 +164,7 @@ void CMarking::plan(const CVisionModule* pVision)
 			shiftDist = 100;
 		}
 		//shiftDist = 0;
-		markPos = markPos + Utils::Polar2Vector(shiftDist,Param::Math::PI/2);
+		markPos = markPos + Utils::Polar2Vector(shiftDist,PARAM::Math::PI/2);
 
 	}
 
@@ -182,12 +178,12 @@ void CMarking::plan(const CVisionModule* pVision)
 		}
 	}
 
-	if (Utils::OutOfField(markPos,0)){
+	if (!Utils::IsInField(markPos,0)){
 		markPos = Utils::MakeInField(markPos,20);
 	}
 	//GDebugEngine::Instance()->gui_debug_msg(markPos,"M",COLOR_YELLOW);
 	MarkingTask.player.pos = markPos;
-	MarkingTask.player.angle = CVector(CGeoPoint(Param::Field::PITCH_LENGTH/2.0,0) - me.Pos()).dir();
+	MarkingTask.player.angle = CVector(CGeoPoint(PARAM::Field::PITCH_LENGTH/2.0,0) - me.Pos()).dir();
 	//MarkingTask.player.angle = 0;
 	//GDebugEngine::Instance()->gui_debug_line(mePos,mePos+Utils::Polar2Vector(500,MarkingTask.player.angle),COLOR_WHITE);
 	MarkingTask.player.max_acceleration = 650;
@@ -203,7 +199,7 @@ void CMarking::plan(const CVisionModule* pVision)
 		MarkingTask.player.max_acceleration = 1000;
 		MarkingTask.player.is_specify_ctrl_method = true;
 		MarkingTask.player.specified_ctrl_method = CMU_TRAJ;
-		if (true == NameSpaceMarkingPosV2::DENY_LOG[enemyNum] && fabs(Utils::Normalize(me2ballDir - me2theirGoalDir)) < Param::Math::PI * 60 / 180)
+		if (true == NameSpaceMarkingPosV2::DENY_LOG[enemyNum] && fabs(Utils::Normalize(me2ballDir - me2theirGoalDir)) < PARAM::Math::PI * 60 / 180)
 		{
 			MarkingTask.player.angle = me2theirGoalDir;
 			markMethod = me2theirGoalDir;
@@ -218,13 +214,13 @@ void CMarking::plan(const CVisionModule* pVision)
 		}
 	}
 	if (kickOffSide[vecNumber] == false){
-		CGeoPoint leftUp = CGeoPoint(Param::Field::PITCH_LENGTH/2,30+20);
-		CGeoPoint rightDown = CGeoPoint(80,Param::Field::PITCH_WIDTH/2);
+		CGeoPoint leftUp = CGeoPoint(PARAM::Field::PITCH_LENGTH/2,30+20);
+		CGeoPoint rightDown = CGeoPoint(80,PARAM::Field::PITCH_WIDTH/2);
 		if (DefenceInfo::Instance()->checkInRecArea(enemyNum,pVision,MarkField(leftUp,rightDown))){
 			checkKickOffArea = true;
 		}
 	}else if (kickOffSide[vecNumber] == true){
-		CGeoPoint leftUp = CGeoPoint(Param::Field::PITCH_LENGTH/2,-Param::Field::PITCH_WIDTH/2);
+		CGeoPoint leftUp = CGeoPoint(PARAM::Field::PITCH_LENGTH/2,-PARAM::Field::PITCH_WIDTH/2);
 		CGeoPoint rightDown = CGeoPoint(80,-30-20);
 		if (DefenceInfo::Instance()->checkInRecArea(enemyNum,pVision,MarkField(leftUp,rightDown))){
 			checkKickOffArea = true;
@@ -243,7 +239,7 @@ void CMarking::plan(const CVisionModule* pVision)
     MarkingTask.player.flag ^= PlayerStatus::TURN_AROUND_FRONT;
 		//MarkingTask.player.flag |= PlayerStatus::NOT_AVOID_THEIR_VEHICLE;
     MarkingTask.player.angle = me2ballDir;
-	MarkingTask.player.pos = enemyPos + Utils::Polar2Vector(Param::Vehicle::V2::PLAYER_SIZE * 2, me2ballDir);
+	MarkingTask.player.pos = enemyPos + Utils::Polar2Vector(PARAM::Vehicle::V2::PLAYER_SIZE * 2, me2ballDir);
 		if ( "TheirKickOff" == refMsg ){
 		if(MarkingTask.player.pos.x()  > -15 )
 			MarkingTask.player.pos.setX(-15);
@@ -289,7 +285,7 @@ void CMarking::plan(const CVisionModule* pVision)
 	}
 
 	GDebugEngine::Instance()->gui_debug_msg(MarkingTask.player.pos,"M",COLOR_WHITE);
-	//cout<<enemyNum<<": "<<pVision->TheirPlayer(enemyNum).Vel().mod()<<" "<<vecNumber<<endl;
+	//cout<<enemyNum<<": "<<pVision->theirPlayer(enemyNum).Vel().mod()<<" "<<vecNumber<<endl;
 	_lastCycle = pVision->getCycle();
 	CStatedTask::plan(pVision);
 }

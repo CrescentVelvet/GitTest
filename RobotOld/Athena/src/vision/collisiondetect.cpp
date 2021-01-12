@@ -34,7 +34,7 @@ bool CCollisionDetect::ballCloseEnough2Analyze() {
 void CCollisionDetect::analyzeData(ReceiveVisionMessage& result) {
     //first test near ball
     int OurTouchNum = -1, TheirTouchNum = -1;
-    for (int roboId = 0; roboId < PARAM::ROBOTMAXID; roboId++) {
+    for (int roboId = 0; roboId < PARAM::ROBOTNUM; roboId++) {
         bool foundBlue = true, foundYellow = true;
         for (int frame = 0; frame > -NEAR_VECHILE_MIN_FRAME; frame--) {
             bool foundBlueCar = false, foundYellowCar = false;
@@ -65,12 +65,12 @@ void CCollisionDetect::analyzeData(ReceiveVisionMessage& result) {
 
     if (OurTouchNum != -1 && TheirTouchNum == -1) {
         result.ball[0].ball_state_machine.ballState = _touched;
-        GlobalData::instance()->lastTouch = PARAM::BLUE * PARAM::ROBOTMAXID + OurTouchNum;
+        GlobalData::instance()->lastTouch = PARAM::BLUE * PARAM::ROBOTNUM + OurTouchNum;
         return;
         //std::cout<<"the ball touch OUR robot:num:"<<OurTouchNum<<" id:"<<GlobalData::instance()->maintain[LinePoint[j]].robot[PARAM::BLUE][OurTouchNum].id<<std::endl;
     } else if (TheirTouchNum != -1 && OurTouchNum == -1) {
         result.ball[0].ball_state_machine.ballState = _touched;
-        GlobalData::instance()->lastTouch = PARAM::YELLOW * PARAM::ROBOTMAXID + TheirTouchNum;
+        GlobalData::instance()->lastTouch = PARAM::YELLOW * PARAM::ROBOTNUM + TheirTouchNum;
         //std::cout<<"the ball touch THEIR robot:num:"<<TheirTouchNum<<" id:"<<GlobalData::instance()->maintain[LinePoint[j]].robot[PARAM::YELLOW][TheirTouchNum].id<<std::endl;
         return;
     } else if (OurTouchNum != -1 && TheirTouchNum != -1) {
@@ -147,12 +147,12 @@ void CCollisionDetect::analyzeData(ReceiveVisionMessage& result) {
         if (OurTouchNum != -1 && ((TheirTouchNum != -1 && OurTouchDis <= TheirTouchDis - 5) || TheirTouchNum == -1)) {
             result.ball[0].ball_state_machine.ballState = _touched;
             //LastTouch = 1;
-            GlobalData::instance()->lastTouch = PARAM::BLUE * PARAM::ROBOTMAXID + OurTouchNum; //change by lzx //+GlobalData::instance()->maintain[LinePoint[j]].robot[PARAM::BLUE][OurTouchNum].id;
+            GlobalData::instance()->lastTouch = PARAM::BLUE * PARAM::ROBOTNUM + OurTouchNum; //change by lzx //+GlobalData::instance()->maintain[LinePoint[j]].robot[PARAM::BLUE][OurTouchNum].id;
             //std::cout<<"the ball touch OUR robot:num:"<<OurTouchNum<<" id:"<<GlobalData::instance()->maintain[LinePoint[j]].robot[PARAM::BLUE][OurTouchNum].id<<std::endl;
         } else if (TheirTouchNum != -1 && ((OurTouchNum != -1 && TheirTouchDis <= OurTouchDis - 5) || OurTouchNum == -1)) {
             result.ball[0].ball_state_machine.ballState = _touched;
             //LastTouch = 2;
-            GlobalData::instance()->lastTouch = PARAM::YELLOW * PARAM::ROBOTMAXID + TheirTouchNum;//change by lzx //+GlobalData::instance()->maintain[LinePoint[j]].robot[PARAM::YELLOW][TheirTouchNum].id;
+            GlobalData::instance()->lastTouch = PARAM::YELLOW * PARAM::ROBOTNUM + TheirTouchNum;//change by lzx //+GlobalData::instance()->maintain[LinePoint[j]].robot[PARAM::YELLOW][TheirTouchNum].id;
             //std::cout<<"the ball touch THEIR robot:num:"<<TheirTouchNum<<" id:"<<GlobalData::instance()->maintain[LinePoint[j]].robot[PARAM::YELLOW][TheirTouchNum].id<<std::endl;
         } else if (OurTouchNum != -1 && TheirTouchNum != -1 && abs(OurTouchDis - TheirTouchDis) <= 5) {
             //争球

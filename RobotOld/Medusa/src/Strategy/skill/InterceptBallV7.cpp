@@ -12,7 +12,7 @@ namespace {
 	const double newVehicleBuffer = 0.6;
 	const double StopDist = 1;
 	const double directGetBallDist = 35;
-	const double directGetBallDirLimit = Param::Math::PI / 4;
+	const double directGetBallDirLimit = PARAM::Math::PI / 4;
     const bool verbose = false;
 }
 CInterceptBallV7::CInterceptBallV7() :waitPoint(0, 0)
@@ -50,22 +50,22 @@ void CInterceptBallV7::plan(const CVisionModule * pVision)
 		DribbleStatus::Instance()->setDribbleCommand(robotNum, 3);
 	}
 	//红外触发 且方向正确，则直接射门
-    if (ifshoot == 1 && isSensored && abs(me.Dir() - finalAngel) < 10 * Param::Math::PI / 180) {
+    if (ifshoot == 1 && isSensored && abs(me.Dir() - finalAngel) < 10 * PARAM::Math::PI / 180) {
         if (verbose) cout << "My Angle:" << abs(me.Dir() - finalAngel) << endl;
 		if (ifChip) KickStatus::Instance()->setChipKick(robotNum, kickpower);
 		else KickStatus::Instance()->setKick(robotNum, kickpower);
 	}
 
 	//已经贴球，且朝向球，则踢球或改变踢球方向
-	if (me2Ball.mod() < 16 && abs(Utils::Normalize(me.Dir() - me2Ball.dir())) < Param::Math::PI / 4) {
+	if (me2Ball.mod() < 16 && abs(Utils::Normalize(me.Dir() - me2Ball.dir())) < PARAM::Math::PI / 4) {
 		/*
-		if (ifshoot == 1 && abs(me.Dir() - finalAngel) < 7 * Param::Math::PI / 180) {
+		if (ifshoot == 1 && abs(me.Dir() - finalAngel) < 7 * PARAM::Math::PI / 180) {
 			if(ifChip) KickStatus::Instance()->setChipKick(robotNum, kickpower);
 			else KickStatus::Instance()->setKick(robotNum, kickpower);
 		}Utils::Polar2Vector(-40, Utils::Normalize(finalAngel))
 		*/
 		//如果车角度正确，低速往前冲
-		if (ifshoot == 1 && abs(me.Dir() - finalAngel) < 3 * Param::Math::PI / 180) {
+		if (ifshoot == 1 && abs(me.Dir() - finalAngel) < 3 * PARAM::Math::PI / 180) {
 			chase_kick_task.player.pos = ball.RawPos() + Utils::Polar2Vector(-5, Utils::Normalize(finalAngel));
 			//速度是否需要设置更低
 			//setSubTask(TaskFactoryV2::Instance()->GotoPosition(chase_kick_task));
@@ -75,20 +75,20 @@ void CInterceptBallV7::plan(const CVisionModule * pVision)
 		//如果车角度不对，需要转向
 		else {
 			int  CLOCKWISE = -1;	//-1 顺时针
-			if (Utils::Normalize(me.Dir()) < Utils::Normalize(finalAngel) && Utils::Normalize(me.Dir()) + Param::Math::PI > Utils::Normalize(finalAngel))
+			if (Utils::Normalize(me.Dir()) < Utils::Normalize(finalAngel) && Utils::Normalize(me.Dir()) + PARAM::Math::PI > Utils::Normalize(finalAngel))
 				CLOCKWISE = 1;
-			double newdir = me.Dir() + CLOCKWISE * Param::Math::PI / 18;//转10度
+			double newdir = me.Dir() + CLOCKWISE * PARAM::Math::PI / 18;//转10度
 			chase_kick_task.player.pos = CGeoPoint(ball.RawPos().x() - me2Ball.mod()*std::cos(newdir), ball.RawPos().y() - me2Ball.mod()*std::sin(newdir));
 			double omega;
 			//与射出角度相差小于30度
-			//if (abs(me.Dir() - finalAngel) < Param::Math::PI / 6 && me2Ball.mod() > 18) {
-			if (abs(me.Dir() - finalAngel) < Param::Math::PI / 6) {//角度差比较小的时候减速
-				omega = Param::Math::PI / 2;//降低角速度
+			//if (abs(me.Dir() - finalAngel) < PARAM::Math::PI / 6 && me2Ball.mod() > 18) {
+			if (abs(me.Dir() - finalAngel) < PARAM::Math::PI / 6) {//角度差比较小的时候减速
+				omega = PARAM::Math::PI / 2;//降低角速度
                 chase_kick_task.player.speed_x = 20;//推着球转
                 if (verbose) cout << "slow turn" << endl;
 			}
 			else {
-				omega = Param::Math::PI*1.5;//角度较大，加快转向
+				omega = PARAM::Math::PI*1.5;//角度较大，加快转向
                 chase_kick_task.player.speed_x = 30;
                 if (verbose) cout << "fast turn" << endl;
 			}
@@ -113,26 +113,26 @@ void CInterceptBallV7::plan(const CVisionModule * pVision)
 		staticDir = getStaticDir(pVision, staticDir);
 
 		if (needAvoidBall) {
-			if (fabs(me2BallDirDiff) > Param::Math::PI / 3) {
-				double avoidDir = Utils::Normalize(ball2Me.dir() + staticDir * Param::Math::PI / 4);
+			if (fabs(me2BallDirDiff) > PARAM::Math::PI / 3) {
+				double avoidDir = Utils::Normalize(ball2Me.dir() + staticDir * PARAM::Math::PI / 4);
 				chase_kick_task.player.pos = ball.Pos() + Utils::Polar2Vector(30, avoidDir);
 			}
 			else {
-				double directDist = Param::Vehicle::V2::PLAYER_FRONT_TO_CENTER + newVehicleBuffer + Param::Field::BALL_SIZE + StopDist - 2.5;
-				chase_kick_task.player.pos = ball.Pos() + Utils::Polar2Vector(directDist, Utils::Normalize(finalAngel - Param::Math::PI));
+				double directDist = PARAM::Vehicle::V2::PLAYER_FRONT_TO_CENTER + newVehicleBuffer + PARAM::Field::BALL_SIZE + StopDist - 2.5;
+				chase_kick_task.player.pos = ball.Pos() + Utils::Polar2Vector(directDist, Utils::Normalize(finalAngel - PARAM::Math::PI));
 				if (fabs(me2BallDirDiff) < 0.2)
-					chase_kick_task.player.pos = ball.Pos() + Utils::Polar2Vector(directDist, Utils::Normalize(finalAngel - Param::Math::PI));
+					chase_kick_task.player.pos = ball.Pos() + Utils::Polar2Vector(directDist, Utils::Normalize(finalAngel - PARAM::Math::PI));
 			}
 		}
 		else {
-			if (fabs(me2BallDirDiff) > Param::Math::PI / 2) {
-				double gotoDir = Utils::Normalize(finalAngel + staticDir * Param::Math::PI * 3 / 5);
+			if (fabs(me2BallDirDiff) > PARAM::Math::PI / 2) {
+				double gotoDir = Utils::Normalize(finalAngel + staticDir * PARAM::Math::PI * 3 / 5);
 				chase_kick_task.player.pos = ball.Pos() + Utils::Polar2Vector(40, gotoDir);
 				chase_kick_task.player.vel = Utils::Polar2Vector(100, (chase_kick_task.player.pos - me.Pos()).dir());
 			}
 			else {
-				double directDist = Param::Vehicle::V2::PLAYER_FRONT_TO_CENTER + newVehicleBuffer + Param::Field::BALL_SIZE + StopDist - 2.5;
-				chase_kick_task.player.pos = ball.Pos() + Utils::Polar2Vector(directDist, Utils::Normalize(finalAngel - Param::Math::PI));
+				double directDist = PARAM::Vehicle::V2::PLAYER_FRONT_TO_CENTER + newVehicleBuffer + PARAM::Field::BALL_SIZE + StopDist - 2.5;
+				chase_kick_task.player.pos = ball.Pos() + Utils::Polar2Vector(directDist, Utils::Normalize(finalAngel - PARAM::Math::PI));
 			}
 			//}
             //setSubTask(TaskFactoryV2::Instance()->GotoPosition(chase_kick_task));
@@ -144,7 +144,7 @@ void CInterceptBallV7::plan(const CVisionModule * pVision)
 	//车到球线很近，车离球不远，车在球前，则车到截球线上等着
 	else if (me.RawPos().dist(ballLineProjection) < 15 && me2Ball.mod()<60 &&
 		abs(Utils::Normalize(ball2Projection.dir() - ball.Vel().dir()))<0.1) {
-		if (abs(Utils::Normalize(me2Ball.dir() - ball.Vel().dir())) > Param::Math::PI / 3 * 2)//夹角小于60度直接去截球线
+		if (abs(Utils::Normalize(me2Ball.dir() - ball.Vel().dir())) > PARAM::Math::PI / 3 * 2)//夹角小于60度直接去截球线
 			chase_kick_task.player.pos = ballLineProjection;
 		else
 			chase_kick_task.player.pos = ballLineProjection + ball.Vel() * 2.5;//往前补偿
@@ -159,7 +159,7 @@ void CInterceptBallV7::plan(const CVisionModule * pVision)
 		CVector testpoint2Ball = ball.RawPos() - testPoint;
 		chase_kick_task.player.angle = testpoint2Ball.dir();//面向球截球
 
-		if (abs(Utils::Normalize(me2Ball.dir() - ball.Vel().dir())) < Param::Math::PI / 2 && me2Ball.mod() <= 40)//追在球屁股后面，且可能撞上球
+		if (abs(Utils::Normalize(me2Ball.dir() - ball.Vel().dir())) < PARAM::Math::PI / 2 && me2Ball.mod() <= 40)//追在球屁股后面，且可能撞上球
 			chase_kick_task.player.pos = testPoint + (projection2Me / projection2Me.mod() * 40);//跑到球的侧面
 		else
 			chase_kick_task.player.pos = testPoint;

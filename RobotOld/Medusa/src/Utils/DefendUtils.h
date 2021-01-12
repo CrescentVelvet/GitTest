@@ -1,7 +1,7 @@
 #ifndef _DEFENDUTILS_H_
 #define _DEFENDUTILS_H_
 #include <geometry.h>
-#include <param.h>
+#include "staticparams.h"
 #include <string>
 #include <misc_types.h>
 

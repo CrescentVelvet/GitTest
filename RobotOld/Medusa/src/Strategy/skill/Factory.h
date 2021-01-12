@@ -3,7 +3,7 @@
 
 #include <singleton.h>
 #include <misc_types.h>
-#include "param.h"
+#include "staticparams.h"
 /************************************************************************/
 /*                         CTaskFactoryV2                               */
 /************************************************************************/
@@ -95,6 +95,7 @@ public:
     CPlayerTask* HoldBall(const TaskT& task);
     CPlayerTask* GoAndTurnKickV4(const TaskT& task);
     CPlayerTask* ZDrag(const TaskT &task);
+    CPlayerTask* ZBack(const TaskT &task);
 protected:
 	template < class CTaskType >
 	CPlayerTask* MakeTask( const TaskT& task );
@@ -130,12 +131,11 @@ namespace PlayerRole{
     extern CPlayerTask* makeItZChaseKick(const int num, double faceDir, int flags = 0);
     extern CPlayerTask* makeItProtectBall(const int num,int flags=0);
     extern CPlayerTask* makeItTouchKick(const int num,double kickDir, bool isPass = false, int flags=0);
-    extern CPlayerTask* makeItMarkingTouch(const int num,const double kickDir,const CGeoPoint leftUpPos,const CGeoPoint rightDownPos,const int flags);
     extern CPlayerTask* makeItMarkingFront(const int num,const int markNum,const double kickDir,const int flags);
     extern CPlayerTask* makeItAdvanceBallV1(const int num, const int flags = 0);
     extern CPlayerTask* makeItAdvanceBallV2(const int num, const int flags = 0,  const int tendemNum = 0);
     extern CPlayerTask* makeItStaticGetBallNew(const int num, const double dir, CVector finalVel, int flags, double StopDist, CTRL_METHOD mode);
-    extern CPlayerTask* makeItGoAndTurnKickV3(const int num ,const double targetdir,int circleNum,const double fixAngle,const double maxAcc,const int radius,const int numPerCir,const double gotoPre,const double gotoDist,const double adjustPre,const double kickprecision = Param::Math::PI*5/180,const int flags = 0);
+    extern CPlayerTask* makeItGoAndTurnKickV3(const int num ,const double targetdir,int circleNum,const double fixAngle,const double maxAcc,const int radius,const int numPerCir,const double gotoPre,const double gotoDist,const double adjustPre,const double kickprecision = PARAM::Math::PI*5/180,const int flags = 0);
     extern CPlayerTask* makeItGetBallV4(const int num, const int flag, const CGeoPoint& pos, const CGeoPoint& waitPos, const int power, const double precision=-1);
     extern CPlayerTask* makeItZGoalie(const int num,const CGeoPoint& pos,const int power,const int flag = 0);
     extern CPlayerTask* makeItSlowGetBall(const int num, const double dir, const int flags = 0);
@@ -154,7 +154,7 @@ namespace PlayerRole{
     extern CPlayerTask* makeItZAttack(const int num,const CGeoPoint& target, const CGeoPoint& waitPos, const double power, const int flag, const double precision=-1);
     extern CPlayerTask* makeItMessi(const int,const CGeoPoint& target,const double power = 100);
     extern CPlayerTask* makeItZCirclePass(const int num, CGeoPoint target, const double power, const int flag);
-    extern CPlayerTask* makeItDribbleTurn(const int num, const double finalDir, const double pre = Param::Math::PI / 90);
+    extern CPlayerTask* makeItDribbleTurn(const int num, const double finalDir, const double pre = PARAM::Math::PI / 90);
     extern CPlayerTask* makeItDribbleTurnKick(const int num, const double finalDir, const double turnRotVel,const double kickPower);
     extern CPlayerTask* makeItInterceptTouch(const int num, const CGeoPoint& waitPos, const double touchDir, const double power, const double buffer, const bool useChip,const bool, const CGeoPoint target);
     extern CPlayerTask* makeItOpenSpeedCircle(const int num,
@@ -173,6 +173,7 @@ namespace PlayerRole{
     extern CPlayerTask* makeItZDrag(const int num,
                                     const CGeoPoint& target,
                                     const CGeoPoint& waitPos);
+    extern CPlayerTask* makeItZBack(const int num, const int guardNum, const int index, const double power, const int flag);
 }
 
 #endif // _TASK_FACTORY_V2_H_

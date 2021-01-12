@@ -87,7 +87,7 @@ void CHoldBall::plan(const CVisionModule* pVision)
     }
     if(holdMode == HOLDBALL){
         // 计算敌方最佳车到球的距离
-        CGeoPoint enemyTarget = me.Pos() + Utils::Polar2Vector(2*Param::Vehicle::V2::PLAYER_SIZE, me.Dir());
+        CGeoPoint enemyTarget = me.Pos() + Utils::Polar2Vector(2*PARAM::Vehicle::V2::PLAYER_SIZE, me.Dir());
         CVector target2me = me.Pos() - enemyTarget;
         CVector me2target = enemyTarget - me.Pos();
         CVector ball2me = me.Pos() - ball.Pos();
@@ -103,20 +103,20 @@ void CHoldBall::plan(const CVisionModule* pVision)
         double enemy2TargetDis;
         // 计算直线距离
         double enemy2meDis = enemy2me.mod();
-        if(enemy2meDis > 2*Param::Vehicle::V2::PLAYER_SIZE){
-            double enemy2tanPointDis = sqrt(enemy2me.mod2() - pow(2*Param::Vehicle::V2::PLAYER_SIZE, 2));
+        if(enemy2meDis > 2*PARAM::Vehicle::V2::PLAYER_SIZE){
+            double enemy2tanPointDis = sqrt(enemy2me.mod2() - pow(2*PARAM::Vehicle::V2::PLAYER_SIZE, 2));
             if(enemy2tanPointDis < enemy2Target.mod()){
                 // 计算圆弧长度
                 // 计算切点
                 double enemy2meDir = enemy2me.dir();
-                double angle = std::atan2(2*Param::Vehicle::V2::PLAYER_SIZE, enemy2tanPointDis);
+                double angle = std::atan2(2*PARAM::Vehicle::V2::PLAYER_SIZE, enemy2tanPointDis);
                 CGeoPoint tanPoint1 = enemy.Pos() + Utils::Polar2Vector(enemy2tanPointDis, enemy2meDir + angle);
                 CGeoPoint tanPoint2 = enemy.Pos() + Utils::Polar2Vector(enemy2tanPointDis, enemy2meDir - angle);
                 CVector me2tanPoint1 = tanPoint1 - me.Pos();
                 CVector me2tanPoint2 = tanPoint2 - me.Pos();
-                double theta1 = abs(me2tanPoint1.dir() - me.Dir()) < Param::Math::PI ? abs(me2tanPoint1.dir() - me.Dir()) : 2*Param::Math::PI - abs(me2tanPoint1.dir() - me.Dir());
-                double theta2 = abs(me2tanPoint2.dir() - me.Dir()) < Param::Math::PI ? abs(me2tanPoint2.dir() - me.Dir()) : 2*Param::Math::PI - abs(me2tanPoint2.dir() - me.Dir());
-                double arcDis = 2*Param::Vehicle::V2::PLAYER_SIZE*theta1 < 2*Param::Vehicle::V2::PLAYER_SIZE*theta2 ? 2*Param::Vehicle::V2::PLAYER_SIZE*theta1 : 2*Param::Vehicle::V2::PLAYER_SIZE*theta2;
+                double theta1 = abs(me2tanPoint1.dir() - me.Dir()) < PARAM::Math::PI ? abs(me2tanPoint1.dir() - me.Dir()) : 2*PARAM::Math::PI - abs(me2tanPoint1.dir() - me.Dir());
+                double theta2 = abs(me2tanPoint2.dir() - me.Dir()) < PARAM::Math::PI ? abs(me2tanPoint2.dir() - me.Dir()) : 2*PARAM::Math::PI - abs(me2tanPoint2.dir() - me.Dir());
+                double arcDis = 2*PARAM::Vehicle::V2::PLAYER_SIZE*theta1 < 2*PARAM::Vehicle::V2::PLAYER_SIZE*theta2 ? 2*PARAM::Vehicle::V2::PLAYER_SIZE*theta1 : 2*PARAM::Vehicle::V2::PLAYER_SIZE*theta2;
                 enemy2TargetDis = enemy2tanPointDis + arcDis;
 //                GDebugEngine::Instance()->gui_debug_msg(CGeoPoint(500,100), "1", COLOR_GREEN);
             }
@@ -129,8 +129,8 @@ void CHoldBall::plan(const CVisionModule* pVision)
         else{
             CVector me2enemy = enemy.Pos() - me.Pos();
             CVector me2target = enemyTarget - me.Pos();
-            double angle = abs(me2target.dir() - me2enemy.dir()) < Param::Math::PI ? abs(me2target.dir() - me2enemy.dir()) : 2*Param::Math::PI - abs(me2target.dir() - me2enemy.dir());
-            enemy2TargetDis = angle * 2*Param::Vehicle::V2::PLAYER_SIZE;
+            double angle = abs(me2target.dir() - me2enemy.dir()) < PARAM::Math::PI ? abs(me2target.dir() - me2enemy.dir()) : 2*PARAM::Math::PI - abs(me2target.dir() - me2enemy.dir());
+            enemy2TargetDis = angle * 2*PARAM::Vehicle::V2::PLAYER_SIZE;
         }
         // GDebugEngine::Instance()->gui_debug_msg(CGeoPoint(100,100), std::to_string(int(enemy2TargetDis)).c_str(), COLOR_GREEN);
         if(me2ball.mod() < 30){
@@ -138,9 +138,9 @@ void CHoldBall::plan(const CVisionModule* pVision)
         }
 
 //        double rotVel = 0;
-//        rotVel = abs(target2me.dir() - target2enemy.dir()) < Param::Math::PI ? abs(target2me.dir() - target2enemy.dir()) : 2*Param::Math::PI - abs(target2me.dir() - target2enemy.dir());
-//        double diffAngle = me2enemy.dir() - me2target.dir() > 0 ? me2enemy.dir() - me2target.dir() : me2enemy.dir() - me2target.dir() + 2*Param::Math::PI;
-//        if(diffAngle <= Param::Math::PI)rotVel *= -5;
+//        rotVel = abs(target2me.dir() - target2enemy.dir()) < PARAM::Math::PI ? abs(target2me.dir() - target2enemy.dir()) : 2*PARAM::Math::PI - abs(target2me.dir() - target2enemy.dir());
+//        double diffAngle = me2enemy.dir() - me2target.dir() > 0 ? me2enemy.dir() - me2target.dir() : me2enemy.dir() - me2target.dir() + 2*PARAM::Math::PI;
+//        if(diffAngle <= PARAM::Math::PI)rotVel *= -5;
 //        else rotVel *= 5;
 //        GDebugEngine::Instance()->gui_debug_msg(CGeoPoint(0,100), std::to_string(diffAngle).c_str(), COLOR_GREEN);
 
@@ -151,32 +151,32 @@ void CHoldBall::plan(const CVisionModule* pVision)
         for(int i=1; i<=enemyNum; i++){
             const PlayerVisionT c_enemy = pVision->theirPlayer(i);
             CVector c_enemy2me = me.Pos() - c_enemy.Pos();
-            double targetAngle = c_enemy2me.dir() > 0 ? 2*Param::Math::PI - c_enemy2me.dir() : -1*c_enemy2me.dir();
+            double targetAngle = c_enemy2me.dir() > 0 ? 2*PARAM::Math::PI - c_enemy2me.dir() : -1*c_enemy2me.dir();
             finalAngle += targetAngle/c_enemy2me.mod();
             coeff += 1/c_enemy2me.mod();
         }
         finalAngle /= coeff;
         // 计算最佳距离
-        double anotherAngle = finalAngle < Param::Math::PI ? finalAngle+Param::Math::PI : finalAngle - Param::Math::PI;
+        double anotherAngle = finalAngle < PARAM::Math::PI ? finalAngle+PARAM::Math::PI : finalAngle - PARAM::Math::PI;
         double diff1 = 0, diff2 = 0;
         for(int i=0; i<=enemyNum;i++){
             const PlayerVisionT c_enemy = pVision->theirPlayer(i);
             CVector c_enemy2me = me.Pos() - c_enemy.Pos();
-            double targetAngle = c_enemy2me.dir() > 0 ? 2*Param::Math::PI - c_enemy2me.dir() : -1*c_enemy2me.dir();
-            double d_angle1 = abs(targetAngle-finalAngle) < Param::Math::PI ? abs(targetAngle-finalAngle) : 2*Param::Math::PI - abs(targetAngle-finalAngle);
+            double targetAngle = c_enemy2me.dir() > 0 ? 2*PARAM::Math::PI - c_enemy2me.dir() : -1*c_enemy2me.dir();
+            double d_angle1 = abs(targetAngle-finalAngle) < PARAM::Math::PI ? abs(targetAngle-finalAngle) : 2*PARAM::Math::PI - abs(targetAngle-finalAngle);
             diff1 += d_angle1/c_enemy2me.mod();
-            double d_angle2 = abs(targetAngle-anotherAngle) < Param::Math::PI ? abs(targetAngle-anotherAngle) : 2*Param::Math::PI - abs(targetAngle-anotherAngle);
+            double d_angle2 = abs(targetAngle-anotherAngle) < PARAM::Math::PI ? abs(targetAngle-anotherAngle) : 2*PARAM::Math::PI - abs(targetAngle-anotherAngle);
             diff2 += d_angle2/c_enemy2me.mod();
         }
         if(diff1>diff2)finalAngle = anotherAngle;
-        double c_angle = me2target.dir() > 0 ? 2*Param::Math::PI - me2target.dir() : -1*me2target.dir(); // current angle
-        double diffAngle = c_angle - finalAngle > 0 ? c_angle - finalAngle : c_angle - finalAngle + 2*Param::Math::PI;
-        double rotVel = diffAngle < Param::Math::PI ? diffAngle : 2*Param::Math::PI - diffAngle;
-        if(diffAngle < Param::Math::PI)
+        double c_angle = me2target.dir() > 0 ? 2*PARAM::Math::PI - me2target.dir() : -1*me2target.dir(); // current angle
+        double diffAngle = c_angle - finalAngle > 0 ? c_angle - finalAngle : c_angle - finalAngle + 2*PARAM::Math::PI;
+        double rotVel = diffAngle < PARAM::Math::PI ? diffAngle : 2*PARAM::Math::PI - diffAngle;
+        if(diffAngle < PARAM::Math::PI)
             rotVel *= 3;
         else
             rotVel *= -3;
-//        double targetAngle = enemy2me.dir() > 0 ? 2*Param::Math::PI - enemy2me.dir() : -1*enemy2me.dir();
+//        double targetAngle = enemy2me.dir() > 0 ? 2*PARAM::Math::PI - enemy2me.dir() : -1*enemy2me.dir();
         GDebugEngine::Instance()->gui_debug_msg(CGeoPoint(0,100), std::to_string(finalAngle).c_str(), COLOR_GREEN);
         GDebugEngine::Instance()->gui_debug_msg(CGeoPoint(150,100), std::to_string(me.Dir()).c_str(), COLOR_GREEN);
         setSubTask(PlayerRole::makeItRun(robotNum, 0, 0, rotVel));

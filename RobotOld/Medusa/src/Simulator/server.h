@@ -26,7 +26,7 @@
 
 //#include "rpc.h"
 //#include "rpcndr.h"
-//#include "param.h"
+//#include "staticparams.h"
 //#include "geometry.h"
 
 //#ifndef __RPCNDR_H_VERSION__
@@ -37,7 +37,7 @@
 //#define WIN32_LEAN_AND_MEAN
 //#include "windows.h"
 //#include "ole2.h"
-//#include "param.h"
+//#include "staticparams.h"
 //#endif /*COM_NO_WINDOWS_H*/
 
 //#ifndef __server_h__
@@ -443,7 +443,7 @@
 
 #ifndef __ZSS_SERVER_H__
 #define __ZSS_SERVER_H__
-#include "param.h"
+#include "staticparams.h"
 #include "geometry.h"
 #include "staticparams.h"
 struct PosT {
@@ -474,7 +474,7 @@ enum ballState {received, touched, kicked, struggle, chip_pass, flat_pass};
 struct VisualInfoT {
     VisualInfoT(): cycle(0), BallState(received), BallLastTouch(0), mode(0) {}
     unsigned int cycle;
-    VehicleInfoT player[PARAM::TEAMS][Param::Field::MAX_PLAYER_NUM];
+    VehicleInfoT player[PARAM::TEAMS][PARAM::Field::MAX_PLAYER];
     PosT ball;
     PosT rawBall;
     PosT chipPredict;
@@ -483,9 +483,9 @@ struct VisualInfoT {
     int BallLastTouch;
     int mode;
     int next_command;
-    //unsigned char ourRobotIndexBefore[ Param::Field::MAX_PLAYER_NUM] = {};
-    int before_cycle[ 2 * Param::Field::MAX_PLAYER_NUM] = {};
-    // unsigned char theirRobotIndexBefore[ Param::Field::MAX_PLAYER_NUM] = {};
+    //unsigned char ourRobotIndexBefore[ PARAM::Field::MAX_PLAYER] = {};
+    int before_cycle[ 2 * PARAM::Field::MAX_PLAYER] = {};
+    // unsigned char theirRobotIndexBefore[ PARAM::Field::MAX_PLAYER] = {};
     //PosT imageBall;
     PosT ballPlacePosition;
 };

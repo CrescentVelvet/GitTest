@@ -40,7 +40,7 @@ void CDribbleTurnKick::plan(const CVisionModule* pVision)
 
 //	CGeoLine ballMoveingLine(ball.Pos(), ball.Vel().dir());
 //	CGeoPoint projMe = ballMoveingLine.projection(me.Pos());
-//	const double antiBallVelDir = Utils::Normalize(ball.Vel().dir() + Param::Math::PI);
+//	const double antiBallVelDir = Utils::Normalize(ball.Vel().dir() + PARAM::Math::PI);
 	const double diffAngle = Utils::Normalize(finalDir-me.Dir());
 	int turnCycle=200;
 
@@ -49,7 +49,7 @@ void CDribbleTurnKick::plan(const CVisionModule* pVision)
 //	int flags = task().player.flag | PlayerStatus::DODGE_OUR_DEFENSE_BOX;
 
 
-	if ( pVision->getCycle() - _lastCycle > Param::Vision::FRAME_RATE * 0.1
+	if ( pVision->getCycle() - _lastCycle > PARAM::Vision::FRAME_RATE * 0.1
 		|| _lastRunner != vecNumber){
 		setState(BEGINNING);
 		_turnToKickCouter=0;
@@ -69,12 +69,12 @@ void CDribbleTurnKick::plan(const CVisionModule* pVision)
 				break;
 			case Turn:
 				_turnToKickCouter++;
-				if (_turnToKickCouter==turnCycle||fabs(diffAngle)<Param::Math::PI*2.5/180)
+				if (_turnToKickCouter==turnCycle||fabs(diffAngle)<PARAM::Math::PI*2.5/180)
 				{
 					new_state = Kick;
 					_turnToKickCouter=0;
 				}
-				if (!Utils::AngleBetween(me.Dir(),_initDir,finalDir,Param::Math::PI*5/180))
+				if (!Utils::AngleBetween(me.Dir(),_initDir,finalDir,PARAM::Math::PI*5/180))
 				{
 					new_state = BEGINNING;
 					_turnToKickCouter=0;

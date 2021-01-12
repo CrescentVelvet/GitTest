@@ -34,7 +34,7 @@ void ViewerInterface::changeRobotInfo(int team,int id){
 }
 
 void ViewerInterface::exist_display(){
-//    bool exist_new[PARAM::TEAMS][PARAM::ROBOTMAXID];
+//    bool exist_new[PARAM::TEAMS][PARAM::ROBOTNUM];
     while(true){
         std::this_thread::sleep_for(std::chrono::microseconds(1000));
         // exist

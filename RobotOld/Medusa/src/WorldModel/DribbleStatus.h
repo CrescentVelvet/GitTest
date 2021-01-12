@@ -17,7 +17,7 @@
 * 记录当前带球的状态
 */
 
-#include <param.h>
+#include "staticparams.h"
 #include <geometry.h>
 #include <singleton.h>
 
@@ -35,7 +35,7 @@ public:
 	CDribbleStatus()
 	{
 		_ballController = 0;
-		for (int vecNum = 1; vecNum <= Param::Field::MAX_PLAYER; ++ vecNum) {
+		for (int vecNum = 0; vecNum < PARAM::Field::MAX_PLAYER; ++ vecNum) {
 			_needReleaseBall[vecNum] = _dribbleOn[vecNum] = _dribbleStartPosValid[vecNum] = false;
 			_dribbleCommand[vecNum] = 0;
 		}
@@ -232,13 +232,13 @@ public:
 
 	void setMayNeedReleaseBall(int number, const CGeoPoint& pos, bool dribbling)
 	{ 
-		if( Param::Rule::MaxDribbleDist > 0 ){
+		if( PARAM::Rule::MaxDribbleDist > 0 ){
 			if( !_mayNeedReleaseBall[number] ){
 				if( dribbling ){ // 开始带球了
 					_mayNeedReleaseBall[number] = true;
 					_mayNeedReleaseBallStartPos[number] = pos;
 				}
-			}else if((pos - _mayNeedReleaseBallStartPos[number]).mod2() > Param::Rule::MaxDribbleDist * Param::Rule::MaxDribbleDist ){
+			}else if((pos - _mayNeedReleaseBallStartPos[number]).mod2() > PARAM::Rule::MaxDribbleDist * PARAM::Rule::MaxDribbleDist ){
 				_needReleaseBall[number] = true;
 			}
 		}else{
@@ -251,7 +251,7 @@ public:
 	/// <remarks>	cliffyin, 2011/7/25. </remarks>
 
 	void clearDribbleCommand(){
-		for (int vecNum = 1; vecNum <= Param::Field::MAX_PLAYER; ++ vecNum) {
+		for (int vecNum = 0; vecNum < PARAM::Field::MAX_PLAYER; ++ vecNum) {
 			_dribbleCommand[vecNum] = 0;
 		}
 	}
@@ -264,7 +264,7 @@ public:
 	/// <param name="power">	The dribble power. </param>
 
 	void setDribbleCommand(int num, unsigned char power){ 
-		if(num>0 && num<= Param::Field::MAX_PLAYER) _dribbleCommand[num] = power;
+		if(num>=0 && num< PARAM::Field::MAX_PLAYER) _dribbleCommand[num] = power;
 	}
 
 	/// <summary>	Gets dribble command. </summary>
@@ -276,7 +276,7 @@ public:
 	/// <returns>	The dribble command. </returns>
 
 	unsigned char getDribbleCommand(int num){ 
-		if (num>0 && num <= Param::Field::MAX_PLAYER) {
+		if (num>=0 && num < PARAM::Field::MAX_PLAYER) {
 			return _dribbleCommand[num];
 		} else {
 			return 0;
@@ -290,7 +290,7 @@ public:
 	/// <returns>	true if it succeeds, false if it fails. </returns>
 
 	bool ballControlled(){
-		for(int i = 1; i <= Param::Field::MAX_PLAYER; i++){
+		for(int i = 0; i < PARAM::Field::MAX_PLAYER; i++){
 			if(ballControlled(i)){
 				return true;
 			}	
@@ -301,25 +301,25 @@ public:
 private:
 
 	/// <summary> true to enable, false to disable the dribble </summary>
-	bool _dribbleOn[Param::Field::MAX_PLAYER+1]; // 带球装置是否打开
+	bool _dribbleOn[PARAM::Field::MAX_PLAYER]; // 带球装置是否打开
 
 	/// <summary> true to dribble start position valid </summary>
-	bool _dribbleStartPosValid[Param::Field::MAX_PLAYER+1]; // 开始带球的位置是否有效
+	bool _dribbleStartPosValid[PARAM::Field::MAX_PLAYER]; // 开始带球的位置是否有效
 
 	/// <summary> The dribble start position </summary>
-	CGeoPoint _dribbleStartPos[Param::Field::MAX_PLAYER+1]; // 开始带球的位置
+	CGeoPoint _dribbleStartPos[PARAM::Field::MAX_PLAYER]; // 开始带球的位置
 
 	/// <summary> The dribble start cycle </summary>
-	int _dribbleStartCycle[Param::Field::MAX_PLAYER+1]; // 开始带球的时间
+	int _dribbleStartCycle[PARAM::Field::MAX_PLAYER]; // 开始带球的时间
 
 	/// <summary> true to need release ball </summary>
-	bool _needReleaseBall[Param::Field::MAX_PLAYER+1]; // 是否需要把球松开
+	bool _needReleaseBall[PARAM::Field::MAX_PLAYER]; // 是否需要把球松开
 
 	/// <summary> true to may need release ball </summary>
-	bool _mayNeedReleaseBall[Param::Field::MAX_PLAYER+1]; // 是否需要把球松开
+	bool _mayNeedReleaseBall[PARAM::Field::MAX_PLAYER]; // 是否需要把球松开
 
 	/// <summary> The may need release ball start position </summary>
-	CGeoPoint _mayNeedReleaseBallStartPos[Param::Field::MAX_PLAYER+1]; // 开始需要松开球的位置
+	CGeoPoint _mayNeedReleaseBallStartPos[PARAM::Field::MAX_PLAYER]; // 开始需要松开球的位置
 
 	/// <summary> The control start position </summary>
 	CGeoPoint _controlStartPos; // 开始控球的位置
@@ -331,7 +331,7 @@ private:
 	int _lastBallController;
 
 	/// <summary> The dribble command </summary>
-	unsigned char _dribbleCommand[Param::Field::MAX_PLAYER+1];
+	unsigned char _dribbleCommand[PARAM::Field::MAX_PLAYER];
 };
 
 typedef NormalSingleton< CDribbleStatus > DribbleStatus;

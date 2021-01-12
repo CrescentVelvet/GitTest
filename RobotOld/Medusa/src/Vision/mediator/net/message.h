@@ -1,10 +1,10 @@
 #ifndef __MESSAGE_S_H__
 #define __MESSAGE_S_H__
-#include "param.h"
+#include "staticparams.h"
 #include "geometry.h"
-#define SendCarNum  Param::Field::MAX_PLAYER
-#define ReceiveCarNum  Param::Field::MAX_PLAYER_NUM
-#define MaxFollowNum Param::Field::MAX_PLAYER_NUM
+#define SendCarNum  PARAM::Field::MAX_PLAYER
+#define ReceiveCarNum  PARAM::Field::MAX_PLAYER
+#define MaxFollowNum PARAM::Field::MAX_PLAYER
 #define MaxBallNum  6
 #define MaxNumOfCamera 4
 

@@ -23,27 +23,25 @@ namespace{
     bool DRAW_TARGET = false;
     bool DRAW_DEBUG_MSG = false;
 
-    double MAX_DIST_NOT_STOP = 300*10;
-    double MIN_DIST_NOT_STOP = 60*10;
+    double MAX_DIST_NOT_STOP = 3000;
+    double MIN_DIST_NOT_STOP = 600;
 
     /// 用于解决到点晃动的问题
-    const double DIST_REACH_CRITICAL = 2*10;	// [unit : cm]
-    const double SlowFactor = 0.5;
-    const double FastFactor = 1.2;
+    const double DIST_REACH_CRITICAL = 20;	// [unit : cm]
 
     /// 底层运动控制参数 ： 默认增大平动的控制性能
-    double MAX_TRANSLATION_SPEED = 400*10;
-    double MAX_TRANSLATION_ACC = 600*10;
+    double MAX_TRANSLATION_SPEED = 4000;
+    double MAX_TRANSLATION_ACC = 6000;
     double MAX_ROTATION_SPEED = 5;
     double MAX_ROTATION_ACC = 15;
-    double MAX_TRANSLATION_DEC = 650*10;
+    double MAX_TRANSLATION_DEC = 6500;
 
-    const double TRANSLATION_ACC_LIMIT = 500*10;
-    double TRANSLATION_SPEED_LIMIT = 350*10;
+    const double TRANSLATION_ACC_LIMIT = 5000;
+    double TRANSLATION_SPEED_LIMIT = 3500;
     const double TRANSLATION_ROTATE_ACC_LIMIT = 50;
 
 
-    double stopBallAvoidDist = 50*10;
+    double stopBallAvoidDist = 500;
     /// 守门员专用
     double MAX_TRANSLATION_SPEED_GOALIE;
     double MAX_TRANSLATION_ACC_GOALIE;
@@ -59,14 +57,13 @@ namespace{
     double MAX_ROTATION_SPEED_BACK;
 
     /// 底层控制方法参数
-    int TRAJECTORY_METHORD = 1;				// 默认使用 CMU 的轨迹控制
     int TASK_TARGET_COLOR = COLOR_CYAN;
     int SAO_ACTION;
 
     double Y_COMPENSATE_K;
     double Y_COMPENSATE_B;
 }
-using namespace Param::Vehicle::V2;
+using namespace PARAM::Vehicle::V2;
 
 /// 构造函数 ： 参数初始化
 CGotoPositionV2::CGotoPositionV2()
@@ -94,7 +91,6 @@ CGotoPositionV2::CGotoPositionV2()
     ZSS::ZParamManager::instance()->loadParam(MAX_ROTATION_SPEED,"CGotoPositionV2/RotationSpeed",15);
     ZSS::ZParamManager::instance()->loadParam(MAX_ROTATION_ACC,"CGotoPositionV2/RotationAcc",15);
     ZSS::ZParamManager::instance()->loadParam(DRAW_TARGET,"Debug/TargetPos",false);
-    ZSS::ZParamManager::instance()->loadParam(TRAJECTORY_METHORD,"CGotoPositionV2/TrajectoryMethod",1);
     ZSS::ZParamManager::instance()->loadParam(SAO_ACTION,"Alert/SaoAction",0);
     ZSS::ZParamManager::instance()->loadParam(Y_COMPENSATE_K,"CGotoPositionV2/YCompensateK",0.0035);
     ZSS::ZParamManager::instance()->loadParam(Y_COMPENSATE_B,"CGotoPositionV2/YCompensateB",-0.1042);
@@ -149,7 +145,7 @@ CPlayerCommand* CGotoPositionV2::execute(const CVisionModule* pVision)
         playerFlag |= PlayerStatus::ALLOW_DSS;
     }
 
-    double avoidLength = Param::Vehicle::V2::PLAYER_SIZE;
+    double avoidLength = PARAM::Vehicle::V2::PLAYER_SIZE;
     if ((playerFlag & PlayerStatus::FREE_KICK)) {
         avoidLength += 20.0*10;
     }
@@ -164,7 +160,7 @@ CPlayerCommand* CGotoPositionV2::execute(const CVisionModule* pVision)
         GDebugEngine::Instance()->gui_debug_line(target, target + task().player.vel / 10, COLOR_WHITE);
     }
     if(avoidBallCircle) {
-        double buffer = Param::Vehicle::V2::PLAYER_SIZE;
+        double buffer = PARAM::Vehicle::V2::PLAYER_SIZE;
         CGeoPoint ballPos = pVision->ball().Pos();
         target = Utils::MakeOutOfCircle(ballPos, stopBallAvoidDist, target, buffer);
         if(self.Pos().dist(ballPos) < stopBallAvoidDist + buffer)
@@ -188,7 +184,7 @@ CPlayerCommand* CGotoPositionV2::execute(const CVisionModule* pVision)
     /// 设定目标状态
     PlayerPoseT final;
     final.SetPos(target);
-    final.SetDir((playerFlag & (PlayerStatus::POS_ONLY | PlayerStatus::TURN_AROUND_FRONT)) ? self.Dir() : task().player.angle);
+    final.SetDir((playerFlag & (PlayerStatus::TURN_AROUND_FRONT)) ? self.Dir() : task().player.angle);
     if(needBreakRotate) {
         double dir = ZSkillUtils::instance()->holdBallDir(pVision, vecNumber);
         if(dir < 1e4)
@@ -201,55 +197,7 @@ CPlayerCommand* CGotoPositionV2::execute(const CVisionModule* pVision)
     float usedtime = target.dist(self.Pos()) / capability.maxSpeed / 1.414;	// 单位：秒
 
     /// 进行轨迹生成并记录理想执行时间
-    if (playerFlag & PlayerStatus::DO_NOT_STOP) { // 一般不会执行 ： cliffyin
-        if (CMU_TRAJ == TRAJECTORY_METHORD) {		//CMU的运动控制方法，可以非零速度到点
-            double distToTarget = player2target.mod();
-            CVector taskVel = task().player.vel;
-            if(taskVel.mod() < 1e-8) {
-                CVector velUnit = player2target / player2target.mod();
-                double v0 = self.Vel() * velUnit;
-                double speed = 300.0*10;
-                if(speed > 0.8 * sqrt(pow(v0, 2) + 2 * capability.maxAccel * distToTarget))
-                    speed = 0.8 * sqrt(pow(v0, 2) + 2 * capability.maxAccel * distToTarget);
-                if(distToTarget < 10*10) {
-                    speed = 0.0;
-                }
-                ignoreNotStop = true;
-                final.SetVel(velUnit * speed);
-            }
-            else {
-                final.SetVel(taskVel);
-            }
-            control.makeCmTrajectory(self, final, capability, mode);
-        }
-        else {
-            control.makeFastPath(self, final, capability);
-            control.makeZeroFinalVelocityTheta(self, final, capability);
-        }
-    }
-    else {																						// 真正执行部分 ： cliffyin
-        int Current_Trajectory_Method = TRAJECTORY_METHORD;
-        if (task().player.is_specify_ctrl_method) {// 指定的运动控制方式
-            Current_Trajectory_Method = task().player.specified_ctrl_method;
-        }
-        switch (Current_Trajectory_Method) {
-        case CMU_TRAJ:
-            control.makeCmTrajectory(self, final, capability, mode);					// CMU 非零速到点
-            break;
-        case ZERO_FINAL:
-            control.makeZeroFinalVelocityPath(self, final, capability);			// Bangbang 零速到点
-            break;
-        case ZERO_TRAP:
-            control.makeTrapezoidalVelocityPath(self, final, capability);			// ZJUNlict 零速到点 : 存在问题，先不用
-            break;
-        case NONE_TRAP:
-            control.makeNoneTrapezoidalVelocityPath(self, final, capability);	// ZJUNlict 非零速到点
-            break;
-        default:
-            control.makeZeroFinalVelocityPath(self, final, capability);			// Bangbang 零速到点
-            break;
-        }
-    }
+    control.makeCmTrajectory(self, final, capability, mode);					// CMU 非零速到点
 
     const double time_factor = 1.5;
 
@@ -292,12 +240,10 @@ CPlayerCommand* CGotoPositionV2::execute(const CVisionModule* pVision)
 
     CVector localVel = (globalVel*alpha).rotate(-self.Dir());		// 车自己坐标系里面的速度
 
-    if((playerFlag & PlayerStatus::DO_NOT_STOP) && player2target.mod() < arrivedDist && !ignoreNotStop)
-        localVel = CVector(0.0, 0.0);
 
     double rotVel = control.getNextStep().RotVel();				// 旋转速度
 
-    if ((fabs(Utils::Normalize(final.Dir() - self.Dir())) <= Param::Math::PI * 5 / 180)) {
+    if ((fabs(Utils::Normalize(final.Dir() - self.Dir())) <= PARAM::Math::PI * 5 / 180)) {
         //用前者会小幅抖动，用后三句会很稳
         rotVel /= 2;
     }
@@ -366,23 +312,6 @@ PlayerCapabilityT CGotoPositionV2::setCapability(const CVisionModule *pVision) {
     }
 
 
-    if (playerFlag & PlayerStatus::SLOWLY) {
-        capability.maxSpeed = 140*10;
-        capability.maxAccel *= SlowFactor;
-        capability.maxDec *= SlowFactor;
-        capability.maxAngularSpeed *= SlowFactor;
-        capability.maxAngularAccel *= SlowFactor;
-        capability.maxAngularDec *= SlowFactor;
-    }
-    if (playerFlag & PlayerStatus::QUICKLY
-        || vecNumber == TaskMediator::Instance()->goalie()) {
-        capability.maxSpeed *= FastFactor;
-        capability.maxAccel *= FastFactor;
-        capability.maxDec *= FastFactor;
-        capability.maxAngularSpeed *= FastFactor;
-        capability.maxAngularAccel *= FastFactor;
-        capability.maxAngularDec *= FastFactor;
-    }
 
     if (task().player.max_acceleration > 1e-8) {
         capability.maxAccel = task().player.max_acceleration > TRANSLATION_ACC_LIMIT ? TRANSLATION_ACC_LIMIT : task().player.max_acceleration;
@@ -416,8 +345,8 @@ CGeoPoint CGotoPositionV2::avoidPenaltyArea(const CVisionModule* pVision, const 
 
     if (!(playerFlag & PlayerStatus::NOT_AVOID_PENALTY) && !isGoalie) target = Utils::MakeInField(target, -avoidLength);
 
-    bool isMeInOurPenaltyArea = Utils::InOurPenaltyArea(startPos, Param::Vehicle::V2::PLAYER_SIZE);
-    bool isTargetInOurPenaltyArea = Utils::InOurPenaltyArea(target, Param::Vehicle::V2::PLAYER_SIZE);
+    bool isMeInOurPenaltyArea = Utils::InOurPenaltyArea(startPos, PARAM::Vehicle::V2::PLAYER_SIZE);
+    bool isTargetInOurPenaltyArea = Utils::InOurPenaltyArea(target, PARAM::Vehicle::V2::PLAYER_SIZE);
     if (!(playerFlag & PlayerStatus::NOT_AVOID_PENALTY) && !isGoalie ) {	// 非自动放球状态下，非门将队员在禁区里面 : 离开禁区
         if (isMeInOurPenaltyArea) {//我在禁区
             target = Utils::MakeOutOfOurPenaltyArea(startPos, avoidLength * 1.5);
@@ -427,7 +356,7 @@ CGeoPoint CGotoPositionV2::avoidPenaltyArea(const CVisionModule* pVision, const 
                 while (extra_out_dist < 100*10) {
                     target = Utils::MakeOutOfOurPenaltyArea(target, extra_out_dist);
                     bool checkOk = true;
-                    for (int teammate = 1; teammate <= Param::Field::MAX_PLAYER_NUM; teammate++) {
+                    for (int teammate = 0; teammate < PARAM::Field::MAX_PLAYER; teammate++) {
                         if (teammate != vecNumber) {
                             if (pVision->ourPlayer(teammate).Pos().dist(target) < avoidLength) {
                                 checkOk = false;
@@ -454,7 +383,7 @@ CGeoPoint CGotoPositionV2::avoidPenaltyArea(const CVisionModule* pVision, const 
             while (extraOutDist < 100*10) {
                 target = Utils::MakeOutOfTheirPenaltyArea(target, extraOutDist);
                 bool checkOk = true;
-                for (int teammate = 1; teammate <= Param::Field::MAX_PLAYER_NUM; teammate++) {
+                for (int teammate = 0; teammate < PARAM::Field::MAX_PLAYER; teammate++) {
                     if (teammate != vecNumber) {
                         if (pVision->ourPlayer(teammate).Pos().dist(target) < avoidLength) {
                             checkOk = false;

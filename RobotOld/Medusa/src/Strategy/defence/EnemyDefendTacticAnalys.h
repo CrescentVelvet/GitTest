@@ -10,7 +10,7 @@
 #include <string>
 #include "EnemyDefendTacticArea.h"
 #include "singleton.h"
-#include "param.h"
+#include "staticparams.h"
 using namespace  std;
 class CVisionModule;
 #define MAX_AREAS 8
@@ -34,15 +34,15 @@ private:
 	int areaNum;
 	int goalieAreaNum;
 	int defenderAreaNum;
-	int goalie[Param::Field::MAX_PLAYER+1];
+	int goalie[PARAM::Field::MAX_PLAYER];
 	int goalieCounter;
-	int defender[Param::Field::MAX_PLAYER+1];
+	int defender[PARAM::Field::MAX_PLAYER];
 	int defenderCounter;
-	int marker[Param::Field::MAX_PLAYER+1];
+	int marker[PARAM::Field::MAX_PLAYER];
 	int markerCounter;
-	int attacker[Param::Field::MAX_PLAYER+1];
+	int attacker[PARAM::Field::MAX_PLAYER];
 	int attackerCounter;
-	int blocker[Param::Field::MAX_PLAYER+1];
+	int blocker[PARAM::Field::MAX_PLAYER];
 	int blockerCounter;
 	int _lastCycle;
 };

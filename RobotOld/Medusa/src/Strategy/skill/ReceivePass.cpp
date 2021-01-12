@@ -38,16 +38,16 @@ void CReceivePass::plan(const CVisionModule* pVision)
 	const double finalDir = task().player.angle;
 	CGeoLine ballMoveingLine(ball.RawPos(), ball.Vel().dir());
 //	CGeoPoint projMe = ballMoveingLine.projection(me.Pos());
-	const double antiBallVelDir = Utils::Normalize(ball.Vel().dir() + Param::Math::PI);
+	const double antiBallVelDir = Utils::Normalize(ball.Vel().dir() + PARAM::Math::PI);
 
 	
 //	bool isInfraredOn = RobotSensor::Instance()->IsInfraredOn(vecNumber);
 	int flags = task().player.flag | PlayerStatus::DODGE_OUR_DEFENSE_BOX | PlayerStatus::ALLOW_DSS | PlayerStatus::DODGE_BALL;
 
 	bool isBallMovingToMe;
-	isBallMovingToMe = abs(Utils::Normalize((me.Pos() - ball.RawPos()).dir() - ball.Vel().dir())) < Param::Math::PI / 6;
+	isBallMovingToMe = abs(Utils::Normalize((me.Pos() - ball.RawPos()).dir() - ball.Vel().dir())) < PARAM::Math::PI / 6;
 
-	if ( pVision->getCycle() - _lastCycle > Param::Vision::FRAME_RATE * 0.1
+	if ( pVision->getCycle() - _lastCycle > PARAM::Vision::FRAME_RATE * 0.1
 		|| _lastRunner != vecNumber){
 		setState(BEGINNING);
 		infrareCnt = 0;

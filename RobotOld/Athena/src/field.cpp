@@ -687,9 +687,9 @@ void Field::drawMaintainVision(int index) {
         paintShadow(COLOR_TRANSORANGE, ball.pos.x(), ball.pos.y());
     }
     const OriginMessage &robot_vision = GlobalData::instance()->processRobot[index];
-    auto last_touch = GlobalData::instance()->lastTouch % PARAM::ROBOTMAXID;
-    auto last_touch_team = GlobalData::instance()->lastTouch < PARAM::ROBOTMAXID ? PARAM::BLUE : PARAM::YELLOW;
-    if (last_touch < PARAM::ROBOTMAXID)
+    auto last_touch = GlobalData::instance()->lastTouch % PARAM::ROBOTNUM;
+    auto last_touch_team = GlobalData::instance()->lastTouch < PARAM::ROBOTNUM ? PARAM::BLUE : PARAM::YELLOW;
+    if (last_touch < PARAM::ROBOTNUM)
         for(int color = PARAM::BLUE; color <= PARAM::YELLOW; color++) {
             for(int j = 0; j < PARAM::ROBOTNUM; j++) {
                 auto& robot = robot_vision.robot[color][j];
@@ -786,7 +786,6 @@ void Field::drawVision(const OriginMessage &vision, bool shadow) {
     for(int color = PARAM::BLUE; color <= PARAM::YELLOW; color++) {
         for(int j = 0; j < PARAM::ROBOTNUM; j++) {
             auto& robot = vision.robot[color][j];
-            if (!robot.valid) continue;
             if(!shadow) {
                 paintCar(CAR_COLOR[color], j, robot.pos.x(), robot.pos.y(), robot.angle, true, FONT_COLOR[color]);
             } else {

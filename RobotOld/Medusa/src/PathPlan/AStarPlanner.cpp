@@ -45,7 +45,7 @@ vector<CGeoPoint> AStarPlanner::calcPath(CGeoPoint start, CGeoPoint end) {
 void AStarPlanner::nextStep(AStarNode *node) {
     CGeoPoint current = node->toIntPoint();
     for (int i = 0; i < 8; i++) {
-        CGeoPoint newPos = makeIntPoint(current + Utils::Polar2Vector(step_, Utils::Normalize(Param::Math::PI / 4 * i)));
+        CGeoPoint newPos = makeIntPoint(current + Utils::Polar2Vector(step_, Utils::Normalize(PARAM::Math::PI / 4 * i)));
         if (!obsList_.check(newPos) || !obsList_.check(newPos, current)) return;
 //        if (isClose_[int(newPos.x())][int(newPos.y())] == 1) return;
 
@@ -96,8 +96,8 @@ void AStarPlanner::calcGHF(AStarNode *sNode, AStarNode *eNode, double g) {
 }
 
 bool AStarPlanner::makeInField(CGeoPoint start, CGeoPoint end) {
-    if (fabs(start.x()) > Param::Field::PITCH_LENGTH || fabs(start.y()) > Param::Field::PITCH_WIDTH ||
-            fabs(end.x()) > Param::Field::PITCH_LENGTH || fabs(end.y()) > Param::Field::PITCH_WIDTH)
+    if (fabs(start.x()) > PARAM::Field::PITCH_LENGTH || fabs(start.y()) > PARAM::Field::PITCH_WIDTH ||
+            fabs(end.x()) > PARAM::Field::PITCH_LENGTH || fabs(end.y()) > PARAM::Field::PITCH_WIDTH)
         return false;
     else return true;
 }

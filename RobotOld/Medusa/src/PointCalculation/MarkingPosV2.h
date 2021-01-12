@@ -9,8 +9,8 @@
 using namespace std;
 
 namespace NameSpaceMarkingPosV2{
-	extern bool DENY_LOG[Param::Field::MAX_PLAYER+1];
-	extern bool BACK_LOG[Param::Field::MAX_PLAYER+1];
+	extern bool DENY_LOG[PARAM::Field::MAX_PLAYER];
+	extern bool BACK_LOG[PARAM::Field::MAX_PLAYER];
 };
 
 class CVisionModule;
@@ -31,8 +31,8 @@ private:
 	int oppPriority;
 	int oppNum;
 	int _logCycle;
-	int logCycle[Param::Field::MAX_PLAYER+1];
-	CGeoPoint markingPoint[Param::Field::MAX_PLAYER+1];
+	int logCycle[PARAM::Field::MAX_PLAYER];
+	CGeoPoint markingPoint[PARAM::Field::MAX_PLAYER];
 	vector<int> areaList;
 };
 

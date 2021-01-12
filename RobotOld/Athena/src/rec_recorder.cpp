@@ -57,8 +57,8 @@ void RecRecorder::store() {
         recMsg.mutable_selectedarea()->set_miny(GS->minimumY);
         //maintainVision
         const OriginMessage &robot_vision = GlobalData::instance()->processRobot[0];
-        recMsg.mutable_maintainvision()->set_lasttouch(GlobalData::instance()->lastTouch % PARAM::ROBOTMAXID);
-        recMsg.mutable_maintainvision()->set_lasttouchteam(GlobalData::instance()->lastTouch < PARAM::ROBOTMAXID ? PARAM::BLUE : PARAM::YELLOW);
+        recMsg.mutable_maintainvision()->set_lasttouch(GlobalData::instance()->lastTouch % PARAM::ROBOTNUM);
+        recMsg.mutable_maintainvision()->set_lasttouchteam(GlobalData::instance()->lastTouch < PARAM::ROBOTNUM ? PARAM::BLUE : PARAM::YELLOW);
         for(int color = PARAM::BLUE; color <= PARAM::YELLOW; color++) {
             processMsg = recMsg.mutable_maintainvision()->add_processmsg();
             for(int j = 0; j < PARAM::ROBOTNUM; j++) {

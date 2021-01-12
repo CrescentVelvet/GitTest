@@ -237,7 +237,7 @@ function RunPlay(name)
 					
 				end
 				
-				if roleNum ~= 0 then
+				if roleNum ~= -1 then
 					if task[3] ~= nil and task[3](roleNum) ~= kick.none() then
 						local mkick = task[3](roleNum)
 						local mdir = task[4](roleNum)

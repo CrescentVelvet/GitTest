@@ -23,7 +23,7 @@ namespace {
     auto taskMode = TaskMode::NO_TASK;
     auto lastTaskMode = TaskMode::NO_TASK;
     const double DEBUG_TEXT_MOD = -50*10;
-    const double DEBUG_TEXT_DIR = -Param::Math::PI/2.5;
+    const double DEBUG_TEXT_DIR = -PARAM::Math::PI/2.5;
     double FRICTION = 40;
 }
 
@@ -41,8 +41,8 @@ int CZSupport::getTheirSupport(const CVisionModule* pVision, const int oppNum, c
     int supportNum = -999;
     double min_dist = 9999*10;
     auto ball = pVision->ball();
-    for(int i=0; i<Param::Field::MAX_PLAYER_NUM; i++){
-        auto enemy = pVision->theirPlayer(i+1);
+    for(int i=0; i<PARAM::Field::MAX_PLAYER; i++){
+        auto enemy = pVision->theirPlayer(i);
         if (!enemy.Valid()) continue;//不存在
         if (i==oppNum) continue;//是对方最佳player
         auto enemy2ball = enemy.Pos() - ball.RawPos();
@@ -55,14 +55,14 @@ int CZSupport::getTheirSupport(const CVisionModule* pVision, const int oppNum, c
 }
 
 void CZSupport::plan(const CVisionModule* pVision) {
-    if (pVision->getCycle() - _lastCycle > Param::Vision::FRAME_RATE * 0.1) {
+    if (pVision->getCycle() - _lastCycle > PARAM::Vision::FRAME_RATE * 0.1) {
         setState(BEGINNING);
     }
     const MobileVisionT& ball = pVision->ball();
     int robotNum = task().executor;
     oppNum = ZSkillUtils::instance()->getTheirBestPlayer();
     int supportNum = -999;
-    int leaderNum = MessiDecision::Instance()->messiRun() ? (MessiDecision::Instance()->leaderNum() + 1) : ZSkillUtils::instance()->getOurBestPlayer();
+    int leaderNum = MessiDecision::Instance()->messiRun() ? (MessiDecision::Instance()->leaderNum()) : ZSkillUtils::instance()->getOurBestPlayer();
 
     const PlayerVisionT& me = pVision->ourPlayer(robotNum);
     const PlayerVisionT& enemy = pVision->theirPlayer(oppNum);
@@ -71,8 +71,8 @@ void CZSupport::plan(const CVisionModule* pVision) {
 
     CVector me2ball = ball.RawPos() - me.RawPos();
     CVector me2enemy = enemy.Pos() - me.RawPos();
-    CGeoPoint ourGoal = CGeoPoint(-Param::Field::PITCH_LENGTH/2, 0);
-//    CGeoPoint theirGoal = CGeoPoint(Param::Field::PITCH_LENGTH/2, 0);
+    CGeoPoint ourGoal = CGeoPoint(-PARAM::Field::PITCH_LENGTH/2, 0);
+//    CGeoPoint theirGoal = CGeoPoint(PARAM::Field::PITCH_LENGTH/2, 0);
     CVector enemy2ball = ball.RawPos() - enemy.Pos();
     CVector leader2ball = ball.RawPos() - leader.RawPos();
     CVector enemy2me = me.RawPos() - enemy.Pos();
@@ -118,7 +118,7 @@ void CZSupport::plan(const CVisionModule* pVision) {
             gotoPoint = interPoint;
             if((enemy.Pos()-foot).mod() < enemy2interPoint.mod()) gotoPoint = foot;
             if((foot-me.Pos()).mod() < 30*10) gotoPoint = ball.Pos();
-            if(Utils::OutOfField(gotoPoint, 9*10)) gotoPoint = ball.Pos();
+            if(!Utils::IsInField(gotoPoint, 9*10)) gotoPoint = ball.Pos();
         }
         setSubTask(PlayerRole::makeItGoto(robotNum, gotoPoint, me2ball.dir(), flag));
     }
@@ -137,16 +137,16 @@ void CZSupport::plan(const CVisionModule* pVision) {
                 double blockingDist = 20*10;
                 double rotDir = enemy.RotVel() > 0 ? 1.0 : -1.0;
                 auto blockingPoint = enemy.Pos() + Utils::Polar2Vector(blockingDist, enemy.Dir());
-                auto blockingVel = enemy.Vel() + Utils::Polar2Vector(enemy.RotVel()*blockingDist , enemy.Dir() + rotDir*Param::Math::PI/2);
+                auto blockingVel = enemy.Vel() + Utils::Polar2Vector(enemy.RotVel()*blockingDist , enemy.Dir() + rotDir*PARAM::Math::PI/2);
                 setSubTask(PlayerRole::makeItGoto(robotNum, blockingPoint, me2enemy.dir(), blockingVel, 0, flag));
             }
             else{//leader靠近球时
                 //enemy朝向我但leader在另一侧，紧盯，判转速，盯朝向
-                if (fabs(Utils::Normalize(enemy.Dir() - enemy2me.dir())) < Param::Math::PI/4 && fabs(Utils::Normalize(enemy2me.dir() - enemy2leader.dir())) > Param::Math::PI/2){
+                if (fabs(Utils::Normalize(enemy.Dir() - enemy2me.dir())) < PARAM::Math::PI/4 && fabs(Utils::Normalize(enemy2me.dir() - enemy2leader.dir())) > PARAM::Math::PI/2){
                     double blockingDist = 20*10;
                     double rotDir = enemy.RotVel() > 0 ? 1.0 : -1.0;
                     auto blockingPoint = enemy.Pos() + Utils::Polar2Vector(blockingDist, enemy.Dir());
-                    auto blockingVel = enemy.Vel() + Utils::Polar2Vector(enemy.RotVel()*blockingDist , enemy.Dir() + rotDir*Param::Math::PI/2);
+                    auto blockingVel = enemy.Vel() + Utils::Polar2Vector(enemy.RotVel()*blockingDist , enemy.Dir() + rotDir*PARAM::Math::PI/2);
                     setSubTask(PlayerRole::makeItGoto(robotNum, blockingPoint, me2enemy.dir(), blockingVel, 0, flag));
                 }
                 else{//enemy不朝向我时不紧盯

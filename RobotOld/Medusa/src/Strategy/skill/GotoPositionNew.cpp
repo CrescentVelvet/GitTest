@@ -67,29 +67,29 @@ const double thresholdL = 20;
 const double thresholdS = 10;
 const double swapPathCost = 40;
 const double stopDecFactor = 3.0;
-const double angleToContri = Param::Math::PI / 10.0;
+const double angleToContri = PARAM::Math::PI / 10.0;
 const double onlyRotateScale = 2.5;
 
-const double FRAME_PERIOD = 1.0 / Param::Vision::FRAME_RATE;
-const double TEAMMATE_AVOID_DIST = Param::Vehicle::V2::PLAYER_SIZE + 4.0f;
-const double OPP_AVOID_DIST = Param::Vehicle::V2::PLAYER_SIZE + 5.5f;
-const double BALL_AVOID_DIST = Param::Field::BALL_SIZE + 5.0f;
+const double FRAME_PERIOD = 1.0 / PARAM::Vision::FRAME_RATE;
+const double TEAMMATE_AVOID_DIST = PARAM::Vehicle::V2::PLAYER_SIZE + 4.0f;
+const double OPP_AVOID_DIST = PARAM::Vehicle::V2::PLAYER_SIZE + 5.5f;
+const double BALL_AVOID_DIST = PARAM::Field::BALL_SIZE + 5.0f;
 
 bool openDebug = false;
-bool lastIsDirect[Param::Field::MAX_PLAYER + 1] { false };
-double flatVelFactor[Param::Field::MAX_PLAYER + 1];
-CGeoPoint lastTarget[Param::Field::MAX_PLAYER + 1];
-vector<CGeoPoint> viaPoints[Param::Field::MAX_PLAYER + 1];
-vector<CGeoPoint> pathPoints[Param::Field::MAX_PLAYER + 1];
-stateNew nextState[Param::Field::MAX_PLAYER + 1];
-BezierController controller[Param::Field::MAX_PLAYER + 1];
-CRRTPathPlannerNew plannerNew[Param::Field::MAX_PLAYER + 1];
+bool lastIsDirect[PARAM::Field::MAX_PLAYER] { false };
+double flatVelFactor[PARAM::Field::MAX_PLAYER];
+CGeoPoint lastTarget[PARAM::Field::MAX_PLAYER];
+vector<CGeoPoint> viaPoints[PARAM::Field::MAX_PLAYER];
+vector<CGeoPoint> pathPoints[PARAM::Field::MAX_PLAYER];
+stateNew nextState[PARAM::Field::MAX_PLAYER];
+BezierController controller[PARAM::Field::MAX_PLAYER];
+CRRTPathPlannerNew plannerNew[PARAM::Field::MAX_PLAYER];
 
 inline int bezierMin(int a, int b) {
     return a > b ? b : a;
 }
 }
-using namespace Param::Vehicle::V2;
+using namespace PARAM::Vehicle::V2;
 
 CGotoPositionNew::CGotoPositionNew() {
     ZSS::ZParamManager::instance()->loadParam(MAX_TRANSLATION_SPEED, "CGotoPositionV2/MNormalSpeed", 300);
@@ -148,7 +148,7 @@ CPlayerCommand* CGotoPositionNew::execute(const CVisionModule* pVision) {
     if(isBack || isGoalie) {
         buffer = 0.0;
     }
-    double avoidDist = Param::Vehicle::V2::PLAYER_SIZE + buffer;
+    double avoidDist = PARAM::Vehicle::V2::PLAYER_SIZE + buffer;
     ObstaclesNew* obs = new ObstaclesNew(avoidDist);
     obs->addObs(pVision, task(), DRAW_OBSTACLES, OPP_AVOID_DIST, TEAMMATE_AVOID_DIST, BALL_AVOID_DIST, false);
 
@@ -163,7 +163,7 @@ CPlayerCommand* CGotoPositionNew::execute(const CVisionModule* pVision) {
     const CVector player2target = targetPos - me.Pos();
     const double dist = player2target.mod();
 
-//    CVector realVel((me.RawPos().x() - meLast.RawPos().x()) * Param::Vision::FRAME_RATE, (me.RawPos().y() - meLast.RawPos().y()) * Param::Vision::FRAME_RATE);
+//    CVector realVel((me.RawPos().x() - meLast.RawPos().x()) * PARAM::Vision::FRAME_RATE, (me.RawPos().y() - meLast.RawPos().y()) * PARAM::Vision::FRAME_RATE);
     stateNew start(me.Pos(), vecDir, me.Vel(), me.RotVel());
     stateNew startForRRT(startPosForRRT, vecDir, me.Vel(), me.RotVel());
     stateNew target(targetPos, targetDir, task().player.vel, task().player.rotvel);
@@ -285,7 +285,7 @@ CPlayerCommand* CGotoPositionNew::execute(const CVisionModule* pVision) {
     CVector localVel = (globalVel * alpha).rotate(-me.Dir());
     GDebugEngine::Instance()->gui_debug_msg(me.Pos(), QString("%1").arg(localVel.mod()).toLatin1());
     double rotVel = control.getNextStep().RotVel();
-    if ((fabs(Utils::Normalize(target.orient - start.orient)) <= Param::Math::PI * 10.0 / 180)) {
+    if ((fabs(Utils::Normalize(target.orient - start.orient)) <= PARAM::Math::PI * 10.0 / 180)) {
         rotVel /= 2;
     }
     delete obs;
@@ -338,28 +338,6 @@ PlayerCapabilityT CGotoPositionNew::setCapability(const CVisionModule* pVision) 
     }
 
 
-    if (playerFlag & PlayerStatus::SLOWLY) {
-        capability.maxSpeed = 140;
-        capability.maxAccel *= SlowFactor;
-        capability.maxDec *= SlowFactor;
-        capability.maxAngularSpeed *= SlowFactor;
-        capability.maxAngularAccel *= SlowFactor;
-        capability.maxAngularDec *= SlowFactor;
-    }
-    if (playerFlag & PlayerStatus::QUICKLY
-            || vecNumber == TaskMediator::Instance()->goalie()) {
-        capability.maxSpeed *= FastFactor;
-        capability.maxAccel *= FastFactor;
-        capability.maxDec *= FastFactor;
-        capability.maxAngularSpeed *= FastFactor;
-        capability.maxAngularAccel *= FastFactor;
-        capability.maxAngularDec *= FastFactor;
-    }
-
-    if (playerFlag & PlayerStatus::QUICKLY
-            || vecNumber == TaskMediator::Instance()->goalie()) {
-    }
-
     if (task().player.max_acceleration > 1) {
         capability.maxAccel = task().player.max_acceleration > TRANSLATION_ACC_LIMIT ? TRANSLATION_ACC_LIMIT : task().player.max_acceleration;
         capability.maxDec = capability.maxAccel;
@@ -392,14 +370,14 @@ void CGotoPositionNew::validateFinalTarget(CGeoPoint &finalTarget, CGeoPoint myP
                 if(finalTarget.dist(myPos) > (avoidLength + obs.obs[i].getRadius()) * 1.2) {
                     finalTarget = Utils::MakeOutOfCircle(obs.obs[i].getStart(), obs.obs[i].getRadius(), finalTarget, avoidLength, isBack, myPos);
                 } else {
-                    finalTarget = Utils::MakeOutOfCircle(obs.obs[i].getStart(), Param::Vehicle::V2::PLAYER_FRONT_TO_CENTER, finalTarget, Param::Vehicle::V2::PLAYER_CENTER_TO_BALL_CENTER, isBack, myPos);
+                    finalTarget = Utils::MakeOutOfCircle(obs.obs[i].getStart(), PARAM::Vehicle::V2::PLAYER_FRONT_TO_CENTER, finalTarget, PARAM::Vehicle::V2::PLAYER_CENTER_TO_BALL_CENTER, isBack, myPos);
                 }
             }
             else {
                 if(finalTarget.dist(myPos) > (avoidLength + obs.obs[i].getRadius()) * 1.2){
                     finalTarget = Utils::MakeOutOfLongCircle(obs.obs[i].getStart(), obs.obs[i].getEnd(), obs.obs[i].getRadius(), finalTarget, avoidLength);
                 } else {
-                    finalTarget = Utils::MakeOutOfLongCircle(obs.obs[i].getStart(), obs.obs[i].getEnd(), Param::Vehicle::V2::PLAYER_FRONT_TO_CENTER, finalTarget, Param::Vehicle::V2::PLAYER_CENTER_TO_BALL_CENTER);
+                    finalTarget = Utils::MakeOutOfLongCircle(obs.obs[i].getStart(), obs.obs[i].getEnd(), PARAM::Vehicle::V2::PLAYER_FRONT_TO_CENTER, finalTarget, PARAM::Vehicle::V2::PLAYER_CENTER_TO_BALL_CENTER);
                 }
             }
         }
@@ -423,14 +401,14 @@ bool CGotoPositionNew::validateStartPoint(CGeoPoint &startPos, const PlayerVisio
                 if(startPos.dist(myPos) > (avoidLength + obst->obs[i].getRadius()) * 1.2) {
                     startPos = Utils::MakeOutOfCircle(obst->obs[i].getStart(), obst->obs[i].getRadius(),  startPos, avoidLength);
                 } else {
-                    startPos = Utils::MakeOutOfCircle(obst->obs[i].getStart(), Param::Vehicle::V2::PLAYER_FRONT_TO_CENTER, startPos, Param::Vehicle::V2::PLAYER_CENTER_TO_BALL_CENTER);
+                    startPos = Utils::MakeOutOfCircle(obst->obs[i].getStart(), PARAM::Vehicle::V2::PLAYER_FRONT_TO_CENTER, startPos, PARAM::Vehicle::V2::PLAYER_CENTER_TO_BALL_CENTER);
                 }
             }
             else {
                 if(startPos.dist(myPos) > (avoidLength + obst->obs[i].getRadius()) * 1.2){
                     startPos = Utils::MakeOutOfLongCircle(obst->obs[i].getStart(), obst->obs[i].getEnd(), obst->obs[i].getRadius(), startPos, avoidLength);
                 } else {
-                    startPos = Utils::MakeOutOfLongCircle(obst->obs[i].getStart(), obst->obs[i].getEnd(), Param::Vehicle::V2::PLAYER_FRONT_TO_CENTER, startPos, Param::Vehicle::V2::PLAYER_CENTER_TO_BALL_CENTER);
+                    startPos = Utils::MakeOutOfLongCircle(obst->obs[i].getStart(), obst->obs[i].getEnd(), PARAM::Vehicle::V2::PLAYER_FRONT_TO_CENTER, startPos, PARAM::Vehicle::V2::PLAYER_CENTER_TO_BALL_CENTER);
                 }
             }
         }
@@ -454,7 +432,7 @@ vector < CGeoPoint > CGotoPositionNew::forBack(const CVisionModule* _pVision, co
     result.clear();
     CGeoPoint anotherBack;
     CGeoPoint mePos = _pVision->ourPlayer(vecNum).Pos();
-    for(int i = 1; i < Param::Field::MAX_PLAYER_NUM + 1; i++) {
+    for(int i = 0; i < PARAM::Field::MAX_PLAYER; i++) {
         if(i != vecNum && (i == TaskMediator::Instance()->leftBack() ||
             i == TaskMediator::Instance()->rightBack()) &&
                 _pVision->ourPlayer(i).Valid()) {
@@ -466,11 +444,11 @@ vector < CGeoPoint > CGotoPositionNew::forBack(const CVisionModule* _pVision, co
     GDebugEngine::Instance()->gui_debug_msg(CGeoPoint(0.0, 0.0), QString("%1").arg(me2another.mod()).toLatin1(), COLOR_GREEN);
     CGeoPoint candidate1(-455, -135), candidate2(-455, 135),
             candidateOut1(-450, -160), candidateOut2(-450, 160);
-    if(startPos.x() < -Param::Field::PITCH_LENGTH / 2 + Param::Field::PENALTY_AREA_DEPTH + Param::Vehicle::V2::PLAYER_SIZE &&
-            targetPos.x() < -Param::Field::PITCH_LENGTH / 2 + Param::Field::PENALTY_AREA_DEPTH + Param::Vehicle::V2::PLAYER_SIZE) {
+    if(startPos.x() < -PARAM::Field::PITCH_LENGTH / 2 + PARAM::Field::PENALTY_AREA_DEPTH + PARAM::Vehicle::V2::PLAYER_SIZE &&
+            targetPos.x() < -PARAM::Field::PITCH_LENGTH / 2 + PARAM::Field::PENALTY_AREA_DEPTH + PARAM::Vehicle::V2::PLAYER_SIZE) {
         if(startPos.y() * targetPos.y() < 0.0) {
             if(startPos.y() < 0) {
-                if(fabs(Utils::Normalize(me2another.dir() - (candidate1 - mePos).dir())) > Param::Math::PI / 2 || me2another.mod() > 4.0 * Param::Vehicle::V2::PLAYER_SIZE) {
+                if(fabs(Utils::Normalize(me2another.dir() - (candidate1 - mePos).dir())) > PARAM::Math::PI / 2 || me2another.mod() > 4.0 * PARAM::Vehicle::V2::PLAYER_SIZE) {
                     result.push_back(candidate1);
                     result.push_back(candidate2);
                 } else {
@@ -480,7 +458,7 @@ vector < CGeoPoint > CGotoPositionNew::forBack(const CVisionModule* _pVision, co
                     result.push_back(CGeoPoint(targetPos.x(), 160));
                 }
             } else {
-                if(fabs(Utils::Normalize(me2another.dir() - (candidate2 - mePos).dir())) > Param::Math::PI / 2 || me2another.mod() > 4.0 * Param::Vehicle::V2::PLAYER_SIZE) {
+                if(fabs(Utils::Normalize(me2another.dir() - (candidate2 - mePos).dir())) > PARAM::Math::PI / 2 || me2another.mod() > 4.0 * PARAM::Vehicle::V2::PLAYER_SIZE) {
                     result.push_back(candidate2);
                     result.push_back(candidate1);
                 } else {
@@ -492,42 +470,42 @@ vector < CGeoPoint > CGotoPositionNew::forBack(const CVisionModule* _pVision, co
             }
         }
     }
-    else if(!(startPos.x() > -Param::Field::PITCH_LENGTH / 2 + Param::Field::PENALTY_AREA_DEPTH + Param::Vehicle::V2::PLAYER_SIZE &&
-                targetPos.x() > -Param::Field::PITCH_LENGTH / 2 + Param::Field::PENALTY_AREA_DEPTH + Param::Vehicle::V2::PLAYER_SIZE)) {
-        if(startPos.x() < -Param::Field::PITCH_LENGTH / 2 + Param::Field::PENALTY_AREA_DEPTH + Param::Vehicle::V2::PLAYER_SIZE) {
+    else if(!(startPos.x() > -PARAM::Field::PITCH_LENGTH / 2 + PARAM::Field::PENALTY_AREA_DEPTH + PARAM::Vehicle::V2::PLAYER_SIZE &&
+                targetPos.x() > -PARAM::Field::PITCH_LENGTH / 2 + PARAM::Field::PENALTY_AREA_DEPTH + PARAM::Vehicle::V2::PLAYER_SIZE)) {
+        if(startPos.x() < -PARAM::Field::PITCH_LENGTH / 2 + PARAM::Field::PENALTY_AREA_DEPTH + PARAM::Vehicle::V2::PLAYER_SIZE) {
             if(startPos.y() > 0) {
-                if(fabs(Utils::Normalize(me2another.dir() - (candidate2 - mePos).dir())) > Param::Math::PI / 2 || me2another.mod() > 4.0 * Param::Vehicle::V2::PLAYER_SIZE)
+                if(fabs(Utils::Normalize(me2another.dir() - (candidate2 - mePos).dir())) > PARAM::Math::PI / 2 || me2another.mod() > 4.0 * PARAM::Vehicle::V2::PLAYER_SIZE)
                     result.push_back(candidate2);
                 else {
                     result.push_back(CGeoPoint(startPos.x(), 160));
                     result.push_back(candidateOut2);
-                    result.push_back(CGeoPoint(-Param::Field::PITCH_LENGTH / 2 + 160, targetPos.y()));
+                    result.push_back(CGeoPoint(-PARAM::Field::PITCH_LENGTH / 2 + 160, targetPos.y()));
                 }
             }
             else {
-                if(fabs(Utils::Normalize(me2another.dir() - (candidate1 - mePos).dir())) > Param::Math::PI / 2 || me2another.mod() > 4.0 * Param::Vehicle::V2::PLAYER_SIZE)
+                if(fabs(Utils::Normalize(me2another.dir() - (candidate1 - mePos).dir())) > PARAM::Math::PI / 2 || me2another.mod() > 4.0 * PARAM::Vehicle::V2::PLAYER_SIZE)
                     result.push_back(candidate1);
                 else {
                     result.push_back(CGeoPoint(startPos.x(), -160));
                     result.push_back(candidateOut1);
-                    result.push_back(CGeoPoint(-Param::Field::PITCH_LENGTH / 2 + 160, targetPos.y()));
+                    result.push_back(CGeoPoint(-PARAM::Field::PITCH_LENGTH / 2 + 160, targetPos.y()));
                 }
             }
         } else {
             if(targetPos.y() > 0) {
-                if(fabs(Utils::Normalize(me2another.dir() - (candidate2 - mePos).dir())) > Param::Math::PI / 2 || me2another.mod() > 4.0 * Param::Vehicle::V2::PLAYER_SIZE)
+                if(fabs(Utils::Normalize(me2another.dir() - (candidate2 - mePos).dir())) > PARAM::Math::PI / 2 || me2another.mod() > 4.0 * PARAM::Vehicle::V2::PLAYER_SIZE)
                     result.push_back(candidate2);
                 else {
-                    result.push_back(CGeoPoint(-Param::Field::PITCH_LENGTH / 2 + 160, startPos.y()));
+                    result.push_back(CGeoPoint(-PARAM::Field::PITCH_LENGTH / 2 + 160, startPos.y()));
                     result.push_back(candidateOut2);
                     result.push_back(CGeoPoint(targetPos.x(), 160));
                 }
             }
             else {
-                if(fabs(Utils::Normalize(me2another.dir() - (candidate1 - mePos).dir())) > Param::Math::PI / 2 || me2another.mod() > 4.0 * Param::Vehicle::V2::PLAYER_SIZE)
+                if(fabs(Utils::Normalize(me2another.dir() - (candidate1 - mePos).dir())) > PARAM::Math::PI / 2 || me2another.mod() > 4.0 * PARAM::Vehicle::V2::PLAYER_SIZE)
                     result.push_back(candidate1);
                 else {
-                    result.push_back(CGeoPoint(-Param::Field::PITCH_LENGTH / 2 + 160, startPos.y()));
+                    result.push_back(CGeoPoint(-PARAM::Field::PITCH_LENGTH / 2 + 160, startPos.y()));
                     result.push_back(candidateOut1);
                     result.push_back(CGeoPoint(targetPos.x(), -160));
                 }

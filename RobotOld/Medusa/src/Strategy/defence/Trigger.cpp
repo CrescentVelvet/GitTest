@@ -53,7 +53,7 @@ DESCRIPT_TRIGGER(TKeeperChanged)
 DESCRIPT_TRIGGER(TAttackerChanged)
 {
 	static int lastAttackNum = 0;
-	static int lastAttackArray[Param::Field::MAX_PLAYER] = {0}; // modified by ftq 2018.3
+	static int lastAttackArray[PARAM::Field::MAX_PLAYER] = {0}; // modified by ftq 2018.3
 	// 这里面装的啥
 	bool changed = false;
 	const int attackNum = DefenceInfo::Instance()->getAttackNum(); // TO SEE!!!
@@ -64,7 +64,7 @@ DESCRIPT_TRIGGER(TAttackerChanged)
 	} 
 	else{
 		sort(lastAttackArray,lastAttackArray + attackNum);
-		int tempArray[Param::Field::MAX_PLAYER] = {0}; // by ftq
+		int tempArray[PARAM::Field::MAX_PLAYER] = {0}; // by ftq
 		for (int i = 0;i <= attackNum - 1;++i)
 			tempArray[i] = DefenceInfo::Instance()->getAttackOppNumByPri(i); // TO SEE
 		sort(tempArray,tempArray + attackNum);
@@ -81,7 +81,7 @@ DESCRIPT_TRIGGER(TAttackerChanged)
 	} 
 	//update
 	lastAttackNum = DefenceInfo::Instance()->getAttackNum();
-	for (int i = 0;i < Param::Field::MAX_PLAYER;++i)
+	for (int i = 0;i < PARAM::Field::MAX_PLAYER;++i)
 	{
 		lastAttackArray[i] = DefenceInfo::Instance()->getAttackOppNumByPri(i);
 	}
@@ -139,7 +139,7 @@ DESCRIPT_TRIGGER(MTPnoMarked)
 	}
 	double maxValue = 0;
 	bool isMarked = true;
-	for (int i = 1; i <= Param::Field::MAX_PLAYER; ++i)
+	for (int i = 0; i < PARAM::Field::MAX_PLAYER; ++i)
 	{
 		int pri = DefenceInfo::Instance()->getOppPlayerByNum(i)->getThreatenPri();
 		int value = DefenceInfo::Instance()->getOppPlayerByNum(i)->getThreatenValue();
@@ -163,7 +163,7 @@ DESCRIPT_TRIGGER(MarkingValueDifference)
 	int Markcnt = 0;
 	double sum_unsteady = 0;
 	double sum_steady = 0;
-	for (int i = 1; i <= Param::Field::MAX_PLAYER; ++i)
+	for (int i = 0; i < PARAM::Field::MAX_PLAYER; ++i)
 	{
 		DefenceInfo::Instance()->getOppPlayerByNum(i)->getThreatenPri();
 		DefenceInfo::Instance()->getOppPlayerByNum(i)->getThreatenValue();

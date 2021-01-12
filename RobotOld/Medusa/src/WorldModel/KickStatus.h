@@ -13,7 +13,7 @@
 #ifndef _KICK_STATUS_H_
 #define _KICK_STATUS_H_
 
-#include <param.h>
+#include "staticparams.h"
 #include <singleton.h>
 
 /// <summary>	Kick status, for kick handling.  </summary>
@@ -123,7 +123,7 @@ public:
 
 	void clearAll() {
 		_kicker = 0; 
-		for (int vecNum = 0; vecNum <= Param::Field::MAX_PLAYER; ++ vecNum) {
+		for (int vecNum = 0; vecNum < PARAM::Field::MAX_PLAYER; ++ vecNum) {
 			_needKick[vecNum] = false;
 			_normal[vecNum] = 0;
 			_chip[vecNum] = 0;
@@ -154,16 +154,16 @@ private:
 	int _kicker;		// 当前设定的击球队员
 
 	/// <summary> The normal kick power </summary>
-	double _normal[Param::Field::MAX_PLAYER+1];		// 击球的速度
+	double _normal[PARAM::Field::MAX_PLAYER];		// 击球的速度
 
 	/// <summary> The chip kick distance </summary>
-	double _chip[Param::Field::MAX_PLAYER+1];		// 挑球的距离
+	double _chip[PARAM::Field::MAX_PLAYER];		// 挑球的距离
 
 	/// <summary> The pass kick distance</summary>
-	double _pass[Param::Field::MAX_PLAYER+1];		// 传球的距离
+	double _pass[PARAM::Field::MAX_PLAYER];		// 传球的距离
 
 	/// <summary> Need kick flag </summary>
-	bool _needKick[Param::Field::MAX_PLAYER+1];
+	bool _needKick[PARAM::Field::MAX_PLAYER];
 
 	bool _forceClose;
 

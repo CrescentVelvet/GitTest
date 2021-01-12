@@ -24,17 +24,6 @@ end
 function getPassVel()
 	local vel = function ()
 		local speed = messi:passVel()
-		-- if not IS_SIMULATION then
-		-- 	if messi:isFlat() then
-		-- 		speed = speed*1
-		-- 		if speed < 1 then
-		-- 			speed = 1
-		-- 		end
-		-- 	else
-		-- 		speed = speed*1
-		-- 	end
-		-- end
-		-- print("speed: ", speed)
 		return speed
 	end
 	return vel
@@ -65,8 +54,8 @@ local function ourBallJumpCond()
 	local attackerAmount = messi:attackerAmount()
 	if state == "Pass" then 
 		--绕过match直接赋值
-		local leader = leaderNum() + 1
-		local receiver = receiverNum() + 1
+		local leader = leaderNum()
+		local receiver = receiverNum()
 		-- print("valid:", receiver, player.valid(receiver))
 		if leader ~= receiver and player.valid(receiver) then
 			gRoleNum["Leader"] = leader
@@ -77,17 +66,17 @@ local function ourBallJumpCond()
 			return "SpecialPass"..attackerAmount
 		end
 	elseif state == "GetBall" then
-		gRoleNum["Leader"] = leaderNum() + 1
+		gRoleNum["Leader"] = leaderNum()
 		return state..attackerAmount
 	elseif state == "fix" then
-		gRoleNum["Leader"] = leaderNum() + 1
+		gRoleNum["Leader"] = leaderNum()
 		return "fix"
 	end
 end
 
 function ourBallJumpCondTest()
-	local leader = leaderNum() + 1
-	local receiver = receiverNum() + 1
+	local leader = leaderNum()
+	local receiver = receiverNum()
 	local state = messi:nextState()
 	if state == "fix" then
 		gRoleNum["Leader"] = leader
@@ -124,18 +113,18 @@ end
 
 function receiverTask (p,d)
 	return function ()
-		local state = messi:nextState()
-		if state == "GetBall" then
-			return task.zsupport()
-		end
-		local leaderState = messi:leaderState()
-		if leaderState == "PASS" then
+		-- local state = messi:nextState()
+		-- if state == "GetBall" then
+		-- 	return task.zsupport()
+		-- end
+		-- local leaderState = messi:leaderState()
+		-- if leaderState == "PASS" then
 			return task.goCmuRush(pos.getReceivePos(),player.toBallDir,_,DSS)
-		elseif leaderState == "SELFPASS" then
-			return task.zsupport()
-		elseif leaderState == "COMPUTE" then
-			return task.zdrag(pos.getReceivePos())
-		end
+		-- elseif leaderState == "SELFPASS" then
+		-- 	return task.zsupport()
+		-- elseif leaderState == "COMPUTE" then
+		-- 	return task.zdrag(pos.getReceivePos())
+		-- end
 	end
 end
 
@@ -144,8 +133,8 @@ firstState = "initState",
 
 ["test"] = {
 	switch = function ()
-		gRoleNum["Leader"] = leaderNum() + 1
-		gRoleNum["Receiver"] = receiverNum() + 1
+		gRoleNum["Leader"] = leaderNum()
+		gRoleNum["Receiver"] = receiverNum()
 	end,
 	Leader   = task.stop(),
 	Receiver = task.stop(),
@@ -163,8 +152,8 @@ firstState = "initState",
 	end,
 	Leader   = leaderTask(),--task.zattack(pos.getPassPos(), _, getPassVel(), getFlag()),
 	Receiver = receiverTask(), --task.goCmuRush(pos.getOtherPos(1),player.toBallDir,_,DSS),
-	Middle   = task.zsupport(),
-	Fronter  = task.zdrag(pos.getOtherPos(1)),
+	Middle   = task.zdrag(pos.getOtherPos(1)),
+	Fronter  = task.zdrag(pos.getOtherPos(2)),
 	-- Center   = task.goCmuRush(pos.getBackPos(),player.toBallDir,_,DSS),
 	-- match    = "{L}[R][MFC]"
 	match    = "{L}[R][F][M]"
@@ -175,8 +164,8 @@ firstState = "initState",
 	end,
 	Leader   = leaderTask(),--task.zattack(pos.getPassPos(), _, getPassVel(), getFlag()),
 	Receiver = receiverTask(), --task.goCmuRush(pos.getReceivePos(),player.toBallDir,_,DSS),
-	Middle   = task.zsupport(),
-	Fronter  = task.zdrag(pos.getOtherPos(1)),
+	Middle   = task.zdrag(pos.getOtherPos(1)),
+	Fronter  = task.zdrag(pos.getOtherPos(2)),
 	-- Center   = task.goCmuRush(pos.getBackPos(),player.toBallDir,_,DSS),
 	-- match    = "{LR}[MFC]"
 	match    = "{LR}[F][M]"

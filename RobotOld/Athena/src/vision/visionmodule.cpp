@@ -168,14 +168,14 @@ void CVisionModule::parse(void * ptr, int size) {
         for (int i = 0; i < blueSize; i++) {
             const SSL_DetectionRobot& robot = detection.robots_blue(i);
             if (GlobalSettings::instance()->inChosenArea(saoConvert(CGeoPoint(robot.x(), robot.y())))
-                    && robot.robot_id() < PARAM::ROBOTMAXID) {
+                    && robot.robot_id() < PARAM::ROBOTNUM) {
                 message.setRobot(PARAM::BLUE, robot.robot_id(), saoConvert(CGeoPoint(robot.x(), robot.y())), saoConvert(robot.orientation()));
             }
         }
         for (int i = 0; i < yellowSize; i++) {
             const SSL_DetectionRobot& robot = detection.robots_yellow(i);
             if (GlobalSettings::instance()->inChosenArea(saoConvert(CGeoPoint(robot.x(), robot.y())))
-                    && robot.robot_id() < PARAM::ROBOTMAXID) {
+                    && robot.robot_id() < PARAM::ROBOTNUM) {
                 message.setRobot(PARAM::YELLOW, robot.robot_id(), saoConvert(CGeoPoint(robot.x(), robot.y())), saoConvert(robot.orientation()));
             }
         }

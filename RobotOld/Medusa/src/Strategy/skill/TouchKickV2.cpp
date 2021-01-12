@@ -22,7 +22,7 @@ enum{
     const double newVehicleBuffer = 0.6;
     const double StopDist = 1;
     const double directGetBallDist = 35;
-    const double directGetBallDirLimit = Param::Math::PI / 4;
+    const double directGetBallDirLimit = PARAM::Math::PI / 4;
 }
 CTouchKickV2::CTouchKickV2()
 {
@@ -69,7 +69,7 @@ void CTouchKickV2::plan(const CVisionModule * pVision)
     }
     //红外触发 且方向正确，则直接射门
     if (needkick){
-        if ( abs(me2target.dir() - me.Dir()) < 1.5 * Param::Math::PI / 180 ) {
+        if ( abs(me2target.dir() - me.Dir()) < 1.5 * PARAM::Math::PI / 180 ) {
             _new_status = KICK;
 //                _last_status = KICK;
         }
@@ -109,7 +109,7 @@ void CTouchKickV2::plan(const CVisionModule * pVision)
         }
         case WAITBALL:{
             if (abs(Utils::Normalize(me2Ball.dir() - ball.Vel().dir())) >
-                    Param::Math::PI / 3 * 2)//夹角小于60度直接去截球线
+                    PARAM::Math::PI / 3 * 2)//夹角小于60度直接去截球线
                 chase_kick_task.player.pos = ballLineProjection;
             else
                 chase_kick_task.player.pos = ballLineProjection +
@@ -130,7 +130,7 @@ void CTouchKickV2::plan(const CVisionModule * pVision)
 
             //追在球屁股后面，且可能撞上球
             if (abs(Utils::Normalize(me2Ball.dir() - ball.Vel().dir())) <
-                    Param::Math::PI / 2 && me2Ball.mod() <= 40)
+                    PARAM::Math::PI / 2 && me2Ball.mod() <= 40)
                 chase_kick_task.player.pos = testPoint +
                         (projection2Me / projection2Me.mod() * 40);//跑到球的侧面
             else
@@ -168,35 +168,35 @@ void CTouchKickV2::plan(const CVisionModule * pVision)
             staticDir = getStaticDir(pVision, staticDir);
 
             if (needAvoidBall) {
-                if (fabs(me2BallDirDiff) > Param::Math::PI / 3) {
+                if (fabs(me2BallDirDiff) > PARAM::Math::PI / 3) {
                     double avoidDir =
                             Utils::Normalize(ball2Me.dir() +
-                                             staticDir * Param::Math::PI / 4);
+                                             staticDir * PARAM::Math::PI / 4);
                     chase_kick_task.player.pos =
                             ball.Pos() + Utils::Polar2Vector(30, avoidDir);
                 }
                 else {
                     double directDist =
-                            Param::Vehicle::V2::PLAYER_FRONT_TO_CENTER +
-                            newVehicleBuffer + Param::Field::BALL_SIZE +
+                            PARAM::Vehicle::V2::PLAYER_FRONT_TO_CENTER +
+                            newVehicleBuffer + PARAM::Field::BALL_SIZE +
                             StopDist - 2.5;
                     chase_kick_task.player.pos =
                             ball.Pos() +
                             Utils::Polar2Vector(directDist,
                                                 Utils::Normalize(finalAngel -
-                                                             Param::Math::PI));
+                                                             PARAM::Math::PI));
                     if (fabs(me2BallDirDiff) < 0.2)
                         chase_kick_task.player.pos =
                              ball.Pos() +
                              Utils::Polar2Vector(directDist,
-                                Utils::Normalize(finalAngel - Param::Math::PI));
+                                Utils::Normalize(finalAngel - PARAM::Math::PI));
                 }
             }
             else {
-                if (fabs(me2BallDirDiff) > Param::Math::PI / 2) {
+                if (fabs(me2BallDirDiff) > PARAM::Math::PI / 2) {
                     double gotoDir =
                             Utils::Normalize(finalAngel +
-                                             staticDir * Param::Math::PI*3/5);
+                                             staticDir * PARAM::Math::PI*3/5);
                     chase_kick_task.player.pos =
                             ball.Pos() + Utils::Polar2Vector(40, gotoDir);
                     chase_kick_task.player.vel =
@@ -206,13 +206,13 @@ void CTouchKickV2::plan(const CVisionModule * pVision)
                 }
                 else {
                     double directDist =
-                            Param::Vehicle::V2::PLAYER_FRONT_TO_CENTER +
-                            newVehicleBuffer + Param::Field::BALL_SIZE +
+                            PARAM::Vehicle::V2::PLAYER_FRONT_TO_CENTER +
+                            newVehicleBuffer + PARAM::Field::BALL_SIZE +
                             StopDist - 2.5;
                     chase_kick_task.player.pos = ball.Pos() +
                             Utils::Polar2Vector(directDist,
                                             Utils::Normalize(finalAngel -
-                                                             Param::Math::PI));
+                                                             PARAM::Math::PI));
                 }
                 if (verbose) cout << "static get ball" << endl;
             }

@@ -1,7 +1,7 @@
 #ifndef _ROBOT_CAPABILITY_H_
 #define _ROBOT_CAPABILITY_H_
 #include <geometry.h>
-#include <param.h>
+#include "staticparams.h"
 #include <singleton.h>
 #include <vector>
 /**
@@ -43,7 +43,7 @@ public:
 	CRobotCapFactory();
 	const CRobotCapability* getRobotCap(const int side, const int num)
 	{
-		if( side == Param::Field::POS_SIDE_LEFT ){
+		if( side == PARAM::Field::POS_SIDE_LEFT ){
 			return _robotCaps[LeftRobotType[num]];
 		}
 		return _robotCaps[RightRobotType[num]];
@@ -56,8 +56,8 @@ public:
 	}
 private:
 	std::vector< CRobotCapability* > _robotCaps;
-	int LeftRobotType[Param::Field::MAX_PLAYER+1];
-	int RightRobotType[Param::Field::MAX_PLAYER+1];
+	int LeftRobotType[PARAM::Field::MAX_PLAYER];
+	int RightRobotType[PARAM::Field::MAX_PLAYER];
 };
 typedef NormalSingleton< CRobotCapFactory > RobotCapFactory; // 声明为Singleton
 #endif // _ROBOT_CAPABILITY_H_

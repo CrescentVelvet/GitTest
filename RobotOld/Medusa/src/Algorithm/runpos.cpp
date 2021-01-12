@@ -1,5 +1,5 @@
 #include "runpos.h"
-#include "param.h"
+#include "staticparams.h"
 #include "GDebugEngine.h"
 #include "ShootRangeList.h"
 #include "math.h"
@@ -11,10 +11,10 @@ namespace {
 bool OTHERPOS_DEBUG = false;
 const int ATTACK_AREA_NUM = 4;
 const int WRONG_RUNPOS_CHANGE_BUFFER = 20;
-CGeoRectangle MIDDLE_LEFT_AREA(0, - Param::Field::PITCH_WIDTH / 2, Param::Field::PITCH_LENGTH / 4, 0);
-CGeoRectangle MIDDLE_RIGHT_AREA(0, 0, Param::Field::PITCH_LENGTH / 4, Param::Field::PITCH_WIDTH / 2);
-CGeoRectangle FRONT_LEFT_AREA(Param::Field::PITCH_LENGTH / 4, - Param::Field::PITCH_WIDTH / 2, Param::Field::PITCH_LENGTH / 2, 0);
-CGeoRectangle FRONT_RIGHT_AREA(Param::Field::PITCH_LENGTH / 4, 0, Param::Field::PITCH_LENGTH / 2, Param::Field::PITCH_WIDTH / 2);
+CGeoRectangle MIDDLE_LEFT_AREA(0, - PARAM::Field::PITCH_WIDTH / 2, PARAM::Field::PITCH_LENGTH / 4, 0);
+CGeoRectangle MIDDLE_RIGHT_AREA(0, 0, PARAM::Field::PITCH_LENGTH / 4, PARAM::Field::PITCH_WIDTH / 2);
+CGeoRectangle FRONT_LEFT_AREA(PARAM::Field::PITCH_LENGTH / 4, - PARAM::Field::PITCH_WIDTH / 2, PARAM::Field::PITCH_LENGTH / 2, 0);
+CGeoRectangle FRONT_RIGHT_AREA(PARAM::Field::PITCH_LENGTH / 4, 0, PARAM::Field::PITCH_LENGTH / 2, PARAM::Field::PITCH_WIDTH / 2);
 CGeoRectangle ATTACK_AREA[4] = {MIDDLE_LEFT_AREA, MIDDLE_RIGHT_AREA, FRONT_LEFT_AREA, FRONT_RIGHT_AREA};
 //bool runPosIsValid[4] = {0,0,0,0};
 runPosProperties areaRawPoint[4];
@@ -45,7 +45,7 @@ void RunPos::generateRunPos(const CVisionModule* pVision, const CGeoPoint& avoid
         }
 
         selectAreaBestPoint(i);
-        if (ZSkillUtils::instance()->IsInField(_avoidPos)) {
+        if (Utils::IsInField(_avoidPos)) {
             if (ATTACK_AREA[i].HasPoint(_avoidPos)) {
                 areaRawPoint[i].isValid = false;
             }
@@ -58,17 +58,17 @@ void RunPos::generateBroad() {
     const MobileVisionT& ball = _pVision->ball();
     float bx = ball.X(), by = ball.Y();
     if (ball.X() > 0) {
-        MIDDLE_LEFT_AREA = CGeoRectangle((bx > Param::Field::PITCH_LENGTH / 4 ? bx - Param::Field::PITCH_LENGTH / 4 : 0), (by > 0 ? - Param::Field::PITCH_WIDTH / 2 + by / 2 : - Param::Field::PITCH_WIDTH / 2), (bx > Param::Field::PITCH_LENGTH / 4 ? Param::Field::PITCH_LENGTH / 8 + bx / 2 : Param::Field::PITCH_LENGTH / 4), by / 2);
-        MIDDLE_RIGHT_AREA = CGeoRectangle((bx > Param::Field::PITCH_LENGTH / 4 ? bx - Param::Field::PITCH_LENGTH / 4 : 0), by / 2, (bx > Param::Field::PITCH_LENGTH / 4 ? Param::Field::PITCH_LENGTH / 8 + bx / 2 : Param::Field::PITCH_LENGTH / 4), (by < 0 ?  Param::Field::PITCH_WIDTH / 2 + by / 2 : Param::Field::PITCH_WIDTH / 2));
-//        FRONT_LEFT_AREA = CGeoRectangle((bx > Param::Field::PITCH_LENGTH / 4 ? Param::Field::PITCH_LENGTH / 8 + bx / 2 : Param::Field::PITCH_LENGTH / 4), (by > 0 ? - Param::Field::PITCH_WIDTH / 2 + by / 2 : - Param::Field::PITCH_WIDTH / 2), Param::Field::PITCH_LENGTH / 2, by / 2);
-//        FRONT_RIGHT_AREA = CGeoRectangle((bx > Param::Field::PITCH_LENGTH / 4 ? Param::Field::PITCH_LENGTH / 8 + bx / 2 : Param::Field::PITCH_LENGTH / 4), by / 2, Param::Field::PITCH_LENGTH / 2, (by < 0 ? Param::Field::PITCH_WIDTH / 2 + by / 2 : Param::Field::PITCH_WIDTH / 2));
-//        FRONT_LEFT_AREA = CGeoRectangle((bx > Param::Field::PITCH_LENGTH / 4 ? Param::Field::PITCH_LENGTH / 8 + bx / 2 : Param::Field::PITCH_LENGTH / 4), - Param::Field::PITCH_WIDTH / 2, Param::Field::PITCH_LENGTH / 2,  by / 2);
-//        FRONT_RIGHT_AREA = CGeoRectangle((bx > Param::Field::PITCH_LENGTH / 4 ? Param::Field::PITCH_LENGTH / 8 + bx / 2 : Param::Field::PITCH_LENGTH / 4), by / 2, Param::Field::PITCH_LENGTH / 2, Param::Field::PITCH_WIDTH / 2);
+        MIDDLE_LEFT_AREA = CGeoRectangle((bx > PARAM::Field::PITCH_LENGTH / 4 ? bx - PARAM::Field::PITCH_LENGTH / 4 : 0), (by > 0 ? - PARAM::Field::PITCH_WIDTH / 2 + by / 2 : - PARAM::Field::PITCH_WIDTH / 2), (bx > PARAM::Field::PITCH_LENGTH / 4 ? PARAM::Field::PITCH_LENGTH / 8 + bx / 2 : PARAM::Field::PITCH_LENGTH / 4), by / 2);
+        MIDDLE_RIGHT_AREA = CGeoRectangle((bx > PARAM::Field::PITCH_LENGTH / 4 ? bx - PARAM::Field::PITCH_LENGTH / 4 : 0), by / 2, (bx > PARAM::Field::PITCH_LENGTH / 4 ? PARAM::Field::PITCH_LENGTH / 8 + bx / 2 : PARAM::Field::PITCH_LENGTH / 4), (by < 0 ?  PARAM::Field::PITCH_WIDTH / 2 + by / 2 : PARAM::Field::PITCH_WIDTH / 2));
+//        FRONT_LEFT_AREA = CGeoRectangle((bx > PARAM::Field::PITCH_LENGTH / 4 ? PARAM::Field::PITCH_LENGTH / 8 + bx / 2 : PARAM::Field::PITCH_LENGTH / 4), (by > 0 ? - PARAM::Field::PITCH_WIDTH / 2 + by / 2 : - PARAM::Field::PITCH_WIDTH / 2), PARAM::Field::PITCH_LENGTH / 2, by / 2);
+//        FRONT_RIGHT_AREA = CGeoRectangle((bx > PARAM::Field::PITCH_LENGTH / 4 ? PARAM::Field::PITCH_LENGTH / 8 + bx / 2 : PARAM::Field::PITCH_LENGTH / 4), by / 2, PARAM::Field::PITCH_LENGTH / 2, (by < 0 ? PARAM::Field::PITCH_WIDTH / 2 + by / 2 : PARAM::Field::PITCH_WIDTH / 2));
+//        FRONT_LEFT_AREA = CGeoRectangle((bx > PARAM::Field::PITCH_LENGTH / 4 ? PARAM::Field::PITCH_LENGTH / 8 + bx / 2 : PARAM::Field::PITCH_LENGTH / 4), - PARAM::Field::PITCH_WIDTH / 2, PARAM::Field::PITCH_LENGTH / 2,  by / 2);
+//        FRONT_RIGHT_AREA = CGeoRectangle((bx > PARAM::Field::PITCH_LENGTH / 4 ? PARAM::Field::PITCH_LENGTH / 8 + bx / 2 : PARAM::Field::PITCH_LENGTH / 4), by / 2, PARAM::Field::PITCH_LENGTH / 2, PARAM::Field::PITCH_WIDTH / 2);
     } else {
-        MIDDLE_LEFT_AREA = CGeoRectangle(0, - Param::Field::PITCH_WIDTH / 2, Param::Field::PITCH_LENGTH / 4, 0);
-        MIDDLE_RIGHT_AREA = CGeoRectangle(0, 0, Param::Field::PITCH_LENGTH / 4, Param::Field::PITCH_WIDTH / 2);
-        FRONT_LEFT_AREA = CGeoRectangle(Param::Field::PITCH_LENGTH / 4, - Param::Field::PITCH_WIDTH / 2, Param::Field::PITCH_LENGTH / 2, 0);
-        FRONT_RIGHT_AREA = CGeoRectangle(Param::Field::PITCH_LENGTH / 4, 0, Param::Field::PITCH_LENGTH / 2, Param::Field::PITCH_WIDTH / 2);
+        MIDDLE_LEFT_AREA = CGeoRectangle(0, - PARAM::Field::PITCH_WIDTH / 2, PARAM::Field::PITCH_LENGTH / 4, 0);
+        MIDDLE_RIGHT_AREA = CGeoRectangle(0, 0, PARAM::Field::PITCH_LENGTH / 4, PARAM::Field::PITCH_WIDTH / 2);
+        FRONT_LEFT_AREA = CGeoRectangle(PARAM::Field::PITCH_LENGTH / 4, - PARAM::Field::PITCH_WIDTH / 2, PARAM::Field::PITCH_LENGTH / 2, 0);
+        FRONT_RIGHT_AREA = CGeoRectangle(PARAM::Field::PITCH_LENGTH / 4, 0, PARAM::Field::PITCH_LENGTH / 2, PARAM::Field::PITCH_WIDTH / 2);
     }
     ATTACK_AREA [0] = MIDDLE_LEFT_AREA;
     ATTACK_AREA [1] = MIDDLE_RIGHT_AREA;
@@ -86,7 +86,7 @@ void RunPos::selectAreaBestPoint(int areaNum) {
             if(Utils::InTheirPenaltyArea(candidate, 180))
                 continue;
             //排除过于边界的点
-            if(Utils::OutOfField(candidate, 280))
+            if(!Utils::IsInField(candidate, 280))
                 continue;
 
             std::vector<float> posScores = evaluateFunc(_pVision,candidate);
@@ -105,7 +105,7 @@ void RunPos::selectAreaBestPoint(int areaNum) {
 
 std::vector<float> RunPos::evaluateFunc(const CVisionModule* pVision, const CGeoPoint& candidate) {
     // 1.与对方球门的距离
-    CGeoPoint goal = CGeoPoint(Param::Field::PITCH_LENGTH / 2, 0);
+    CGeoPoint goal = CGeoPoint(PARAM::Field::PITCH_LENGTH / 2, 0);
     float distToGoal = (candidate - goal).mod() > RUNPOS_PARAM::maxDistToGoal ? RUNPOS_PARAM::maxDistToGoal : (candidate - goal).mod();
 
     // 2.射门有效角度
@@ -114,7 +114,7 @@ std::vector<float> RunPos::evaluateFunc(const CVisionModule* pVision, const CGeo
     const CValueRangeList& shootRange = shootRangeList.getShootRange();
     if (shootRange.size() > 0) {
         auto bestRange = shootRange.getMaxRangeWidth();
-        if (bestRange && bestRange->getWidth() > Param::Field::BALL_SIZE + 50) {	// 要求射门空档足够大
+        if (bestRange && bestRange->getWidth() > PARAM::Field::BALL_SIZE + 50) {	// 要求射门空档足够大
             shootAngle = bestRange->getWidth() > RUNPOS_PARAM::maxShootAngle ? RUNPOS_PARAM::maxShootAngle : bestRange->getWidth();
         }
     }
@@ -125,12 +125,12 @@ std::vector<float> RunPos::evaluateFunc(const CVisionModule* pVision, const CGeo
 
     // 4.Angle to Goal
     CVector v2 = goal - candidate;
-//            float angle2Goal = fabs(fabs(Utils::Normalize(v2.dir())) - Param::Math::PI / 4) > RUNPOS_PARAM::maxAngle2Goal ? RUNPOS_PARAM::maxAngle2Goal : fabs(fabs(Utils::Normalize(v2.dir())) - Param::Math::PI  / 4);
+//            float angle2Goal = fabs(fabs(Utils::Normalize(v2.dir())) - PARAM::Math::PI / 4) > RUNPOS_PARAM::maxAngle2Goal ? RUNPOS_PARAM::maxAngle2Goal : fabs(fabs(Utils::Normalize(v2.dir())) - PARAM::Math::PI  / 4);
     float angle2Goal = 0;
-    if (fabs(fabs(Utils::Normalize(v2.dir())) - Param::Math::PI / 4) < Param::Math::PI / 12) {
-        angle2Goal = Param::Math::PI / 12;
+    if (fabs(fabs(Utils::Normalize(v2.dir())) - PARAM::Math::PI / 4) < PARAM::Math::PI / 12) {
+        angle2Goal = PARAM::Math::PI / 12;
     } else {
-        angle2Goal = fabs(fabs(Utils::Normalize(v2.dir())) - Param::Math::PI / 4);
+        angle2Goal = fabs(fabs(Utils::Normalize(v2.dir())) - PARAM::Math::PI / 4);
     }
 
     // 5.Dist to enemy
@@ -138,7 +138,7 @@ std::vector<float> RunPos::evaluateFunc(const CVisionModule* pVision, const CGeo
     std::vector<int> enemyNumVec;
     int num = WorldModel::Instance()->getEnemyAmountInArea(candidate, RUNPOS_PARAM::maxDist2Enemy, enemyNumVec);
     for (int i = 0; i < num; i++) {
-//        dist2Enemy += (RUNPOS_PARAM::maxDist2Enemy - candidate.dist(pVision->TheirPlayer(enemyNumVec.at(i)).Pos()));
+//        dist2Enemy += (RUNPOS_PARAM::maxDist2Enemy - candidate.dist(pVision->theirPlayer(enemyNumVec.at(i)).Pos()));
         if (dist2Enemy > candidate.dist(pVision->theirPlayer(enemyNumVec.at(i)).Pos())) {
             dist2Enemy = candidate.dist(pVision->theirPlayer(enemyNumVec.at(i)).Pos());
         }
@@ -147,13 +147,13 @@ std::vector<float> RunPos::evaluateFunc(const CVisionModule* pVision, const CGeo
 
     // 6. predict their guard
     float guardMinTime = 9999;
-    CGeoPoint p1(Param::Field::PITCH_LENGTH / 2, -Param::Field::GOAL_WIDTH / 2), p2(Param::Field::PITCH_LENGTH / 2, Param::Field::GOAL_WIDTH / 2);
+    CGeoPoint p1(PARAM::Field::PITCH_LENGTH / 2, -PARAM::Field::GOAL_WIDTH / 2), p2(PARAM::Field::PITCH_LENGTH / 2, PARAM::Field::GOAL_WIDTH / 2);
     CGeoSegment shootLine1(candidate, p1), shootLine2(candidate, p2);
     CGeoPoint p = WorldModel::Instance()->penaltyIntersection(shootLine1),
               q = WorldModel::Instance()->penaltyIntersection(shootLine2);
     WorldModel::Instance()->normalizeCoordinate(p);
     WorldModel::Instance()->normalizeCoordinate(q);
-    for(int i = 1; i < Param::Field::MAX_PLAYER; i++) {
+    for(int i = 1; i < PARAM::Field::MAX_PLAYER; i++) {
         const PlayerVisionT& enemy = pVision->theirPlayer(i);
         if (!Utils::InTheirPenaltyArea(enemy.Pos(), 0) && Utils::InTheirPenaltyArea(enemy.Pos(), 50)) {
             float pTime = WorldModel::Instance()->preditTheirGuard(enemy, p);
@@ -168,13 +168,13 @@ std::vector<float> RunPos::evaluateFunc(const CVisionModule* pVision, const CGeo
     }
     //7. sector behind enemy
 //    static const float maxDist = 300;
-//    static const float maxDir = Param::Math::PI / 180 * 10;
+//    static const float maxDir = PARAM::Math::PI / 180 * 10;
     float sectorScore;
     float candiDir = RUNPOS_PARAM::maxSectorDir;
     float candiDist = RUNPOS_PARAM::maxSectorDist;
 //    float candiDir = (candidate - ball.Pos()).dir();
 //    float candiDist = candidate.dist(ball.Pos());
-    for (int i = 1; i <= Param::Field::MAX_PLAYER; i++) {
+    for (int i = 0; i < PARAM::Field::MAX_PLAYER; i++) {
         if(pVision->theirPlayer(i).Valid()) {
             const PlayerVisionT& enemy = pVision->theirPlayer(i);
             float baseDir = (enemy.Pos() - ball.Pos()).dir();

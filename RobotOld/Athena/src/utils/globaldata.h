@@ -23,10 +23,10 @@ struct RobotSpeed {
         vx(_x), vy(_y), vr(_r) {}
 };
 struct RobotCommands {
-    RobotSpeed robotSpeed[PARAM::ROBOTMAXID];
+    RobotSpeed robotSpeed[PARAM::ROBOTNUM];
     bool valid;
     RobotCommands(): valid(false) {
-        for (int i = 0; i < PARAM::ROBOTMAXID; i++)
+        for (int i = 0; i < PARAM::ROBOTNUM; i++)
             robotSpeed[i] = RobotSpeed();
     }
 };
@@ -39,8 +39,8 @@ class CGlobalData {
     bool cameraControl[PARAM::CAMERA];
     bool processControl[3];
     int cameraID[PARAM::CAMERA];//show the mapping of cameras  id
-    double robotPossible[2][PARAM::ROBOTMAXID];
-    RobotInformation robotInformation[PARAM::TEAMS][PARAM::ROBOTMAXID];
+    double robotPossible[2][PARAM::ROBOTNUM];
+    RobotInformation robotInformation[PARAM::TEAMS][PARAM::ROBOTNUM];
     DataQueue<RobotCommands> robotCommand[PARAM::TEAMS];
     int commandMissingFrame[PARAM::TEAMS];//team command VALID  --> commandMissingFrame<20
     CameraFix cameraFixMatrix[PARAM::CAMERA];

@@ -148,7 +148,7 @@ gPlayTable.CreatePlay{
         end
     end,
     Assister = HALF_TEST and task.stop() or task.goSpeciPos(WAIT_POS3, _, DSS_FLAG),
-    Leader   = USE_ZPASS and task.receivePass("Assister",0) or task.InterTouch(),
+    Leader   = USE_ZPASS and task.receivePass("Assister",0) or task.zget(_, _, _, flag.kick),
     Special  = HALF_TEST and task.goCmuRush(HALF_POS[1],_,_,DSS_FLAG) or task.goCmuRush(STATIC_POS1, _, _, DSS_FLAG),
     Middle   = HALF_TEST and task.goCmuRush(HALF_POS[2],_,_,DSS_FLAG) or task.leftBack(),--goCmuRush(STATIC_POS2, _, _, DSS_FLAG),
     Defender = HALF_TEST and task.goCmuRush(HALF_POS[3],_,_,DSS_FLAG) or task.rightBack(),--goCmuRush(STATIC_POS3, _, _, DSS_FLAG),

@@ -6,7 +6,7 @@
 //#include "ChipBallJudge.h"
 //#include "GDebugEngine.h"
 //#include "WorldModel.h"
-//#include "param.h"
+//#include "staticparams.h"
 //#include "utils.h"
 
 //#include <cmath>
@@ -90,8 +90,8 @@
 //		CurrentZoneEnemy[i] = 0;
 
 //	//update CurrentZoneEnemy
-//	for (int i = 1; i <= Param::Field::MAX_PLAYER; i++) {
-//		const PlayerVisionT& enemy = pVision->TheirPlayer(i);
+//	for (int i = 0; i < PARAM::Field::MAX_PLAYER; i++) {
+//		const PlayerVisionT& enemy = pVision->theirPlayer(i);
 //		if (enemy.Valid() && enemy.Pos().x()>0) {
 //			CurrentZoneEnemy[CalZone(enemy.Pos())]++;
 //		}

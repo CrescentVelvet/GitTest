@@ -62,10 +62,10 @@ private:
 	vector2f _nvel;       // 小车下一时刻的速度
 	vector2f _acc;        // 小车的加速度
 	vector2f _t_acc;      // 临时加速度
-	vector2f last_acc[Param::Field::MAX_PLAYER_NUM + 1]; // 六辆小车
-	float last_e[Param::Field::MAX_PLAYER_NUM + 1];      // 储存上次的最优的评价
-	int priority[Param::Field::MAX_PLAYER_NUM + 1];      // 判断小车避障的优先集
-	bool find_flag[Param::Field::MAX_PLAYER_NUM + 1];    // 是否随机找解
+	vector2f last_acc[PARAM::Field::MAX_PLAYER]; // 六辆小车
+	float last_e[PARAM::Field::MAX_PLAYER];      // 储存上次的最优的评价
+	int priority[PARAM::Field::MAX_PLAYER];      // 判断小车避障的优先集
+	bool find_flag[PARAM::Field::MAX_PLAYER];    // 是否随机找解
 	float _stoptime;
 	float _DECMAX;          // 小车最大的减速度
 	float _AECMAX;          // 小车最大的加速度

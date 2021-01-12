@@ -1,5 +1,5 @@
 #include "BallSpeedModel.h"
-#include <param.h>
+#include "staticparams.h"
 #include <cmath>
 #include <string>
 #include <iostream>
@@ -47,7 +47,7 @@ CGeoPoint CBallSpeedModel::posForTime(double frame, const CVisionModule* pVision
     return posForTime_FM(frame);
 }
 CVector CBallSpeedModel::speedForTime_FM(double frame) {
-	auto vel = _ballVel.mod() - 0.5 * FRICTION * frame*1.0 / Param::Vision::FRAME_RATE;
+	auto vel = _ballVel.mod() - 0.5 * FRICTION * frame*1.0 / PARAM::Vision::FRAME_RATE;
 	if (vel < 0) vel = 0;
 	return _ballVel / _ballVel.mod() * vel;
 }
@@ -69,12 +69,12 @@ double CBallSpeedModel::timeForDist_FM(double dist) {
 }
 CGeoPoint CBallSpeedModel::posForTime_FM(double frame) {
 	auto v0 = _ballVel.mod();
-	auto v1 = v0 - 2 * FRICTION*frame/Param::Vision::FRAME_RATE;
+	auto v1 = v0 - 2 * FRICTION*frame/PARAM::Vision::FRAME_RATE;
 	double d;
 	if (v1 < 0)
 		d = v0*v0 / FRICTION;
 	else
-		d = (v0 + v1)*frame / Param::Vision::FRAME_RATE / 2;
+		d = (v0 + v1)*frame / PARAM::Vision::FRAME_RATE / 2;
 	return _ballPos + (_ballVel / _ballVel.mod()*d);
 }
 //todo

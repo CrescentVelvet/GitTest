@@ -1,12 +1,12 @@
 #include <iostream>
 #include <math.h>
 #include <utils.h>
-#include <param.h>
+#include "staticparams.h"
 #include <fstream>
 #include <istream>
 #include <sstream>
 #include <string>
-#include <param.h>
+#include "staticparams.h"
 #include "TrapezoidalVelTrajectory.h"
 
 
@@ -445,21 +445,21 @@ void buildPath(const vector<vector<double>>& storeData,double& z, double& vz, do
 	double Duration = data[5]; // 运动控制总时间
 	int stage = 0;
 	z = storeData[0][0];
-	int tfint = Duration*Param::Vision::FRAME_RATE;
+	int tfint = Duration*PARAM::Vision::FRAME_RATE;
 	int	maxStepNumber=(std::min)(tfint, 1);
 	for (int index = 0;index<=maxStepNumber;index++){
-		if (index>=Duration*Param::Vision::FRAME_RATE)
+		if (index>=Duration*PARAM::Vision::FRAME_RATE)
 			continue;
-		while (index>=storeData[stage][5]*Param::Vision::FRAME_RATE)
+		while (index>=storeData[stage][5]*PARAM::Vision::FRAME_RATE)
 			stage = stage + 1;		
 		double t0 = storeData[stage-1][5] ;
 		double vz0 = storeData[stage-1][1];
 		double az  = storeData[stage-1][2];
 		double rev = storeData[stage-1][3];
 		azList = rev*az;	
-		vz = rev*vz0 + rev*az * (index*1.0/Param::Vision::FRAME_RATE-t0);
+		vz = rev*vz0 + rev*az * (index*1.0/PARAM::Vision::FRAME_RATE-t0);
 		if (index!=0)
-			z+=vz0/Param::Vision::FRAME_RATE;	
+			z+=vz0/PARAM::Vision::FRAME_RATE;	
 	}
 	// This is to prevent errors when duration = 0
 	if (tfint == 0){
@@ -469,7 +469,7 @@ void buildPath(const vector<vector<double>>& storeData,double& z, double& vz, do
 		azList = storeData[0][2];
 		//std::cout<<"tfint = 0 "<<z<<" "<<vz<<" "<<azList<<endl;
 	}	
-	//std::cout<<"stage:"<<stage<<" "<<z<<" "<<vz<<" "<<vz/Param::Vision::FRAME_RATE<<endl;
+	//std::cout<<"stage:"<<stage<<" "<<z<<" "<<vz<<" "<<vz/PARAM::Vision::FRAME_RATE<<endl;
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -504,8 +504,8 @@ void buildPath(const vector< vector<double> >& storeData,
 	int stage = 0;
 	double z_t, vz_t, azList_t;
 	z_t = storeData[0][0];
-	int tfint = Duration*Param::Vision::FRAME_RATE;
-    int	maxStepNumber = (std::min)( int(Param::Vision::FRAME_RATE), (std::max)(tfint, 1));
+	int tfint = Duration*PARAM::Vision::FRAME_RATE;
+    int	maxStepNumber = (std::min)( int(PARAM::Vision::FRAME_RATE), (std::max)(tfint, 1));
 	int indexStep = 6;
 	for (int index = -1;index<=maxStepNumber;){
 		if( index < 1 )
@@ -513,21 +513,21 @@ void buildPath(const vector< vector<double> >& storeData,
 		else
 			index += indexStep;
 
-		if (index>=Duration*Param::Vision::FRAME_RATE)
+		if (index>=Duration*PARAM::Vision::FRAME_RATE)
 			continue;
-		while (index>=storeData[stage][5]*Param::Vision::FRAME_RATE)
+		while (index>=storeData[stage][5]*PARAM::Vision::FRAME_RATE)
 			stage = stage + 1;		
 		double t0  = storeData[stage-1][5];
 		double vz0 = storeData[stage-1][1];
 		double az  = storeData[stage-1][2];
 		double rev = storeData[stage-1][3];
 		azList_t = rev*az;	
-		vz_t = rev*vz0 + rev*az * (index*1.0/Param::Vision::FRAME_RATE-t0);
+		vz_t = rev*vz0 + rev*az * (index*1.0/PARAM::Vision::FRAME_RATE-t0);
 		if (index!=0 ){
 			if( index == 1 )
-				z_t+=vz_t/Param::Vision::FRAME_RATE;
+				z_t+=vz_t/PARAM::Vision::FRAME_RATE;
 			else 
-				z_t+=indexStep*vz_t/Param::Vision::FRAME_RATE;
+				z_t+=indexStep*vz_t/PARAM::Vision::FRAME_RATE;
 		}
 
         if ( 1 == index)
@@ -671,10 +671,10 @@ void trapezoidalVelocityPath( const PlayerPoseT& start, const PlayerPoseT& final
 	double maxAngleAccel = capability.maxAngularAccel;
 	//finds the shortest "rotational path" between theta0 and thetaf
 	double dtheta=thetaf-theta0;
-	if (dtheta < -Param::Math::PI)
-		dtheta = dtheta + 2*Param::Math::PI;
-	if (dtheta > Param::Math::PI)
-		dtheta = dtheta - 2*Param::Math::PI;
+	if (dtheta < -PARAM::Math::PI)
+		dtheta = dtheta + 2*PARAM::Math::PI;
+	if (dtheta > PARAM::Math::PI)
+		dtheta = dtheta - 2*PARAM::Math::PI;
 	thetaf=theta0 + dtheta;
 
     //double controlAlpha = syncTG(x0,y0,vx0,vy0,maxAccel,maxAccel,maxSpeed);
@@ -796,10 +796,10 @@ void trapezoidalVelocityPath( const PlayerPoseT& start,
 
 	//finds the shortest "rotational path" between theta0 and thetaf
 	double dtheta=thetaf-theta0;
-	if (dtheta < -Param::Math::PI)
-		dtheta = dtheta + 2*Param::Math::PI;
-	if (dtheta > Param::Math::PI)
-		dtheta = dtheta - 2*Param::Math::PI;
+	if (dtheta < -PARAM::Math::PI)
+		dtheta = dtheta + 2*PARAM::Math::PI;
+	if (dtheta > PARAM::Math::PI)
+		dtheta = dtheta - 2*PARAM::Math::PI;
 	thetaf=theta0 + dtheta;
 
 	//double controlAlpha =

@@ -11,7 +11,7 @@
 ////////////////////////////////////////////////////////////////////////////
 //// include files
 //#include "MatchState.h"
-//#include <param.h>
+//#include "staticparams.h"
 //#include <WorldModel.h>
 //#include <BestPlayer.h>
 //#include "GDebugEngine.h"

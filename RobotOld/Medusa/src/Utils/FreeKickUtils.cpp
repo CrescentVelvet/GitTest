@@ -6,9 +6,9 @@
 
 namespace {
 	bool DEBUG_MODE = true;
-	double reflectBoardDir = Param::Math::PI / 2 + Param::Math::PI / 30;
+	double reflectBoardDir = PARAM::Math::PI / 2 + PARAM::Math::PI / 30;
 	double toIntersectionPointDist = 30;
-	double radius = Param::Vehicle::V2::PLAYER_SIZE + Param::Field::BALL_SIZE;
+	double radius = PARAM::Vehicle::V2::PLAYER_SIZE + PARAM::Field::BALL_SIZE;
 }
 
 namespace FreeKickUtils {
@@ -47,7 +47,7 @@ namespace FreeKickUtils {
 		int theirNum = 0;
 		const PlayerVisionT me = pVision->ourPlayer(myNum);
 		const CGeoPoint myPos  = me.Pos();
-		for (int i = 1; i <= Param::Field::MAX_PLAYER; i++) {
+		for (int i = 0; i < PARAM::Field::MAX_PLAYER; i++) {
 			if (pVision->theirPlayer(i).Valid()) {
 				if (pVision->theirPlayer(i).Pos().dist(myPos) < dist) {
 					dist = pVision->theirPlayer(i).Pos().dist(myPos);
@@ -77,7 +77,7 @@ namespace FreeKickUtils {
 		CGeoPoint projectionPoint = me2theirGoal.projection(opp.Pos());
 		double opp2LineDist = projectionPoint.dist(opp.Pos());
 
-		shootLineBlocked = opp2LineDist < Param::Vehicle::V2::PLAYER_SIZE * 3 && me2theirGoal.IsPointOnLineOnSegment(projectionPoint);
+		shootLineBlocked = opp2LineDist < PARAM::Vehicle::V2::PLAYER_SIZE * 3 && me2theirGoal.IsPointOnLineOnSegment(projectionPoint);
 		return shootLineBlocked;
 	}
 
@@ -96,7 +96,7 @@ namespace FreeKickUtils {
 		CGeoPoint projectionPoint = ball2me.projection(opp.Pos());
 		double opp2LineDist = projectionPoint.dist(opp.Pos());
 
-		passLineBlocked = opp2LineDist < Param::Vehicle::V2::PLAYER_SIZE * 3 && ball2me.IsPointOnLineOnSegment(projectionPoint);
+		passLineBlocked = opp2LineDist < PARAM::Vehicle::V2::PLAYER_SIZE * 3 && ball2me.IsPointOnLineOnSegment(projectionPoint);
 		return passLineBlocked;
 	}
 
@@ -112,7 +112,7 @@ namespace FreeKickUtils {
 		CVector me2opp = me.Pos() - opp.Pos();
 		double me2oppDist = me2opp.mod();
 		
-		oppNearMe = me2oppDist < Param::Vehicle::V2::PLAYER_SIZE * 7;
+		oppNearMe = me2oppDist < PARAM::Vehicle::V2::PLAYER_SIZE * 7;
 		return oppNearMe;
 	}
 
@@ -131,12 +131,12 @@ namespace FreeKickUtils {
 		KickDirection::Instance()->GenerateShootDir(myNum, pVision->ourPlayer(myNum).Pos());
 		double kickDir = KickDirection::Instance()->getRealKickDir();
 		CGeoSegment segment = CGeoSegment(myPos, myPos + Utils::Polar2Vector(range, kickDir));
-		for (int i = 1; i <= Param::Field::MAX_PLAYER; i++) {
+		for (int i = 0; i < PARAM::Field::MAX_PLAYER; i++) {
 			if (pVision->theirPlayer(i).Valid()) {
 				if (Utils::InTheirPenaltyArea(pVision->theirPlayer(i).Pos(),0))
 					continue;
 				CGeoPoint interPoint = segment.projection(pVision->theirPlayer(i).Pos());
-				if (interPoint.dist(pVision->theirPlayer(i).Pos()) < Param::Vehicle::V2::PLAYER_SIZE * allowance && segment.IsPointOnLineOnSegment(interPoint)) {
+				if (interPoint.dist(pVision->theirPlayer(i).Pos()) < PARAM::Vehicle::V2::PLAYER_SIZE * allowance && segment.IsPointOnLineOnSegment(interPoint)) {
 					shootLineBlocked = true;
 					break;
 				}
@@ -147,14 +147,14 @@ namespace FreeKickUtils {
 
 	bool isShootLineBlockedFromPoint(const CVisionModule* pVision, CGeoPoint pos, double range) {
 		bool shootLineBlocked = false;
-		CGeoPoint theirGoal = CGeoPoint(Param::Field::PITCH_LENGTH / 2, 0);
+		CGeoPoint theirGoal = CGeoPoint(PARAM::Field::PITCH_LENGTH / 2, 0);
 		CVector pos2goal = theirGoal - pos;
 		double dir = pos2goal.dir();
 		CGeoSegment segment = CGeoSegment(pos, pos + Utils::Polar2Vector(range, dir));
-		for (int i = 1; i <= Param::Field::MAX_PLAYER; i++) {
+		for (int i = 0; i < PARAM::Field::MAX_PLAYER; i++) {
 			if (pVision->theirPlayer(i).Valid()) {
 				CGeoPoint interPoint = segment.projection(pVision->theirPlayer(i).Pos());
-				if (interPoint.dist(pVision->theirPlayer(i).Pos()) < Param::Vehicle::V2::PLAYER_SIZE * 2.5 && segment.IsPointOnLineOnSegment(interPoint)) {
+				if (interPoint.dist(pVision->theirPlayer(i).Pos()) < PARAM::Vehicle::V2::PLAYER_SIZE * 2.5 && segment.IsPointOnLineOnSegment(interPoint)) {
 					shootLineBlocked = true;
 					break;
 				}
@@ -177,10 +177,10 @@ namespace FreeKickUtils {
 		const CGeoPoint mePos = me.Pos();
 		const CGeoPoint ballPos = ball.Pos();
 		CGeoSegment segment = CGeoSegment(mePos, ballPos);
-		for (int i = 1; i <= Param::Field::MAX_PLAYER; i++) {
+		for (int i = 0; i < PARAM::Field::MAX_PLAYER; i++) {
 			if (pVision->theirPlayer(i).Valid()) {
 				CGeoPoint interPoint = segment.projection(pVision->theirPlayer(i).Pos());
-				if (interPoint.dist(pVision->theirPlayer(i).Pos()) < Param::Vehicle::V2::PLAYER_SIZE * allowance && segment.IsPointOnLineOnSegment(interPoint)) {
+				if (interPoint.dist(pVision->theirPlayer(i).Pos()) < PARAM::Vehicle::V2::PLAYER_SIZE * allowance && segment.IsPointOnLineOnSegment(interPoint)) {
 					passLineBlocked = true;
 					break;
 				}
@@ -195,10 +195,10 @@ namespace FreeKickUtils {
 		const CGeoPoint mePos = pos;
 		const CGeoPoint ballPos = ball.Pos();
 		CGeoSegment segment = CGeoSegment(mePos, ballPos);
-		for (int i = 1; i <= Param::Field::MAX_PLAYER; i++) {
+		for (int i = 0; i < PARAM::Field::MAX_PLAYER; i++) {
 			if (pVision->theirPlayer(i).Valid()) {
 				CGeoPoint interPoint = segment.projection(pVision->theirPlayer(i).Pos());
-				if (interPoint.dist(pVision->theirPlayer(i).Pos()) < Param::Vehicle::V2::PLAYER_SIZE * allowance && segment.IsPointOnLineOnSegment(interPoint)) {
+				if (interPoint.dist(pVision->theirPlayer(i).Pos()) < PARAM::Vehicle::V2::PLAYER_SIZE * allowance && segment.IsPointOnLineOnSegment(interPoint)) {
 					passLineBlocked = true;
 					break;
 				}
@@ -220,12 +220,12 @@ namespace FreeKickUtils {
 		const MobileVisionT& ball = pVision->ball();
 		const CGeoPoint mePos = me.Pos();
 		const CGeoPoint ballPos = ball.Pos();
-		for (int i = 1; i <= Param::Field::MAX_PLAYER; i++) {
+		for (int i = 0; i < PARAM::Field::MAX_PLAYER; i++) {
 			if (pVision->theirPlayer(i).Valid()) {
 				CGeoPoint  PlayerPos = pVision->theirPlayer(i).Pos();
 				CVector ball2PlayerDir = PlayerPos - ball.Pos();
 				double Dist = PlayerPos.dist(ball.Pos());
-				if (Dist < R && fabs(ball2PlayerDir.dir() - dir) * 180 / Param::Math::PI < halfAngle) {
+				if (Dist < R && fabs(ball2PlayerDir.dir() - dir) * 180 / PARAM::Math::PI < halfAngle) {
 					LightKickBlocked = true;
 					break;
 				}
@@ -252,8 +252,8 @@ namespace FreeKickUtils {
 		CGeoPoint ballPos = ball.RawPos();
 		CVector me2ball = ball.RawPos() - me.RawPos();
 		double me2ballDir = me2ball.dir();
-//		double me2ballDist = me2ball.mod() - Param::Field::BALL_SIZE;
-		double diffDir = Utils::Normalize(me2ballDir - myDir) / Param::Math::PI * 180;
+//		double me2ballDist = me2ball.mod() - PARAM::Field::BALL_SIZE;
+		double diffDir = Utils::Normalize(me2ballDir - myDir) / PARAM::Math::PI * 180;
 		if (DEBUG_MODE) {
 			GDebugEngine::Instance()->gui_debug_line(mePos + Utils::Polar2Vector(100, myDir), mePos, COLOR_CYAN); // 朝向
 			GDebugEngine::Instance()->gui_debug_line(mePos + Utils::Polar2Vector(100, Utils::Normalize(myDir - reflectBoardDir)), mePos, COLOR_CYAN); // 左法线
@@ -343,7 +343,7 @@ namespace FreeKickUtils {
 		if ( Utils::Normalize(myDir - (ball.RawPos() - mePos).dir()) > 0) { // 打左边反射板
 			//GDebugEngine::Instance()->gui_debug_line(meLeft, ballPos, COLOR_CYAN);
 			double reflectDir = Utils::Normalize( (ballPos - meLeft).dir() - Utils::Polar2Vector(100, Utils::Normalize(myDir - reflectBoardDir)).dir() );
-			//GDebugEngine::Instance()->gui_debug_line(mePos + Utils::Polar2Vector(200, Utils::Normalize(myDir - Param::Math::PI / 2 - reflectDir)), meLeft, COLOR_CYAN);
+			//GDebugEngine::Instance()->gui_debug_line(mePos + Utils::Polar2Vector(200, Utils::Normalize(myDir - PARAM::Math::PI / 2 - reflectDir)), meLeft, COLOR_CYAN);
 			CGeoLine reflectLine = CGeoLine(mePos + Utils::Polar2Vector(500, Utils::Normalize(myDir - reflectBoardDir - reflectDir)), meLeft);
 			if (ball.Pos().y() > 0) {
 				y = -abs(y);
@@ -361,7 +361,7 @@ namespace FreeKickUtils {
 		else { // 打右边反射板
 			//GDebugEngine::Instance()->gui_debug_line(meRight, ballPos, COLOR_CYAN);
 			double reflectDir = Utils::Normalize( (ballPos - meRight).dir() - Utils::Polar2Vector(100, Utils::Normalize(myDir + reflectBoardDir)).dir() );
-			//GDebugEngine::Instance()->gui_debug_line(mePos + Utils::Polar2Vector(200, Utils::Normalize(myDir + Param::Math::PI / 2 - reflectDir)), meRight, COLOR_CYAN);
+			//GDebugEngine::Instance()->gui_debug_line(mePos + Utils::Polar2Vector(200, Utils::Normalize(myDir + PARAM::Math::PI / 2 - reflectDir)), meRight, COLOR_CYAN);
 			CGeoLine reflectLine = CGeoLine(mePos + Utils::Polar2Vector(500, Utils::Normalize(myDir + reflectBoardDir - reflectDir)), meRight);
 			if (ball.Pos().y() > 0) {
 				y = -abs(y);

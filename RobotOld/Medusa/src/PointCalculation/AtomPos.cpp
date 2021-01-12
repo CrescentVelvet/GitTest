@@ -42,7 +42,7 @@ CGeoPoint CAtomPos::getPos()
 
 bool CAtomPos::isAvailable()
 {
-	return !(Utils::OutOfField(_pos,0));
+	return Utils::IsInField(_pos,0);
 }
 
 void CAtomPos::printDebug()

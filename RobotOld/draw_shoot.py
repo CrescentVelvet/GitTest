@@ -81,9 +81,9 @@ def readData(filename):
     shoot_output = np.zeros(len(ball_posX))
     shoot_output = shoot_xita
     # 输入输出弧度转换角度(角度仅用于观察，计算还得是弧度)
-    # for i in range(len(shoot_output)):
-        # shoot_input[i] = math.degrees(shoot_input[i])
-        # shoot_output[i] = math.degrees(shoot_output[i])
+    for i in range(len(shoot_output)):
+        shoot_input[i] = math.degrees(shoot_input[i])
+        shoot_output[i] = math.degrees(shoot_output[i])
     # 计算平均值
     shoot_average = 0
     shoot_error = 0
@@ -131,7 +131,7 @@ def drawData(filename,num):
     ax.set_title(filename)
     ax.set_xlabel(round(linear_reg.coef_[0],2))
     ax.set_ylabel(round(linear_reg.intercept_,2))
-    # plt.ylim(-30,30)
+    plt.ylim(-30,30)
 
 # plt.ion()
 fig = plt.figure()
@@ -140,5 +140,5 @@ fig = plt.figure()
 # drawData('shoot_data_76501.txt',233)
 # drawData('shoot_data=00000.txt',234)
 # drawData('shoot_data=13800.txt',235)
-drawData('shoot_data=00000.txt',111)
+drawData('shoot_data.txt',111)
 plt.show()

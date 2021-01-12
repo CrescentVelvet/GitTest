@@ -15,15 +15,15 @@ namespace {
     bool verbose            = true;
     bool VERBOSE_MODE       = false;
     int maxPenaltyNum       = 100;
-    double self_x           = -Param::Field::PITCH_LENGTH / 2.0 + 8;
+    double self_x           = -PARAM::Field::PITCH_LENGTH / 2.0 + 8;
     int defaultAverageCycle = 90;
     double defaultVariance  = 0.0;
-    CGeoPoint leftPos       = CGeoPoint(-Param::Field::PITCH_LENGTH / 2.0 + 8, -30);
-    CGeoPoint rightPos      = CGeoPoint(-Param::Field::PITCH_LENGTH / 2.0 + 8, -2);
-    CGeoPoint randomLeft    = CGeoPoint(-Param::Field::PITCH_LENGTH / 2.0 + 8, -30);
-    CGeoPoint randomRight   = CGeoPoint(-Param::Field::PITCH_LENGTH / 2.0 + 8, 30);
-    CGeoPoint randomLeftArrive  = CGeoPoint(-Param::Field::PITCH_LENGTH / 2.0 + 8, -35);
-    CGeoPoint randomRightArrive = CGeoPoint(-Param::Field::PITCH_LENGTH / 2.0 + 8 , 35);
+    CGeoPoint leftPos       = CGeoPoint(-PARAM::Field::PITCH_LENGTH / 2.0 + 8, -30);
+    CGeoPoint rightPos      = CGeoPoint(-PARAM::Field::PITCH_LENGTH / 2.0 + 8, -2);
+    CGeoPoint randomLeft    = CGeoPoint(-PARAM::Field::PITCH_LENGTH / 2.0 + 8, -30);
+    CGeoPoint randomRight   = CGeoPoint(-PARAM::Field::PITCH_LENGTH / 2.0 + 8, 30);
+    CGeoPoint randomLeftArrive  = CGeoPoint(-PARAM::Field::PITCH_LENGTH / 2.0 + 8, -35);
+    CGeoPoint randomRightArrive = CGeoPoint(-PARAM::Field::PITCH_LENGTH / 2.0 + 8 , 35);
     int AHEAD               = 18; // 提前移动的帧数
     int CATEGORY            = 0;
     bool resetFlag          = false;
@@ -42,14 +42,14 @@ CPenaltyDefV2::CPenaltyDefV2() {
     _averageStillCycle = defaultAverageCycle;
     _stillCycleCnt = 0;
     _isNormalStartLastCycle = false;
-    _initOppDir = Param::Math::PI;
+    _initOppDir = PARAM::Math::PI;
     _readyCnt   = 0;
     _readyFlag  = false;
     _variance   = defaultVariance;
     switchCnt   = 0;
-//    double self_x           = -Param::Field::PITCH_LENGTH / 2.0 + 8;
-//    CGeoPoint leftPos       = CGeoPoint(-Param::Field::PITCH_LENGTH / 2.0 + 8, -20);
-//    CGeoPoint rightPos      = CGeoPoint(-Param::Field::PITCH_LENGTH / 2.0 + 8, -2);
+//    double self_x           = -PARAM::Field::PITCH_LENGTH / 2.0 + 8;
+//    CGeoPoint leftPos       = CGeoPoint(-PARAM::Field::PITCH_LENGTH / 2.0 + 8, -20);
+//    CGeoPoint rightPos      = CGeoPoint(-PARAM::Field::PITCH_LENGTH / 2.0 + 8, -2);
 }
 
 CPenaltyDefV2::~CPenaltyDefV2() {}
@@ -61,7 +61,7 @@ void CPenaltyDefV2::plan(const CVisionModule* pVision) {
         resetFlag = false;
     }
 
-    if ( pVision->getCycle() - _lastCycle > Param::Vision::FRAME_RATE * 0.1 ) { _state = BEGINNING; }
+    if ( pVision->getCycle() - _lastCycle > PARAM::Vision::FRAME_RATE * 0.1 ) { _state = BEGINNING; }
     // 视觉预处理
     const MobileVisionT& ball = pVision->ball();
     const int runner = task().executor;
@@ -69,8 +69,8 @@ void CPenaltyDefV2::plan(const CVisionModule* pVision) {
     const PlayerVisionT& self  = pVision->ourPlayer(runner);
     const PlayerVisionT& enemy = pVision->theirPlayer(this->GetNearestEnemy(pVision));
     if (verbose) {
-        GDebugEngine::Instance()->gui_debug_line(ball.Pos(), CGeoPoint(-Param::Field::PITCH_LENGTH / 2, Param::Field::GOAL_WIDTH / 2), COLOR_WHITE);
-        GDebugEngine::Instance()->gui_debug_line(ball.Pos(), CGeoPoint(-Param::Field::PITCH_LENGTH / 2, -Param::Field::GOAL_WIDTH / 2), COLOR_WHITE);
+        GDebugEngine::Instance()->gui_debug_line(ball.Pos(), CGeoPoint(-PARAM::Field::PITCH_LENGTH / 2, PARAM::Field::GOAL_WIDTH / 2), COLOR_WHITE);
+        GDebugEngine::Instance()->gui_debug_line(ball.Pos(), CGeoPoint(-PARAM::Field::PITCH_LENGTH / 2, -PARAM::Field::GOAL_WIDTH / 2), COLOR_WHITE);
     }
 
     static double face_dir = 0.0;
@@ -136,7 +136,7 @@ void CPenaltyDefV2::plan(const CVisionModule* pVision) {
     if(false || VERBOSE_MODE) { cout << "isGameOn: " << isGameOn << endl; }
     if(false || VERBOSE_MODE) { cout << "isNormalStart:" << isNormalStart << "  still Cycle count: " << _stillCycleCnt << endl; }
 
-    static CGeoPoint RandomPos = CGeoPoint(-Param::Field::PITCH_LENGTH / 2.0 + 8, 0);
+    static CGeoPoint RandomPos = CGeoPoint(-PARAM::Field::PITCH_LENGTH / 2.0 + 8, 0);
     static int randomCnt = 0;
 
     switch (_state) {
@@ -387,7 +387,7 @@ void CPenaltyDefV2::plan(const CVisionModule* pVision) {
     // CATEGORY_2 分支----------------------------------------------------------------------------
     case POS_1:
         {
-            if ( Utils::Normalize(enemy.Dir() - Param::Math::PI) < -0.03 ) {
+            if ( Utils::Normalize(enemy.Dir() - PARAM::Math::PI) < -0.03 ) {
                 leftPos.setY(20);
                 rightPos.setY(2);
             }
@@ -449,7 +449,7 @@ void CPenaltyDefV2::plan(const CVisionModule* pVision) {
     // CATEGORY_3 分支----------------------------------------------------------------------------
     case POS_3:
         {
-            if ( Utils::Normalize(enemy.Dir() - Param::Math::PI) < -0.03 ) {
+            if ( Utils::Normalize(enemy.Dir() - PARAM::Math::PI) < -0.03 ) {
                 leftPos.setY(20);
                 rightPos.setY(2);
             }
@@ -527,7 +527,7 @@ CPlayerCommand* CPenaltyDefV2::execute(const CVisionModule* pVision) {
 bool CPenaltyDefV2::isOppTurn(const CVisionModule *pVision) {
     const PlayerVisionT& enemy = pVision->theirPlayer(this->GetNearestEnemy(pVision));
     double currentOppDir = enemy.Dir();
-    if (fabs(Utils::Normalize(currentOppDir - _initOppDir)) > Param::Math::PI / 90) {
+    if (fabs(Utils::Normalize(currentOppDir - _initOppDir)) > PARAM::Math::PI / 90) {
         return true;
     }
     return false;
@@ -556,10 +556,10 @@ bool CPenaltyDefV2::isOppDribble(const CVisionModule *pVision) {
 }
 
 int CPenaltyDefV2::GetNearestEnemy(const CVisionModule *pVision) {
-    CGeoPoint goal_center(- Param::Field::PITCH_LENGTH / 2, 0);
-    double nearest_dist = Param::Field::PITCH_LENGTH;
+    CGeoPoint goal_center(- PARAM::Field::PITCH_LENGTH / 2, 0);
+    double nearest_dist = PARAM::Field::PITCH_LENGTH;
     int enemy_num = 1;
-    for (int i = 1; i <= Param::Field::MAX_PLAYER; i++) {
+    for (int i = 0; i < PARAM::Field::MAX_PLAYER; i++) {
         if (pVision->theirPlayer(i).Valid() == true) {
             if (pVision->theirPlayer(i).Pos().dist(goal_center) < nearest_dist) {
                 nearest_dist = pVision->theirPlayer(i).Pos().dist(goal_center);

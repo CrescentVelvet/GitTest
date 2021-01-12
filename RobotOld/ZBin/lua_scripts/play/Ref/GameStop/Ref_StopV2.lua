@@ -135,7 +135,7 @@ end
 local SIDE_POS, MIDDLE_POS, INTER_POS, SIDE2_POS, INTER2_POS = pos.refStopAroundBall()
 --local ONE_POS, TWO_POS, THREE_POS, FOUR_POS, FIVE_POS, SIX_POS = penaltyStop()--pos.stopPoses()
 
-local STOP_FLAG = bit:_or(flag.slowly, flag.dodge_ball)
+local STOP_FLAG = flag.dodge_ball
 local STOP_DSS = bit:_or(STOP_FLAG, flag.allow_dss)
 
 local gBallPosXInStop = 0

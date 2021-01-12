@@ -40,7 +40,7 @@ end,
 
 ["beginning"] = {
 	Leader = KICKER_TASK(),-- task.defendKick(_,_,_,_,flag.avoid_stop_ball_circle),
-	Special  = task.goPassPos("Leader", flag.slowly+flag.dodge_ball+flag.allow_dss+flag.avoid_stop_ball_circle),
+	Special  = task.goPassPos("Leader", flag.dodge_ball+flag.allow_dss+flag.avoid_stop_ball_circle),
 	Middle   = task.defendDefault(2),
 	Defender = task.leftBack(),
 	Assister = task.rightBack(),
@@ -52,7 +52,7 @@ end,
 
 ["attacker1"] = {
 	Leader = KICKER_TASK(),-- task.defendKick(_,_,_,_,flag.avoid_stop_ball_circle),
-	Special  = task.goPassPos("Leader",flag.slowly+flag.dodge_ball+flag.allow_dss+flag.avoid_stop_ball_circle),
+	Special  = task.goPassPos("Leader",flag.dodge_ball+flag.allow_dss+flag.avoid_stop_ball_circle),
 	Middle   = task.defendDefault(2),
 	Defender = task.leftBack(),
 	Assister = task.rightBack(),

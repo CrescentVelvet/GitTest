@@ -38,7 +38,7 @@ CCompensate::CCompensate(){
 }
 
 void CCompensate::readCompensateTable(){
-    const string path = Param::File::PlayBookPath;
+    const string path = PARAM::File::PlayBookPath;
 	string sCarNum;
 
 	stringstream fullname;
@@ -82,7 +82,7 @@ double CCompensate::getKickDir(int playerNum, CGeoPoint kickTarget){
 	const PlayerVisionT & kicker = pVision->ourPlayer(playerNum);
 	double rawkickdir = (kickTarget - kicker.Pos()).dir();
 	double ballspeed =ball.Vel().mod();
-	double tempdir = (Normalize(Normalize(pVision->ball().Vel().dir()+Param::Math::PI)-(kickTarget - kicker.Pos()).dir()))*180/Param::Math::PI;
+	double tempdir = (Normalize(Normalize(pVision->ball().Vel().dir()+PARAM::Math::PI)-(kickTarget - kicker.Pos()).dir()))*180/PARAM::Math::PI;
 	int ratio = 0;
 	if (tempdir>0){
 		ratio = 1;
@@ -91,12 +91,12 @@ double CCompensate::getKickDir(int playerNum, CGeoPoint kickTarget){
 	}
 	double compensatevalue;
 	double rawdir=
-		fabs((Normalize(Normalize(pVision->ball().Vel().dir()+Param::Math::PI)-(kickTarget - kicker.Pos()).dir()))
-		*180/Param::Math::PI);
+		fabs((Normalize(Normalize(pVision->ball().Vel().dir()+PARAM::Math::PI)-(kickTarget - kicker.Pos()).dir()))
+		*180/PARAM::Math::PI);
 
 
 	//cout << pVision->Cycle() << endl;
-	//cout << "A" << Normalize(pVision->Ball().Vel().dir() + Param::Math::PI) << endl;
+	//cout << "A" << Normalize(pVision->Ball().Vel().dir() + PARAM::Math::PI) << endl;
 	//cout << "B" << (kickTarget - kicker.Pos()).dir() << endl;
 	//cout << "rawdir:"<<rawdir << endl;
 
@@ -121,7 +121,7 @@ double CCompensate::getKickDir(int playerNum, CGeoPoint kickTarget){
         cout << "Real Fix Value:" << ratio*compensatevalue << endl;
     }
 
-	double realkickdir= Utils::Normalize(Utils::Normalize(ratio*compensatevalue*Param::Math::PI/180)+rawkickdir);
+	double realkickdir= Utils::Normalize(Utils::Normalize(ratio*compensatevalue*PARAM::Math::PI/180)+rawkickdir);
 	//cout<<vision->Cycle()<<" "<<ballspeed<<" "<<rawdir<<" "<<compensatevalue<<endl;
 	return realkickdir;
 }
@@ -129,14 +129,14 @@ double CCompensate::getKickDir(int playerNum, CGeoPoint kickTarget){
 //核心接口
 double CCompensate::checkCompensate(double ballspeed,double rawdir){
 	double compensate = 0;
-	if (ballspeed<195){
+    if (ballspeed<1950){
 		ballspeed = 195;
 	}
-	if (ballspeed > 650){
-		ballspeed = 650;
+    if (ballspeed > 6500){
+        ballspeed = 6500;
 	}
 	int column = ceil(rawdir/5);
-	int  row =ceil((ballspeed-195)/5);
+    int  row =ceil((ballspeed-1950)/5);
 	if (column > 17)
 		column = 1;
 	if (row<1){
@@ -147,8 +147,8 @@ double CCompensate::checkCompensate(double ballspeed,double rawdir){
 	}
 	double distleft = rawdir -(column-1)*5;
 	double distright = column*5 - rawdir;
-	double distup = ballspeed - ((row -1)*5+195);
-	double distdown = row*5+195 - ballspeed;
+    double distup = ballspeed - ((row -1)*5+1950);
+    double distdown = row*5+1950 - ballspeed;
 	double leftfactor = distright/5;
 	double rightfactor = distleft/5;
 	double upfactor = distdown/5;
@@ -173,14 +173,14 @@ double CCompensate::checkCompensate(double ballspeed,double rawdir){
     return compensate*COMPENSATE_RATION(rawdir,ballspeed);
 }
 
-void CCompensate::setOurRobotIndex(unsigned char*_ourRobotIndex)
-{
-	//std::cout << "in set ourrobotindex()" << std::endl;
-    for (int i = 0; i < 12; i++) {
-		ourRobotIndex[i] = _ourRobotIndex[i];
-		//std::cout << (int)ourRobotIndex[i] << std::endl;
-	}
-}
+//void CCompensate::setOurRobotIndex(unsigned char*_ourRobotIndex)
+//{
+//	//std::cout << "in set ourrobotindex()" << std::endl;
+//    for (int i = 0; i < 12; i++) {
+//		ourRobotIndex[i] = _ourRobotIndex[i];
+//		//std::cout << (int)ourRobotIndex[i] << std::endl;
+//	}
+//}
 
 
 
@@ -211,7 +211,7 @@ void CCompensate::setOurRobotIndex(unsigned char*_ourRobotIndex)
 
 //void CCompensateNew::readCompensateTable(){
 //	// 这个表playgame里面表示的是参数
-//    const string path = Param::File::PlayBookPath;
+//    const string path = PARAM::File::PlayBookPath;
 //	string sCarNum;
 
 //	stringstream fullname;
@@ -251,8 +251,8 @@ void CCompensate::setOurRobotIndex(unsigned char*_ourRobotIndex)
 
 //	double ballspeed =ball.Vel().mod();
 //	double tempdir =
-//	(Normalize(Normalize(pVision->Ball().Vel().dir() +Param::Math::PI)-(kickTarget - kicker.Pos()).dir()))
-//	*180/Param::Math::PI;
+//	(Normalize(Normalize(pVision->Ball().Vel().dir() +PARAM::Math::PI)-(kickTarget - kicker.Pos()).dir()))
+//	*180/PARAM::Math::PI;
 
 //	// 球速方向与rawKickdir的夹角
 //	int ratio = 0;
@@ -265,8 +265,8 @@ void CCompensate::setOurRobotIndex(unsigned char*_ourRobotIndex)
 
 //	double compensatevalue;
 //	double rawdir=
-//		fabs((Normalize(Normalize(pVision->Ball().Vel().dir()+Param::Math::PI)-(kickTarget - kicker.Pos()).dir()))
-//		*180/Param::Math::PI);
+//		fabs((Normalize(Normalize(pVision->Ball().Vel().dir()+PARAM::Math::PI)-(kickTarget - kicker.Pos()).dir()))
+//		*180/PARAM::Math::PI);
 
 //	if (rawdir > 80){
 //		rawdir = 80;
@@ -292,7 +292,7 @@ void CCompensate::setOurRobotIndex(unsigned char*_ourRobotIndex)
 //	DEBUG cout << "Ball Speed:" << ballspeed << "\tRaw Dir:" << rawdir << endl;
 //	DEBUG cout << "Real Fix Value:" << ratio*compensatevalue << endl;
 
-//	double realkickdir= Utils::Normalize(Utils::Normalize(ratio*compensatevalue*Param::Math::PI/180)+rawkickdir);
+//	double realkickdir= Utils::Normalize(Utils::Normalize(ratio*compensatevalue*PARAM::Math::PI/180)+rawkickdir);
 //	//cout<<vision->Cycle()<<" "<<ballspeed<<" "<<rawdir<<" "<<compensatevalue<<endl;
 //	return realkickdir;
 //}
@@ -331,7 +331,7 @@ void CCompensate::setOurRobotIndex(unsigned char*_ourRobotIndex)
 	
 //	// here for test!!!!!
 //	compensateOriginal = (leftfactor*compensatevalue[row - 1][column - 1] + rightfactor*compensatevalue[row - 1][column])*upfactor+ (leftfactor*compensatevalue[row][column - 1] + rightfactor*compensatevalue[row][column])*downfactor;
-//	compensate = std::asin( (A0 * ballspeed * std::sin(rawdir * Param::Math::PI / 180) + B0) / SHOOT_SPEED ) * 180 / Param::Math::PI;
+//	compensate = std::asin( (A0 * ballspeed * std::sin(rawdir * PARAM::Math::PI / 180) + B0) / SHOOT_SPEED ) * 180 / PARAM::Math::PI;
 	
 //	//double a = adjustCmpParam();
 //	if (adjustNum <= 1) adjustAngle = 0;
@@ -361,9 +361,9 @@ void CCompensate::setOurRobotIndex(unsigned char*_ourRobotIndex)
 //	adjustAngle = a / adjustNum;
 //	cout << adjustAngle << " " << " " << adjustNum << endl;
 //	// 修改参数A B
-//	if (abs(adjustingData[adjustNum][0] - adjustingData[adjustNum][1]) >= 8 * Param::Math::PI / 180)
-//		a = a + (adjustingData[adjustNum][0] - adjustingData[adjustNum][1]) / abs(adjustingData[adjustNum][0] - adjustingData[adjustNum][1]) * 8 * Param::Math::PI / 180;
-//	else if (abs(adjustingData[adjustNum][0] - adjustingData[adjustNum][1]) <= 3 * Param::Math::PI / 180)
+//	if (abs(adjustingData[adjustNum][0] - adjustingData[adjustNum][1]) >= 8 * PARAM::Math::PI / 180)
+//		a = a + (adjustingData[adjustNum][0] - adjustingData[adjustNum][1]) / abs(adjustingData[adjustNum][0] - adjustingData[adjustNum][1]) * 8 * PARAM::Math::PI / 180;
+//	else if (abs(adjustingData[adjustNum][0] - adjustingData[adjustNum][1]) <= 3 * PARAM::Math::PI / 180)
 //		a = a + (adjustingData[adjustNum][0] - adjustingData[adjustNum][1]);
 //	// a 是这次踢球的偏差
 
@@ -373,7 +373,7 @@ void CCompensate::setOurRobotIndex(unsigned char*_ourRobotIndex)
 //	cout << "A0 = " << A0 << " a = " << a << " compensate = " << compensate << endl;
 //	//compensate = compensate + a;
 //	adjustNum++;
-//	return adjustAngle * 180 / Param::Math::PI;
+//	return adjustAngle * 180 / PARAM::Math::PI;
 //}
 
 //void CCompensateNew::setOurRobotIndex(unsigned char*_ourRobotIndex)
@@ -439,7 +439,7 @@ void CCompensate::setOurRobotIndex(unsigned char*_ourRobotIndex)
 //		//  test RANSAC, load data from txt file
 //		if (INIT_CMP_PARAM) {
 //			initCmpData[initSampleNum][0];
-//            static stringstream fullname(Param::File::PlayBookPath+"testKickData.txt");
+//            static stringstream fullname(PARAM::File::PlayBookPath+"testKickData.txt");
 
 //			static ifstream infile(fullname.str().c_str());
 //			if (!infile) {
@@ -476,7 +476,7 @@ void CCompensate::setOurRobotIndex(unsigned char*_ourRobotIndex)
 //			// check Parameter test: new data in Japan
 //			compensateData[cmpSampleNum][0];
 
-//            static stringstream fullname(Param::File::PlayBookPath+"testCheckingModel.txt");
+//            static stringstream fullname(PARAM::File::PlayBookPath+"testCheckingModel.txt");
 
 //			static ifstream infile(fullname.str().c_str());
 //			if (!infile) {
@@ -576,7 +576,7 @@ void CCompensate::setOurRobotIndex(unsigned char*_ourRobotIndex)
 
 
 //void CCompensateNew::initParam(int num) {
-//    const string path = Param::File::PlayBookPath;
+//    const string path = PARAM::File::PlayBookPath;
 
 //	stringstream fullname;
 //	fullname << path << "ftqTestCmpInit.txt";
@@ -646,7 +646,7 @@ void CCompensate::setOurRobotIndex(unsigned char*_ourRobotIndex)
 
 //void CCompensateNew::calcInitParam() {
 //	// calculate internal point
-//	// compensate = std::asin( (A * ballspeed * std::sin(rawdir * Param::Math::PI / 180) + B) / SHOOT_SPEED ) * 180 / Param::Math::PI;
+//	// compensate = std::asin( (A * ballspeed * std::sin(rawdir * PARAM::Math::PI / 180) + B) / SHOOT_SPEED ) * 180 / PARAM::Math::PI;
 //	// update sigma^2 ;
 //	if (INIT_CMP_PARAM) {
 //		int maxNum = 0;

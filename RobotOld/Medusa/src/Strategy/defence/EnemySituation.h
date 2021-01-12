@@ -2,7 +2,7 @@
 #define _ENEMY_SITUATION_H_
 
 #include "geometry.h"
-#include "param.h"
+#include "staticparams.h"
 #include <vector>
 using namespace std;
 // 要实时更新的结构
@@ -45,13 +45,13 @@ public:
 	double receiverDir;		//对手最有可能接球的人的朝向
 	bool receiverExist;
 
-	bool isMarked[Param::Field::MAX_PLAYER + 1];	//在盯人skill里面刷新，同时刷新markList  注意此时1~6对应对手1~6号车
-	int markCycle[Param::Field::MAX_PLAYER + 1];
+	bool isMarked[PARAM::Field::MAX_PLAYER];	//在盯人skill里面刷新，同时刷新markList  注意此时1~6对应对手1~6号车
+	int markCycle[PARAM::Field::MAX_PLAYER];
 	_markList markList;
 
 	int attackerNum;		//对手参与进攻的人数
-	int attackArray[Param::Field::MAX_PLAYER+1];		//对手参与进攻的人的号码，*通过威胁度依次排列* 
-	int steadyAttackArray[Param::Field::MAX_PLAYER+1];//变化平稳的attackArray
+	int attackArray[PARAM::Field::MAX_PLAYER];		//对手参与进攻的人的号码，*通过威胁度依次排列* 
+	int steadyAttackArray[PARAM::Field::MAX_PLAYER];//变化平稳的attackArray
 	//attackArray[0] = ballKeeper.num , attackArray[1] 是对手跑位的车中威胁度最大的点。
 	//attackArray中前attackerNum-1个数字有意义
 	//威胁度计算：（不依靠盯人车时）其射门角度（影响度小），

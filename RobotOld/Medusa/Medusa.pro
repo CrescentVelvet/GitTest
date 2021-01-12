@@ -325,6 +325,7 @@ SOURCES += \
     src/PointCalculation/TandemPos.cpp \
     src/PointCalculation/TouchKickPos.cpp \
     src/PointCalculation/WaitKickPos.cpp \
+    src/PointCalculation/guardpos.cpp \
     src/RefereeBox/RefereeBoxIf.cpp \
     share/proto/cpp/grSim_Commands.pb.cc \
     share/proto/cpp/grSimMessage.pb.cc \
@@ -383,7 +384,6 @@ SOURCES += \
     src/Strategy/skill/InterceptTouch.cpp \
     src/Strategy/skill/Marking.cpp \
     src/Strategy/skill/MarkingFront.cpp \
-    src/Strategy/skill/MarkingTouch.cpp \
     src/Strategy/skill/OpenSpeed.cpp \
     src/Strategy/skill/PenaltyDef2017V2.cpp \
     src/Strategy/skill/PenaltyDefV2.cpp \
@@ -397,13 +397,13 @@ SOURCES += \
     src/Strategy/skill/StaticGetBallNew.cpp \
     src/Strategy/skill/StopRobot.cpp \
     src/Strategy/skill/TouchKick.cpp \
+    src/Strategy/skill/zback.cpp \
     src/Strategy/skill/zdrag.cpp \
     src/Utils/BufferCounter.cpp \
     src/Utils/DefendUtils.cpp \
     src/Utils/FreeKickUtils.cpp \
     src/Utils/GDebugEngine.cpp \
     src/Utils/NormalPlayUtils.cpp \
-    src/Utils/param.cpp \
     src/Utils/utils.cpp \
     src/Vision/BallPredictor.cpp \
     src/Vision/CollisionSimulator.cpp \
@@ -436,7 +436,6 @@ SOURCES += \
     src/Strategy/skill/ZCirclePass.cpp \
     src/Strategy/skill/GetBallV4.cpp \
     src/Simulator/CommandInterface.cpp \
-    src/Strategy/skill/zmessi.cpp \
     src/PathPlan/ObstacleNew.cpp \
     src/Strategy/skill/GotoPositionNew.cpp \
     src/PathPlan/BezierMotion.cpp \
@@ -519,6 +518,7 @@ HEADERS += \
     src/PointCalculation/SupportPos.h \
     src/PointCalculation/TouchKickPos.h \
     src/PointCalculation/WaitKickPos.h \
+    src/PointCalculation/guardpos.h \
     src/RefereeBox/game_state.h \
     src/RefereeBox/playmode.h \
     src/RefereeBox/RefereeBoxIf.h \
@@ -585,7 +585,6 @@ HEADERS += \
     src/Strategy/skill/InterceptTouch.h \
     src/Strategy/skill/MarkingFront.h \
     src/Strategy/skill/Marking.h \
-    src/Strategy/skill/MarkingTouch.h \
     src/Strategy/skill/OpenSpeed.h \
     src/Strategy/skill/PenaltyDef2017V2.h \
     src/Strategy/skill/PenaltyDefV2.h \
@@ -600,6 +599,7 @@ HEADERS += \
     src/Strategy/skill/StaticGetBallNew.h \
     src/Strategy/skill/StopRobot.h \
     src/Strategy/skill/TouchKick.h \
+    src/Strategy/skill/zback.h \
     src/Strategy/skill/zdrag.h \
     src/Utils/BufferCounter.h \
     src/Utils/ClassFactory.h \
@@ -610,8 +610,6 @@ HEADERS += \
     src/Utils/misc_types.h \
     src/Utils/MultiThread.h \
     src/Utils/NormalPlayUtils.h \
-    src/Utils/os_param.h \
-    src/Utils/param.h \
     src/Utils/Semaphore.h \
     src/Utils/singleton.h \
     src/Utils/SkillUtils.h \
@@ -659,7 +657,6 @@ HEADERS += \
     src/Strategy/skill/ZAttack.h \
     src/Strategy/skill/ZCirclePass.h \
     src/Simulator/CommandInterface.h \
-    src/Strategy/skill/zmessi.h \
     src/PathPlan/ObstacleNew.h \
     src/Strategy/skill/GotoPositionNew.h \
     src/PathPlan/BezierMotion.h \

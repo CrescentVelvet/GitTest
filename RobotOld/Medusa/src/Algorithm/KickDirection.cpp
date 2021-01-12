@@ -3,25 +3,25 @@
 #include "BallStatus.h"
 #include "GDebugEngine.h"
 #include "Compensate.h"
-#include<fstream>
-#include<sstream>
+#include <fstream>
+#include <sstream>
 #include "Global.h"
 #include "parammanager.h"
 namespace {
     CGeoPoint Shoot2Goal;
-    const double MinShootWidth = 1*Param::Field::BALL_SIZE; //someone modified it to 0 ! comment by wyk 2019.5.14
+    const double MinShootWidth = 1*PARAM::Field::BALL_SIZE; //someone modified it to 0 ! comment by wyk 2019.5.14
     const bool VERBOSE_MODE = false;
     double compensatevalue[100][50];
-//    const CGeoPoint MAX_GOAL_POST(Param::Field::PITCH_LENGTH/2,Param::Field::GOAL_WIDTH/2);
-//    const CGeoPoint MIN_GOAL_POST(Param::Field::PITCH_LENGTH/2,-Param::Field::GOAL_WIDTH/2);
+//    const CGeoPoint MAX_GOAL_POST(PARAM::Field::PITCH_LENGTH/2,PARAM::Field::GOAL_WIDTH/2);
+//    const CGeoPoint MIN_GOAL_POST(PARAM::Field::PITCH_LENGTH/2,-PARAM::Field::GOAL_WIDTH/2);
 }
 
 
 CKickDirection::CKickDirection( )
 {
     reset();
-    Shoot2Goal = CGeoPoint(Param::Field::PITCH_LENGTH/2.0,0.0);
-    const string path = Param::File::PlayBookPath;
+    Shoot2Goal = CGeoPoint(PARAM::Field::PITCH_LENGTH/2.0,0.0);
+    const string path = PARAM::File::PlayBookPath;
     string fullname = path + COMPENSATE_FILE_NAME;
     ifstream infile(fullname.c_str());
     if (!infile) {
@@ -84,7 +84,7 @@ double CKickDirection::GenerateShootDir(const int player, const CGeoPoint pos)
 //            GDebugEngine::Instance()->gui_debug_line(kickerPos,kickerPos+Utils::Polar2Vector(500,bestRange->getMin()),COLOR_YELLOW);
 //            GDebugEngine::Instance()->gui_debug_line(kickerPos,kickerPos+Utils::Polar2Vector(500,_raw_kick_dir),COLOR_RED);
             CGeoLine shootLine = CGeoLine(kickerPos,kickerPos+Utils::Polar2Vector(500,_raw_kick_dir));
-            CGeoLine bottomLine = CGeoLine(CGeoPoint(Param::Field::PITCH_LENGTH/2.0,-Param::Field::GOAL_WIDTH/2),CGeoPoint(Param::Field::PITCH_LENGTH/2.0,Param::Field::GOAL_WIDTH/2));
+            CGeoLine bottomLine = CGeoLine(CGeoPoint(PARAM::Field::PITCH_LENGTH/2.0,-PARAM::Field::GOAL_WIDTH/2),CGeoPoint(PARAM::Field::PITCH_LENGTH/2.0,PARAM::Field::GOAL_WIDTH/2));
             CGeoLineLineIntersection intersect = CGeoLineLineIntersection(shootLine,bottomLine);
             if (intersect.Intersectant()) {
                 _kick_target = intersect.IntersectPoint();
@@ -98,7 +98,7 @@ double CKickDirection::GenerateShootDir(const int player, const CGeoPoint pos)
     ///> 踢球方向补偿
     // CVector self2ball = ball.Pos() - kickerPos;
     // double ballVelDir = ball.Vel().dir();
-    // double ballVelReverse = Utils::Normalize(ballVelDir+Param::Math::PI);	// 球速反向
+    // double ballVelReverse = Utils::Normalize(ballVelDir+PARAM::Math::PI);	// 球速反向
 
     if (VERBOSE_MODE) {
         GDebugEngine::Instance()->gui_debug_line(kickerPos,kickerPos+Utils::Polar2Vector(1000,_real_kick_dir),COLOR_CYAN);
@@ -117,14 +117,14 @@ double CKickDirection::GenerateShootDir(const int player, const CGeoPoint pos)
 //    static int i = 0;
     double ballspeed = ball.Vel().mod();
 
-    double tempdir = (Utils::Normalize(Utils::Normalize(pVision->ball().Vel().dir()+Param::Math::PI)-(_kick_target - pVision->ourPlayer(player).Pos()).dir()))*180/Param::Math::PI;
+    double tempdir = (Utils::Normalize(Utils::Normalize(pVision->ball().Vel().dir()+PARAM::Math::PI)-(_kick_target - pVision->ourPlayer(player).Pos()).dir()))*180/PARAM::Math::PI;
     int ratio = 0;
     if (tempdir>0){
         ratio = 1;
     }else{
         ratio = -1;
     }
-    rawdir=abs((Utils::Normalize(Utils::Normalize(pVision->ball().Vel().dir()+Param::Math::PI)-(_kick_target - pVision->ourPlayer(player).Pos()).dir()))*180/Param::Math::PI);
+    rawdir=abs((Utils::Normalize(Utils::Normalize(pVision->ball().Vel().dir()+PARAM::Math::PI)-(_kick_target - pVision->ourPlayer(player).Pos()).dir()))*180/PARAM::Math::PI);
     // cout << rawdir << endl;
     if (rawdir > 70 && rawdir < 110){
         rawdir = 80;
@@ -147,7 +147,7 @@ double CKickDirection::GenerateShootDir(const int player, const CGeoPoint pos)
 //    if (IS_SIMULATION){
 //        _compensate_value = 0;
 //    }
-    _real_kick_dir= Utils::Normalize(Utils::Normalize(ratio*_compensate_value*Param::Math::PI/180)+_raw_kick_dir);
+    _real_kick_dir= Utils::Normalize(Utils::Normalize(ratio*_compensate_value*PARAM::Math::PI/180)+_raw_kick_dir);
     if(pVision->ball().Vel().mod()<50){
         _real_kick_dir = _raw_kick_dir;
     }

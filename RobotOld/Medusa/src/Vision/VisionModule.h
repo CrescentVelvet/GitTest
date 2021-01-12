@@ -1,6 +1,6 @@
 #ifndef _VISION_MODULE_H_
 #define _VISION_MODULE_H_
-#include "param.h"
+#include "staticparams.h"
 #include "WorldDefine.h"
 #include "PlayerCommand.h"
 #include "BallPredictor.h"
@@ -61,12 +61,12 @@ public:
         return _TheirValidNum;
     }
     const PlayerVisionT& allPlayer(int num) const {
-        return (num <= Param::Field::MAX_PLAYER) ? ourPlayer(num) : theirPlayer(num - Param::Field::MAX_PLAYER);
+        return (num < PARAM::Field::MAX_PLAYER) ? ourPlayer(num) : theirPlayer(num - PARAM::Field::MAX_PLAYER);
     }
 
     const PlayerVisionT& ourPlayer(int num) const {
 		if (Utils::PlayerNumValid(num)) {
-			return _ourPlayerPredictor[num-1].getResult(_timeCycle);
+            return _ourPlayerPredictor[num].getResult(_timeCycle);
 		} else {
 		//	std::cout<<"Player num:" << num << " [ ####### ] Get our player info Invalid !!!"<<std::endl;
 			return _ourPlayerPredictor[0].getResult(_timeCycle);
@@ -75,7 +75,7 @@ public:
 
     const PlayerVisionT& theirPlayer(int num) const {
 		if (Utils::PlayerNumValid(num)) {
-			return _theirPlayerPredictor[num-1].getResult(_timeCycle);
+            return _theirPlayerPredictor[num].getResult(_timeCycle);
 		} else {
 		//	std::cout<<"Player num:" << num << " [ ####### ] Get their player info Invalid !!!"<<std::endl;
 			return _theirPlayerPredictor[0].getResult(_timeCycle);
@@ -87,11 +87,11 @@ public:
     }
 
     const PlayerVisionT& ourPlayer(int cycle, int num) const {
-        return _ourPlayerPredictor[num-1].getResult(cycle);
+        return _ourPlayerPredictor[num].getResult(cycle);
     }
 
     const PlayerVisionT& theirPlayer(int cycle, int num) const {
-        return _theirPlayerPredictor[num-1].getResult(cycle);
+        return _theirPlayerPredictor[num].getResult(cycle);
     }
 
     const MobileVisionT& ball(int cycle) const {
@@ -103,11 +103,11 @@ public:
     }
 
     const RobotRawVisionData& ourRawPlayer(int num) const {
-        return _ourPlayerPredictor[num-1].getRawData(_timeCycle);
+        return _ourPlayerPredictor[num].getRawData(_timeCycle);
     }
 
     const RobotRawVisionData& theirRawPlayer(int num) const {
-        return _theirPlayerPredictor[num-1].getRawData(_timeCycle);
+        return _theirPlayerPredictor[num].getRawData(_timeCycle);
     }
 
     void setPlayerCommand(int num, const CPlayerCommand* pCmd);
@@ -117,7 +117,7 @@ public:
     }
 
     int playerLostTime(const int number) const {
-        return _ourPlayerPredictor[number-1].lostTime();
+        return _ourPlayerPredictor[number].lostTime();
     }
 
     int getCycle() const {
@@ -148,10 +148,10 @@ public:
     }
 
     const CVector getOurRawPlayerSpeed(int num) const {
-        return _ourPlayerPredictor[num-1].getRawSpeed(_timeCycle);
+        return _ourPlayerPredictor[num].getRawSpeed(_timeCycle);
     }
     const CVector getTheirRawPlayerSpeed(int num) const {
-        return _theirPlayerPredictor[num-1].getRawSpeed(_timeCycle);
+        return _theirPlayerPredictor[num].getRawSpeed(_timeCycle);
     }
 
     int getTheirPenaltyNum() {
@@ -190,8 +190,8 @@ private:
 	
     //数据滤波器
     CBallPredictor _ballPredictor;										//球预测.
-    CRobotPredictor _ourPlayerPredictor[Param::Field::MAX_PLAYER+1];    //我方机器人预测.
-    CRobotPredictor _theirPlayerPredictor[Param::Field::MAX_PLAYER+1];	//对方机器人预测.
+    CRobotPredictor _ourPlayerPredictor[PARAM::Field::MAX_PLAYER];    //我方机器人预测.
+    CRobotPredictor _theirPlayerPredictor[PARAM::Field::MAX_PLAYER];	//对方机器人预测.
 
     //双方场上队员统计
     int _validNum;							//得到除守门员外我方的球员数

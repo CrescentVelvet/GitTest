@@ -24,7 +24,6 @@ firstState = "run1_blue",
   -- Goalie = task.zpass(_,0),
   -- Goalie = task.cmuTurnKickV1(TARGET,_,flag.kick),
   -- Goalie = task.goAndTurnKickV4(TARGET,_,flag.kick),
-  -- Goalie = task.InterTouch(_, ORIGIN),
   -- Goalie = task.getBallV4(ORIGIN,POS),
   Goalie = task.zget(),
 

@@ -18,7 +18,7 @@
 #include "bayes/MatchState.h"
 #include "defence/DefenceInfo.h"
 #include "Semaphore.h"
-#include "param.h"
+#include "staticparams.h"
 #include "staticparams.h"
 #include "RefereeBoxIf.h"
 
@@ -53,7 +53,7 @@ CVisionModule::CVisionModule()
     ZSS::ZParamManager::instance()->loadParam(IS_SIMULATION, "Alert/IsSimulation", false);
 
     WorldModel::Instance()->registerVision(this);
-    for (int i = 0; i < Param::Field::MAX_PLAYER; i++) {
+    for (int i = 0; i < PARAM::Field::MAX_PLAYER; i++) {
         //恢复初始化对方车预测为能识别角度信息
         _theirPlayerPredictor[i].setIsHasRotation(false);
     }
@@ -88,7 +88,7 @@ void CVisionModule::startReceiveThread() {
 
 void CVisionModule::initVisionMsg(CServerInterface::VisualInfo& temp) {
     for (int color = 0; color < PARAM::TEAMS; color++) {
-        for (int i = 0; i <  Param::Field::MAX_PLAYER; i++) {
+        for (int i = 0; i <  PARAM::Field::MAX_PLAYER; i++) {
             temp.player[color][i].dir = 0;
             temp.player[color][i].rawdir = 0;
             temp.player[color][i].pos.valid = false;
@@ -113,8 +113,8 @@ void CVisionModule::receiveVisionMsg() {
             visionSocket->readDatagram(buffer.data(), buffer.size());
             detectionFrame.ParseFromArray(buffer, buffer.size());
 
-            robots_blue_n = std::min(detectionFrame.robots_blue_size(), PARAM::SENDROBOTNUM);
-            robots_yellow_n = std::min(detectionFrame.robots_yellow_size(), PARAM::SENDROBOTNUM);
+            robots_blue_n = std::min(detectionFrame.robots_blue_size(), PARAM::ROBOTNUM);
+            robots_yellow_n = std::min(detectionFrame.robots_yellow_size(), PARAM::ROBOTNUM);
             visionMutex.lock();		// 图像加锁
             initVisionMsg(visionTemp);
 
@@ -145,7 +145,7 @@ void CVisionModule::receiveVisionMsg() {
             for (int color = 0; color < PARAM::TEAMS; color++) {
                 for (int i = 0; i < PARAM::ROBOTNUM; i++) {
                     index = i;//修车号时把index换成i
-                    bool ourRobot = (color == PARAM::BLUE) == (_pOption->MyColor() == TEAM_BLUE);
+                    bool ourRobot = (color == PARAM::BLUE) == (_pOption->MyColor() == PARAM::BLUE);
                     auto& robot = ourRobot ? detectionFrame.robots_blue(i) : detectionFrame.robots_yellow(i);
                     if (!robot.valid()) continue;
                     visionTemp.player[color][index].pos.x = robot.x();
@@ -198,9 +198,9 @@ void CVisionModule::setNewVision() {
     _info = visionTemp;
     _refMsg = refMsgTemp;
     visionMutex.unlock();
-    const bool invert = !(_pOption->MySide() == Param::Field::POS_SIDE_LEFT);
+    const bool invert = !(_pOption->MySide() == PARAM::Field::POS_SIDE_LEFT);
 
-    if (_pOption->MyColor() == TEAM_BLUE) {
+    if (_pOption->MyColor() == PARAM::BLUE) {
         _ourGoal = _refMsg.blueGoal;
         _theirGoal = _refMsg.yellowGoal;
         _ourGoalie = _refMsg.blueGoalie;
@@ -236,7 +236,7 @@ void CVisionModule::setNewVision() {
     //【#TODO】机器人碰撞检测器清空，
     const MobileVisionT& thisBall = _ballPredictor.getData(_timeCycle);
     // 确定球员的信息是否需要反向，确保正确更新比赛双方球员的信息
-    for (int i = 0; i < Param::Field::MAX_PLAYER_NUM; ++ i) {
+    for (int i = 0; i < PARAM::Field::MAX_PLAYER; ++ i) {
         const VehicleInfoT& ourPlayer = _info.player[0][i];
         const VehicleInfoT& theirPlayer = _info.player[1][i];
         _ourPlayerPredictor[i].updateVision(_info.cycle, ourPlayer, thisBall, invert);
@@ -304,7 +304,7 @@ void CVisionModule::checkKickoffStatus(const CServerInterface::VisualInfo& info)
     if (_gameState.canEitherKickBall()) {	// 若允许去踢球
         if (! _ballKicked ) {	// 球没有被判断为踢出
             if (gameState().ourRestart()) {
-                const double OUR_BALL_KICKEDBUFFER = 5 + 3 + 1;
+                const double OUR_BALL_KICKEDBUFFER = 50 + 30 + 10;
                 const CVector ballMoved = ball().Pos() - _ballPosSinceNotKicked;
                 if( ballMoved.mod2() > OUR_BALL_KICKEDBUFFER * OUR_BALL_KICKEDBUFFER ) {
                     _ballKicked = true;
@@ -314,7 +314,7 @@ void CVisionModule::checkKickoffStatus(const CServerInterface::VisualInfo& info)
 //                if (theirList.empty()) {
 //                    _ballKicked = false;
 //                } else {
-                    const double THEIR_BALL_KICKED_BUFFER = 5 + 5;
+                    const double THEIR_BALL_KICKED_BUFFER = 50 + 50;
                     const CVector ballMoved = ball().Pos() - _ballPosSinceNotKicked;
                     if( ballMoved.mod2() > THEIR_BALL_KICKED_BUFFER * THEIR_BALL_KICKED_BUFFER ) {
                         _ballKicked = true;
@@ -335,27 +335,27 @@ void CVisionModule::checkBothSidePlayerNum() {
     // 统计我方实际在场上的小车个数 except goalie
     _validNum = 0;
     int tempGoalieNum = TaskMediator::Instance()->goalie();
-    for (int i = 1; i <= Param::Field::MAX_PLAYER_NUM; i++) {
+    for (int i = 0; i < PARAM::Field::MAX_PLAYER; i++) {
         if (ourPlayer(i).Valid() && i != tempGoalieNum) {
             _validNum++;
         }
     }
-    _validNum = _validNum > (Param::Field::MAX_PLAYER_NUM - 1) ? (Param::Field::MAX_PLAYER_NUM - 1) : _validNum;
+    _validNum = _validNum > (PARAM::Field::MAX_PLAYER - 1) ? (PARAM::Field::MAX_PLAYER - 1) : _validNum;
 
     // 统计对方实际在场上的小车个数
     _TheirValidNum = 0;
-    for (int i = 1; i <= Param::Field::MAX_PLAYER_NUM; i++) {
+    for (int i = 0; i < PARAM::Field::MAX_PLAYER; i++) {
         if (theirPlayer(i).Valid())	{
             _TheirValidNum ++;
         }
     }
-    _TheirValidNum = _TheirValidNum > Param::Field::MAX_PLAYER_NUM ? Param::Field::MAX_PLAYER_NUM : _TheirValidNum;
+    _TheirValidNum = _TheirValidNum > PARAM::Field::MAX_PLAYER ? PARAM::Field::MAX_PLAYER : _TheirValidNum;
 
     return;
 }
 
 void CVisionModule::setPlayerCommand(int num, const CPlayerCommand* pCmd) {
-    _ourPlayerPredictor[num - 1].updateCommand(_timeCycle, pCmd);
+    _ourPlayerPredictor[num].updateCommand(_timeCycle, pCmd);
     CDribbleStatus* dribbleStatus = DribbleStatus::Instance();
     if( pCmd->dribble() ) {
         dribbleStatus->setDribbleOn(pCmd->number(), _timeCycle, ball().Pos());
@@ -471,7 +471,7 @@ const string& CVisionModule::getLuaRefereeMsg() const {
 
 void CVisionModule::judgeBallVelStable() {
     if (ballVelValid()) {
-        if (fabs(Utils::Normalize(this->ball().Vel().dir() - this->ball(_lastTimeCycle - 2).Vel().dir())) > Param::Math::PI * 10 / 180 && this->ball().Vel().mod() > 20) {
+        if (fabs(Utils::Normalize(this->ball().Vel().dir() - this->ball(_lastTimeCycle - 2).Vel().dir())) > PARAM::Math::PI * 10 / 180 && this->ball().Vel().mod() > 20) {
             _ballVelChangeCouter++;
             _ballVelChangeCouter = min(_ballVelChangeCouter, 4);
         } else {
@@ -507,7 +507,7 @@ void CVisionModule::dealSpecialBall() {
                 _ballPredictor.setVel(_timeCycle, CVector(0, 0));
             }
         }
-        double penaltyX = Param::Field::PENALTY_MARK_X;
+        double penaltyX = PARAM::Field::PENALTY_MARK_X;
 
         if (_gameState.ourPenaltyKick()) {		// 我方点球时
             if (!ball().Valid()/* || Ball().Pos().dist(CGeoPoint(penaltyX,0)) > 20*/) {
@@ -527,12 +527,12 @@ void CVisionModule::dealSpecialBall() {
     // 特殊情况二：
     // 红外有信息，若球没看到，则予以位置修正
     _sensorBall = false;
-    for (int i = 1; i <= Param::Field::MAX_PLAYER_NUM; i ++) {
+    for (int i = 0; i < PARAM::Field::MAX_PLAYER; i ++) {
         if (RobotSensor::Instance()->IsInfraredOn(i)) {
             _sensorBall = true;
             if (ball().Valid()) {	// 球看到，作红外信号假象检查，因为通讯可能会丢
             } else {				// 球看不到，根据红外信号纠正球的位置
-                _ballPredictor.setPos(ourPlayer(i).Pos() + Utils::Polar2Vector(Param::Vehicle::V2::PLAYER_CENTER_TO_BALL_CENTER, ourPlayer(i).Dir()));//before 8.5
+                _ballPredictor.setPos(ourPlayer(i).Pos() + Utils::Polar2Vector(PARAM::Vehicle::V2::PLAYER_CENTER_TO_BALL_CENTER, ourPlayer(i).Dir()));//before 8.5
                 _ballPredictor.setVel(_timeCycle, CVector(0, 0));
             }
             break;
@@ -545,8 +545,8 @@ void CVisionModule::debugOnField() {
 //    GDebugEngine::Instance()->gui_debug_line(this->ball().Pos(), this->ball().Pos() + this->ball().Vel(), COLOR_ORANGE);
 //    const double outballspeed = ball().Vel().mod();
 //    QString velbuf = QString::number(outballspeed);
-//    auto&& field_width = Param::Field::PITCH_WIDTH;
-//    auto&& field_length = Param::Field::PITCH_LENGTH;
+//    auto&& field_width = PARAM::Field::PITCH_WIDTH;
+//    auto&& field_length = PARAM::Field::PITCH_LENGTH;
 //    if (outballspeed <= 650) {
 //        GDebugEngine::Instance()->gui_debug_msg(CGeoPoint(-field_length / 2.3, field_width / 2.3), velbuf.toLatin1(), COLOR_BLACK);
 //    } else {
@@ -555,7 +555,7 @@ void CVisionModule::debugOnField() {
 
     // 输出我方小车的红外信号
     if (_sensorBall) {
-        GDebugEngine::Instance()->gui_debug_arc(ball().Pos(), 4 * Param::Field::BALL_SIZE, 0, 360, COLOR_PURPLE);
-        GDebugEngine::Instance()->gui_debug_arc(ball().Pos(), 2 * Param::Field::BALL_SIZE, 0, 360, COLOR_PURPLE);
+        GDebugEngine::Instance()->gui_debug_arc(ball().Pos(), 4 * PARAM::Field::BALL_SIZE, 0, 360, COLOR_PURPLE);
+        GDebugEngine::Instance()->gui_debug_arc(ball().Pos(), 2 * PARAM::Field::BALL_SIZE, 0, 360, COLOR_PURPLE);
     }
 }

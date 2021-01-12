@@ -1,14 +1,14 @@
 //#pragma once
 //#include "VisionModule.h"
-//#include "param.h"
+//#include "staticparams.h"
 //#include "DataQueue.hpp"
 //#include <MultiThread.h>
 
 //#define MAX_FRAME_NUM 20  //最大存储帧数
 //struct VisionInfo {
 //	CGeoPoint BallPos;
-//	CGeoPoint OurPlayer[Param::Field::MAX_PLAYER+1];
-//	CGeoPoint TheirPlayer[Param::Field::MAX_PLAYER+1];
+//	CGeoPoint ourPlayer[PARAM::Field::MAX_PLAYER];
+//	CGeoPoint theirPlayer[PARAM::Field::MAX_PLAYER];
 //};
 
 //class CCollisionDetect

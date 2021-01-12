@@ -63,8 +63,8 @@ public:
         }
     }
 private:
-    RobotInformation displayInfomation[PARAM::TEAMS][PARAM::ROBOTMAXID];
-    bool displayExist[PARAM::TEAMS][PARAM::ROBOTMAXID];
+    RobotInformation displayInfomation[PARAM::TEAMS][PARAM::ROBOTNUM];
+    bool displayExist[PARAM::TEAMS][PARAM::ROBOTNUM];
 };
 
 #endif // VIEWERINTERFACE_H

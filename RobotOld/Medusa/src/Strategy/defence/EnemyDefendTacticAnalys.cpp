@@ -4,11 +4,11 @@
 #include "GDebugEngine.h"
 using namespace std;
 namespace{
-	double JudgeDist = Param::Vehicle::V2::PLAYER_SIZE * 5;
+	double JudgeDist = PARAM::Vehicle::V2::PLAYER_SIZE * 5;
 }
 CEnemyDefendTacticAnalys::CEnemyDefendTacticAnalys()
 {
-	for (int i = 0 ; i < Param::Field::MAX_PLAYER ; i++)
+	for (int i = 0 ; i < PARAM::Field::MAX_PLAYER ; i++)
 	{
 		goalie[i]  = 0;
 		defender[i] = 0;
@@ -35,7 +35,7 @@ void CEnemyDefendTacticAnalys::updateCurrentTacticInfo(const CVisionModule* pVis
 	
 	if(pVision->getCycle() != _lastCycle){
 		areaNum = 0;
-		for (int i = 1;i <(Param::Field::MAX_PLAYER+1);i ++ )
+		for (int i = 0;i <PARAM::Field::MAX_PLAYER;i ++ )
 		{
 			if (pVision->ourPlayer(i).Valid())
 			{
@@ -46,12 +46,12 @@ void CEnemyDefendTacticAnalys::updateCurrentTacticInfo(const CVisionModule* pVis
 			
 		}
 		////添加对方守门员判断区域
-		CGeoPoint theirGoal = CGeoPoint(Param::Field::PITCH_LENGTH / 2.0,0);
-		double jointLength = Param::Field::PENALTY_AREA_L;
-		double penaltyDepth = Param::Field::PENALTY_AREA_DEPTH;
+		CGeoPoint theirGoal = CGeoPoint(PARAM::Field::PITCH_LENGTH / 2.0,0);
+		double jointLength = PARAM::Field::PENALTY_AREA_L;
+		double penaltyDepth = PARAM::Field::PENALTY_AREA_DEPTH;
 		addLongCircle(theirGoal,penaltyDepth,jointLength,LONGCIRCLE);
 		////添加对方后卫判断区域
-		double outerRadius = penaltyDepth + 5*Param::Vehicle::V2::PLAYER_SIZE;
+		double outerRadius = penaltyDepth + 5*PARAM::Vehicle::V2::PLAYER_SIZE;
 		addLongAnnulus(theirGoal,penaltyDepth,outerRadius,jointLength,ANNULUS);
 	}
 }
@@ -156,7 +156,7 @@ string CEnemyDefendTacticAnalys::doAnalys(const int enemyCarNum,const CVisionMod
 string CEnemyDefendTacticAnalys::doAnalys( string  enemyRole,const CVisionModule * pVision)
 {
 	updateCurrentTacticInfo(pVision);
-	for (int i = 1 ;i  <=Param::Field::MAX_PLAYER ;i ++)
+	for (int i = 0 ;i  <PARAM::Field::MAX_PLAYER ;i ++)
 	{
 		string currentEnemyRole = doAnalys(i,pVision);
 		if (currentEnemyRole == "goalie")

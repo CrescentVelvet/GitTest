@@ -12,7 +12,7 @@
 
 #include "VisionModule.h"
 #include "IndirectDefender.h"
-#include "param.h"
+#include "staticparams.h"
 #include "utils.h"
 #include "defence/DefenceInfo.h"
 #include "BestPlayer.h"
@@ -39,11 +39,11 @@ CIndirectDefender::CIndirectDefender()
 	_lastTwoKickCycle = 0;
 	minnum=1;
 	maxnum=1;
-	for (int i=0;i<=Param::Field::MAX_PLAYER+1;i++){
+	for (int i=0;i<PARAM::Field::MAX_PLAYER;i++){
 		_targetDir[i]=0;
 	}
-	RADIUS = 60*Param::Field::RATIO;
-	goalCenter = CGeoPoint(-Param::Field::PITCH_LENGTH/2,0);
+	RADIUS = 60*PARAM::Field::RATIO;
+	goalCenter = CGeoPoint(-PARAM::Field::PITCH_LENGTH/2,0);
 	_radius = 0.0;
 	_leftUp = CGeoPoint(0,0);
 	_rightDown = CGeoPoint(0,0);
@@ -54,10 +54,10 @@ CIndirectDefender::CIndirectDefender()
 	_oneArea._Right = CGeoPoint(0,0);
 	_anotherArea._Right =CGeoPoint(0,0);
 	_anotherArea._Left = CGeoPoint(0,0);
-	//leftUp = CGeoPoint(Param::Field::PITCH_LENGTH/2 - FIELD_BUFFER,-Param::Field::PITCH_WIDTH/2 + FIELD_BUFFER);
-	//leftDown = CGeoPoint(-Param::Field::PITCH_LENGTH/2 + FIELD_BUFFER,-Param::Field::PITCH_WIDTH/2 + FIELD_BUFFER);
-	//rightUp = CGeoPoint(Param::Field::PITCH_LENGTH/2 - FIELD_BUFFER,Param::Field::PITCH_WIDTH/2 - FIELD_BUFFER);
-	//rightDown = CGeoPoint(-Param::Field::PITCH_LENGTH/2 + FIELD_BUFFER,Param::Field::PITCH_WIDTH/2 - FIELD_BUFFER);
+	//leftUp = CGeoPoint(PARAM::Field::PITCH_LENGTH/2 - FIELD_BUFFER,-PARAM::Field::PITCH_WIDTH/2 + FIELD_BUFFER);
+	//leftDown = CGeoPoint(-PARAM::Field::PITCH_LENGTH/2 + FIELD_BUFFER,-PARAM::Field::PITCH_WIDTH/2 + FIELD_BUFFER);
+	//rightUp = CGeoPoint(PARAM::Field::PITCH_LENGTH/2 - FIELD_BUFFER,PARAM::Field::PITCH_WIDTH/2 - FIELD_BUFFER);
+	//rightDown = CGeoPoint(-PARAM::Field::PITCH_LENGTH/2 + FIELD_BUFFER,PARAM::Field::PITCH_WIDTH/2 - FIELD_BUFFER);
 }
 
 CIndirectDefender::~CIndirectDefender()
@@ -124,7 +124,7 @@ void CIndirectDefender::generateTwoDefPos(const CVisionModule* pVision)
 	const double enemy2ballDir = CVector(ballPos - enemy.Pos()).dir();
 	double oneDir = 0;
 	double anotherDir = 0;
-	if (fabs(Utils::Normalize(enemy.Dir() - enemy2ballDir)) < Param::Math::PI / 12.0)
+	if (fabs(Utils::Normalize(enemy.Dir() - enemy2ballDir)) < PARAM::Math::PI / 12.0)
 	{
 		targetDir = enemy.Dir();
 	} else targetDir = enemy2ballDir; 
@@ -146,7 +146,7 @@ void CIndirectDefender::generateTwoDefPos(const CVisionModule* pVision)
 			oneDir = o2rightDir;
 		}else if(Utils::AngleBetween(targetDir,_anotherArea.baseDir,a2leftDir,0)){
 			anotherDir = targetDir;
-			oneDir = Utils::Normalize(targetDir + Utils::Normalize(3*fabs(asin(Param::Vehicle::V2::PLAYER_SIZE/60))));
+			oneDir = Utils::Normalize(targetDir + Utils::Normalize(3*fabs(asin(PARAM::Vehicle::V2::PLAYER_SIZE/60))));
 		}else if (Utils::AngleBetween(targetDir,o2leftDir,o2rightDir,0)){
 			oneDir = targetDir;
 			anotherDir = (goalCenter - ballPos).dir();
@@ -160,7 +160,7 @@ void CIndirectDefender::generateTwoDefPos(const CVisionModule* pVision)
 			oneDir = o2leftDir;
 		}else if(Utils::AngleBetween(targetDir,_anotherArea.baseDir,a2rightDir,0)){
 			anotherDir = targetDir;
-			oneDir = Utils::Normalize(targetDir - Utils::Normalize(3*fabs(asin(Param::Vehicle::V2::PLAYER_SIZE/60))));
+			oneDir = Utils::Normalize(targetDir - Utils::Normalize(3*fabs(asin(PARAM::Vehicle::V2::PLAYER_SIZE/60))));
 		}else if (Utils::AngleBetween(targetDir,o2leftDir,o2rightDir,0)){
 			oneDir = targetDir;
 			anotherDir = (goalCenter - ballPos).dir();
@@ -188,7 +188,7 @@ CGeoPoint CIndirectDefender::generatePos(const CVisionModule* pVision)
 	const PlayerVisionT& enemy = pVision->theirPlayer(enemyNumber);
 	 const double enemy2ballDir = CVector(ballPos - enemy.Pos()).dir();
 	 //cout<<"in indirect defend!!!"<<endl;
-	if (fabs(Utils::Normalize(enemy.Dir() - enemy2ballDir)) < Param::Math::PI / 12.0)
+	if (fabs(Utils::Normalize(enemy.Dir() - enemy2ballDir)) < PARAM::Math::PI / 12.0)
 	{
 		targetDir = enemy.Dir();
 	} else targetDir = enemy2ballDir; 
@@ -207,7 +207,7 @@ CGeoPoint CIndirectDefender::generatePos(const CVisionModule* pVision)
 			while (count<attacknum){
 				int tempNum = DefenceInfo::Instance()->getAttackOppNumByPri(count);
 				CGeoPoint _tempEnemyPos = pVision->theirPlayer(tempNum).Pos();
-				if (_tempEnemyPos.dist(ballPos)>60*Param::Field::RATIO && false == MarkingPosV2::Instance()->isInSpecialAreaBackLineMode(pVision,tempNum)
+				if (_tempEnemyPos.dist(ballPos)>60*PARAM::Field::RATIO && false == MarkingPosV2::Instance()->isInSpecialAreaBackLineMode(pVision,tempNum)
 					&& DefenceInfo::Instance()->checkInRecArea(tempNum,pVision,checkField)){
 					_targetDir[enemeynum]=(_tempEnemyPos-ballPos).dir();
 					enemeynum++;
@@ -225,13 +225,13 @@ CGeoPoint CIndirectDefender::generatePos(const CVisionModule* pVision)
 			}
 			FindMinMax(enemeynum);
 			if (ballPos.y()<0){
-				if (_targetDir[minnum]<(-1)*Param::Math::PI/2){
-					_targetDir[minnum]=Param::Math::PI;
+				if (_targetDir[minnum]<(-1)*PARAM::Math::PI/2){
+					_targetDir[minnum]=PARAM::Math::PI;
 				}
 			}else{
-				//cout<<_targetDir[maxnum]<<"  "<<(-1)*Param::Math::PI/2<<endl;
-				if (_targetDir[maxnum]>Param::Math::PI/2){
-					_targetDir[maxnum]=(-1)*Param::Math::PI;
+				//cout<<_targetDir[maxnum]<<"  "<<(-1)*PARAM::Math::PI/2<<endl;
+				if (_targetDir[maxnum]>PARAM::Math::PI/2){
+					_targetDir[maxnum]=(-1)*PARAM::Math::PI;
 				}
 			}
 			FindMinMax(enemeynum);
@@ -240,10 +240,10 @@ CGeoPoint CIndirectDefender::generatePos(const CVisionModule* pVision)
 				double toMaxDiff =fabs(Utils::Normalize(targetDir-_targetDir[maxnum]));
 				double toMinDiff = fabs(Utils::Normalize(_targetDir[minnum]-targetDir));
 				if (toMaxDiff<toMinDiff){
-					double ratio = toMaxDiff/(Param::Math::PI - totalAngleDiff);
+					double ratio = toMaxDiff/(PARAM::Math::PI - totalAngleDiff);
 					targetDir = Utils::Normalize(_targetDir[maxnum]-ratio*totalAngleDiff);
 				}else{
-					double ratio = toMinDiff/(Param::Math::PI - totalAngleDiff);
+					double ratio = toMinDiff/(PARAM::Math::PI - totalAngleDiff);
 					targetDir = Utils::Normalize(_targetDir[minnum]+ratio*totalAngleDiff);
 				}
 				//cout<<"  "<<targetDir<<endl;
@@ -256,7 +256,7 @@ CGeoPoint CIndirectDefender::generatePos(const CVisionModule* pVision)
 		const string refMsg = pVision->getCurrentRefereeMsg();
 		//////////////////////////////////////////////////////////////////////////
 		//先跑这个
-		if (Utils::OutOfField(defendPos,FIELD_BUFFER) || enemy.Pos().dist(ballPos) > Param::Field::FREE_KICK_AVOID_BALL_DIST) {
+		if (!Utils::IsInField(defendPos,FIELD_BUFFER) || enemy.Pos().dist(ballPos) > PARAM::Field::FREE_KICK_AVOID_BALL_DIST) {
 			const CVector elseVector = Utils::Polar2Vector(_radius,CVector(goalCenter - ballPos).dir());
 			defendPos = ballPos + elseVector;
 			//GDebugEngine::Instance()->gui_debug_line(ballPos,defendPos,COLOR_RED);
@@ -268,30 +268,30 @@ CGeoPoint CIndirectDefender::generatePos(const CVisionModule* pVision)
 		//GDebugEngine::Instance()->gui_debug_line(ballPos,ballPos+Utils::Polar2Vector(200,targetDir),COLOR_BLACK);
 		double _target2LeftDir = (_leftUp - pVision->ball().Pos()).dir();
 		double _target2RightDir = (_rightDown - pVision->ball().Pos()).dir();
-		//cout<<_target2LeftDir*180.0/Param::Math::PI<<" "<<_target2RightDir*180.0/Param::Math::PI<<endl;
+		//cout<<_target2LeftDir*180.0/PARAM::Math::PI<<" "<<_target2RightDir*180.0/PARAM::Math::PI<<endl;
 		if (!Utils::AngleBetween(targetDir,_target2RightDir,_target2LeftDir,0)){
 			double totalAngleDiff =fabs(Utils::Normalize(_target2LeftDir-_target2RightDir))/2;
 			double toMaxDiff =fabs(Utils::Normalize(targetDir-_target2RightDir));
-			if(toMaxDiff > Param::Math::PI)
+			if(toMaxDiff > PARAM::Math::PI)
 			{
-				//toMaxDiff = 2*Param::Math::PI - toMaxDiff;
+				//toMaxDiff = 2*PARAM::Math::PI - toMaxDiff;
 			}
 			double toMinDiff = fabs(Utils::Normalize(_target2LeftDir-targetDir));
-			if (toMinDiff > Param::Math::PI)
+			if (toMinDiff > PARAM::Math::PI)
 			{
-				//toMinDiff = 2*Param::Math::PI - toMinDiff;
+				//toMinDiff = 2*PARAM::Math::PI - toMinDiff;
 			}
-			//cout<<_target2LeftDir*180.0/Param::Math::PI<<" "<<_target2RightDir*180.0/Param::Math::PI<<" "<<toMaxDiff*180/Param::Math::PI<<" "<<toMinDiff*180/Param::Math::PI<<" "<<totalAngleDiff*180/Param::Math::PI<<endl;
+			//cout<<_target2LeftDir*180.0/PARAM::Math::PI<<" "<<_target2RightDir*180.0/PARAM::Math::PI<<" "<<toMaxDiff*180/PARAM::Math::PI<<" "<<toMinDiff*180/PARAM::Math::PI<<" "<<totalAngleDiff*180/PARAM::Math::PI<<endl;
 			if (toMaxDiff<toMinDiff){
-				double ratio = toMaxDiff/(Param::Math::PI - totalAngleDiff);
+				double ratio = toMaxDiff/(PARAM::Math::PI - totalAngleDiff);
 				targetDir = Utils::Normalize(_target2RightDir+ratio*totalAngleDiff);
 			}else{
-				double ratio = toMinDiff/(Param::Math::PI - totalAngleDiff);
+				double ratio = toMinDiff/(PARAM::Math::PI - totalAngleDiff);
 				targetDir = Utils::Normalize(_target2LeftDir-ratio*totalAngleDiff);
 			}
 		}
 		defendPos = DefendPos(ballPos,targetDir,_radius);
-		if (Utils::OutOfField(defendPos,FIELD_BUFFER) || enemy.Pos().dist(ballPos) > Param::Field::FREE_KICK_AVOID_BALL_DIST)
+		if (!Utils::IsInField(defendPos,FIELD_BUFFER) || enemy.Pos().dist(ballPos) > PARAM::Field::FREE_KICK_AVOID_BALL_DIST)
 		{
 			const CVector elseVector = Utils::Polar2Vector(_radius,CVector(goalCenter - ballPos).dir());
 			defendPos = ballPos + elseVector;
@@ -348,7 +348,7 @@ CGeoPoint CIndirectDefender::generatePos(const CVisionModule* pVision)
 	//	}
 	//	//GDebugEngine::Instance()->gui_debug_line(ballPos,ballPos+Utils::Polar2Vector(300,targetDir),COLOR_PURPLE);
 	//	defendPos = DefendPos(ballPos,targetDir,_radius);
-	//	if (Utils::OutOfField(defendPos,FIELD_BUFFER) || (enemy.Pos().dist(ballPos) > Param::Field::FREE_KICK_AVOID_BALL_DIST && _mode!=3))
+	//	if (!Utils::IsInField(defendPos,FIELD_BUFFER) || (enemy.Pos().dist(ballPos) > PARAM::Field::FREE_KICK_AVOID_BALL_DIST && _mode!=3))
 	//	{
 	//		const CVector elseVector = Utils::Polar2Vector(_radius,CVector(goalCenter - ballPos).dir());
 	//		defendPos = ballPos + elseVector;
@@ -356,7 +356,7 @@ CGeoPoint CIndirectDefender::generatePos(const CVisionModule* pVision)
 	//	}
 	//}
 	//////////////////////////////////////////////////////////////////////////
-	//if (Utils::OutOfField(defendPos,FIELD_BUFFER))
+	//if (!Utils::IsInField(defendPos,FIELD_BUFFER))
 	//{
 	//	CGeoPoint points[8];
 	//	int pointCount = 0;
@@ -365,12 +365,12 @@ CGeoPoint CIndirectDefender::generatePos(const CVisionModule* pVision)
 	//	CGeoLineCircleIntersection intersect = CGeoLineCircleIntersection(standardLine,standardCircle);
 	//	if (intersect.intersectant())
 	//	{
-	//		if (!Utils::OutOfField(intersect.point1(),FIELD_BUFFER - 2 ))
+	//		if (Utils::IsInField(intersect.point1(),FIELD_BUFFER - 2 ))
 	//		{
 	//			points[pointCount] = intersect.point1();
 	//			pointCount++;
 	//		}
-	//		if (!Utils::OutOfField(intersect.point2(),FIELD_BUFFER - 2 ))
+	//		if (Utils::IsInField(intersect.point2(),FIELD_BUFFER - 2 ))
 	//		{
 	//			points[pointCount] = intersect.point2();
 	//			pointCount++;
@@ -380,12 +380,12 @@ CGeoPoint CIndirectDefender::generatePos(const CVisionModule* pVision)
 	//	intersect = CGeoLineCircleIntersection(standardLine,standardCircle);
 	//	if (intersect.intersectant())
 	//	{
-	//		if (!Utils::OutOfField(intersect.point1(),FIELD_BUFFER - 2 ))
+	//		if (Utils::IsInField(intersect.point1(),FIELD_BUFFER - 2 ))
 	//		{
 	//			points[pointCount] = intersect.point1();
 	//			pointCount++;
 	//		}
-	//		if (!Utils::OutOfField(intersect.point2(),FIELD_BUFFER - 2 ))
+	//		if (Utils::IsInField(intersect.point2(),FIELD_BUFFER - 2 ))
 	//		{
 	//			points[pointCount] = intersect.point2();
 	//			pointCount++;
@@ -395,12 +395,12 @@ CGeoPoint CIndirectDefender::generatePos(const CVisionModule* pVision)
 	//	intersect = CGeoLineCircleIntersection(standardLine,standardCircle);
 	//	if (intersect.intersectant())
 	//	{
-	//		if (!Utils::OutOfField(intersect.point1(),FIELD_BUFFER - 2 ))
+	//		if (Utils::IsInField(intersect.point1(),FIELD_BUFFER - 2 ))
 	//		{
 	//			points[pointCount] = intersect.point1();
 	//			pointCount++;
 	//		}
-	//		if (!Utils::OutOfField(intersect.point2(),FIELD_BUFFER - 2 ))
+	//		if (Utils::IsInField(intersect.point2(),FIELD_BUFFER - 2 ))
 	//		{
 	//			points[pointCount] = intersect.point2();
 	//			pointCount++;
@@ -410,19 +410,19 @@ CGeoPoint CIndirectDefender::generatePos(const CVisionModule* pVision)
 	//	intersect = CGeoLineCircleIntersection(standardLine,standardCircle);
 	//	if (intersect.intersectant())
 	//	{
-	//		if (!Utils::OutOfField(intersect.point1(),FIELD_BUFFER - 2 ))
+	//		if (Utils::IsInField(intersect.point1(),FIELD_BUFFER - 2 ))
 	//		{
 	//			points[pointCount] = intersect.point1();
 	//			pointCount++;
 	//		}
-	//		if (!Utils::OutOfField(intersect.point2(),FIELD_BUFFER - 2 ))
+	//		if (Utils::IsInField(intersect.point2(),FIELD_BUFFER - 2 ))
 	//		{
 	//			points[pointCount] = intersect.point2();
 	//			pointCount++;
 	//		}
 	//	}
 	//	//排序
-	//	double minAngleDiff = 2 * Param::Math::PI;
+	//	double minAngleDiff = 2 * PARAM::Math::PI;
 	//	for (int i = 0;i < pointCount;i++)
 	//	{
 	//		double nowDir = CVector(points[i] - ballPos).dir();

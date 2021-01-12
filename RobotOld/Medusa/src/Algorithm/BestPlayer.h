@@ -17,7 +17,7 @@
 //// include files
 //#include <geometry.h>
 //#include <VisionModule.h>
-//#include <param.h>
+//#include "staticparams.h"
 
 ////////////////////////////////////////////////////////////////////////////
 //// define the CBestPlayer class used to evaluate to ball potential
@@ -58,11 +58,11 @@
 ////	bool isTheirBestPlayerChanged() { return _theirChangeFlag; }
 //	int getTheirBestPlayer() { return _theirLastBestPlayer; }
 
-////	bool isOurPlayerStrictControlBall(int num) { return _ourPlayerBallStrictControl[num-1]; }
-////	bool isOurPlayerLooseControlBall(int num) { return _ourPlayerBallLooseControl[num-1]; }
+////	bool isourPlayerStrictControlBall(int num) { return _ourPlayerBallStrictControl[num-1]; }
+////	bool isourPlayerLooseControlBall(int num) { return _ourPlayerBallLooseControl[num-1]; }
 
-////	bool isTheirPlayerStrictControlBall(int num) { return _theirPlayerBallStrictControl[num-1]; }
-////	bool isTheirPlayerLooseControlBall(int num) { return _theirPlayerBallLooseControl[num-1]; }
+////	bool istheirPlayerStrictControlBall(int num) { return _theirPlayerBallStrictControl[num-1]; }
+////	bool istheirPlayerLooseControlBall(int num) { return _theirPlayerBallLooseControl[num-1]; }
 
 //protected:
 //    double getOurPotential(int num) { return _Potentials[num-1][0]; }
@@ -71,11 +71,11 @@
 
 //	void updateBall(const CVisionModule* pVision);
 
-//	void updateOurPlayerList(const CVisionModule *pVision,const double *biases);
+//	void updateourPlayerList(const CVisionModule *pVision,const double *biases);
 
 //	void updateOurBestPlayer(const CVisionModule* pVision);
 
-//	void updateTheirPlayerList(const CVisionModule *pVision,const double *biases);
+//	void updatetheirPlayerList(const CVisionModule *pVision,const double *biases);
 
 //	void updateTheirBestPlayer(const CVisionModule* pVision);
 
@@ -88,9 +88,9 @@
 //	double velBallToPlayer(const PlayerVisionT& player,const MobileVisionT& ball,const double *biases,double maxDist);//相对速度
 //private:
 //	/// 我方球员的势能
-//	double _Potentials[Param::Field::MAX_PLAYER+1][7];
+//	double _Potentials[PARAM::Field::MAX_PLAYER][7];
 //	/// 对方球员的势能
-//	double _theirPotentials[Param::Field::MAX_PLAYER+1][6];
+//	double _theirPotentials[PARAM::Field::MAX_PLAYER][6];
 
 //	/// 我方球员对球势能的列表：由小到大
 //	PlayerList _ourFastestPlayerToBallList;
@@ -98,14 +98,14 @@
 //	PlayerList _theirFastestPlayerToBallList;
 
 //	/// 我方球员是否有控球：宽松
-//    bool _ourPlayerBallLooseControl[Param::Field::MAX_PLAYER+1] = {};
+//    bool _ourPlayerBallLooseControl[PARAM::Field::MAX_PLAYER] = {};
 //	/// 对方球员是否有控球：宽松
-//    bool _theirPlayerBallLooseControl[Param::Field::MAX_PLAYER+1] = {};
+//    bool _theirPlayerBallLooseControl[PARAM::Field::MAX_PLAYER] = {};
 
 //	/// 我方球员是否有控球：严紧
-//    bool _ourPlayerBallStrictControl[Param::Field::MAX_PLAYER+1] = {};
+//    bool _ourPlayerBallStrictControl[PARAM::Field::MAX_PLAYER] = {};
 //	/// 对方球员是否有控球：严紧
-//    bool _theirPlayerBallStrictControl[Param::Field::MAX_PLAYER+1] = {};
+//    bool _theirPlayerBallStrictControl[PARAM::Field::MAX_PLAYER] = {};
 
 //	/// 我方控制球
 //	bool _withBall;

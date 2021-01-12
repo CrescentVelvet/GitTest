@@ -27,7 +27,7 @@ namespace {
     const double DEBUG_TEXT_HIGH = 23*10;
     const int MOD_NUM = 1;
     const int ANGEL_MOD = 8;
-    const int RADIUS = Param::Vehicle::V2::PLAYER_SIZE*1.4;
+    const int RADIUS = PARAM::Vehicle::V2::PLAYER_SIZE*1.4;
     CGeoPoint calc_point(const CVisionModule* pVision, const int vecNumber,const CGeoPoint&,const CGeoPoint&,const bool,bool&,bool&);
 }
 
@@ -44,7 +44,7 @@ CZBreak::CZBreak():grabMode(DRIBBLE),last_mode(DRIBBLE){
 }
 
 void CZBreak::plan(const CVisionModule* pVision) {
-    if ((pVision->getCycle() - _lastCycle > Param::Vision::FRAME_RATE * 0.1)){
+    if ((pVision->getCycle() - _lastCycle > PARAM::Vision::FRAME_RATE * 0.1)){
         grabMode = DRIBBLE;
         last_mode = DRIBBLE;
         move_point = CGeoPoint(-9999*10, -9999*10);
@@ -76,7 +76,7 @@ void CZBreak::plan(const CVisionModule* pVision) {
     bool shootGoal = Utils::InTheirPenaltyArea(passTarget, 0);
     bool canShootGoal = false;
     if(shootGoal) {
-        width = KickDirection::Instance()->GenerateShootDir(vecNumber, me.RawPos()+Utils::Polar2Vector(Param::Vehicle::V2::PLAYER_CENTER_TO_BALL_CENTER, me.Dir()));
+        width = KickDirection::Instance()->GenerateShootDir(vecNumber, me.RawPos()+Utils::Polar2Vector(PARAM::Vehicle::V2::PLAYER_CENTER_TO_BALL_CENTER, me.Dir()));
         finalDir = KickDirection::Instance()->getRealKickDir();
         canShootGoal = KickDirection::Instance()->getKickValid();
     } else {
@@ -111,7 +111,7 @@ void CZBreak::plan(const CVisionModule* pVision) {
     }
     if(frared && last_mode == SIDEMOVE) grabMode = SIDEMOVE;
     //can see ball but has frared, sucking some robot's ass
-    bool ballInfront = me2Ball.mod() < 20*10 && fabs(Utils::Normalize(me.Dir() - me2Ball.dir())) < Param::Math::PI/4;
+    bool ballInfront = me2Ball.mod() < 20*10 && fabs(Utils::Normalize(me.Dir() - me2Ball.dir())) < PARAM::Math::PI/4;
     if (VERBOSE) GDebugEngine::Instance()->gui_debug_msg(me.Pos()+CVector(0,40*10),QString("j:%1 %2 %3").arg(frared).arg(!ballInfront).arg(fabs(me.RotVel())).toLatin1());
     if(frared && me2enemy.mod() < 24*10 && ball.Valid() && !ballInfront){
         fraredOn  = 0;
@@ -123,7 +123,7 @@ void CZBreak::plan(const CVisionModule* pVision) {
 
     /*********************** set subTask ********************/
     if(grabMode == SIDEMOVE) {
-        if (VERBOSE) GDebugEngine::Instance()->gui_debug_msg(me.Pos()+ Utils::Polar2Vector(DEBUG_TEXT_HIGH, -Param::Math::PI/1.5), "Side Move", COLOR_CYAN);
+        if (VERBOSE) GDebugEngine::Instance()->gui_debug_msg(me.Pos()+ Utils::Polar2Vector(DEBUG_TEXT_HIGH, -PARAM::Math::PI/1.5), "Side Move", COLOR_CYAN);
         move_point = calc_point(pVision, vecNumber, passTarget,dribblePoint,isChip,canShoot,needBreakThrough);
         if(VERBOSE) GDebugEngine::Instance()->gui_debug_arc(move_point, 8*10, 0.0, 360.0, COLOR_GREEN);
         if(VERBOSE) GDebugEngine::Instance()->gui_debug_line(dribblePoint, move_point, COLOR_ORANGE);
@@ -156,7 +156,7 @@ void CZBreak::plan(const CVisionModule* pVision) {
 
     if(grabMode == DRIBBLE) {
         move_point = CGeoPoint(-9999*10, -9999*10);
-        if (VERBOSE) GDebugEngine::Instance()->gui_debug_msg(me.Pos()+ Utils::Polar2Vector(DEBUG_TEXT_HIGH, -Param::Math::PI/1.5), "Dribble", COLOR_CYAN);
+        if (VERBOSE) GDebugEngine::Instance()->gui_debug_msg(me.Pos()+ Utils::Polar2Vector(DEBUG_TEXT_HIGH, -PARAM::Math::PI/1.5), "Dribble", COLOR_CYAN);
         CGeoPoint target;
         double dir;
         if(ball.Valid()) target = ball.Pos() + Utils::Polar2Vector(5*10, enemy.Dir());
@@ -166,8 +166,8 @@ void CZBreak::plan(const CVisionModule* pVision) {
         if(me2Ball.mod() > 50*10 || ball.Vel().mod() > 50*10)
             setSubTask(PlayerRole::makeItGetBallV4(vecNumber, PlayerStatus::DRIBBLE|PlayerStatus::SAFE, target, CGeoPoint(999*10, 999*10), 0));
         else{
-            if(Utils::OutOfField(target,Param::Vehicle::V2::PLAYER_SIZE+Param::Field::BALL_SIZE*2))
-                target = Utils::MakeInField(target,Param::Vehicle::V2::PLAYER_SIZE+Param::Field::BALL_SIZE*2);
+            if(!Utils::IsInField(target,PARAM::Vehicle::V2::PLAYER_SIZE+PARAM::Field::BALL_SIZE*2))
+                target = Utils::MakeInField(target,PARAM::Vehicle::V2::PLAYER_SIZE+PARAM::Field::BALL_SIZE*2);
             setSubTask(PlayerRole::makeItGoto(vecNumber, target, dir, ballInfront ? PlayerStatus::NOT_AVOID_THEIR_VEHICLE : 0));
         }
     }
@@ -180,9 +180,9 @@ void CZBreak::plan(const CVisionModule* pVision) {
 //        canShoot = KickDirection::Instance()->getKickValid();
         power = ZSS::ZParamManager::instance()->value("KickLimit/FlatKickMax",630*10).toInt();
     }
-    if (VERBOSE) GDebugEngine::Instance()->gui_debug_msg(me.Pos()+CVector(0,50*10),QString("s:%1 %2 %3 %4 %5").arg(canShoot).arg(180/Param::Math::PI*fabs(Utils::Normalize(me.Dir() - finalDir))).arg(vel_vertical_target).arg(fabs(me.RotVel())).arg(ballInfront).toLatin1(),COLOR_GREEN);
+    if (VERBOSE) GDebugEngine::Instance()->gui_debug_msg(me.Pos()+CVector(0,50*10),QString("s:%1 %2 %3 %4 %5").arg(canShoot).arg(180/PARAM::Math::PI*fabs(Utils::Normalize(me.Dir() - finalDir))).arg(vel_vertical_target).arg(fabs(me.RotVel())).arg(ballInfront).toLatin1(),COLOR_GREEN);
 
-    if (setKick && canShoot && fabs(Utils::Normalize(me.RawDir() - finalDir)) < precision*Param::Math::PI/180.0/* && vel_vertical_target < 50 && fabs(me.RotVel()) < 2*/) {
+    if (setKick && canShoot && fabs(Utils::Normalize(me.RawDir() - finalDir)) < precision*PARAM::Math::PI/180.0/* && vel_vertical_target < 50 && fabs(me.RotVel()) < 2*/) {
         if(!isChip) KickStatus::Instance()->setKick(vecNumber, power);
         else if(fraredOn >= 20) KickStatus::Instance()->setChipKick(vecNumber, power);
         if (VERBOSE) GDebugEngine::Instance()->gui_debug_msg(me.Pos()+CVector(0,70*10),QString("s! : %1").arg(power).toLatin1(),COLOR_WHITE);
@@ -208,18 +208,18 @@ CGeoPoint calc_point(const CVisionModule* pVision, const int vecNumber,const CGe
     auto move_point = me.RawPos();
     std::vector<CGeoPoint> enemy_points;
     CVector me2target = target - dribblePoint;
-    for(int i = 1; i <= Param::Field::MAX_PLAYER; i++){
+    for(int i = 0; i < PARAM::Field::MAX_PLAYER; i++){
         auto test_enemy = pVision->theirPlayer(i);
         if(test_enemy.Valid() && (test_enemy.Pos()-dribblePoint).mod()<CHECK_OBSTCLE_DIST && !Utils::InTheirPenaltyArea(test_enemy.Pos(),0)) enemy_points.push_back(test_enemy.Pos());
     }
-//    for(int i = 1; i <= Param::Field::MAX_PLAYER; i++){
+//    for(int i = 0; i < PARAM::Field::MAX_PLAYER; i++){
 //        if(i==vecNumber) continue;
 //        auto test_enemy = pVision->ourPlayer(i);
-//        if(test_enemy.Valid() && (test_enemy.Pos()-dribblePoint).mod()<CHECK_OBSTCLE_DIST) enemy_points.push_back(test_enemy.Pos());//, Param::Vehicle::V2::PLAYER_SIZE*1.5)
+//        if(test_enemy.Valid() && (test_enemy.Pos()-dribblePoint).mod()<CHECK_OBSTCLE_DIST) enemy_points.push_back(test_enemy.Pos());//, PARAM::Vehicle::V2::PLAYER_SIZE*1.5)
 //    }
     for(auto test_enemy : enemy_points){
         auto me2enemy = test_enemy - move_point;
-        if(me2enemy.mod() < 60*10 && fabs(Utils::Normalize(me.Dir() - me2enemy.dir())) < Param::Math::PI/3){
+        if(me2enemy.mod() < 60*10 && fabs(Utils::Normalize(me.Dir() - me2enemy.dir())) < PARAM::Math::PI/3){
             needBreakThrough = true;
             break;
         }
@@ -231,9 +231,9 @@ CGeoPoint calc_point(const CVisionModule* pVision, const int vecNumber,const CGe
         for(int j=MOD_NUM; j>0; j--){
             bool temp_canShoot = true;
             double temp_max_straight_dist = 9999*10;
-            CVector vec = Utils::Polar2Vector(double(j*DRIBBLE_DIST/MOD_NUM), Utils::Normalize(me2target.dir() + i*Param::Math::PI/ANGEL_MOD));
+            CVector vec = Utils::Polar2Vector(double(j*DRIBBLE_DIST/MOD_NUM), Utils::Normalize(me2target.dir() + i*PARAM::Math::PI/ANGEL_MOD));
             CGeoPoint test_point = dribblePoint + vec;
-            if(Utils::OutOfField(test_point, 12*10)) test_point = Utils::MakeInField(test_point,12*10);
+            if(!Utils::IsInField(test_point, 12*10)) test_point = Utils::MakeInField(test_point,12*10);
             if(Utils::InTheirPenaltyArea(test_point, 9*10)) test_point = Utils::MakeOutOfTheirPenaltyArea(test_point,32*10);
             if (VERBOSE) GDebugEngine::Instance()->gui_debug_x(test_point, COLOR_PURPLE);
             auto test_seg = CGeoSegment(test_point, target);

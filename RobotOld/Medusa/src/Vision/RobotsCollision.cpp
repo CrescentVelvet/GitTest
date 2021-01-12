@@ -5,7 +5,7 @@
 
 //RobotsCollisionDetector::RobotsCollisionDetector()
 //{
-//	for (int i=0; i<Param::Field::MAX_PLAYER; i++){
+//	for (int i=0; i<PARAM::Field::MAX_PLAYER; i++){
 //		our_collision[i] = 0;
 //		opp_collision[i] = 0;
 //	}
@@ -20,7 +20,7 @@
 //}
 //void RobotsCollisionDetector::clearLastResult()
 //{
-//	for (int i=0; i<Param::Field::MAX_PLAYER; i++){
+//	for (int i=0; i<PARAM::Field::MAX_PLAYER; i++){
 //		our_collision[i] = 0;
 //		opp_collision[i] = 0;
 //	}
@@ -41,8 +41,8 @@
 //	double stepTime = calTime/3;
 //	if ( current_check_side == 0 ){
 //		// 检查我方的车
-//		for (int i=1; i<=Param::Field::MAX_PLAYER; i++){
-//			if (_pVision->TheirPlayer(i).Valid()){
+//		for (int i=0; i<PARAM::Field::MAX_PLAYER; i++){
+//			if (_pVision->theirPlayer(i).Valid()){
 //				if ( opp_collision[i-1] != 0 && opp_collision[i-1] != current_check_num )
 //					continue; // 不是和我撞
 
@@ -52,8 +52,8 @@
 //				}
 
 //				// 还没检测过
-//				const CGeoPoint& oppPos = _pVision->TheirPlayer(i).Pos();
-//				if ( oppPos.dist(visionPos.Pos()) < Param::Field::MAX_PLAYER_SIZE ){
+//				const CGeoPoint& oppPos = _pVision->theirPlayer(i).Pos();
+//				if ( oppPos.dist(visionPos.Pos()) < PARAM::Field::MAX_PLAYER_SIZE ){
 //					our_collision[current_check_num-1] = i;
 //					opp_collision[i-1] = current_check_num;
 //					break;
@@ -68,7 +68,7 @@
 //	}
 //	else{
 //		// 检查对方车
-//		//for (int i=1; i<=Param::Field::MAX_PLAYER; i++){
+//		//for (int i=0; i<PARAM::Field::MAX_PLAYER; i++){
 //		//	if (_pVision->ourPlayer(i).Valid()){
 //		//		if ( our_collision[i-1] != 0 && our_collision[i-1] != current_check_num )
 //		//			continue; // 不是和我撞
@@ -80,7 +80,7 @@
 
 //		//		// 还没检测过
 //		//		const CGeoPoint& teammatePos = _pVision->ourPlayer(i).Pos();
-//		//		if ( teammatePos.dist(visionPos.Pos()) < Param::Field::MAX_PLAYER_SIZE ){
+//		//		if ( teammatePos.dist(visionPos.Pos()) < PARAM::Field::MAX_PLAYER_SIZE ){
 //		//			opp_collision[current_check_num-1] = i;
 //		//			our_collision[i-1] = current_check_num;
 //		//			break;

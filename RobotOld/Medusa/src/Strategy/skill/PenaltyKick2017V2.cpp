@@ -8,7 +8,7 @@
 #include <WorldModel.h>
 #include "GDebugEngine.h"
 #include "WorldDefine.h"
-#include "param.h"
+#include "staticparams.h"
 #include "RobotSensor.h"
 
 namespace {
@@ -21,13 +21,13 @@ namespace {
 	CGeoPoint rightGoal;
 	CGeoPoint leftKickPoint;
 	CGeoPoint rightKickPoint;
-	double ROTATE_ANGLE = Param::Math::PI / 3;
+	double ROTATE_ANGLE = PARAM::Math::PI / 3;
 	enum PenaltyKickState {
 		KICK = 1
 	};
 
 	int _timeCnt;
-	double _frameTime = 30 / Param::Vision::FRAME_RATE;
+	double _frameTime = 30 / PARAM::Vision::FRAME_RATE;
 	double _enemyMaxVel = 350;
 	double _meMaxVel = 350;
 	double _enemyMaxAcc = 500;
@@ -44,12 +44,12 @@ namespace {
 
 CPenaltyKick2017V2::CPenaltyKick2017V2()
 {
-    ourBase = CGeoPoint(-Param::Field::PITCH_LENGTH / 2, 0);
-	ourGoal = CGeoPoint(Param::Field::PITCH_LENGTH / 2, 0); // (-600, 0)
-	leftGoal = CGeoPoint(Param::Field::PITCH_LENGTH / 2, -Param::Field::GOAL_WIDTH / 2 + goalBuffer); // (-600, -55) 最后射门的目标点
-	rightGoal = CGeoPoint(Param::Field::PITCH_LENGTH / 2, Param::Field::GOAL_WIDTH / 2 - goalBuffer); // (-600, 55)
-	leftKickPoint = CGeoPoint(Param::Field::PITCH_LENGTH / 2, -Param::Field::GOAL_WIDTH / 2); // (-600, -60) 轻踢时的目标点
-	rightKickPoint = CGeoPoint(Param::Field::PITCH_LENGTH / 2, Param::Field::GOAL_WIDTH / 2); // (-600, 60)
+    ourBase = CGeoPoint(-PARAM::Field::PITCH_LENGTH / 2, 0);
+	ourGoal = CGeoPoint(PARAM::Field::PITCH_LENGTH / 2, 0); // (-600, 0)
+	leftGoal = CGeoPoint(PARAM::Field::PITCH_LENGTH / 2, -PARAM::Field::GOAL_WIDTH / 2 + goalBuffer); // (-600, -55) 最后射门的目标点
+	rightGoal = CGeoPoint(PARAM::Field::PITCH_LENGTH / 2, PARAM::Field::GOAL_WIDTH / 2 - goalBuffer); // (-600, 55)
+	leftKickPoint = CGeoPoint(PARAM::Field::PITCH_LENGTH / 2, -PARAM::Field::GOAL_WIDTH / 2); // (-600, -60) 轻踢时的目标点
+	rightKickPoint = CGeoPoint(PARAM::Field::PITCH_LENGTH / 2, PARAM::Field::GOAL_WIDTH / 2); // (-600, 60)
 	_timeCnt = 0;
 	_lastCycle = 0;
 	_theirGoalie = 0;
@@ -65,7 +65,7 @@ void CPenaltyKick2017V2::plan(const CVisionModule* pVision)
 		_timeCnt = 0;
 		_theirGoalie = 0;
         _circleShootFlag = false;
-		for (int i = 1; i <= Param::Field::MAX_PLAYER; i++) {
+		for (int i = 0; i < PARAM::Field::MAX_PLAYER; i++) {
 			if (Utils::InTheirPenaltyArea(pVision->theirPlayer(i).Pos(), 0)) {
 				_theirGoalie = i;
 			}
@@ -110,7 +110,6 @@ void CPenaltyKick2017V2::plan(const CVisionModule* pVision)
 		double kickpower = 650;
 		myTask.player.angle = ball2Best.dir();
 		myTask.player.pos = ball.Pos();
-        myTask.player.flag |= PlayerStatus::DO_NOT_STOP;
 		KickStatus::Instance()->setKick(rolenum, kickpower);
 		setSubTask(TaskFactoryV2::Instance()->GotoPosition(myTask));
 	}
@@ -131,7 +130,7 @@ void CPenaltyKick2017V2::plan(const CVisionModule* pVision)
         else {
             if (VERBOSE_MODE) cout << "circle"<< endl;
             myTask.player.speed_x = 27;
-            myTask.player.speed_y = Param::Math::PI / 4;
+            myTask.player.speed_y = PARAM::Math::PI / 4;
             if (_targetside == 0) { // left side
                 myTask.player.rotdir = 2;
                 myTask.player.angle = (leftGoal - me.Pos()).dir();
@@ -159,7 +158,6 @@ void CPenaltyKick2017V2::plan(const CVisionModule* pVision)
 			KickStatus::Instance()->clearAll();
 			myTask.player.pos = ball.Pos() + Utils::Polar2Vector(-8, ball2Best.dir() / 2);
 			myTask.player.angle = ball2Best.dir();
-            myTask.player.flag |= PlayerStatus::DO_NOT_STOP;
 			setSubTask(TaskFactoryV2::Instance()->GotoPosition(myTask));
 			tmpCnt++;
 		}
@@ -170,7 +168,6 @@ void CPenaltyKick2017V2::plan(const CVisionModule* pVision)
 		KickStatus::Instance()->setKick(rolenum, 600);
 		myTask.player.pos = ball.Pos();
 		myTask.player.angle = _targetside == 0 ? (leftGoal - ball.Pos()).dir() : (rightGoal - ball.Pos()).dir();
-        myTask.player.flag |= PlayerStatus::DO_NOT_STOP;
 		setSubTask(TaskFactoryV2::Instance()->ChaseKickV1(myTask));
 	}
 
@@ -226,12 +223,12 @@ CGeoPoint CPenaltyKick2017V2::getBestPoint(const CVisionModule * pVision)
 	if (_targetside == 0) goalPoint = leftGoal;
 	else goalPoint = rightGoal; // goal point
 	CGeoLine tmpLine(ball.Pos(), goalPoint);
-	CGeoLine enemyLine(enemy.Pos(), (goalPoint - ball.Pos()).dir() + Param::Math::PI / 2);
+	CGeoLine enemyLine(enemy.Pos(), (goalPoint - ball.Pos()).dir() + PARAM::Math::PI / 2);
 	CGeoLineLineIntersection enemyInter(tmpLine, enemyLine);
 	double ball2InterDist = (ball.Pos() - enemyInter.IntersectPoint()).mod();
 	double ball2InterTime = ball2InterDist / 700;
 	double enemyBallRadius = 0.5 * _enemyMaxAcc * pow(ball2InterTime, 2);
-	enemyBallRadius = enemyBallRadius > Param::Vehicle::V2::PLAYER_SIZE ? enemyBallRadius : Param::Vehicle::V2::PLAYER_SIZE;
+	enemyBallRadius = enemyBallRadius > PARAM::Vehicle::V2::PLAYER_SIZE ? enemyBallRadius : PARAM::Vehicle::V2::PLAYER_SIZE;
 	_enemyBallCircle = CGeoCirlce(enemy.Pos() + Utils::Polar2Vector(_enemyPreVel.mod() * _frameTime, _enemyPreVel.mod()), enemyBallRadius);
 	double enemy2InterDist = (enemy.Pos() - enemyInter.IntersectPoint()).mod(); 
 
@@ -276,7 +273,7 @@ bool CPenaltyKick2017V2::isVisionHasBall(const CVisionModule * pVision)
 	int rolenum = task().executor;
 	const MobileVisionT& ball = pVision->ball();
 	const PlayerVisionT& me = pVision->ourPlayer(rolenum);
-//	const PlayerVisionT& enemy = pVision->TheirPlayer(_theirGoalie);
+//	const PlayerVisionT& enemy = pVision->theirPlayer(_theirGoalie);
 //	int distBuffer = 10;
 
 	CVector me2Ball = ball.Pos() - me.Pos();

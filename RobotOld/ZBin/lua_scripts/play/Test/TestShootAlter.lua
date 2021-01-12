@@ -12,10 +12,12 @@ local PENTY_X = 4700
 local PENTY_Y = 1250
 local GATE_X = 6200
 local GATE_Y = 600
+local rotvel_old = 2
 local timerun = 10
-local timeget = 20000
+local timeget = 10000
 local shoot_flag = 0
 local runres_flag = -1
+local rotrand_flag = 0
 local target_point = CGeoPoint(0,0)
 
 local function writeFile(fileName,content)
@@ -24,14 +26,22 @@ local function writeFile(fileName,content)
     file:close()
 end
 
-local function rot_rand()
-    local Rotrand = function ()
-        -- local rotrand = pos.getOtherPos(1)():x()%200/100+3
+local function rot_rand1()
+    local Rotrand1 = function ()
+        -- local rotrand1 = pos.getOtherPos(1)():x()%200/100+3
         math.randomseed(tostring(os.time()):reverse():sub(1, 6))
-        local rotrand = math.random()*(3.0+3.0)-3.0
-        return rotrand
+        local rotrand1 = math.random()*(5.0-1.0)+1.0
+        return rotrand1
     end
-    return Rotrand
+    return Rotrand1
+end
+
+local function rot_rand2()
+    local Rotrand2 = function ()
+        local rotrand2 = rotvel_old
+        return rotrand2
+    end
+    return Rotrand2
 end
 
 local function velx_rand()
@@ -67,6 +77,7 @@ firstState = "run0",
             print('ball_posY'..'\t'..ball.posY()..'\n')
             print('000000000'..'\t'..'000000000'..'\n')
             shoot_flag = 0
+            rotrand_flag = 0
         end
         if bufcnt(player.toTargetDist("Kicker")<200,timerun) then
             return "get"..0
@@ -101,9 +112,16 @@ firstState = "run0",
 },
 ["get0"] = {--拿球
     switch = function()
-        print(player.infraredOn("Kicker"))
+        -- 出界判定
+        if ball.posX() > LENGTH_X or ball.posX() < -LENGTH_X then
+            return "res"..0
+        elseif ball.posY() > LENGTH_Y or ball.posY() < -LENGTH_Y then
+            return "res"..0
+        -- 禁区判定
+        elseif ball.posX() > PENTY_X and ball.posY() > -PENTY_Y and ball.posY() < PENTY_Y then
+            return "res"..0
+        end
         if bufcnt(player.infraredOn("Kicker"),3,timeget) then
-            print(player.infraredOn("Kicker"))
             return "get"..1
         end
     end,
@@ -125,8 +143,8 @@ firstState = "run0",
             return "res"..0
         -- 丢球判定
         elseif math.sqrt((ball.posX()-player.posX("Kicker"))*(ball.posX()-player.posX("Kicker"))
-            +(ball.posY()-player.posY("Kicker"))*(ball.posY()-player.posY("Kicker"))) > 800 and player.infraredOn("Kicker") == 0 then
-            print('11111')
+            +(ball.posY()-player.posY("Kicker"))*(ball.posY()-player.posY("Kicker"))) > 1000 and player.infraredOn("Kicker") == false then
+            print(1)
             return "get"..0
         -- 球出手，保存数据
         elseif bufcnt(player.kickBall("Kicker"),1,timeget) then
@@ -152,11 +170,15 @@ firstState = "run0",
         elseif ball.posX() > PENTY_X and ball.posY() > -PENTY_Y and ball.posY() < PENTY_Y then
             return "res"..0
         end
+        if rotrand_flag == 0 then
+            rotvel_old = rot_rand1()()
+            rotrand_flag = 1
+        end
     end,
     -- Kicker = task.zget(target_point,_,_,flag.kick),
     -- 转速在-3和3之间随机
-    Kicker = task.speed(0,0,3,target_point),
-    -- Kicker = task.speed(0,0,rot_rand(),target_point),
+    -- Kicker = task.speed(0,0,3,target_point),
+    Kicker = task.speed(0,0,rot_rand2(),target_point),
     -- Kicker = task.speed(-500,500,1,target_point),
     -- Kicker = task.speed(velx_rand(),vely_rand(),rot_rand(),target_point),
     match = ""

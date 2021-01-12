@@ -18,8 +18,8 @@ CWaitKickPos::CWaitKickPos(){
 
 ///> 内部重置接口
 void CWaitKickPos::reset(){
-	for(int i = 0; i <= Param::Field::MAX_PLAYER; i++){
-		cur_point[i] = CGeoPoint(Param::Field::PITCH_LENGTH/2.0,0.0);
+	for(int i = 0; i < PARAM::Field::MAX_PLAYER; i++){
+		cur_point[i] = CGeoPoint(PARAM::Field::PITCH_LENGTH/2.0,0.0);
 		last_point[i] = cur_point[i];
 		last_cycle[i] = 0;
 		need_reset[i] = true;
@@ -33,7 +33,7 @@ void CWaitKickPos::GenerateWaitKickPos(const CGeoPoint pointT, const double angl
 	CVisionModule* pVision = vision;
 	const MobileVisionT &ball	= pVision->ball();
 	double ballVelDir = ball.Vel().dir();									// 球速方向
-	double kickDirReverse = Utils::Normalize(kickdir+Param::Math::PI);		// 目标方向反向
+	double kickDirReverse = Utils::Normalize(kickdir+PARAM::Math::PI);		// 目标方向反向
 	CGeoLine pointLine = CGeoLine(pointT,pointT+Utils::Polar2Vector(500,angle));
 	CGeoSegment pointSegment = CGeoSegment(pointT+Utils::Polar2Vector(50,angle), pointT+Utils::Polar2Vector(-50,angle));
 	CGeoLine ballLine = CGeoLine(ball.Pos(),ball.Pos()+Utils::Polar2Vector(100,ballVelDir));
@@ -41,7 +41,7 @@ void CWaitKickPos::GenerateWaitKickPos(const CGeoPoint pointT, const double angl
 	
 	if (intersect.Intersectant()){
 		cur_point[player] = intersect.IntersectPoint();
-		if (Utils::OutOfField(cur_point[player], 0) || !pointSegment.IsPointOnLineOnSegment(cur_point[player]) || Utils::InTheirPenaltyArea(cur_point[player],5)){
+		if (!Utils::IsInField(cur_point[player], 0) || !pointSegment.IsPointOnLineOnSegment(cur_point[player]) || Utils::InTheirPenaltyArea(cur_point[player],5)){
 			cur_point[player] = last_point[player];
 			return ;
 		}
@@ -50,7 +50,7 @@ void CWaitKickPos::GenerateWaitKickPos(const CGeoPoint pointT, const double angl
 		return ;
 	}
 
-	cur_point[player] = cur_point[player]+ Utils::Polar2Vector(Param::Vehicle::V2::TOUCH_SHIFT_DIST,kickDirReverse);
+	cur_point[player] = cur_point[player]+ Utils::Polar2Vector(PARAM::Vehicle::V2::TOUCH_SHIFT_DIST,kickDirReverse);
 	last_point[player] = cur_point[player];
 }
 
@@ -68,7 +68,7 @@ void CWaitKickPos::GenerateWaitKickPos(const CGeoPoint pointA,const CGeoPoint po
 	CVisionModule* pVision = vision;
 	const MobileVisionT &ball	= pVision->ball();
 	double ballVelDir = ball.Vel().dir();									// 球速方向
-	double kickDirReverse = Utils::Normalize(kickdir+Param::Math::PI);		// 目标方向反向
+	double kickDirReverse = Utils::Normalize(kickdir+PARAM::Math::PI);		// 目标方向反向
 	CGeoLine pointLine = CGeoLine(pointA,pointB);
 	CGeoSegment pointSegment = CGeoSegment(pointA,pointB);
 	CGeoLine ballLine = CGeoLine(ball.Pos(),ball.Pos()+Utils::Polar2Vector(100,ballVelDir));
@@ -97,7 +97,7 @@ void CWaitKickPos::GenerateWaitKickPos(const CGeoPoint pointA,const CGeoPoint po
 		cur_point[player] = CGeoPoint((pointA.x()+pointB.x())/2.0,(pointA.y()+pointB.y())/2.0);
 	}
 	
-	cur_point[player] = cur_point[player] + Utils::Polar2Vector(Param::Vehicle::V2::TOUCH_SHIFT_DIST,kickDirReverse);
+	cur_point[player] = cur_point[player] + Utils::Polar2Vector(PARAM::Vehicle::V2::TOUCH_SHIFT_DIST,kickDirReverse);
 	last_point[player] = cur_point[player];
 }
 

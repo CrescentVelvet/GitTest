@@ -19,7 +19,7 @@
 #include "obstacle.h"
 #include "PlayInterface.h"
 #include <TaskMediator.h>
-#include <param.h>
+#include "staticparams.h"
 #include <math.h>
 #include <utils.h>
 #include <geometry.h>
@@ -29,10 +29,10 @@
 #define THEIRPLAYER 1
 #define THISPLAYER 2
 namespace  {
-    const double FRAME_PERIOD = 1.0 / Param::Vision::FRAME_RATE;
-    const double TEAMMATE_AVOID_DIST = Param::Vehicle::V2::PLAYER_SIZE + 4.0f;
-    const double OPP_AVOID_DIST = Param::Vehicle::V2::PLAYER_SIZE + 5.5f;
-    const double BALL_AVOID_DIST = Param::Field::BALL_SIZE + 5.0f;
+    const double FRAME_PERIOD = 1.0 / PARAM::Vision::FRAME_RATE;
+    const double TEAMMATE_AVOID_DIST = PARAM::Vehicle::V2::PLAYER_SIZE + 4.0f;
+    const double OPP_AVOID_DIST = PARAM::Vehicle::V2::PLAYER_SIZE + 5.5f;
+    const double BALL_AVOID_DIST = PARAM::Field::BALL_SIZE + 5.0f;
     const float DEC_MAX = 450;
     const float ACCURATE_AVOID = 250;
 
@@ -380,34 +380,34 @@ void obstacles::addObs(const CVisionModule *pVision, const TaskT &task, bool dra
     int flags = task.player.flag;
 
     if(flags & PlayerStatus::FREE_KICK)
-        add_rectangle(vector2f(Param::Field::PITCH_LENGTH / 2, -Param::Field::PENALTY_AREA_WIDTH/2 + robot_radius - Param::Vehicle::V2::PLAYER_SIZE - 20.0),
-                        vector2f(Param::Field::PITCH_LENGTH / 2 - Param::Field::PENALTY_AREA_DEPTH + robot_radius - Param::Vehicle::V2::PLAYER_SIZE - 20.0, Param::Field::PENALTY_AREA_WIDTH / 2 - robot_radius + Param::Vehicle::V2::PLAYER_SIZE + 20.0), 1, drawObs);
+        add_rectangle(vector2f(PARAM::Field::PITCH_LENGTH / 2, -PARAM::Field::PENALTY_AREA_WIDTH/2 + robot_radius - PARAM::Vehicle::V2::PLAYER_SIZE - 20.0),
+                        vector2f(PARAM::Field::PITCH_LENGTH / 2 - PARAM::Field::PENALTY_AREA_DEPTH + robot_radius - PARAM::Vehicle::V2::PLAYER_SIZE - 20.0, PARAM::Field::PENALTY_AREA_WIDTH / 2 - robot_radius + PARAM::Vehicle::V2::PLAYER_SIZE + 20.0), 1, drawObs);
     else if(!(flags & PlayerStatus::NOT_AVOID_PENALTY))
-        add_rectangle(vector2f(Param::Field::PITCH_LENGTH / 2, -Param::Field::PENALTY_AREA_WIDTH/2 + robot_radius - Param::Vehicle::V2::PLAYER_SIZE),
-                        vector2f(Param::Field::PITCH_LENGTH / 2 - Param::Field::PENALTY_AREA_DEPTH + robot_radius - Param::Vehicle::V2::PLAYER_SIZE, Param::Field::PENALTY_AREA_WIDTH / 2 - robot_radius + Param::Vehicle::V2::PLAYER_SIZE), 1, drawObs);
+        add_rectangle(vector2f(PARAM::Field::PITCH_LENGTH / 2, -PARAM::Field::PENALTY_AREA_WIDTH/2 + robot_radius - PARAM::Vehicle::V2::PLAYER_SIZE),
+                        vector2f(PARAM::Field::PITCH_LENGTH / 2 - PARAM::Field::PENALTY_AREA_DEPTH + robot_radius - PARAM::Vehicle::V2::PLAYER_SIZE, PARAM::Field::PENALTY_AREA_WIDTH / 2 - robot_radius + PARAM::Vehicle::V2::PLAYER_SIZE), 1, drawObs);
 
 
     // 如果是躲避射门
     if (flags & PlayerStatus::AVOID_SHOOTLINE) {
         const PlayerVisionT& shooter = pVision->ourPlayer(shootCar);
         // 球门中心
-        add_long_circle(vector2f(shooter.Pos().x(), shooter.Pos().y()), vector2f(Param::Field::PITCH_LENGTH/2, 0.0f), vector2f(0.0f, 0.0f), 3.0f, 1, drawObs);
+        add_long_circle(vector2f(shooter.Pos().x(), shooter.Pos().y()), vector2f(PARAM::Field::PITCH_LENGTH/2, 0.0f), vector2f(0.0f, 0.0f), 3.0f, 1, drawObs);
         // 球门左门柱
-        add_long_circle(vector2f(shooter.Pos().x(), shooter.Pos().y()), vector2f(Param::Field::PITCH_LENGTH/2, Param::Field::GOAL_WIDTH/2.0), vector2f(0.0f, 0.0f), 3.0f, 1, drawObs);
+        add_long_circle(vector2f(shooter.Pos().x(), shooter.Pos().y()), vector2f(PARAM::Field::PITCH_LENGTH/2, PARAM::Field::GOAL_WIDTH/2.0), vector2f(0.0f, 0.0f), 3.0f, 1, drawObs);
         // 球门右门柱
-        add_long_circle(vector2f(shooter.Pos().x(), shooter.Pos().y()), vector2f(Param::Field::PITCH_LENGTH/2, -Param::Field::GOAL_WIDTH/2.0), vector2f(0.0f, 0.0f), 3.0f, 1, drawObs);
+        add_long_circle(vector2f(shooter.Pos().x(), shooter.Pos().y()), vector2f(PARAM::Field::PITCH_LENGTH/2, -PARAM::Field::GOAL_WIDTH/2.0), vector2f(0.0f, 0.0f), 3.0f, 1, drawObs);
     }
 
     // set up teammates as obstacles
     if (!(flags & PlayerStatus::NOT_AVOID_OUR_VEHICLE)) {
-        for(int i = 1; i <= Param::Field::MAX_PLAYER; ++i) {
+        for(int i = 0; i < PARAM::Field::MAX_PLAYER; ++i) {
             const PlayerVisionT& teammate = pVision->ourPlayer(i);
             if((i != player) && teammate.Valid()) {
                 if(i == TaskMediator::Instance()->rightBack() ||
                         i == TaskMediator::Instance()->leftBack() ||
                         WorldModel::Instance()->CurrentRefereeMsg() == "GameStop" ||
                         WorldModel::Instance()->CurrentRefereeMsg() == "OurTimeout")
-                    add_circle(vector2f(teammate.Pos().x(), teammate.Pos().y()), vector2f(teammate.Vel().x(), teammate.Vel().y()), Param::Vehicle::V2::PLAYER_SIZE, 1, drawObs);
+                    add_circle(vector2f(teammate.Pos().x(), teammate.Pos().y()), vector2f(teammate.Vel().x(), teammate.Vel().y()), PARAM::Vehicle::V2::PLAYER_SIZE, 1, drawObs);
                 else
                     add_circle(vector2f(teammate.Pos().x(), teammate.Pos().y()), vector2f(teammate.Vel().x(), teammate.Vel().y()), teammateAvoidDist, 1, drawObs);
             }
@@ -416,10 +416,10 @@ void obstacles::addObs(const CVisionModule *pVision, const TaskT &task, bool dra
 
     // set up opponents as obstacles
     if (!(flags & PlayerStatus::NOT_AVOID_THEIR_VEHICLE)) {
-        for(int i=1; i<=Param::Field::MAX_PLAYER; ++i) {
+        for(int i=0; i<PARAM::Field::MAX_PLAYER; ++i) {
             const PlayerVisionT& opp = pVision->theirPlayer(i);
             if(opp.Valid()) {
-                if((target.dist(opp.Pos()) < Param::Field::MAX_PLAYER_SIZE / 2) ) {
+                if((target.dist(opp.Pos()) < PARAM::Field::MAX_PLAYER_SIZE / 2) ) {
                     continue;
                 }
                 else {
@@ -433,11 +433,11 @@ void obstacles::addObs(const CVisionModule *pVision, const TaskT &task, bool dra
     if(player != TaskMediator::Instance()->goalie()) {
         // 我方禁区
         if(flags & PlayerStatus::FREE_KICK)
-            add_rectangle(vector2f(-Param::Field::PITCH_LENGTH / 2, -Param::Field::PENALTY_AREA_WIDTH/2 + robot_radius - Param::Vehicle::V2::PLAYER_SIZE - 20.0),
-                          vector2f(-Param::Field::PITCH_LENGTH / 2 + Param::Field::PENALTY_AREA_DEPTH - robot_radius + Param::Vehicle::V2::PLAYER_SIZE + 20.0, Param::Field::PENALTY_AREA_WIDTH / 2 - robot_radius + Param::Vehicle::V2::PLAYER_SIZE + 20.0), 1, drawObs);
+            add_rectangle(vector2f(-PARAM::Field::PITCH_LENGTH / 2, -PARAM::Field::PENALTY_AREA_WIDTH/2 + robot_radius - PARAM::Vehicle::V2::PLAYER_SIZE - 20.0),
+                          vector2f(-PARAM::Field::PITCH_LENGTH / 2 + PARAM::Field::PENALTY_AREA_DEPTH - robot_radius + PARAM::Vehicle::V2::PLAYER_SIZE + 20.0, PARAM::Field::PENALTY_AREA_WIDTH / 2 - robot_radius + PARAM::Vehicle::V2::PLAYER_SIZE + 20.0), 1, drawObs);
         else if(!(flags & PlayerStatus::NOT_AVOID_PENALTY))
-            add_rectangle(vector2f(-Param::Field::PITCH_LENGTH / 2, -Param::Field::PENALTY_AREA_WIDTH/2 + robot_radius - Param::Vehicle::V2::PLAYER_SIZE),
-                          vector2f(-Param::Field::PITCH_LENGTH / 2 + Param::Field::PENALTY_AREA_DEPTH - robot_radius + Param::Vehicle::V2::PLAYER_SIZE, Param::Field::PENALTY_AREA_WIDTH / 2 - robot_radius + Param::Vehicle::V2::PLAYER_SIZE), 1, drawObs);
+            add_rectangle(vector2f(-PARAM::Field::PITCH_LENGTH / 2, -PARAM::Field::PENALTY_AREA_WIDTH/2 + robot_radius - PARAM::Vehicle::V2::PLAYER_SIZE),
+                          vector2f(-PARAM::Field::PITCH_LENGTH / 2 + PARAM::Field::PENALTY_AREA_DEPTH - robot_radius + PARAM::Vehicle::V2::PLAYER_SIZE, PARAM::Field::PENALTY_AREA_WIDTH / 2 - robot_radius + PARAM::Vehicle::V2::PLAYER_SIZE), 1, drawObs);
     }
 
     // ball
@@ -482,7 +482,7 @@ void obstacles::change_world(vector2f s,vector2f g, vector2f v, float maxD) { //
     float factor = 0.2f;  //最短距离的变化
     vector2f g_dir, obsmove, obsdist;
     float sr, dt, scale, uncertain_position; // 球障碍的变形
-    dt = 1.0 / Param::Vision::FRAME_RATE; // 系统为1/60s
+    dt = 1.0 / PARAM::Vision::FRAME_RATE; // 系统为1/60s
     scale = 5.0;
     uncertain_position = 2.0;
     for(int i = 0; i < num; i++) {

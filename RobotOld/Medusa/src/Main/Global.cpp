@@ -7,6 +7,7 @@ CGDebugEngine*  debugEngine;
 CWorldModel*	world;
 CKickDirection* kickDirection;
 CDefPos2015* defPos2015;
+CGuardPos* guardpos;
 CIndirectDefender* indirectDefender;
 CTandemPos* tandemPos;
 SkillUtils* skillUtils;
@@ -39,4 +40,5 @@ void initializeSingleton()
     messi = MessiDecision::Instance();
 //	getluadata = GetLuaData::Instance();
     messi = MessiDecision::Instance();
+    guardpos = GuardPos::Instance();
 }

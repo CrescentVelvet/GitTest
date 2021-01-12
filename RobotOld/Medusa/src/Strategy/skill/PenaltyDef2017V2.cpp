@@ -25,9 +25,9 @@ namespace {
 
 CPenaltyDef2017V2::CPenaltyDef2017V2()
 {
-	ourGate = CGeoPoint(-Param::Field::PITCH_LENGTH / 2, 0);
-	ourGateLeft = CGeoPoint(-Param::Field::PITCH_LENGTH / 2, -(Param::Field::GOAL_WIDTH / 2 - goalBuffer));
-	ourGateRight = CGeoPoint(-Param::Field::PITCH_LENGTH / 2, Param::Field::GOAL_WIDTH / 2 - goalBuffer);
+	ourGate = CGeoPoint(-PARAM::Field::PITCH_LENGTH / 2, 0);
+	ourGateLeft = CGeoPoint(-PARAM::Field::PITCH_LENGTH / 2, -(PARAM::Field::GOAL_WIDTH / 2 - goalBuffer));
+	ourGateRight = CGeoPoint(-PARAM::Field::PITCH_LENGTH / 2, PARAM::Field::GOAL_WIDTH / 2 - goalBuffer);
 	_lastCycle = 0;
 	_rushFlag = 0;
 	_turnFlag = 0;
@@ -35,7 +35,7 @@ CPenaltyDef2017V2::CPenaltyDef2017V2()
 
 void CPenaltyDef2017V2::plan(const CVisionModule* pVision)
 {
-	if (pVision->getCycle() - _lastCycle > Param::Vision::FRAME_RATE * 0.1)
+	if (pVision->getCycle() - _lastCycle > PARAM::Vision::FRAME_RATE * 0.1)
 	{
 		_rushFlag = 0;
 		_turnFlag = 0;
@@ -52,18 +52,18 @@ void CPenaltyDef2017V2::plan(const CVisionModule* pVision)
 
 	double compenDist = 0;
 	CGeoLine enemyDirLine(enemy.Pos(), enemy.Dir());
-	CGeoLine gateLine(CGeoPoint(-Param::Field::PITCH_LENGTH / 2, 0), Param::Math::PI / 2);
+	CGeoLine gateLine(CGeoPoint(-PARAM::Field::PITCH_LENGTH / 2, 0), PARAM::Math::PI / 2);
 	CGeoLineLineIntersection gateInter(enemyDirLine, gateLine);
 	CVector enemy2Ball(ball.Pos().x() - enemy.Pos().x(), ball.Pos().y() - enemy.Pos().y());
 	CGeoLine gate2BallLine;
-	if (fabs(gateInter.IntersectPoint().y()) < Param::Field::GOAL_WIDTH / 2 + goalBuffer) {
+	if (fabs(gateInter.IntersectPoint().y()) < PARAM::Field::GOAL_WIDTH / 2 + goalBuffer) {
 		_case = 1;
 		gate2BallLine = CGeoLine(ball.Pos(), enemy.Dir());
 	}
 	else {
 		_case = 2;
 		compenDist = -(fabs(enemy.Pos().y()) < 36 ? fabs(enemy.Pos().y()) : 36) * gateInter.IntersectPoint().y() / fabs(gateInter.IntersectPoint().y());
-		gate2BallLine = CGeoLine(ball.Pos(), ourGate + Utils::Polar2Vector(compenDist, -Param::Math::PI / 2));
+		gate2BallLine = CGeoLine(ball.Pos(), ourGate + Utils::Polar2Vector(compenDist, -PARAM::Math::PI / 2));
 	}
 
 	CGeoLineLineIntersection gate2BallInter(gate2BallLine, gateLine);
@@ -72,16 +72,13 @@ void CPenaltyDef2017V2::plan(const CVisionModule* pVision)
 	CGeoLineCircleIntersection taskInter(gate2BallLine, gateCircle);
 	myTask.player.pos = taskInter.point1().x() > taskInter.point2().x() ? taskInter.point1() : taskInter.point2();
 	myTask.player.angle = (ball.Pos() - me.Pos()).dir();
-	myTask.player.flag |= PlayerStatus::QUICKLY;
 
 	if (isBallShoot(pVision) && fabs(ball.Vel().dir() - (me.Pos() - ball.Pos()).dir()) < 0.05) {
-		CGeoPoint taskPoint = taskInter.point1().x() > -Param::Field::PITCH_LENGTH / 2 ? taskInter.point1() : taskInter.point2();
+		CGeoPoint taskPoint = taskInter.point1().x() > -PARAM::Field::PITCH_LENGTH / 2 ? taskInter.point1() : taskInter.point2();
 		myTask.player.pos = ball.Vel().dir() - (me.Pos() - ball.Pos()).dir() > 0 ? CGeoPoint(me.Pos().x(), 9999) : CGeoPoint(me.Pos().x(), -9999);
-		myTask.player.flag |= PlayerStatus::DO_NOT_STOP;
 	}
 	if ((ball.Pos() - ourGate).mod() + 20 < (me.Pos() - ball.Pos()).mod()) {
-		myTask.player.pos = enemy.Pos() + Utils::Polar2Vector(Param::Vehicle::V2::PLAYER_SIZE * 3, enemy2Ball.dir());
-		myTask.player.flag |= PlayerStatus::DO_NOT_STOP;
+		myTask.player.pos = enemy.Pos() + Utils::Polar2Vector(PARAM::Vehicle::V2::PLAYER_SIZE * 3, enemy2Ball.dir());
 	}
 	KickStatus::Instance()->setKick(robotNum, 9999);
 	setSubTask(TaskFactoryV2::Instance()->GotoPosition(myTask));
@@ -108,14 +105,14 @@ bool CPenaltyDef2017V2::isBallShoot(const CVisionModule * pVision)
 	const PlayerVisionT& enemy = pVision->theirPlayer(enemyNum);
 
 	CVector enemy2Ball(ball.Pos().x() - enemy.Pos().x(), ball.Pos().y() - enemy.Pos().y());
-	bool ballDirFrontOpp = (ball.Vel().dir() - enemy2Ball.dir()) < Param::Math::PI; //角度条件
+	bool ballDirFrontOpp = (ball.Vel().dir() - enemy2Ball.dir()) < PARAM::Math::PI; //角度条件
 	bool ballDistFrontOpp = (enemy2Ball.mod() > 25); //距离条件
 	CGeoLine enemyFaceLine(enemy.Pos(), enemy.Dir());
 	CGeoLine ballVelLine(ball.Pos(), ball.Vel().dir());
-	CGeoLine goalLine(CGeoPoint(Param::Field::PITCH_LENGTH / 2, 0), Param::Math::PI / 2);
+	CGeoLine goalLine(CGeoPoint(PARAM::Field::PITCH_LENGTH / 2, 0), PARAM::Math::PI / 2);
 	CGeoLineLineIntersection taskInter(enemyFaceLine, goalLine);
 	CGeoLineLineIntersection ballVelInter(ballVelLine, goalLine);
-	bool isFaceOurDoor = fabs(taskInter.IntersectPoint().y()) < Param::Field::GOAL_WIDTH / 2 - goalBuffer; //脸朝向门内
+	bool isFaceOurDoor = fabs(taskInter.IntersectPoint().y()) < PARAM::Field::GOAL_WIDTH / 2 - goalBuffer; //脸朝向门内
 	bool isVelEnough = ball.Vel().mod() > 300 && ball.Vel().x() < 0; //速度条件
 
 	if (debug) cout << "dist:" << ballDistFrontOpp << " dir:" << ballDirFrontOpp << " vel:" << (ball.Vel().mod() > 150) 

@@ -41,7 +41,6 @@
 #include "PenaltyKick2017V2.h"
 #include "GoAvoidShootLine.h"
 #include "DribbleTurn.h"
-#include "MarkingTouch.h"
 #include "MarkingFront.h"
 #include "DribbleTurnKick.h"
 #include "InterceptBallV7.h"
@@ -53,12 +52,12 @@
 #include "ZSupport.h"
 #include "ZAttack.h"
 #include "ZCirclePass.h"
-#include "zmessi.h"
 #include "HoldBall.h"
 #include "GoAndTurnKickV4.h"
 #include "ZBreak.h"
 #include "zdrag.h"
 #include "SmartGotoPositionV3.h"
+#include "zback.h"
 
 /************************************************************************/
 /*                      TaskFactoryV2									*/
@@ -73,7 +72,7 @@
 template < class CTaskType >
 CPlayerTask* CTaskFactoryV2::MakeTask(const TaskT& task )
 {
-	static CTaskType taskPool[Param::Field::MAX_PLAYER + 1];
+	static CTaskType taskPool[PARAM::Field::MAX_PLAYER];
 	taskPool[task.executor].reset(task);
 	return &taskPool[task.executor];
 }
@@ -150,10 +149,6 @@ CPlayerTask* CTaskFactoryV2::TouchKick(const TaskT& task) {
 
 CPlayerTask* CTaskFactoryV2::InterceptBallV3(const TaskT& task) {
 	return MakeTask< CInterceptBallV3>(task);
-}
-
-CPlayerTask* CTaskFactoryV2::MarkingTouch(const TaskT& task) {
-	return MakeTask< CMarkingTouch >(task);
 }
 
 CPlayerTask* CTaskFactoryV2::MarkingFront(const TaskT& task) {
@@ -242,10 +237,6 @@ CPlayerTask* CTaskFactoryV2::ZAttack(const TaskT& task){
     return MakeTask<CZAttack>(task);
 }
 
-CPlayerTask* CTaskFactoryV2::Messi(const TaskT& task){
-    return MakeTask<CZMessi>(task);
-}
-
 CPlayerTask* CTaskFactoryV2::ZCirclePass(const TaskT& task){
     return MakeTask<CZCirclePass>(task);
 }
@@ -268,6 +259,10 @@ CPlayerTask* CTaskFactoryV2::GoAndTurnKickV4(const TaskT &task){
 
 CPlayerTask* CTaskFactoryV2::ZDrag(const TaskT &task){
     return MakeTask<CZDrag>(task);
+}
+
+CPlayerTask* CTaskFactoryV2::ZBack(const TaskT &task){
+    return MakeTask<CZBack>(task);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -518,17 +513,6 @@ namespace PlayerRole {
 	}
 
 
-	CPlayerTask* makeItMarkingTouch(const int num,const double kickDir,const CGeoPoint leftUpPos,const CGeoPoint rightDownPos,const int flags)
-	{
-		static TaskT playerTask;
-		playerTask.executor = num;
-		playerTask.player.angle = kickDir;
-		playerTask.player.flag = flags;
-		playerTask.ball.pos=leftUpPos;
-		playerTask.player.pos=rightDownPos;
-		return TaskFactoryV2::Instance()->MarkingTouch(playerTask);
-	}
-
 	CPlayerTask* makeItMarkingFront(const int num,const int markNum,const double kickDir,const int flags)
 	{
 		static TaskT playerTask;
@@ -727,14 +711,6 @@ namespace PlayerRole {
         return TaskFactoryV2::Instance()->ZAttack(playerTask);
     }
 
-    CPlayerTask* makeItMessi(const int num,const CGeoPoint& target,const double power){
-        static TaskT playerTask;
-        playerTask.executor = num;
-        playerTask.player.pos = target;
-        playerTask.player.kickpower = power;
-        return TaskFactoryV2::Instance()->Messi(playerTask);
-    }
-
     CPlayerTask* makeItZCirclePass(const int num, CGeoPoint target, const double power, const int kick_flag) {
         static TaskT playerTask;
         playerTask.executor = num;
@@ -811,5 +787,15 @@ namespace PlayerRole {
         playerTask.player.kickpower = waitPos.x();
         playerTask.player.chipkickpower = waitPos.y();
         return TaskFactoryV2::Instance()->ZDrag(playerTask);
+    }
+
+    CPlayerTask* makeItZBack(const int num, const int guardNum, const int index, const double power, const int flag){
+        static TaskT playerTask;
+        playerTask.executor = num;
+        playerTask.player.flag = flag;
+        playerTask.player.rotdir = index;
+        playerTask.player.kick_flag = guardNum;
+        playerTask.player.chipkickpower = power;
+        return TaskFactoryV2::Instance()->ZBack(playerTask);
     }
 }

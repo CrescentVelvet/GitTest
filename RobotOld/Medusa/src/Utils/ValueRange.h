@@ -2,7 +2,7 @@
 #define _VALUE_RANGE_H_
 #include <list>
 #include <iostream>
-#include <param.h> // add by jwl
+#include "staticparams.h" // add by jwl
 #include <cmath>
 #include <algorithm>
 
@@ -21,7 +21,7 @@ public:
 	double getMinDist() const { return _vMinDist; }
     double getMaxDist() const { return _vMaxDist; }
     //等腰三角形的边为两个向量中较短边的长度，顶角为两个向量夹角，等腰三角形的底为宽度，exp部分使得宽度值衰减，越远衰减越多  comment by wyk 2019.5.14
-    double getWidth() const { return std::sin(getSize()/2)*2*(std::min)(_vMinDist,_vMaxDist)*std::exp(-(std::min)(_vMinDist,_vMaxDist)/Param::Field::PITCH_LENGTH/4); } // 2*sin(alpha/2)*l*exp(-l/4/L)
+    double getWidth() const { return std::sin(getSize()/2)*2*(std::min)(_vMinDist,_vMaxDist)*std::exp(-(std::min)(_vMinDist,_vMaxDist)/PARAM::Field::PITCH_LENGTH/4); } // 2*sin(alpha/2)*l*exp(-l/4/L)
 
 	void resize(double vMin, double vMax, double vMinDist, double vMaxDist ){ _vMin = vMin; _vMax = vMax; _vMinDist = vMinDist; _vMaxDist = vMaxDist; } 
 private:
@@ -92,12 +92,12 @@ public:
 		// rangeHalf要足够小，不能大于2PI
 		const double angleMin = rangeCenter - rangeHalfSize;
 		const double angleMax = rangeCenter + rangeHalfSize;
-		if( angleMin < -Param::Math::PI ){
-			remove(CValueRange(-Param::Math::PI, angleMax));
-			remove(CValueRange(angleMin + Param::Math::PI * 2, Param::Math::PI));
-		}else if( angleMax > Param::Math::PI ){
-			remove(CValueRange(angleMin, Param::Math::PI));
-			remove(CValueRange(-Param::Math::PI, angleMax - Param::Math::PI * 2));
+		if( angleMin < -PARAM::Math::PI ){
+			remove(CValueRange(-PARAM::Math::PI, angleMax));
+			remove(CValueRange(angleMin + PARAM::Math::PI * 2, PARAM::Math::PI));
+		}else if( angleMax > PARAM::Math::PI ){
+			remove(CValueRange(angleMin, PARAM::Math::PI));
+			remove(CValueRange(-PARAM::Math::PI, angleMax - PARAM::Math::PI * 2));
 		}else{
 			remove(CValueRange(angleMin, angleMax));
 		}
@@ -107,12 +107,12 @@ public:
 		// rangeHalf要足够小，不能大于2PI
 		const double angleMin = rangeCenter - rangeHalfSize;
 		const double angleMax = rangeCenter + rangeHalfSize;
-		if( angleMin < -Param::Math::PI ){
-			remove(CValueRange(-Param::Math::PI, angleMax, dist, dist));
-			remove(CValueRange(angleMin + Param::Math::PI * 2, Param::Math::PI, dist, dist));
-		}else if( angleMax > Param::Math::PI ){
-			remove(CValueRange(angleMin, Param::Math::PI, dist, dist));
-			remove(CValueRange(-Param::Math::PI, angleMax - Param::Math::PI * 2, dist, dist));
+		if( angleMin < -PARAM::Math::PI ){
+			remove(CValueRange(-PARAM::Math::PI, angleMax, dist, dist));
+			remove(CValueRange(angleMin + PARAM::Math::PI * 2, PARAM::Math::PI, dist, dist));
+		}else if( angleMax > PARAM::Math::PI ){
+			remove(CValueRange(angleMin, PARAM::Math::PI, dist, dist));
+			remove(CValueRange(-PARAM::Math::PI, angleMax - PARAM::Math::PI * 2, dist, dist));
 		}else{
 			remove(CValueRange(angleMin, angleMax, dist, dist));
 		}

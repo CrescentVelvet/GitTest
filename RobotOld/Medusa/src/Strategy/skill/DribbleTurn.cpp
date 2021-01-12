@@ -26,7 +26,7 @@ CDribbleTurn::CDribbleTurn() {
 }
 
 void CDribbleTurn::plan(const CVisionModule* pVision) {
-	if ( pVision->getCycle() - _lastCycle > Param::Vision::FRAME_RATE * 0.1) {
+	if ( pVision->getCycle() - _lastCycle > PARAM::Vision::FRAME_RATE * 0.1) {
 		setState(BEGINNING);
 		count = 0;
 	}
@@ -125,7 +125,7 @@ bool CDribbleTurn::isVisionHasBall(const CVisionModule* pVision, const int vecNu
 	double meDir = me.Dir();
 	double me2Ball = (ball.Pos() - me.Pos()).dir();
 	double meDir_me2Ball_Diff = abs(Utils::Normalize((meDir - me2Ball)));
-	if (meDir_me2Ball_Diff < Param::Math::PI / 9.0) {
+	if (meDir_me2Ball_Diff < PARAM::Math::PI / 9.0) {
 		dirVisionHasBall = true;
 	}
 	else {

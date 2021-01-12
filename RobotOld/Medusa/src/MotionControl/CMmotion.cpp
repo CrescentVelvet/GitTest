@@ -11,7 +11,7 @@
 using namespace std;
 
 namespace {
-const double FRAME_PERIOD = 1.0 / Param::Vision::FRAME_RATE;
+const double FRAME_PERIOD = 1.0 / PARAM::Vision::FRAME_RATE;
 
 bool DEBUG_NO_ZERO_VEL = false;
 const double DEC_FACTOR = 2.0;
@@ -20,7 +20,7 @@ const double upperBoundSpeedLimitRotate = 300*10;
 const double min_max_angle_acc = 10.0;
 const double min_max_angle_speed = 10.0;
 const double rotateScaleFactor = 1.0;
-const double minAngleLimitRotateSpeed = 15.0 / 180.0 * Param::Math::PI;
+const double minAngleLimitRotateSpeed = 15.0 / 180.0 * PARAM::Math::PI;
 
 bool IS_SIMULATION = ZSS::ZParamManager::instance()->value("Alert/IsSimulation", QVariant(false)).toBool();
 double OUR_MAX_SPEED = ZSS::ZParamManager::instance()->value("CGotoPositionV2/MNormalSpeed",QVariant(300*10)).toDouble();
@@ -428,7 +428,7 @@ void goto_point_omni( const PlayerPoseT& start,
         static double lastTimeDec = time_dec;
         static double lastTimeFlat = time_flat;
         GDebugEngine::Instance()->gui_debug_msg(CGeoPoint(-100*10, -400*10), QString("initialVel: %1").arg(start.Vel().mod()).toLatin1(), timeDebugColor);
-        GDebugEngine::Instance()->gui_debug_msg(CGeoPoint(100*10, -400*10), QString("finalVel: %1").arg((start.Vel() + a / Param::Vision::FRAME_RATE).mod()).toLatin1(), timeDebugColor);
+        GDebugEngine::Instance()->gui_debug_msg(CGeoPoint(100*10, -400*10), QString("finalVel: %1").arg((start.Vel() + a / PARAM::Vision::FRAME_RATE).mod()).toLatin1(), timeDebugColor);
         GDebugEngine::Instance()->gui_debug_msg(CGeoPoint(0.0, 0.0), QString("time: %1").arg((lastTime - time) * 1000.0).toLatin1(), timeDebugColor);
         GDebugEngine::Instance()->gui_debug_msg(CGeoPoint(0.0, 20*10), QString("timeAcc: %1").arg(time_acc * 1000.0).toLatin1(), timeDebugColor);
         GDebugEngine::Instance()->gui_debug_msg(CGeoPoint(0.0, 40*10), QString("timeDec: %1").arg(time_dec * 1000.0).toLatin1(), timeDebugColor);
@@ -628,18 +628,18 @@ void openSpeedCircle(const PlayerPoseT& start, const double dist2Center, const i
         compute_motion_1d(-posDirDiff, start.RotVel(), 0, 15, 5, 5, 1.5, 1.0, rotAcc, rotTime, rotAccTime, rotDecTime, rotFlatTime, ROTATE);
     }
 
-    double rotVel = startRotVel + rotAcc / Param::Vision::FRAME_RATE;
+    double rotVel = startRotVel + rotAcc / PARAM::Vision::FRAME_RATE;
     double velMod = abs(rotVel * dist2Center);
     CVector vel;
     if (rotateMethod == 1 || rotateMethod == 3) {
         vel = Utils::Polar2Vector(velMod, startDir);
     } else {
-        vel = Utils::Polar2Vector(velMod, Utils::Normalize(startDir + Param::Math::PI));
+        vel = Utils::Polar2Vector(velMod, Utils::Normalize(startDir + PARAM::Math::PI));
     }
 
     CVector localVel = vel.rotate(- start.Dir());
-    CGeoPoint nextPos = startPos + vel / Param::Vision::FRAME_RATE;
-    double nextDir = startDir + rotVel / Param::Vision::FRAME_RATE;
+    CGeoPoint nextPos = startPos + vel / PARAM::Vision::FRAME_RATE;
+    double nextDir = startDir + rotVel / PARAM::Vision::FRAME_RATE;
 
     nextStep.SetValid(true);
     nextStep.SetPos(nextPos);

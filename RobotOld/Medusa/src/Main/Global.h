@@ -9,6 +9,7 @@
 #include "singleton.h"
 #include "KickDirection.h"
 #include "DefPos2015.h"
+#include "guardpos.h"
 #include "TandemPos.h"
 #include "ChipBallJudge.h"
 #include "BestPlayer.h"
@@ -27,6 +28,7 @@ extern CGDebugEngine*  debugEngine;
 extern CWorldModel*	   world;
 extern CKickDirection* kickDirection;
 extern CDefPos2015* defPos2015;
+extern CGuardPos* guardpos;
 extern CTandemPos* tandemPos;
 extern SkillUtils* skillUtils;
 //extern CBestPlayer* bestPlayer;

@@ -12,12 +12,14 @@
 #include "utils.h"
 #include "singleton.hpp"
 namespace ZBallState {
-const int Our = 0;
-const int Their = 1;
-const int Both = 2;
-const int OurHolding = 3;
-const int TheirHolding = 4;
-const int BothHolding = 5;
+enum {
+    Our = 0,
+    Their = 1,
+    Both = 2,
+    OurHolding = 3,
+    TheirHolding = 4,
+    BothHolding = 5
+};
 const std::string toStr[6] = {"Our", "Their", "Both", "OurHolding", "TheirHolding", "BothHolding"};
 }
 typedef int BallStateVar;
@@ -28,12 +30,6 @@ class SkillUtils {
 
     //摩擦
     double FRICTION;
-
-    //判断点是否在场地内, 第二个参数为边界缓冲
-    bool IsInField(const CGeoPoint p, double buffer = 0);
-
-    //判断点是否在场地内, 且不在禁区内， 第二个参数为边界缓冲
-    bool IsInFieldV2(const CGeoPoint p, double buffer = 0);
 
     //判断球是否能走那么远距离
     bool IsBallReachable(double ballVel, double length, double friction);
@@ -54,7 +50,7 @@ class SkillUtils {
     bool isSafeShoot(const CVisionModule* pVision, double ballVel, CGeoPoint target);
 
     //从射门点以ballVel速度射出球到target点，计算是否有对方车能截到球
-    bool validShootPos(const CVisionModule* pVision, CGeoPoint shootPos, double ballVel, CGeoPoint target, const double responseTime=0, double ignoreCloseEnemyDist=-9999, bool ignoreTheirGoalie=false, bool ignoreTheirGuard=false, bool DEBUG_MODE=false);
+    bool validShootPos(const CVisionModule* pVision, CGeoPoint shootPos, double ballVel, CGeoPoint target, double &interTime, const double responseTime=0, double ignoreCloseEnemyDist=-9999, bool ignoreTheirGoalie=false, bool ignoreTheirGuard=false, bool DEBUG_MODE=false);
 
     //从射门点以ballVel速度射出球到target点，计算是否有对方车能截到球
     bool validChipPos(const CVisionModule* pVision, CGeoPoint shootPos, double ballVel, CGeoPoint target, const double responseTime=0, /*double ignoreCloseEnemyDist=-9999, */bool ignoreTheirGuard=false, bool DEBUG_MODE=false);
@@ -125,22 +121,22 @@ class SkillUtils {
     int _lastCycle = 0;
 
     //所有我方车的截球点
-    CGeoPoint ourInterPoint[Param::Field::MAX_PLAYER + 1];
+    CGeoPoint ourInterPoint[PARAM::Field::MAX_PLAYER];
 
     //所有我方截球时间
-    double ourInterTime[Param::Field::MAX_PLAYER + 1];
+    double ourInterTime[PARAM::Field::MAX_PLAYER];
 
     //所有敌方车的截球点
-    CGeoPoint theirInterPoint[Param::Field::MAX_PLAYER + 1];
+    CGeoPoint theirInterPoint[PARAM::Field::MAX_PLAYER];
 
     //所有敌方截球时间
-    double theirInterTime[Param::Field::MAX_PLAYER + 1];
+    double theirInterTime[PARAM::Field::MAX_PLAYER];
 
     //预测静止球以最大速度射出、敌方车最大速度加速的截球时间
-    double predictTheirInterTime[Param::Field::MAX_PLAYER + 1];
+    double predictTheirInterTime[PARAM::Field::MAX_PLAYER];
 
     //预测静止球以最大速度射出、敌方车最大速度加速的截球点
-    CGeoPoint predictTheirInterPoint[Param::Field::MAX_PLAYER + 1];
+    CGeoPoint predictTheirInterPoint[PARAM::Field::MAX_PLAYER];
 
     int ourBestInterRobot, theirBestInterRobot, theirGoalie;
 

@@ -29,7 +29,7 @@ namespace
 	bool verBos=false;
 	const int State_Counter_Num=3;
 
-	const CGeoPoint theirGoal = CGeoPoint(Param::Field::PITCH_LENGTH/2,0);
+	const CGeoPoint theirGoal = CGeoPoint(PARAM::Field::PITCH_LENGTH/2,0);
 
 }
 
@@ -43,7 +43,7 @@ void CMarkingTouchPos::caculMarkingPos(int areaNum,const CGeoSegment& passSegmen
 	double XRangeValue=20;
 	double YRangeValue=30;
 	if (markDirection){
-		CGeoLine markline=CGeoLine(_markPos[areaNum],Param::Math::PI/2);
+		CGeoLine markline=CGeoLine(_markPos[areaNum],PARAM::Math::PI/2);
 		CGeoLineLineIntersection inter=CGeoLineLineIntersection(markline,passSegment);
 		if (inter.Intersectant()&&passSegment.IsPointOnLineOnSegment(inter.IntersectPoint())){
 			double interY=inter.IntersectPoint().y();
@@ -110,7 +110,7 @@ CGeoPoint CMarkingTouchPos::caculMarkingTouchPos(int areaNum,CGeoPoint leftUpPos
 		initMarkPos=CGeoPoint((leftUpPos.x()+rightDownPos.x())/2.0,markY);
 	}
 
-	CGeoPoint goalPos=CGeoPoint(Param::Field::PITCH_LENGTH/2,0);
+	CGeoPoint goalPos=CGeoPoint(PARAM::Field::PITCH_LENGTH/2,0);
 	double finalKickDir=(goalPos-initMarkPos).dir();
 
 	if ((_lastLeftUpPos[areaNum].x()!=leftUpPos.x()||_lastLeftUpPos[areaNum].y()!=leftUpPos.y()||
@@ -127,7 +127,7 @@ CGeoPoint CMarkingTouchPos::caculMarkingTouchPos(int areaNum,CGeoPoint leftUpPos
 	_lastLeftUpPos[areaNum]=leftUpPos;
 	_lastRightDownPos[areaNum]=rightDownPos;
 
-	if ( vision->getCycle() - _lastCycle > Param::Vision::FRAME_RATE * 0.1 ){
+	if ( vision->getCycle() - _lastCycle > PARAM::Vision::FRAME_RATE * 0.1 ){
 		resetState();
 		_markPos[areaNum]=initMarkPos;
 	}
@@ -136,15 +136,15 @@ CGeoPoint CMarkingTouchPos::caculMarkingTouchPos(int areaNum,CGeoPoint leftUpPos
 
 	//cout<<"enemy"<<_kickEnemyNum<<endl;
 	double ballVelDir = ball.Vel().dir();									// 球速方向
-//	double ballVelReverse = Utils::Normalize(ballVelDir+Param::Math::PI);	// 球速反向
-	double kickDirReverse = Utils::Normalize(finalKickDir+Param::Math::PI);		// 目标方向反向
+//	double ballVelReverse = Utils::Normalize(ballVelDir+PARAM::Math::PI);	// 球速反向
+	double kickDirReverse = Utils::Normalize(finalKickDir+PARAM::Math::PI);		// 目标方向反向
 //	double angleDiff_ballVelDir2kickDirReverse = fabs(Utils::Normalize(finalKickDir - ballVelReverse));
 
 
 	//true = horizal
 	CGeoRectangle markField = CGeoRectangle(leftUpPos,rightDownPos);
 	int markEnemyNum=0;
-	for (int i=1;i<=Param::Field::MAX_PLAYER;i++)
+	for (int i=0;i<PARAM::Field::MAX_PLAYER;i++)
 	{
 		if (vision->theirPlayer(i).Valid()){
 			if (markField.HasPoint(vision->theirPlayer(i).Pos()))
@@ -161,8 +161,8 @@ CGeoPoint CMarkingTouchPos::caculMarkingTouchPos(int areaNum,CGeoPoint leftUpPos
 			}
 		}
 	}
-	//if (_markEnemyNum[areaNum]==0 || !vision->TheirPlayer(_markEnemyNum[areaNum]).Valid()
-	//	||!markField.HasPoint(vision->TheirPlayer(_markEnemyNum[areaNum]).Pos())){
+	//if (_markEnemyNum[areaNum]==0 || !vision->theirPlayer(_markEnemyNum[areaNum]).Valid()
+	//	||!markField.HasPoint(vision->theirPlayer(_markEnemyNum[areaNum]).Pos())){
 	//		_markEnemyNum[areaNum]=markEnemyNum;
 	//}
 
@@ -181,7 +181,7 @@ CGeoPoint CMarkingTouchPos::caculMarkingTouchPos(int areaNum,CGeoPoint leftUpPos
 	}else{
 		const PlayerVisionT he=vision->theirPlayer(_markEnemyNum[areaNum]);
 		const double hetoBallDir=(ball.Pos()-he.Pos()).dir();
-//		const double antiHetoBallDir=Utils::Normalize(hetoBallDir+Param::Math::PI);
+//		const double antiHetoBallDir=Utils::Normalize(hetoBallDir+PARAM::Math::PI);
 //		const CGeoSegment hetoBallSeg = CGeoSegment(he.Pos()+Utils::Polar2Vector(8,hetoBallDir),ball.Pos());
 		double kickEnemyToBallDir=(ball.Pos()-kickEnemy.Pos()).dir();
 //		double diffAngleBallVel_HeDir=fabs(Utils::Normalize(ball.Vel().dir()-kickEnemy.Dir()));
@@ -189,14 +189,14 @@ CGeoPoint CMarkingTouchPos::caculMarkingTouchPos(int areaNum,CGeoPoint leftUpPos
 		double diffAngleHeDir_HetoBall=fabs(Utils::Normalize(kickEnemyToBallDir-kickEnemy.Dir()));
 
 
-		bool isBallVelOk=fabs(Utils::Normalize(vision->ball(_lastCycle-1).Vel().dir()-ball.Vel().dir()))<Param::Math::PI*8/180;
+		bool isBallVelOk=fabs(Utils::Normalize(vision->ball(_lastCycle-1).Vel().dir()-ball.Vel().dir()))<PARAM::Math::PI*8/180;
 		isBallVelOk=true;
 		bool isBallPassed=//isBallVelOk&&
-			//&&diffAngleBallVel_HeDir<Param::Math::PI*20/180&&diffAngleBallVel_HetoBall<Param::Math::PI*20/180
-			diffAngleHeDir_HetoBall<Param::Math::PI*30/180
+			//&&diffAngleBallVel_HeDir<PARAM::Math::PI*20/180&&diffAngleBallVel_HetoBall<PARAM::Math::PI*20/180
+			diffAngleHeDir_HetoBall<PARAM::Math::PI*30/180
 			&&kickEnemy.Pos().dist(ball.Pos())>15&&ball.Valid()&&ball.Vel().mod()>100;
-		//&&(fabs(Utils::Normalize(antiMetoBallDir-ballVelDir))<Param::Math::PI*45/180
-		//||fabs(Utils::Normalize(antiHetoBallDir-ballVelDir))<Param::Math::PI*45/180);
+		//&&(fabs(Utils::Normalize(antiMetoBallDir-ballVelDir))<PARAM::Math::PI*45/180
+		//||fabs(Utils::Normalize(antiHetoBallDir-ballVelDir))<PARAM::Math::PI*45/180);
 
 		bool failTouch=ball.Vel().mod()<100;
 
@@ -214,7 +214,7 @@ CGeoPoint CMarkingTouchPos::caculMarkingTouchPos(int areaNum,CGeoPoint leftUpPos
 					CGeoLine markLine;
 					double rangeValue=35;
 					if (markDirection){
-						markLine=CGeoLine(_markPos[areaNum],Param::Math::PI/2);
+						markLine=CGeoLine(_markPos[areaNum],PARAM::Math::PI/2);
 					}else{
 						markLine=CGeoLine(_markPos[areaNum],0);
 					}
@@ -275,7 +275,7 @@ CGeoPoint CMarkingTouchPos::caculMarkingTouchPos(int areaNum,CGeoPoint leftUpPos
 			CGeoLineLineIntersection intersect = CGeoLineLineIntersection(pointLine,ballLine);
 
 
-			if (fabs(Utils::Normalize(vision->ball().Vel().dir()-vision->ball(_lastCycle-2).Vel().dir()))>Param::Math::PI*3.5/180)
+			if (fabs(Utils::Normalize(vision->ball().Vel().dir()-vision->ball(_lastCycle-2).Vel().dir()))>PARAM::Math::PI*3.5/180)
 			{
 				_ballVelChangeCouter[areaNum]++;
 				_ballVelChangeCouter[areaNum]=min(_ballVelChangeCouter[areaNum],4);
@@ -300,12 +300,12 @@ CGeoPoint CMarkingTouchPos::caculMarkingTouchPos(int areaNum,CGeoPoint leftUpPos
 					CGeoPoint interP = intersect.IntersectPoint();
 					if(pointSegment.IsPointOnLineOnSegment(interP)){
 						markTouchPos = interP;
-						markTouchPos = markTouchPos + Utils::Polar2Vector(Param::Vehicle::V2::TOUCH_SHIFT_DIST,kickDirReverse);
+						markTouchPos = markTouchPos + Utils::Polar2Vector(PARAM::Vehicle::V2::TOUCH_SHIFT_DIST,kickDirReverse);
 					}
 					else {
 						if (!_ballVelDirChanged[areaNum] && interP.dist(he.Pos())<120 && markField.HasPoint(interP))
 						{
-							markTouchPos=interP+Utils::Polar2Vector(Param::Vehicle::V2::PLAYER_FRONT_TO_CENTER+2,kickDirReverse);
+							markTouchPos=interP+Utils::Polar2Vector(PARAM::Vehicle::V2::PLAYER_FRONT_TO_CENTER+2,kickDirReverse);
 						}else{
 							if (markDirection)
 							{

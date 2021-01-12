@@ -1,8 +1,8 @@
 #include "PredictTrajectory.h"
 #include <GDebugEngine.h>
 
-#define OURPLAYER 0
-#define THEIRPLAYER 1
+#define ourPlayer 0
+#define theirPlayer 1
 #define THISPLAYER 2
 
 #define VELMIN 1
@@ -16,7 +16,7 @@ void PredictTrajectory::MakeTrajectory(const vector2f pos, const vector2f vel, c
     // 储存轨迹
     _qlength = 0;
     // 如果当前是我方的车
-    if (type == THISPLAYER || type == OURPLAYER) {
+    if (type == THISPLAYER || type == ourPlayer) {
         _type = type;
         double x0 = pos.x;
         double y0 = pos.y;
@@ -60,7 +60,7 @@ void PredictTrajectory::MakeTrajectory(const vector2f pos, const vector2f vel, c
         }
     }
     // 如果是对方车,只考虑一段抛物线
-    else if (type == THEIRPLAYER) {
+    else if (type == theirPlayer) {
         _type = type;
         double t1 = tc;
         double x0 = pos.x;
@@ -96,7 +96,7 @@ void PredictTrajectory::MakeTrajectory(const vector2f pos, const vector2f vel, c
 /* 判断两个轨迹是否相撞
 /************************************************************************/
 bool PredictTrajectory::CheckTrajectory(const PredictTrajectory& T1) { // 检测两个轨迹之间是否相互碰撞
-    if (T1._type == OURPLAYER) {
+    if (T1._type == ourPlayer) {
         if (((T1.q[0].pX - q[0].pX) * q[0].pVelX + (T1.q[0].pY - q[0].pY) * q[0].pVelY) <= 0 ) { // 表示己方小车在速度方向的后面，则表示安全
             return SAFE;
         }

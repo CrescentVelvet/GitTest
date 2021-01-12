@@ -13,7 +13,7 @@ gStateFileNameString = string.format(os.date("%Y%m%d%H%M"))
 gTestPlay = "TestShootAlter"
 
 gRoleFixNum = {
-        ["Kicker"]   = {5},
+        ["Kicker"]   = {15},
         ["Goalie"]   = {},
         ["Tier"]     = {},
         -- ["Receiver"] = {} match before rolematch in messi by wangzai
@@ -62,13 +62,13 @@ gSkill = {
         "ZBreak",
         "ZAttack",
         "ZCirclePass",
-        "MarkingTouch",
         "DribbleTurnKick",
         "InterceptTouch",
         "HoldBall",
         "GoAndTurnKickV4",
         "ZDrag",
-        "FetchBall"
+        "FetchBall",
+        "ZBack"
 }
 
 gRefPlayTable = {
@@ -116,7 +116,6 @@ gRefPlayTable = {
         "Ref/CornerKick/Ref_CornerKickV803",
         "Ref/CornerKick/Ref_CornerKickV804",
         "Ref/CornerKick/Ref_CornerKickV805",
-        "Ref/CornerKick/Ref_CornerKickMessi"
 }
 
 gBayesPlayTable = {
@@ -137,6 +136,7 @@ gTestPlayTable = {
         -- "Test/TestForFriction"
         -- "Test/TestTEB",
         "Test/TestRun",
+        "Test/TestRegulation",
         "Test/TestDemo",
         "Test/TestScript",
         -- "Test/TestMatch",
@@ -145,6 +145,5 @@ gTestPlayTable = {
         "Test/TestSkill",
         -- "Test/TestMultiple",
         -- "Test/TestSkill2",
-        "Test/TestMessiFreeKick",
         "Test/TestShootAlter"
 }

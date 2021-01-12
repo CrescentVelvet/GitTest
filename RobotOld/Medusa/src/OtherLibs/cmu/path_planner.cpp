@@ -60,10 +60,10 @@ path_planner::path_planner() {
 state path_planner::random_state() {  // 生成随机状态
     state s;
     if(!searchInCircle_)
-        s.pos = vector2f((Param::Field::PITCH_LENGTH / 2 + Param::Field::GOAL_DEPTH) * sdrand48(), Param::Field::PITCH_LENGTH / 2 * sdrand48());
+        s.pos = vector2f((PARAM::Field::PITCH_LENGTH / 2 + PARAM::Field::GOAL_DEPTH) * sdrand48(), PARAM::Field::PITCH_LENGTH / 2 * sdrand48());
     else {
         double r = boost_drand48() * circleRadius;
-        double angle = sdrand48() * Param::Math::PI;
+        double angle = sdrand48() * PARAM::Math::PI;
         s.pos = vector2f(circleCenter.x + r * cos(angle), circleCenter.y + r * sin(angle));
     }
     s.parent = NULL;
@@ -71,7 +71,7 @@ state path_planner::random_state() {  // 生成随机状态
 }
 
 // 初始化rrt信息，包括最大节点数，waypoints中储存的节点数，以goal为目标的概率，以waypoint中的点为目标的概率，步长.
-// 在调用时采用如下参数path_planner[i].init(150, 80, 0.15, 0.65, Param::Field::MAX_PLAYER_SIZE, initial);
+// 在调用时采用如下参数path_planner[i].init(150, 80, 0.15, 0.65, PARAM::Field::MAX_PLAYER_SIZE, initial);
 void path_planner::init(int _max_nodes, int _num_waypoints, float _goal_target_prob, float _waypoint_target_prob, float _step_size, state _goal, bool searchInCircle, vector2f circleCenter, double searchCircleRadius) {
     if ( init_ && !searchInCircle) {
         return;
@@ -106,8 +106,8 @@ void path_planner::init(int _max_nodes, int _num_waypoints, float _goal_target_p
 
     //长方形(minv, maxv), 场地左下角和右上角
     if(!searchInCircle) {
-        minv = vector2f(-Param::Field::PITCH_LENGTH / 2 - Param::Field::GOAL_DEPTH, -Param::Field::PITCH_WIDTH / 2);
-        maxv = vector2f(Param::Field::PITCH_LENGTH / 2 + Param::Field::GOAL_DEPTH / 2, Param::Field::PITCH_WIDTH / 2);
+        minv = vector2f(-PARAM::Field::PITCH_LENGTH / 2 - PARAM::Field::GOAL_DEPTH, -PARAM::Field::PITCH_WIDTH / 2);
+        maxv = vector2f(PARAM::Field::PITCH_LENGTH / 2 + PARAM::Field::GOAL_DEPTH / 2, PARAM::Field::PITCH_WIDTH / 2);
     } else {
         minv = vector2f(circleCenter.x - searchCircleRadius, circleCenter.y - searchCircleRadius);
         maxv = vector2f(circleCenter.x + searchCircleRadius, circleCenter.y + searchCircleRadius);

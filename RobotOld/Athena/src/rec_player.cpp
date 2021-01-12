@@ -81,7 +81,7 @@ void RecPlayer::sendMessage(const QByteArray& packet) {
     GS->maximumY = recMsg.selectedarea().maxy();
     GS->minimumY = recMsg.selectedarea().miny();
     //maintainVision
-    GlobalData::instance()->lastTouch = recMsg.maintainvision().lasttouchteam() == PARAM::BLUE ? recMsg.maintainvision().lasttouch() : recMsg.maintainvision().lasttouch() + PARAM::ROBOTMAXID;
+    GlobalData::instance()->lastTouch = recMsg.maintainvision().lasttouchteam() == PARAM::BLUE ? recMsg.maintainvision().lasttouch() : recMsg.maintainvision().lasttouch() + PARAM::ROBOTNUM;
     ReceiveVisionMessage result;
     for(int color = PARAM::BLUE; color <= PARAM::YELLOW; color++) {
 //        processMsg = recMsg->mutable_maintainvision()->add_processmsg();

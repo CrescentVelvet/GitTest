@@ -20,8 +20,8 @@ void CNeat::SetActionValues( double delta_x, double delta_y,
 }
 
 CGeoPoint CNeat::GetPosition(const CVisionModule *pVision, const int num){
-    _x = pVision->OurPlayer(num).X() + _delta_x;
-    _y = pVision->OurPlayer(num).Y() + _delta_y;
+    _x = pVision->ourPlayer(num).X() + _delta_x;
+    _y = pVision->ourPlayer(num).Y() + _delta_y;
 //    std::cout << "In Neat.cpp, runner number: " << num
 //              << ", _delta_x: " << _delta_x
 //              << ", _delta_y: " << _delta_y << std::endl;

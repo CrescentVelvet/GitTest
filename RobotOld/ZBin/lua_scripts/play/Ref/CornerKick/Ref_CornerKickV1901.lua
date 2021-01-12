@@ -65,7 +65,7 @@ firstState = "start",
     end
   end,
   Leader = task.rightBack(),
-  Assister = task.InterTouch(),
+  Assister = task.zget(_, _, _, flag.kick),
   Special  = task.leftBack(),
   Goalie   = task.zgoalie(),
   match = "{LA}{S}"

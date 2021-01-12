@@ -18,13 +18,13 @@ class CDealRobot {
 //    bool updateCommand(ZSS::Protocol::Robot_Command command);
 
   private:
-    Robot robotSeqence[PARAM::TEAMS][PARAM::ROBOTMAXID][PARAM::CAMERA];
+    Robot robotSeqence[PARAM::TEAMS][PARAM::ROBOTNUM][PARAM::CAMERA];
     ReceiveVisionMessage result;
-    Robot sortTemp[PARAM::TEAMS][PARAM::ROBOTMAXID];
-    Robot lastRobot[PARAM::TEAMS][PARAM::ROBOTMAXID];
-    Robot currentRobot[PARAM::TEAMS][PARAM::ROBOTMAXID];
-    KalmanFilter _kalmanFilter[PARAM::TEAMS][PARAM::ROBOTMAXID];
-    KalmanFilter _dirFilter[PARAM::TEAMS][PARAM::ROBOTMAXID];
+    Robot sortTemp[PARAM::TEAMS][PARAM::ROBOTNUM];
+    Robot lastRobot[PARAM::TEAMS][PARAM::ROBOTNUM];
+    Robot currentRobot[PARAM::TEAMS][PARAM::ROBOTNUM];
+    KalmanFilter _kalmanFilter[PARAM::TEAMS][PARAM::ROBOTNUM];
+    KalmanFilter _dirFilter[PARAM::TEAMS][PARAM::ROBOTNUM];
     int validNum[PARAM::TEAMS];
     int minBelieveFrame, ourMaxLostFrame, theirMaxLostFrame, fieldWidth, fieldHeight;
 

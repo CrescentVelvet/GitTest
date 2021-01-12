@@ -78,7 +78,7 @@
 //}
 
 //void VisionReceiver::InitInfo(CServerInterface::VisualInfo &temp) {
-//    for (int i = 0; i <  Param::Field::MAX_PLAYER_NUM; i++) {
+//    for (int i = 0; i <  PARAM::Field::MAX_PLAYER; i++) {
 //        temp.ourRobotIndex[i] = 0;
 //        temp.player[i].dir = 0;
 //        temp.player[i].rawdir = 0;
@@ -91,15 +91,15 @@
 //        temp.player[i].vel = CVector(0, 0);
 
 //        temp.theirRobotIndex[i] = 0;
-//        temp.player[i + Param::Field::MAX_PLAYER_NUM].dir = 0;
-//        temp.player[i + Param::Field::MAX_PLAYER_NUM].rawdir = 0;
-//        temp.player[i + Param::Field::MAX_PLAYER_NUM].pos.valid = false;
-//        temp.player[i + Param::Field::MAX_PLAYER_NUM].pos.x = -999999;
-//        temp.player[i + Param::Field::MAX_PLAYER_NUM].pos.y = -999999;
-//        temp.player[i + Param::Field::MAX_PLAYER_NUM].rawPos.x = -999999;
-//        temp.player[i + Param::Field::MAX_PLAYER_NUM].rawPos.y = -999999;
-//        temp.player[i + Param::Field::MAX_PLAYER_NUM].dirvel = 0;
-//        temp.player[i + Param::Field::MAX_PLAYER_NUM].vel =  CVector(0, 0);
+//        temp.player[i + PARAM::Field::MAX_PLAYER].dir = 0;
+//        temp.player[i + PARAM::Field::MAX_PLAYER].rawdir = 0;
+//        temp.player[i + PARAM::Field::MAX_PLAYER].pos.valid = false;
+//        temp.player[i + PARAM::Field::MAX_PLAYER].pos.x = -999999;
+//        temp.player[i + PARAM::Field::MAX_PLAYER].pos.y = -999999;
+//        temp.player[i + PARAM::Field::MAX_PLAYER].rawPos.x = -999999;
+//        temp.player[i + PARAM::Field::MAX_PLAYER].rawPos.y = -999999;
+//        temp.player[i + PARAM::Field::MAX_PLAYER].dirvel = 0;
+//        temp.player[i + PARAM::Field::MAX_PLAYER].vel =  CVector(0, 0);
 //    }
 //}
 
@@ -142,15 +142,15 @@
 //                std::cout << "Ball not Found!!!" << std::endl;
 //            }
 //            int index;
-//            _pOption->MyColor() == TEAM_BLUE ? index = 0 : index = Param::Field::MAX_PLAYER_NUM;
+//            _pOption->MyColor() == TEAM_BLUE ? index = 0 : index = PARAM::Field::MAX_PLAYER;
 //            //Blue car
 //            for (i = 0; i < robots_blue_n; i++) {
 //                auto& robot = detectionFrame.robots_blue(i);
 //                auto id = robot.robot_id();
-//                if (id < Param::Field::MAX_PLAYER_NUM) {
-//                    index = _pOption->MyColor() == TEAM_BLUE ? id : id + Param::Field::MAX_PLAYER_NUM;
+//                if (id < PARAM::Field::MAX_PLAYER) {
+//                    index = _pOption->MyColor() == TEAM_BLUE ? id : id + PARAM::Field::MAX_PLAYER;
 //                    _pOption->MyColor() == TEAM_BLUE ? _info.ourRobotIndex[index] = id + 1 :
-//                            _info.theirRobotIndex[index - Param::Field::MAX_PLAYER_NUM] = id + 1;
+//                            _info.theirRobotIndex[index - PARAM::Field::MAX_PLAYER] = id + 1;
 //                    _info.player[index].pos.x = robot.x() / 10;
 //                    _info.player[index].pos.y = -robot.y() / 10;
 //                    _info.player[index].rawPos.x = robot.raw_x() / 10;
@@ -166,14 +166,14 @@
 //                }
 //            }
 //            //Yellow Car
-//            _pOption->MyColor() == TEAM_BLUE ? index = Param::Field::MAX_PLAYER_NUM : index = 0;
+//            _pOption->MyColor() == TEAM_BLUE ? index = PARAM::Field::MAX_PLAYER : index = 0;
 //            for (i = 0; i < robots_yellow_n; i++) {
 //                auto& robot = detectionFrame.robots_yellow(i);
 //                auto id = robot.robot_id();
-//                if (id >= 0 && id < Param::Field::MAX_PLAYER_NUM) {
-//                    index = _pOption->MyColor() == TEAM_YELLOW ? id : id + Param::Field::MAX_PLAYER_NUM;
+//                if (id >= 0 && id < PARAM::Field::MAX_PLAYER) {
+//                    index = _pOption->MyColor() == TEAM_YELLOW ? id : id + PARAM::Field::MAX_PLAYER;
 //                    _pOption->MyColor() == TEAM_YELLOW ? _info.ourRobotIndex[index] = id + 1 :
-//                            _info.theirRobotIndex[index - Param::Field::MAX_PLAYER_NUM] = id + 1;
+//                            _info.theirRobotIndex[index - PARAM::Field::MAX_PLAYER] = id + 1;
 //                    _info.player[index].pos.x = robot.x() / 10;
 //                    _info.player[index].pos.y = -robot.y() / 10;
 //                    _info.player[index].rawPos.x = robot.raw_x() / 10;

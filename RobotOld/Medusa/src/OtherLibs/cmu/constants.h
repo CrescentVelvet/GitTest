@@ -24,28 +24,28 @@
 #ifndef __CONSTANTS_H__
 #define __CONSTANTS_H__
 
-#include <param.h>
-const int MAX_ROBOTS = Param::Field::MAX_PLAYER * 2;
-const int MAX_TEAM_ROBOTS = Param::Field::MAX_PLAYER;
+#include "staticparams.h"
+const int MAX_ROBOTS = PARAM::Field::MAX_PLAYER * 2;
+const int MAX_TEAM_ROBOTS = PARAM::Field::MAX_PLAYER;
 
 //==== Field Dimensions (mm) =========================================//
 
 // diagonal is of 2800 x 2300 is 3623.53
-const double FIELD_LENGTH = Param::Field::PITCH_LENGTH;
-const double FIELD_WIDTH = Param::Field::PITCH_WIDTH;
+const double FIELD_LENGTH = PARAM::Field::PITCH_LENGTH;
+const double FIELD_WIDTH = PARAM::Field::PITCH_WIDTH;
 const double FIELD_LENGTH_H = (FIELD_LENGTH/2);
 const double FIELD_WIDTH_H = (FIELD_WIDTH/2);
 
-const double GOAL_WIDTH = Param::Field::GOAL_WIDTH;
-const double GOAL_DEPTH = Param::Field::GOAL_DEPTH;
-const double DEFENSE_WIDTH = Param::Field::PENALTY_AREA_WIDTH;
-const double DEFENSE_DEPTH = Param::Field::PENALTY_AREA_DEPTH;
-const double WALL_WIDTH = Param::Field::PITCH_MARGIN;
+const double GOAL_WIDTH = PARAM::Field::GOAL_WIDTH;
+const double GOAL_DEPTH = PARAM::Field::GOAL_DEPTH;
+const double DEFENSE_WIDTH = PARAM::Field::PENALTY_AREA_WIDTH;
+const double DEFENSE_DEPTH = PARAM::Field::PENALTY_AREA_DEPTH;
+const double WALL_WIDTH = PARAM::Field::PITCH_MARGIN;
 
 const double GOAL_WIDTH_H = (GOAL_WIDTH   /2);
 const double GOAL_DEPTH_H = (GOAL_DEPTH   /2);
 const double DEFENSE_WIDTH_H = (DEFENSE_WIDTH/2);
 const double DEFENSE_DEPTH_H = (DEFENSE_DEPTH/2);
 
-const double CENTER_CIRCLE_RADIUS = Param::Field::CENTER_CIRCLE_R;
+const double CENTER_CIRCLE_RADIUS = PARAM::Field::CENTER_CIRCLE_R;
 #endif

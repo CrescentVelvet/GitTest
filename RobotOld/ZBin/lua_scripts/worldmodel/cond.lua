@@ -56,9 +56,9 @@ function canPassOnBallPos(role,passPos,guisePos)
 	return world:canPassOnBallPos(vision:getCycle(),passPos,guisePos,gRoleNum[role])
 end
 
-function canKickAtEnemy(role,kickDir)
-	return world:canKickAtEnemy(vision:getCycle(),kickDir,gRoleNum[role])
-end
+-- function canKickAtEnemy(role,kickDir)
+-- 	return world:canKickAtEnemy(vision:getCycle(),kickDir,gRoleNum[role])
+-- end
 
 function validNum()
 	return vision:getValidNum()

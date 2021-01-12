@@ -23,7 +23,7 @@
 //	// call KickParam calculate module
 //	std::cout << "in CGetLuaData" << std::endl;
 //	if (isFinished) {
-//		KickParam::Instance()->getData(FLAT, playerNum);
+//		KickPARAM::Instance()->getData(FLAT, playerNum);
 //	}
 //}
 

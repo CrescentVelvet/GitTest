@@ -10,9 +10,9 @@ getBayesParam 输出一只队伍的参数
 
 #include "BayesReader.h"
 #include "math.h"
-#include<fstream>
-#include<sstream>
-#include "os_param.h"
+#include <fstream>
+#include <sstream>
+#include "staticparams.h"
 //////////////////////////////////////////////////////////////////////////
 // define some helper functions in default namespace
 namespace {
@@ -75,7 +75,7 @@ CBayesReader::CBayesReader()
 void CBayesReader::readBayesParam(const std::string &opplist)
 {
     string suffix = ".List";
-    string fullName = Param::File::CBayesReader_SCRIPT_PATH + opplist+suffix;
+    string fullName = PARAM::File::CBayesReader_SCRIPT_PATH + opplist+suffix;
 	ifstream infile(fullName.c_str());
 	if (!infile) {
 		cerr << "Bayes Param Reading : error opening file " << opplist<<suffix << endl;
@@ -102,7 +102,7 @@ void CBayesReader::readBayesParam(const std::string &opplist)
 void CBayesReader::readOppBayesParam(const string& oppName)
 {
 	string suffix = ".bayes";
-    string fullName = Param::File::CBayesReader_SCRIPT_PATH + oppName+suffix;
+    string fullName = PARAM::File::CBayesReader_SCRIPT_PATH + oppName+suffix;
 	ifstream infile(fullName.c_str());
 	if (!infile) {
 		cerr << "error opening file " << oppName<<suffix << endl;

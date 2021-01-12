@@ -12,13 +12,13 @@
 
 namespace RUNPOS_PARAM {
 // 各项峰值
-const float maxDistToGoal = sqrt(pow(Param::Field::PITCH_LENGTH, 2) + pow(Param::Field::PITCH_WIDTH, 2));
-const float maxShootAngle = Param::Math::PI / 2;
+const float maxDistToGoal = sqrt(pow(PARAM::Field::PITCH_LENGTH, 2) + pow(PARAM::Field::PITCH_WIDTH, 2));
+const float maxShootAngle = PARAM::Math::PI / 2;
 const float maxDistToBall = 4500;
-const float maxAngle2Goal = Param::Math::PI / 4;
+const float maxAngle2Goal = PARAM::Math::PI / 4;
 const float maxDist2Enemy = 1500;
 const float maxGuardTime  = 2.0;
-const float maxSectorDir  = Param::Math::PI / 180 * 17;
+const float maxSectorDir  = PARAM::Math::PI / 180 * 17;
 const float maxSectorDist = 15000;
 // 评估函数各项的权重
 const float weight1 = 40;// 1.距离对方球门的距离

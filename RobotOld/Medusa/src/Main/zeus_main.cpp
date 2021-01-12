@@ -56,7 +56,7 @@ extern std::mutex decisionMutex;
 std::mutex* _best_visiondata_copy_mutex = nullptr;
 std::mutex* _value_getter_mutex = nullptr;
 
-using Param::Latency::TOTAL_LATED_FRAME;
+using PARAM::Latency::TOTAL_LATED_FRAME;
 
 bool VERBOSE_MODE = true;
 bool IS_SIMULATION = false;
@@ -108,7 +108,7 @@ int runLoop() {
         }
 //        decisionMutex.unlock();
 //        GDebugEngine::Instance()->send(IS_SIMULATION && option->MyColor() == TEAM_YELLOW); // Simulation Yellow no debug messages
-        GDebugEngine::Instance()->send(option->MyColor() == TEAM_BLUE); //Show two teams debug messages
+        GDebugEngine::Instance()->send(option->MyColor() == PARAM::BLUE); //Show two teams debug messages
 //        std::this_thread::sleep_for(std::chrono::milliseconds(1));
     }
 }

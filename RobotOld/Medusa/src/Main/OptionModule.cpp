@@ -1,15 +1,15 @@
 #include "OptionModule.h"
-#include <param.h>
+#include "staticparams.h"
 #include <weerror.h>
 #include "WorldModel.h"
 #include "parammanager.h"
 namespace{
 	int DEFAULT_NUMBER = 1;
 	int DEFAULT_TYPE = 2;
-    int DEFAULT_COLOR = TEAM_BLUE;
+    int DEFAULT_COLOR = PARAM::BLUE;
 }
 COptionModule::COptionModule()
-: _side(Param::Field::POS_SIDE_LEFT)
+: _side(PARAM::Field::POS_SIDE_LEFT)
 {
 	_color = DEFAULT_COLOR;
 	_number = DEFAULT_NUMBER;
@@ -18,11 +18,11 @@ COptionModule::COptionModule()
     bool isYellow;
     ZSS::ZParamManager::instance()->loadParam(isRight,"ZAlert/IsRight",false);
     ZSS::ZParamManager::instance()->loadParam(isYellow,"ZAlert/IsYellow",false);
-    _side = isRight ? Param::Field::POS_SIDE_RIGHT : Param::Field::POS_SIDE_LEFT;
-    _color = isYellow ? TEAM_YELLOW : TEAM_BLUE;
+    _side = isRight ? PARAM::Field::POS_SIDE_RIGHT : PARAM::Field::POS_SIDE_LEFT;
+    _color = isYellow ? PARAM::YELLOW : PARAM::BLUE;
 
-	std::cout << "Side : " << ((_side == Param::Field::POS_SIDE_LEFT) ? "left" : "right")
-			  << ", Color : " << ((_color == TEAM_YELLOW) ? "yellow" : "blue") << " is running..." << std::endl;
+	std::cout << "Side : " << ((_side == PARAM::Field::POS_SIDE_LEFT) ? "left" : "right")
+              << ", Color : " << ((_color == PARAM::YELLOW) ? "yellow" : "blue") << " is running..." << std::endl;
 	WorldModel::Instance()->registerOption(this);
 }
 
@@ -38,21 +38,21 @@ void COptionModule::ReadOption(int argc, char* argv[])
 		case 's':
 			// side
 			if( argv[i][1] == 'l' ){
-				_side = Param::Field::POS_SIDE_LEFT;
+				_side = PARAM::Field::POS_SIDE_LEFT;
 			}else if( argv[i][1] == 'r' ){
-				_side = Param::Field::POS_SIDE_RIGHT;
+				_side = PARAM::Field::POS_SIDE_RIGHT;
 			}else{
-                _side = Param::Field::POS_SIDE_LEFT;
+                _side = PARAM::Field::POS_SIDE_LEFT;
 			}
 			break;
 		case 'c':
 			// color
 			if( argv[i][1] == 'y' ){
-				_color = TEAM_YELLOW;
+                _color = PARAM::YELLOW;
 			}else if( argv[i][1] == 'b' ){
-				_color = TEAM_BLUE;
+                _color = PARAM::BLUE;
 			}else{
-                _color = TEAM_BLUE;
+                _color = PARAM::BLUE;
 			}
 			break;
 		default:

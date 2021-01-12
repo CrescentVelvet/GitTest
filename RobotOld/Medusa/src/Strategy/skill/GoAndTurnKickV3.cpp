@@ -26,13 +26,13 @@ namespace {
 CGoAndTurnKickV3::CGoAndTurnKickV3() {
 	//_lastCycle = 0;
 	count = 0;
-	angeDiff_Use = Param::Math::PI * 2;
+	angeDiff_Use = PARAM::Math::PI * 2;
 	CircleCounter = 0.0;
 	adjustCount = 0;
 }
 
 void CGoAndTurnKickV3::plan(const CVisionModule* pVision) {
-	if ( pVision->getCycle() - _lastCycle > Param::Vision::FRAME_RATE * 0.1) {
+	if ( pVision->getCycle() - _lastCycle > PARAM::Vision::FRAME_RATE * 0.1) {
 		setState(BEGINNING);
 		count = 0;
 	}
@@ -106,10 +106,10 @@ void CGoAndTurnKickV3::plan(const CVisionModule* pVision) {
 	else if (GOAROUND == state()) {
 		if (circleNum == 0) {
 			if (Utils::Normalize(finalDir - self2ball.dir()) > 0) {
-				faceDir = faceDir + Param::Math::PI / 3.7;
+				faceDir = faceDir + PARAM::Math::PI / 3.7;
 			}
 			else {
-				faceDir = faceDir - Param::Math::PI / 3.7;
+				faceDir = faceDir - PARAM::Math::PI / 3.7;
 			}
 			{
 				myTask.executor = vecNumber;
@@ -120,20 +120,20 @@ void CGoAndTurnKickV3::plan(const CVisionModule* pVision) {
 			}
 			setSubTask(TaskFactoryV2::Instance()->GotoPosition(myTask));
 			if (Utils::Normalize(finalDir - self2ball.dir()) > 0) {
-				target = ball.Pos() + Utils::Polar2Vector(18, Utils::Normalize((me.Pos() - ball.Pos()).dir() + Param::Math::PI / numPerCir));
+				target = ball.Pos() + Utils::Polar2Vector(18, Utils::Normalize((me.Pos() - ball.Pos()).dir() + PARAM::Math::PI / numPerCir));
 			} 
 			else {
-				target = ball.Pos() + Utils::Polar2Vector(18, Utils::Normalize((me.Pos() - ball.Pos()).dir() - Param::Math::PI / numPerCir));
+				target = ball.Pos() + Utils::Polar2Vector(18, Utils::Normalize((me.Pos() - ball.Pos()).dir() - PARAM::Math::PI / numPerCir));
 			}
 		}
 		else {
 			if (ball.Pos().y() < 0) {
 				faceDir = faceDir + fixAngle;
-				target = ball.Pos() + Utils::Polar2Vector(gotoDist, Utils::Normalize((me.Pos() - ball.Pos()).dir() + Param::Math::PI / numPerCir));
+				target = ball.Pos() + Utils::Polar2Vector(gotoDist, Utils::Normalize((me.Pos() - ball.Pos()).dir() + PARAM::Math::PI / numPerCir));
 			}
 			else {
 				faceDir = faceDir - fixAngle;
-				target = ball.Pos() + Utils::Polar2Vector(gotoDist, Utils::Normalize((me.Pos() - ball.Pos()).dir() - Param::Math::PI / numPerCir));
+				target = ball.Pos() + Utils::Polar2Vector(gotoDist, Utils::Normalize((me.Pos() - ball.Pos()).dir() - PARAM::Math::PI / numPerCir));
 			}
 			{
 				myTask.executor = vecNumber;

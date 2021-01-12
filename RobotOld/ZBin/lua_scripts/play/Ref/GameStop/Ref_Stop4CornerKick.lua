@@ -2,7 +2,7 @@
 -- by zhyaic 2014-04-08
 -- yys 2015-06-10
 -- 修改到八辆车版本
-local STOP_FLAG  = bit:_or(flag.slowly, flag.dodge_ball)
+local STOP_FLAG  = flag.dodge_ball
 local STOP_DSS   = bit:_or(STOP_FLAG, flag.allow_dss)
 local KICK_POS   = function ()
 	return CGeoPoint:new_local(ball.posX() - 59, ball.posY()-ball.antiY()*20)

@@ -52,7 +52,7 @@ public:
     /* @param  num - runner index                                            */
     /*************************************************************************/
     double GetDirection(const CVisionModule *pVision, const int num){
-        _direction = pVision->OurPlayer(num).Dir() + _delta_direction;
+        _direction = pVision->ourPlayer(num).Dir() + _delta_direction;
         return _direction;
     }
 private:

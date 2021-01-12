@@ -241,7 +241,7 @@ void ActionModule::readData() {
             short wheelVel[4] = {0};
 
             if(data[0] == (char)0xff && data[1] == (char)0x02) {
-                id       = (quint8)data[2] - 1;//real robot 1-12 -> 0-11
+                id       = (quint8)data[2];
                 infrared = (quint8)data[3] & 0x40;
                 flat     = (quint8)data[3] & 0x20;
                 chip     = (quint8)data[3] & 0x10;
@@ -316,7 +316,7 @@ void encodeLegacy(const ZSS::Protocol::Robot_Command& command, QByteArray& tx, i
     // flat&chip m/s -> cm/s
     // kick   1 : chip   0 : flat`
     bool kick = command.kick();
-    quint16 speed = command.power();
+    quint16 speed = command.power() / 10.0; //mm -> cm
     quint8 power = 0;
     if(speed > 0.5) {
         power = kickStandardization(id, kick, (quint16)(command.power()));

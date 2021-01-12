@@ -78,7 +78,7 @@ void  LogEventLabel::processSingelReferee(int startFrame, int endFrame) {
             _frame.realBall.pos.setY((double)tempY / _frame.ballList.size());
             _frame.realBall.valid = true;
         }
-        for (int id = 0; id < PARAM::ROBOTMAXID; id++) {
+        for (int id = 0; id < PARAM::ROBOTNUM; id++) {
             if (_frame.botList[PARAM::BLUE][id].size() > 0) {
                 tempX = tempY = 0;
                 for (int i = 0; i < _frame.botList[PARAM::BLUE][id].size(); i++) {
@@ -148,7 +148,7 @@ void  LogEventLabel::processSingelReferee(int startFrame, int endFrame) {
 //                qDebug() << "BALL POSSESSION" << frameIndex + startFrame << "YELLOW IN " << ballinYellow;
                 _ballPossesionLabel->set_state(BallPossessionLabel_State_YELLOW_POSSES);
                 _ballPossesionLabel->set_robot_id(ballinYellow);
-                inPossession = PARAM::ROBOTMAXID + ballinYellow;
+                inPossession = PARAM::ROBOTNUM + ballinYellow;
                 frames[frameIndex].state |= BALL_POSSESSION_YELLOW;
             } else {
                 _ballPossesionLabel->set_state(BallPossessionLabel_State_NONE);
@@ -158,15 +158,15 @@ void  LogEventLabel::processSingelReferee(int startFrame, int endFrame) {
         } else if (!frames[frameIndex].realBall.valid) {
             //看不见球
             if (inPossession >= 0) {
-                if (inPossession < PARAM::ROBOTMAXID) {
+                if (inPossession < PARAM::ROBOTNUM) {
 //                    qDebug() << "BALL POSSESSION" << frameIndex + startFrame << "BLUE IN " << inPossession;
                     _ballPossesionLabel->set_state(BallPossessionLabel_State_BLUE_POSSES);
                     _ballPossesionLabel->set_robot_id(inPossession);
                     frames[frameIndex].state |= BALL_POSSESSION_BLUE;
                 } else {
-//                    qDebug() << "BALL POSSESSION" << frameIndex + startFrame << "YELLOW IN " << inPossession - PARAM::ROBOTMAXID;
+//                    qDebug() << "BALL POSSESSION" << frameIndex + startFrame << "YELLOW IN " << inPossession - PARAM::ROBOTNUM;
                     _ballPossesionLabel->set_state(BallPossessionLabel_State_YELLOW_POSSES);
-                    _ballPossesionLabel->set_robot_id(inPossession - PARAM::ROBOTMAXID);
+                    _ballPossesionLabel->set_robot_id(inPossession - PARAM::ROBOTNUM);
                     frames[frameIndex].state |= BALL_POSSESSION_YELLOW;
                 }
             } else {
@@ -417,7 +417,7 @@ int LogEventLabel::ballInMouth(int team, int frameIndex) {
 //        qDebug() << "frame" << frameIndex << "found NO ball";
         return -1;
     }
-    for (int robotID = 0 ; robotID < PARAM::ROBOTMAXID; robotID++) {
+    for (int robotID = 0 ; robotID < PARAM::ROBOTNUM; robotID++) {
         if (frames[frameIndex].bot[team][robotID].valid &&
                 frames[frameIndex].realBall.pos.dist(frames[frameIndex].bot[team][robotID].pos) >= 70 &&
                 frames[frameIndex].realBall.pos.dist(frames[frameIndex].bot[team][robotID].pos) <= 140 &&

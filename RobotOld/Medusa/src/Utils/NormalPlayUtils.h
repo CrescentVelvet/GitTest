@@ -20,7 +20,7 @@ namespace NormalPlayUtils{
 	int     patchForBestPlayer(const CVisionModule* pVision,int lastAdvancerNum);
 	double	generateTandemCond(const CVisionModule* pVision,CGeoPoint& tandemPos,int meNum);
 	double  antiNormalize(double dir);
-	bool	faceTheirGoal(const CVisionModule* pVision, const int executor,const double pre=Param::Math::PI/180*3 );
+	bool	faceTheirGoal(const CVisionModule* pVision, const int executor,const double pre=PARAM::Math::PI/180*3 );
 	int 	getSuitSider(const CVisionModule* pVision);
 }
 

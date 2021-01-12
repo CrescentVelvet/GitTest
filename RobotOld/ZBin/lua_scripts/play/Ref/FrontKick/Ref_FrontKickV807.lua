@@ -88,7 +88,7 @@ firstState = "start",
 	end,
 	Assister = task.goSpeciPos(FAKE_POS1, _, DSS_FLAG),
 	Leader   = task.defendMiddle(),
-	Breaker  = task.getBallV4(_, gRolePos["Breaker"], _, flag.kick),--task.InterTouch(),
+	Breaker  = task.getBallV4(_, gRolePos["Breaker"], _, flag.kick),--task.zget(_, _, _, flag.kick),
 	match    = "{A}{LB}"
 },
 

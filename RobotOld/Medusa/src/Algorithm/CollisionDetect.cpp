@@ -30,9 +30,9 @@
 //	CGeoPoint ballPos = _pVision->Ball().RawPos();
 //    recordPos();
 //	int flag = 0;
-//	for (int i = 0; i < Param::Field::MAX_PLAYER; i++)
-//		if (ballPos.dist(_pVision->ourPlayer(i + 1).RawPos()) < 30 ||
-//			ballPos.dist(_pVision->TheirPlayer(i + 1).RawPos()) < 30 ||
+//	for (int i = 0; i < PARAM::Field::MAX_PLAYER; i++)
+//		if (ballPos.dist(_pVision->ourplayer(i ).RawPos()) < 30 ||
+//			ballPos.dist(_pVision->theirplayer(i ).RawPos()) < 30 ||
 //			IsOnEdge(ballPos)) {
 //			flag = 1;
 //			break;
@@ -51,23 +51,23 @@
 //void CCollisionDetect::recordPos()
 //{
 //	VisionInfo Temp;
-//	for (int i = 0; i < Param::Field::MAX_PLAYER; i++) {
-//		if (_pVision->ourPlayer(i + 1).Valid())
+//	for (int i = 0; i < PARAM::Field::MAX_PLAYER; i++) {
+//		if (_pVision->ourplayer(i ).Valid())
 //		{
-//			Temp.OurPlayer[i] = _pVision->ourPlayer(i + 1).RawPos();
-//			//std::cout << "have detect our player num" << i << "\t raw@" << Temp.OurPlayer[i] <<  "\t@"<< _pVision->ourPlayer(i + 1).Pos() << std::endl;
+//			Temp.ourPlayer[i] = _pVision->ourplayer(i ).RawPos();
+//			//std::cout << "have detect our player num" << i << "\t raw@" << Temp.ourPlayer[i] <<  "\t@"<< _pVision->ourplayer(i ).Pos() << std::endl;
 //		}
 //		else {
-//			Temp.OurPlayer[i].setX(9999);
-//			Temp.OurPlayer[i].setY(9999);
+//			Temp.ourPlayer[i].setX(9999);
+//			Temp.ourPlayer[i].setY(9999);
 //		}
-//		if (_pVision->TheirPlayer(i + 1).Valid())
+//		if (_pVision->theirplayer(i ).Valid())
 //		{
-//			Temp.TheirPlayer[i] = _pVision->TheirPlayer(i + 1).RawPos();
+//			Temp.theirPlayer[i] = _pVision->theirplayer(i ).RawPos();
 //		}
 //		else {
-//			Temp.TheirPlayer[i].setX(9999);
-//			Temp.TheirPlayer[i].setY(9999);
+//			Temp.theirPlayer[i].setX(9999);
+//			Temp.theirPlayer[i].setY(9999);
 //		}
 //	}
 //	Temp.BallPos = _pVision->Ball().RawPos();
@@ -109,17 +109,17 @@
 //		int OurTouchNum = -1, TheirTouchNum = -1, j = PointN - 1;
 //		double OurTouchDis = 20.0, TheirTouchDis = 20.0;
 //		//std::cout << "found PointN=" << PointN << "\tball pos" << _VisionQueue[LinePoint[j]].BallPos << std::endl;
-//		for (int i = 0; i < Param::Field::MAX_PLAYER; i++)
+//		for (int i = 0; i < PARAM::Field::MAX_PLAYER; i++)
 //		{
-//			if (_VisionQueue[LinePoint[j]].BallPos.dist(_VisionQueue[LinePoint[j]].OurPlayer[i]) < OurTouchDis)
+//			if (_VisionQueue[LinePoint[j]].BallPos.dist(_VisionQueue[LinePoint[j]].ourPlayer[i]) < OurTouchDis)
 //			{
-//				OurTouchDis = _VisionQueue[LinePoint[j]].BallPos.dist(_VisionQueue[LinePoint[j]].OurPlayer[i]);
+//				OurTouchDis = _VisionQueue[LinePoint[j]].BallPos.dist(_VisionQueue[LinePoint[j]].ourPlayer[i]);
 //				OurTouchNum = i;
 //			}
-//			if (_VisionQueue[LinePoint[j]].BallPos.dist(_VisionQueue[LinePoint[j]].TheirPlayer[i]) < TheirTouchDis)
+//			if (_VisionQueue[LinePoint[j]].BallPos.dist(_VisionQueue[LinePoint[j]].theirPlayer[i]) < TheirTouchDis)
 //			{
-//				//std::cout << "the ball " << j - 1 << "th touch THEIR player No." << i << "@" << _VisionQueue[LinePoint[j]].TheirPlayer[i] << "WITH D:" << _VisionQueue[LinePoint[j]].BallPos.dist(_VisionQueue[LinePoint[j]].TheirPlayer[i]) << std::endl;
-//				TheirTouchDis = _VisionQueue[LinePoint[j]].BallPos.dist(_VisionQueue[LinePoint[j]].TheirPlayer[i]);
+//				//std::cout << "the ball " << j - 1 << "th touch THEIR player No." << i << "@" << _VisionQueue[LinePoint[j]].theirPlayer[i] << "WITH D:" << _VisionQueue[LinePoint[j]].BallPos.dist(_VisionQueue[LinePoint[j]].theirPlayer[i]) << std::endl;
+//				TheirTouchDis = _VisionQueue[LinePoint[j]].BallPos.dist(_VisionQueue[LinePoint[j]].theirPlayer[i]);
 //				TheirTouchNum = i;
 //			}
 //		}

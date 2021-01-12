@@ -8,7 +8,7 @@
 #define __COMMAND_INTERFACE_H__
 
 #include <singleton.h>
-#include "param.h"
+#include "staticparams.h"
 #include <QObject>
 #include <OptionModule.h>
 
@@ -40,7 +40,7 @@ private slots:
     void receiveInformation();
 private:
     static CCommandInterface* _instance;
-    RobotCommand commands[Param::Field::MAX_PLAYER_NUM];
+    RobotCommand commands[PARAM::Field::MAX_PLAYER];
     const COptionModule *pOption;
     QUdpSocket *command_socket;
     QUdpSocket *receiveSocket;

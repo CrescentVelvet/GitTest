@@ -8,16 +8,16 @@
 #include "TaskMediator.h"
 #include "WorldModel.h"
 
-#include "param.h"
+#include "staticparams.h"
 #include "utils.h"
 
 #include <cmath>
 
 using namespace DefendUtils;
-using namespace Param::AvoidDist;
-using namespace Param::Field;
-using namespace Param::Math;
-using namespace Param::Vehicle::V2;
+using namespace PARAM::AvoidDist;
+using namespace PARAM::Field;
+using namespace PARAM::Math;
+using namespace PARAM::Vehicle::V2;
 
 namespace {
 
@@ -122,7 +122,7 @@ void CDefPos2015::generatePos(const CVisionModule* pVision) {
     int rightBack = TaskMediator::Instance()->rightBack();
     int singleBack = TaskMediator::Instance()->singleBack();
     if (leftBack != 0 && rightBack != 0) {
-        if (Utils::InOurPenaltyArea(pVision->ball().RawPos(), Param::Vehicle::V2::PLAYER_SIZE/2)) {
+        if (Utils::InOurPenaltyArea(pVision->ball().RawPos(), PARAM::Vehicle::V2::PLAYER_SIZE/2)) {
             // left,right防破防的车
             if (RBallPosX > PITCH_LENGTH/2 - PENALTY_AREA_DEPTH/2 - PLAYER_SIZE) {
                 switch (RtargetSide) {
@@ -331,7 +331,7 @@ void CDefPos2015::generatePos(const CVisionModule* pVision) {
                 } else{
                     sideFactor = -1;
                 }
-                if (RBallPosX > Param::Field::PITCH_LENGTH/4){
+                if (RBallPosX > PARAM::Field::PITCH_LENGTH/4){
                     goalieDir = Rtarget2defDir + sideFactor*0.1;
                 }
                 CVector transVector = Utils::Polar2Vector(PLAYERSIZE,Utils::Normalize(goalieDir + sideFactor*PI / 2));
@@ -495,7 +495,7 @@ void CDefPos2015::generatePos(const CVisionModule* pVision) {
     const double rightBlockDir = calcBlockAngle(reversePoint(RrightPoint), OUR_GOAL_CENTER);
     const double leftToGoalDist = RleftPoint.dist(RGOAL_CENTRE_POS);
     const double rightToGoalDist = RrightPoint.dist(RGOAL_CENTRE_POS);
-    for (int i = 1; i <= MAX_PLAYER; ++i) {
+    for (int i = 0; i < MAX_PLAYER; ++i) {
         const PlayerVisionT& enemy = pVision->theirPlayer(i);
         const CGeoPoint& enemyPos = enemy.Pos();
         double enemyToGoalDist = enemyPos.dist(OUR_GOAL_CENTER);
@@ -590,7 +590,7 @@ double CDefPos2015::checkCollision(int myself, CGeoPoint targetPoint, const CVis
 {
     bool result = false;
     double dist = 100;
-    for (int i = 1; i<= MAX_PLAYER; i++){
+    for (int i = 0; i< MAX_PLAYER; i++){
         if (i!= myself
           && i!=TaskMediator::Instance()->defendMiddle()
           && i!= TaskMediator::Instance()->leftBack()

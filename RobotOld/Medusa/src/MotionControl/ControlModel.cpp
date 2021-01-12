@@ -36,31 +36,31 @@ namespace {
 void CControlModel::makeZeroFinalVelocityPath(const PlayerPoseT& start, const PlayerPoseT& final, const PlayerCapabilityT& capability)
 {
     _pathList.clear();
-    zeroFinalVelocityPath(start, final, Param::Vision::FRAME_RATE, capability, _nextStep);
+    zeroFinalVelocityPath(start, final, PARAM::Vision::FRAME_RATE, capability, _nextStep);
 }
 
 /// BangBang control from Cornell : fast trajectory
 void CControlModel::makeFastPath(const PlayerPoseT& start, const PlayerPoseT& final, const PlayerCapabilityT& capability,const double finalVelDir)
 {
-    fastPath(start, final, Param::Vision::FRAME_RATE, capability, _nextStep,finalVelDir);
+    fastPath(start, final, PARAM::Vision::FRAME_RATE, capability, _nextStep,finalVelDir);
 }
 
 /// BangBang control from Cornell : proportional gain trajectory
 //void CControlModel::makeProportionalGainPath(const PlayerPoseT& start, const PlayerPoseT& final, const PlayerCapabilityT& capability)
 //{
-//	proportionalGainPath(start, final, Param::Vision::FRAME_RATE, capability, _nextStep);
+//	proportionalGainPath(start, final, PARAM::Vision::FRAME_RATE, capability, _nextStep);
 //}
 
 /// BangBang control from Cornell : zero final theta velocity
 void CControlModel::makeZeroFinalVelocityTheta(const PlayerPoseT& start, const PlayerPoseT& final, const PlayerCapabilityT& capability)
 {
-    _nextStep.SetRotVel(zeroFinalVelocityTheta(start, final, Param::Vision::FRAME_RATE, capability));
+    _nextStep.SetRotVel(zeroFinalVelocityTheta(start, final, PARAM::Vision::FRAME_RATE, capability));
 }
 
 /// BangBang control from Cornell : proportional gain theta trajectory
 //void CControlModel::makeProportionalGainTheta(const PlayerPoseT& start, const PlayerPoseT& final, const PlayerCapabilityT& capability)
 //{
-//	_nextStep.SetRotVel(proportionalGainTheta(start, final, Param::Vision::FRAME_RATE, capability));
+//	_nextStep.SetRotVel(proportionalGainTheta(start, final, PARAM::Vision::FRAME_RATE, capability));
 //}
 
 /// Trapezoidal control from CMU : none-zero final velocity trajectory
@@ -84,14 +84,14 @@ void CControlModel::makeCmTrajectory(const PlayerPoseT& start, const PlayerPoseT
 void CControlModel::makeTrapezoidalVelocityPath(const PlayerPoseT& start, const PlayerPoseT& final, const PlayerCapabilityT& capability)
 {
     _pathList.clear();
-    trapezoidalVelocityPath(start,final,Param::Vision::FRAME_RATE,capability,_nextStep,_pathList);
+    trapezoidalVelocityPath(start,final,PARAM::Vision::FRAME_RATE,capability,_nextStep,_pathList);
 }
 
 /// Trapezoidal control from ZJU : none-zero final velocity trajectory
 void CControlModel::makeNoneTrapezoidalVelocityPath(const PlayerPoseT& start, const PlayerPoseT& final, const PlayerCapabilityT& capability)
 {
     _pathList.clear();
-    nonetrapezoidalVelocityPath(start,final,Param::Vision::FRAME_RATE,capability,_nextStep,_pathList);
+    nonetrapezoidalVelocityPath(start,final,PARAM::Vision::FRAME_RATE,capability,_nextStep,_pathList);
 }
 
 /// Parameterized control from ZJU : diff-omni zero final velocity trajectory
@@ -237,7 +237,7 @@ double zeroFinalXSpeed(const double length, const double xSpeed, const double ma
     bangBangPathProperties(x0,xf,vx0,u,t1x,t2x,tfx,ux);
 
     //theta is independent of x and y so we use bang-bang with u=1
-    double nondimFrameRate = Param::Vision::FRAME_RATE * timeScale;
+    double nondimFrameRate = PARAM::Vision::FRAME_RATE * timeScale;
     int tfint = (int)ceil(tfx * nondimFrameRate);
 
     dt = 1/nondimFrameRate;
@@ -256,7 +256,7 @@ double zeroFinalXSpeed(const double length, const double xSpeed, const double ma
 double fastXSpeed(const double length, const double xSpeed, const double maxSpeed, const double maxAccel)
 {
     // 直接以最大加速度加速
-    double vx = xSpeed + maxAccel / Param::Vision::FRAME_RATE * Utils::Sign(length);
+    double vx = xSpeed + maxAccel / PARAM::Vision::FRAME_RATE * Utils::Sign(length);
     if( vx > maxSpeed ){
         return maxSpeed;
     }
@@ -284,7 +284,7 @@ double zeroFinalAngularSpeed(const double length, const double angSpeed, const d
     //use bang-bang with u=1 on the theta-axis
     bangBangPathProperties(theta0, thetaf, vtheta0, 1, t1theta, t2theta, tftheta, utheta);
 
-    double nondimAngularFrameRate = Param::Vision::FRAME_RATE * angularTimeScale;
+    double nondimAngularFrameRate = PARAM::Vision::FRAME_RATE * angularTimeScale;
     double angulardt = 1 / nondimAngularFrameRate;
     double temp= std::exp(-angulardt);
     double result = angularVelocityScale * (temp * vtheta0 + utheta * (1 - temp));
@@ -297,7 +297,7 @@ double zeroFinalAngularSpeed(const double length, const double angSpeed, const d
 /// fast angular speed control
 double fastAngularSpeed(const double length, const double angSpeed, const double maxSpeed, const double maxAccel)
 {
-    double va = angSpeed + maxAccel / Param::Vision::FRAME_RATE * Utils::Sign(length);
+    double va = angSpeed + maxAccel / PARAM::Vision::FRAME_RATE * Utils::Sign(length);
     if( va > maxSpeed ){
         return maxSpeed;
     }
@@ -345,7 +345,7 @@ double nonZeroFinalSpeed(const double length, const double Speed, const double m
             func=sqr( dz-(vz0*temp) ) - sqr(temp-t);
         }
 //        double phi = 0;
-        double nondimFrameRate = Param::Vision::FRAME_RATE *timeScale;
+        double nondimFrameRate = PARAM::Vision::FRAME_RATE *timeScale;
         int tfint = (int)ceil(t*nondimFrameRate);
         dt = 1/nondimFrameRate;
         int maxStepNumber = min(tfint, 1);
@@ -419,16 +419,16 @@ double TrapezoidalVelocity(const double length,const double initialSpeed,const d
          }
      }
      double totalTime = t1+t2+t3;
-     int tfint = (int)ceil(Param::Vision::FRAME_RATE*totalTime);
+     int tfint = (int)ceil(PARAM::Vision::FRAME_RATE*totalTime);
      int maxStepNumber = min(tfint, 1);
      for(int i=0;i<=maxStepNumber;++i){
-         if (i<=t1*Param::Vision::FRAME_RATE)
+         if (i<=t1*PARAM::Vision::FRAME_RATE)
          {
-             vz = initialSpeed+acceleration*i/Param::Vision::FRAME_RATE	;
-         }else if (i<=(t1+t2)*Param::Vision::FRAME_RATE){
+             vz = initialSpeed+acceleration*i/PARAM::Vision::FRAME_RATE	;
+         }else if (i<=(t1+t2)*PARAM::Vision::FRAME_RATE){
              vz = maxSpeed;
          }else{
-            vz = initialSpeed-deceleration*i/Param::Vision::FRAME_RATE;
+            vz = initialSpeed-deceleration*i/PARAM::Vision::FRAME_RATE;
          }
      }
      if (vz>maxSpeed)

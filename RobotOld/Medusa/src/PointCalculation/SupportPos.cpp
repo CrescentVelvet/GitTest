@@ -7,14 +7,14 @@
 //#include "TaskMediator.h"
 //#include "WorldModel.h"
 //#include "RobotSensor.h"
-//#include "param.h"
+//#include "staticparams.h"
 //#include "utils.h"
 
 //#include <cmath>
 
-//using namespace Param::Field;
-//using namespace Param::Math;
-//using namespace Param::Vehicle::V2;
+//using namespace PARAM::Field;
+//using namespace PARAM::Math;
+//using namespace PARAM::Vehicle::V2;
 //namespace{
 //	enum{
 //		Left,
@@ -52,7 +52,7 @@
 //}
 
 //void CSupportPos::generatePos(const CVisionModule* pVision,int num,int num2){
-//	if (pVision->Cycle() - _lastCycle > Param::Vision::FRAME_RATE * 0.1){
+//	if (pVision->Cycle() - _lastCycle > PARAM::Vision::FRAME_RATE * 0.1){
 //		for (int _i = 0; _i < 10; _i++){
 //			_defenderList[_i] = 0;
 //		}
@@ -120,8 +120,8 @@
 ////	const CGeoPoint ballRawPos = ball.RawPos();
 ////	const double BallVelDir = Utils::Normalize(ball.Vel().dir());
 ////	const double antiBallVelDir = Utils::Normalize(ball.Vel().dir() + PI);
-////	const PlayerVisionT& enemyLeader = pVision->TheirPlayer(ZSkillUtils::instance()->getTheirBestPlayer());
-////	const PlayerVisionT& enemyGoalie = pVision->TheirPlayer(BestPlayer::Instance()->getTheirGoalie());
+////	const PlayerVisionT& enemyLeader = pVision->theirPlayer(ZSkillUtils::instance()->getTheirBestPlayer());
+////	const PlayerVisionT& enemyGoalie = pVision->theirPlayer(BestPlayer::Instance()->getTheirGoalie());
 //	const int enemyDefenderAmount = calcEnemyDefenderAmount(pVision);
 //	double reflectPower;
 //	CGeoPoint defaultPos = CGeoPoint(ourLeader.Pos().x(), -ourLeader.Pos().y());  //对方无防守车时，默认助攻点与Leader对称
@@ -203,8 +203,8 @@
 ////	const CGeoPoint ballRawPos = ball.RawPos();
 ////	const double BallVelDir = Utils::Normalize(ball.Vel().dir());
 ////	const double antiBallVelDir = Utils::Normalize(ball.Vel().dir() + PI);
-//	const PlayerVisionT& enemyLeader = pVision->TheirPlayer(ZSkillUtils::instance()->getTheirBestPlayer());
-////	const PlayerVisionT& enemyGoalie = pVision->TheirPlayer(BestPlayer::Instance()->getTheirGoalie());
+//	const PlayerVisionT& enemyLeader = pVision->theirPlayer(ZSkillUtils::instance()->getTheirBestPlayer());
+////	const PlayerVisionT& enemyGoalie = pVision->theirPlayer(BestPlayer::Instance()->getTheirGoalie());
 ////    const bool isSensored = RobotSensor::Instance()->IsInfraredOn(ourLeaderNum);	//If Infrared on
 //	const bool isHasBallInVision = (ball.Pos() - ourLeader.Pos()).mod() < PLAYER_SIZE + 3 && fabs((ball.Pos() - ourLeader.Pos()).dir() - ourLeader.Dir()) < PI * 6 / 180;
 //	const bool isUnderControlled = (ourLeader.Pos() - ball.Pos()).mod() < (enemyLeader.Pos() - ball.Pos()).mod();
@@ -233,7 +233,7 @@
 //		enemyDefenderAmount++;
 //	}
 //	for (int _i = 0; _i < enemyAmount; _i++){
-//		if (enemyDefendArea.HasPoint(pVision->TheirPlayer(BestPlayer::Instance()->theirFastestPlayerToBallList().at(_i).num).Pos())
+//		if (enemyDefendArea.HasPoint(pVision->theirPlayer(BestPlayer::Instance()->theirFastestPlayerToBallList().at(_i).num).Pos())
 //			&& BestPlayer::Instance()->theirFastestPlayerToBallList().at(_i).num != BestPlayer::Instance()->getTheirGoalie()){
 //			enemyDefenderAmount++;
 //			_defenderList[enemyCount] = BestPlayer::Instance()->theirFastestPlayerToBallList().at(_i).num;
@@ -254,8 +254,8 @@
 //	const CGeoPoint ballRawPos = ball.RawPos();
 //	const double BallVelDir = Utils::Normalize(ball.Vel().dir());
 //	const double antiBallVelDir = Utils::Normalize(ball.Vel().dir() + PI);
-//	const PlayerVisionT& enemyLeader = pVision->TheirPlayer(ZSkillUtils::instance()->getTheirBestPlayer());
-//	const PlayerVisionT& enemyGoalie = pVision->TheirPlayer(BestPlayer::Instance()->getTheirGoalie());
+//	const PlayerVisionT& enemyLeader = pVision->theirPlayer(ZSkillUtils::instance()->getTheirBestPlayer());
+//	const PlayerVisionT& enemyGoalie = pVision->theirPlayer(BestPlayer::Instance()->getTheirGoalie());
 //	int currentDefender=0;//当前索引防守者
 //	int effectDefender = 0;//实际生效防守者(一般实际比赛中，一次射门仅由一辆防守车实际完成阻挡）
 //	bool isAnyDefenderEffect = false;
@@ -267,7 +267,7 @@
 //	double finalDir = 0;
 //	double minDist = PITCH_LENGTH;
 
-//	finalDir = (CGeoPoint(Param::Field::PITCH_LENGTH / 2, 0) - ourLeader.Pos()).dir();
+//	finalDir = (CGeoPoint(PARAM::Field::PITCH_LENGTH / 2, 0) - ourLeader.Pos()).dir();
 //	static bool isInBack = false;
 	
 //	if (ourLeader.Pos().x()<-150){
@@ -293,21 +293,21 @@
 //	else{
 //		for (int _i = 0; _i < enemyDefenderAmount; _i++){
 //			currentDefender = _defenderList[_i];
-//			defenderFaceDir = pVision->TheirPlayer(currentDefender).Dir();
-//			defaultDir = (pVision->TheirPlayer(currentDefender).Pos() - CGeoPoint(PITCH_LENGTH / 2, 0)).dir();
+//			defenderFaceDir = pVision->theirPlayer(currentDefender).Dir();
+//			defaultDir = (pVision->theirPlayer(currentDefender).Pos() - CGeoPoint(PITCH_LENGTH / 2, 0)).dir();
 //			if (fabs(defenderFaceDir-defaultDir)>PI*30/180){
 //				defenderFaceDir = defaultDir;  //当防守车的朝向存在问题时，默认朝向为背对球门
 //			}
-//			defenderCircle = CGeoCirlce(pVision->TheirPlayer(currentDefender).Pos(), PLAYER_SIZE);
+//			defenderCircle = CGeoCirlce(pVision->theirPlayer(currentDefender).Pos(), PLAYER_SIZE);
 //			CGeoLineCircleIntersection inter = CGeoLineCircleIntersection(shootLine, defenderCircle);
 //			//由于机器人一般为存在缺口的圆弧，对于真实情况而言，射门一般会被防守车的正面所阻挡，此处将碰撞点统一假设在与圆弧相切且与小车朝向平行的线段上，与真实碰撞点相差不会超过3cm，在实际跑点的过程中可以忽略
 //			if (inter.intersectant()){
 //				isAnyDefenderEffect = true;
-//				defenderFaceSeg = CGeoSegment((pVision->TheirPlayer(currentDefender).Pos() + Utils::Polar2Vector(PLAYER_SIZE, defenderFaceDir) + Utils::Polar2Vector(PLAYER_SIZE, defenderFaceDir + PI / 2)),
-//					(pVision->TheirPlayer(currentDefender).Pos() + Utils::Polar2Vector(PLAYER_SIZE, defenderFaceDir) + Utils::Polar2Vector(PLAYER_SIZE, defenderFaceDir - PI / 2)));
+//				defenderFaceSeg = CGeoSegment((pVision->theirPlayer(currentDefender).Pos() + Utils::Polar2Vector(PLAYER_SIZE, defenderFaceDir) + Utils::Polar2Vector(PLAYER_SIZE, defenderFaceDir + PI / 2)),
+//					(pVision->theirPlayer(currentDefender).Pos() + Utils::Polar2Vector(PLAYER_SIZE, defenderFaceDir) + Utils::Polar2Vector(PLAYER_SIZE, defenderFaceDir - PI / 2)));
 //				if (_debugEngine){
-//					GDebugEngine::Instance()->gui_debug_line((pVision->TheirPlayer(currentDefender).Pos() + Utils::Polar2Vector(PLAYER_SIZE, antiFinalDir) + Utils::Polar2Vector(100, defenderFaceDir + PI / 2)),
-//						(pVision->TheirPlayer(currentDefender).Pos() + Utils::Polar2Vector(PLAYER_SIZE, defenderFaceDir) + Utils::Polar2Vector(100, defenderFaceDir - PI / 2)), 2);
+//					GDebugEngine::Instance()->gui_debug_line((pVision->theirPlayer(currentDefender).Pos() + Utils::Polar2Vector(PLAYER_SIZE, antiFinalDir) + Utils::Polar2Vector(100, defenderFaceDir + PI / 2)),
+//						(pVision->theirPlayer(currentDefender).Pos() + Utils::Polar2Vector(PLAYER_SIZE, defenderFaceDir) + Utils::Polar2Vector(100, defenderFaceDir - PI / 2)), 2);
 //				}
 //				CGeoLineLineIntersection inter2 = CGeoLineLineIntersection(shootLine, defenderFaceSeg);
 //				TreflectPos = inter2.IntersectPoint();
@@ -380,8 +380,8 @@
 //	const CGeoPoint ballRawPos = ball.RawPos();
 //	const double BallVelDir = Utils::Normalize(ball.Vel().dir());
 //	const double antiBallVelDir = Utils::Normalize(ball.Vel().dir() + PI);
-//	const PlayerVisionT& enemyLeader = pVision->TheirPlayer(ZSkillUtils::instance()->getTheirBestPlayer());
-//	const PlayerVisionT& enemyGoalie = pVision->TheirPlayer(BestPlayer::Instance()->getTheirGoalie());
+//	const PlayerVisionT& enemyLeader = pVision->theirPlayer(ZSkillUtils::instance()->getTheirBestPlayer());
+//	const PlayerVisionT& enemyGoalie = pVision->theirPlayer(BestPlayer::Instance()->getTheirGoalie());
 //	const bool isEnemyExist = BestPlayer::Instance()->theirFastestPlayerToBallList().size();
 //	CGeoPoint targetPos = bestZone.Center();
 //	double projDist = 0;
@@ -392,9 +392,9 @@
 //	if (isEnemyExist){
 //		for (int _i = 0; _i < BestPlayer::Instance()->theirFastestPlayerToBallList().size(); _i++){
 //			currentDefender=BestPlayer::Instance()->theirFastestPlayerToBallList().at(_i).num;
-//			if ((pVision->TheirPlayer(currentDefender).Pos() - bestZone.Center()).mod() < bestZone.Radius()&&
-//				targetSeg.IsPointOnLineOnSegment(targetLine.projection(pVision->TheirPlayer(currentDefender).Pos()))){
-//				projDist= (targetLine.projection(pVision->TheirPlayer(currentDefender).Pos())-targetPos).mod();
+//			if ((pVision->theirPlayer(currentDefender).Pos() - bestZone.Center()).mod() < bestZone.Radius()&&
+//				targetSeg.IsPointOnLineOnSegment(targetLine.projection(pVision->theirPlayer(currentDefender).Pos()))){
+//				projDist= (targetLine.projection(pVision->theirPlayer(currentDefender).Pos())-targetPos).mod();
 //				targetPos = targetPos + Utils::Polar2Vector(projDist + PLAYER_SIZE, targetDir);
 //				if (!bestZone.HasPoint(targetPos)){
 //					targetPos = bestZone.Center() + Utils::Polar2Vector(bestZone.Radius(), targetDir);
@@ -419,8 +419,8 @@
 //	const CGeoPoint ballRawPos = ball.RawPos();
 //	const double BallVelDir = Utils::Normalize(ball.Vel().dir());
 //	const double antiBallVelDir = Utils::Normalize(ball.Vel().dir() + PI);
-//	const PlayerVisionT& enemyLeader = pVision->TheirPlayer(ZSkillUtils::instance()->getTheirBestPlayer());
-//	const PlayerVisionT& enemyGoalie = pVision->TheirPlayer(BestPlayer::Instance()->getTheirGoalie());
+//	const PlayerVisionT& enemyLeader = pVision->theirPlayer(ZSkillUtils::instance()->getTheirBestPlayer());
+//	const PlayerVisionT& enemyGoalie = pVision->theirPlayer(BestPlayer::Instance()->getTheirGoalie());
 //	double finalDir = 0;
 //	double changeDir = 0;
 //	bool needDetourToAvoid = false;
@@ -432,7 +432,7 @@
 //		needDetourToAvoid = false;
 //	}
 //	needDetourToAvoid = true;
-//	finalDir = (CGeoPoint(Param::Field::PITCH_LENGTH / 2, 0) - ourLeader.Pos()).dir();
+//	finalDir = (CGeoPoint(PARAM::Field::PITCH_LENGTH / 2, 0) - ourLeader.Pos()).dir();
 	
 //	double antiFinalDir = Utils::Normalize(finalDir + PI);
 //	CGeoLine shootLine = CGeoLine(ourLeader.Pos(), finalDir);
@@ -479,8 +479,8 @@
 //	const CGeoPoint ballRawPos = ball.RawPos();
 //	const double BallVelDir = Utils::Normalize(ball.Vel().dir());
 //	const double antiBallVelDir = Utils::Normalize(ball.Vel().dir() + PI);
-//	const PlayerVisionT& enemyLeader = pVision->TheirPlayer(ZSkillUtils::instance()->getTheirBestPlayer());
-//	const PlayerVisionT& enemyGoalie = pVision->TheirPlayer(BestPlayer::Instance()->getTheirGoalie());
+//	const PlayerVisionT& enemyLeader = pVision->theirPlayer(ZSkillUtils::instance()->getTheirBestPlayer());
+//	const PlayerVisionT& enemyGoalie = pVision->theirPlayer(BestPlayer::Instance()->getTheirGoalie());
 //	//double changeDir = (ourSupporter.Pos()-ourLeader.Pos()).dir();
 //	double changeDir = (_supportPos - ball.Pos()).dir();
 //	if ((_supportPos - ball.Pos()).mod() < leastDist){
@@ -498,8 +498,8 @@
 //	const CGeoPoint ballRawPos = ball.RawPos();
 //	const double BallVelDir = Utils::Normalize(ball.Vel().dir());
 //	const double antiBallVelDir = Utils::Normalize(ball.Vel().dir() + PI);
-//	const PlayerVisionT& enemyLeader = pVision->TheirPlayer(ZSkillUtils::instance()->getTheirBestPlayer());
-//	const PlayerVisionT& enemyGoalie = pVision->TheirPlayer(BestPlayer::Instance()->getTheirGoalie());
+//	const PlayerVisionT& enemyLeader = pVision->theirPlayer(ZSkillUtils::instance()->getTheirBestPlayer());
+//	const PlayerVisionT& enemyGoalie = pVision->theirPlayer(BestPlayer::Instance()->getTheirGoalie());
 //	static int ourLeaderInLeftOrRight = ourLeader.Pos().y() < 0 ? Left : Right;
 //	if (ourLeader.Pos().y()>buffer){
 //		ourLeaderInLeftOrRight = Right;

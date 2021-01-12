@@ -23,8 +23,8 @@ ContactChecker::ContactChecker():
     _isJudged(0){}
 bool isPointOutField(CGeoPoint pos)
 {
-	if (pos.x()<Param::Field::PITCH_LENGTH/2.0&&pos.x()>-Param::Field::PITCH_LENGTH/2.0
-		&&pos.y()<Param::Field::PITCH_WIDTH/2.0&&pos.y()>-Param::Field::PITCH_WIDTH/2.0){
+	if (pos.x()<PARAM::Field::PITCH_LENGTH/2.0&&pos.x()>-PARAM::Field::PITCH_LENGTH/2.0
+		&&pos.y()<PARAM::Field::PITCH_WIDTH/2.0&&pos.y()>-PARAM::Field::PITCH_WIDTH/2.0){
 		return false;
 	}
 	else {
@@ -86,7 +86,7 @@ void ContactChecker::prepareJudge(const CVisionModule* pVision)
 	speed_before = ball_direction_before.mod();
 	speed_after = ball_direction_after.mod();
 	speed_diff_percept = (pVision->ball().Vel()-pVision->ball(cycle-3).Vel()).mod();
-	angle_to = (pVision->ball().Vel().dir()-pVision->ball(cycle-3).Vel().dir())/Param::Math::PI*180;
+	angle_to = (pVision->ball().Vel().dir()-pVision->ball(cycle-3).Vel().dir())/PARAM::Math::PI*180;
 
 	_isJudged=false;
 }
@@ -100,7 +100,7 @@ void ContactChecker::judgeOne()
 			number++;
 			if (it->Valid()){
 				if (number>6){color=1;}
-				if (_ball.Pos().dist(it->RawPos()) <=(Param::Vehicle::V2::PLAYER_SIZE + Param::Field::BALL_SIZE+judge_one[color])) {
+				if (_ball.Pos().dist(it->RawPos()) <=(PARAM::Vehicle::V2::PLAYER_SIZE + PARAM::Field::BALL_SIZE+judge_one[color])) {
 					_isJudged = true;
 					_last_contact.frame = cycle;
 					_last_contact.robotnum =number;
@@ -122,7 +122,7 @@ void ContactChecker::judgeTwo()
 			if (it->Valid())
 			{
 				if (number>6){color=1;}
-				CGeoCirlce circle (it->RawPos(),Param::Vehicle::V2::PLAYER_SIZE+Param::Field::BALL_SIZE+judge_three[color]);
+				CGeoCirlce circle (it->RawPos(),PARAM::Vehicle::V2::PLAYER_SIZE+PARAM::Field::BALL_SIZE+judge_three[color]);
 				CGeoPoint p1 = _lastball.Pos();
 				CGeoPoint p2 = _lastball.Pos()+(_lastball.Vel());
 				CGeoSegment ball_line(p1,p2);
@@ -158,7 +158,7 @@ void ContactChecker::judgeThree()
 			if (it->Valid())
 			{
 				if (number>6){color=1;}
-				CGeoCirlce circle (it->RawPos(),Param::Vehicle::V2::PLAYER_SIZE+Param::Field::BALL_SIZE+judge_three[color]);
+				CGeoCirlce circle (it->RawPos(),PARAM::Vehicle::V2::PLAYER_SIZE+PARAM::Field::BALL_SIZE+judge_three[color]);
 				CGeoPoint p1 =_ball.Pos();
 				CGeoPoint p2 =_ball.Pos()+(-_ball.Vel());
 				CGeoSegment ball_line(p1,p2); 
@@ -225,7 +225,7 @@ void ContactChecker::judgeFive()
 			if (it->Valid())
 			{
 				if (number>6){color=1;}
-				CGeoCirlce circle (it->RawPos(),Param::Vehicle::V2::PLAYER_SIZE);
+				CGeoCirlce circle (it->RawPos(),PARAM::Vehicle::V2::PLAYER_SIZE);
 				CGeoPoint p1 = _ball.Pos();
 				CGeoPoint p2 = _ball.Pos()+(_ball.Vel());
 				CGeoSegment ball_line(p1,p2);
@@ -277,7 +277,7 @@ void ContactChecker::internalReliableJudge()
 	//两个置信度判断	
 	if (_lastContactNum != 0){
 
-		if (_ball.Pos().dist(AllPlayer[_lastContactNum-1].Pos())<7)
+		if (_ball.Pos().dist(AllPlayer[_lastContactNum].Pos())<7)
 		{
 			setContactNum(0);
 			_lastContactReliable=0;
@@ -293,9 +293,9 @@ void ContactChecker::internalReliableJudge()
 
 		}
 		//避免挤在一起
-        if (_last_contact.robotnum>=7&&_last_contact.robotnum<= Param::Field::MAX_PLAYER_NUM){
+        if (_last_contact.robotnum>=7&&_last_contact.robotnum<= PARAM::Field::MAX_PLAYER){
 			for (std::vector<PlayerVisionT>::iterator it = AllPlayer.begin(); it <=AllPlayer.begin()+5; it++) {
-				if (_ball.Pos().dist(it->Pos())<(Param::Field::BALL_SIZE+Param::Vehicle::V2::PLAYER_SIZE+5))
+				if (_ball.Pos().dist(it->Pos())<(PARAM::Field::BALL_SIZE+PARAM::Vehicle::V2::PLAYER_SIZE+5))
 				{
 					setContactNum(0);
 					_lastContactReliable=0;break;
@@ -304,7 +304,7 @@ void ContactChecker::internalReliableJudge()
 		}
 		if (_last_contact.robotnum>=1&&_last_contact.robotnum<=6){
 			for (std::vector<PlayerVisionT>::iterator it = AllPlayer.begin()+6; it <=AllPlayer.begin()+11; it++) {
-				if (_ball.Pos().dist(it->Pos())<(Param::Field::BALL_SIZE+Param::Vehicle::V2::PLAYER_SIZE+5))
+				if (_ball.Pos().dist(it->Pos())<(PARAM::Field::BALL_SIZE+PARAM::Vehicle::V2::PLAYER_SIZE+5))
 				{
 					setContactNum(0);
 					_lastContactReliable=0;break;

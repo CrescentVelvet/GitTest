@@ -41,8 +41,8 @@ private:
 	//位置判断函数//
 		bool isBallInPushArea(const CVisionModule* pVision);
 		bool ballOnTheirHalf(const CVisionModule* pVision);
-		bool checkBallFront(const CVisionModule* pVision,double angle = Param::Math::PI / 3.0);
-		bool checkBallBehind(const CVisionModule* pVision,double angle = Param::Math::PI / 3.0);
+		bool checkBallFront(const CVisionModule* pVision,double angle = PARAM::Math::PI / 3.0);
+		bool checkBallBehind(const CVisionModule* pVision,double angle = PARAM::Math::PI / 3.0);
 		bool checkBallFrontOrBehindBigPre(const CVisionModule* pVision);
 		bool ballInTheirPenaltyArea(const CVisionModule* pVision, const int vecNumber);
 		bool ballBetweentMeAndOpp(const CVisionModule* pVision,const int vecNumber);
@@ -60,8 +60,8 @@ private:
 		bool isVisionHasBall(const CVisionModule* pVision,const int vecNumber);
 		bool checkUsingVoilence(const CVisionModule* pVision,int vecNumber);
 	//朝向判断函数//
-		bool isOppFaceOurDoor(const CVisionModule* pVision,double angle = Param::Math::PI / 3.0);
-		bool isOppFaceTheirDoor(const CVisionModule* pVision,const double angle = Param::Math::PI / 3);
+		bool isOppFaceOurDoor(const CVisionModule* pVision,double angle = PARAM::Math::PI / 3.0);
+		bool isOppFaceTheirDoor(const CVisionModule* pVision,const double angle = PARAM::Math::PI / 3);
 		bool meFaceTheirDoor(const CVisionModule* pVision,const int vecNumber);
 		bool faceTheirGoal(const CVisionModule* pVision, const int executor);
 

@@ -14,10 +14,10 @@
 #define PLAYER_SIZE (9.0)
 
 #define PLAYER_CENTER_TO_BALL_CENTER (60)
-#define MAX_PLAYER_NUM (16)
+#define MAX_PLAYER (16)
 #define THREAD_NUM_PASS (128)
 #define BLOCK_X_PASS (16)
-#define BLOCK_Y_PASS (MAX_PLAYER_NUM * 2)
+#define BLOCK_Y_PASS (MAX_PLAYER * 2)
 #define MAX_BALL_SPEED (6500)
 #define MIN_BALL_SPEED (1000)
 #define BALL_SPEED_UNIT ((MAX_BALL_SPEED - MIN_BALL_SPEED) / BLOCK_X_PASS)
@@ -535,7 +535,7 @@ __device__ bool CUDA_predictedChipInterTime(Point mePoint, Point ballPoint, Vect
 //    float distToBall = sqrt((candidate.x - ballPos.x) * (candidate.x - ballPos.x) + (candidate.y - ballPos.y) * (candidate.y - ballPos.y));
 //    // 4.对方车到传球线的距离
 //    float distToPassLine = INITIAL_VALUE;
-//    for (int i=0; i < MAX_PLAYER_NUM; i++) {
+//    for (int i=0; i < MAX_PLAYER; i++) {
 //        if(enemy[i].isValid){
 //            Point projection = projectionPointToLine(candidate, ballPos, enemy[i].Pos);
 //            // 判断是否在线段之间
@@ -548,7 +548,7 @@ __device__ bool CUDA_predictedChipInterTime(Point mePoint, Point ballPoint, Vect
 //    }
 //    // 5.对方车到接球点的距离
 //    float distToEnemy = INITIAL_VALUE;
-//    for (int i=0; i < MAX_PLAYER_NUM; i++) {
+//    for (int i=0; i < MAX_PLAYER; i++) {
 //        if(enemy[i].isValid){
 //            float dist = sqrt((candidate.x - enemy[i].Pos.x) * (candidate.x - enemy[i].Pos.x) + (candidate.y - enemy[i].Pos.y) * (candidate.y - enemy[i].Pos.y));
 //            if(dist < distToEnemy)
@@ -578,7 +578,7 @@ __global__ void calculateAllInterInfo(Player* players, Point* ballPos, rType* be
     int playerNum =  blockIdx.y;
 
     int offset = blockIdx.y + gridDim.y * (threadIdx.x + blockIdx.x * blockDim.x);
-    bool isTheir = playerNum < MAX_PLAYER_NUM ? false : true;
+    bool isTheir = playerNum < MAX_PLAYER ? false : true;
     float responseTime = isTheir ? THEIR_RESPONSE_TIME : OUR_RESPONSE_TIME;
     Vector ballVel;
     float interTime;
@@ -707,7 +707,7 @@ __global__ void getBest(rType* passPoints) {
 //    if(IsInPenalty(allScore[allScoreIndex].p))
 //        allScore[allScoreIndex].score = INITIAL_VALUE;
 //    else
-//        allScore[allScoreIndex].score = CUDA_evaluateFunc(allScore[allScoreIndex].p, *ballPos, Players, Players[MAX_PLAYER_NUM]);
+//        allScore[allScoreIndex].score = CUDA_evaluateFunc(allScore[allScoreIndex].p, *ballPos, Players, Players[MAX_PLAYER]);
 //    __syncthreads();
 //}
 
@@ -779,9 +779,9 @@ extern "C" void BestPass(Player* players, Point* ball, rType* result, float* rol
     defaultPlayer.playerIndex = INITIAL_VALUE;
     for(int i = 0; i < BLOCK_X_PASS * BLOCK_Y_PASS * THREAD_NUM_PASS; i += BLOCK_Y_PASS) {
         int playerNum = 0;
-        for(int j = 0; j < MAX_PLAYER_NUM; j++) {
-            if(bestPass[i + j].playerIndex >= MAX_PLAYER_NUM ) {
-                while(playerNum < MAX_PLAYER_NUM) {
+        for(int j = 0; j < MAX_PLAYER; j++) {
+            if(bestPass[i + j].playerIndex >= MAX_PLAYER ) {
+                while(playerNum < MAX_PLAYER) {
                     result[i / 2 + playerNum] = defaultPlayer;
                     playerNum++;
                 }
@@ -802,7 +802,7 @@ extern "C" void BestPass(Player* players, Point* ball, rType* result, float* rol
 
     for(int i = BLOCK_X_PASS * BLOCK_Y_PASS * THREAD_NUM_PASS; i < 2 * BLOCK_X_PASS * BLOCK_Y_PASS * THREAD_NUM_PASS; i += BLOCK_Y_PASS) {
         int playerNum = 0;
-        for(int j = 0; j < MAX_PLAYER_NUM; j++) {
+        for(int j = 0; j < MAX_PLAYER; j++) {
 //            float interPointX = 370;
 //            float interPointY = -108;
 
@@ -815,8 +815,8 @@ extern "C" void BestPass(Player* players, Point* ball, rType* result, float* rol
 //                printf("this: %f\n fast: %f\n fastIdx: %d \n\n", bestPass[i + j].interTime, bestPass[i + 1].interTime, bestPass[i + 1].playerIndex);
 //            }
 
-            if(bestPass[i + j].playerIndex >= MAX_PLAYER_NUM) {
-                while(playerNum < MAX_PLAYER_NUM) {
+            if(bestPass[i + j].playerIndex >= MAX_PLAYER) {
+                while(playerNum < MAX_PLAYER) {
                     result[i / 2 + playerNum] = defaultPlayer;
                     playerNum++;
                 }

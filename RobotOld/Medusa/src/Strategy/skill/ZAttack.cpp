@@ -26,7 +26,7 @@ namespace {
     auto taskMode = TaskMode::NO_TASK;
     auto lastTaskMode = TaskMode::NO_TASK;
     const double DEBUG_TEXT_MOD = -50*10;
-    const double DEBUG_TEXT_DIR = -Param::Math::PI/2.5;
+    const double DEBUG_TEXT_DIR = -PARAM::Math::PI/2.5;
     double FRICTION = 135;
     const int maxFrared = 100;
 }
@@ -56,7 +56,7 @@ void CZAttack::plan(const CVisionModule* pVision) {
     // 传球精度控制,-1表示使用默认精度
     double precision = task().player.kickprecision > 0 ? task().player.kickprecision : -1;
     /******** get important variable *******/
-    CGeoPoint ourGoal = CGeoPoint(-Param::Field::PITCH_LENGTH/2, 0);
+    CGeoPoint ourGoal = CGeoPoint(-PARAM::Field::PITCH_LENGTH/2, 0);
     CVector me2ball = ball.Pos() - me.Pos();
     CVector me2enemy = enemy.Pos() - me.Pos();
 //    CVector ball2target = passTarget - ball.Pos();
@@ -77,10 +77,10 @@ void CZAttack::plan(const CVisionModule* pVision) {
     auto ourTime = ZSkillUtils::instance()->getOurInterTime(robotNum);
     auto theirTime = ZSkillUtils::instance()->getTheirInterTime(bestEnemyNum);
     bool shootGoal = Utils::InTheirPenaltyArea(passTarget, 0);
-//    bool enemyDribble = enemy2ball.mod() < Param::Vehicle::V2::PLAYER_SIZE + 5.0;
-    bool enemyDribble = enemy2ball.mod() < Param::Vehicle::V2::PLAYER_SIZE * 2;
+//    bool enemyDribble = enemy2ball.mod() < PARAM::Vehicle::V2::PLAYER_SIZE + 5.0;
+    bool enemyDribble = enemy2ball.mod() < PARAM::Vehicle::V2::PLAYER_SIZE * 2;
     double theta = KickDirection::Instance()->GenerateShootDir(robotNum, me.Pos());
-    bool canShootGoal = (fabs(theta) > 3 * Param::Math::PI/180);
+    bool canShootGoal = (fabs(theta) > 3 * PARAM::Math::PI/180);
 //    bool hasShoot = BallStatus::Instance()->IsBallKickedOut(robotNum);
 
     // our ball
@@ -110,14 +110,14 @@ void CZAttack::plan(const CVisionModule* pVision) {
             // zget
             taskMode = theirTime < 0.50 ? TaskMode::ZBREAK : TaskMode::ZGET;
         }
-        if(taskMode == TaskMode::ZGET && !Utils::InTheirPenaltyArea(me.Pos(), 15*Param::Vehicle::V2::PLAYER_SIZE)){
-            static const double minBreakDist = 100;
+        if(taskMode == TaskMode::ZGET && !Utils::InTheirPenaltyArea(me.Pos(), 15*PARAM::Vehicle::V2::PLAYER_SIZE)){
+            static const double minBreakDist = 1000;
             std::vector<int> enemyNumVec;
             if (WorldModel::Instance()->getEnemyAmountInArea(me.Pos(), minBreakDist, enemyNumVec, 0)) {
                 for (auto enemyNum : enemyNumVec) {
                     if(Utils::InTheirPenaltyArea(pVision->theirPlayer(enemyNum).Pos(), 0)) continue;
-                    bool enemyInFront = fabs(Utils::Normalize((pVision->theirPlayer(enemyNum).Pos() - me.Pos()).dir() - me.Dir())) < Param::Math::PI/2;
-                    bool enemyTooClose = pVision->theirPlayer(enemyNum).Pos().dist(me.Pos()) <= 3*Param::Vehicle::V2::PLAYER_SIZE;
+                    bool enemyInFront = fabs(Utils::Normalize((pVision->theirPlayer(enemyNum).Pos() - me.Pos()).dir() - me.Dir())) < PARAM::Math::PI/2;
+                    bool enemyTooClose = pVision->theirPlayer(enemyNum).Pos().dist(me.Pos()) <= 3*PARAM::Vehicle::V2::PLAYER_SIZE;
                     if (enemyInFront || enemyTooClose){
                         taskMode = TaskMode::ZBREAK;
                         break;
@@ -129,15 +129,15 @@ void CZAttack::plan(const CVisionModule* pVision) {
     // their ball
     else{
         if(verbose) GDebugEngine::Instance()->gui_debug_msg(me.Pos()+ Utils::Polar2Vector(2*DEBUG_TEXT_MOD, DEBUG_TEXT_DIR), "TheirBall", COLOR_ORANGE);
-        bool enemyHoldBall = enemy2ball.mod() < 20*10 && fabs(Utils::Normalize(enemy.Dir() - enemy2ball.dir())) < Param::Math::PI/4;
-        bool enemyFaceGoal = fabs(Utils::Normalize(enemy2ourGoal.dir() - enemy.Dir())) < Param::Math::PI/2;
+        bool enemyHoldBall = enemy2ball.mod() < 20*10 && fabs(Utils::Normalize(enemy.Dir() - enemy2ball.dir())) < PARAM::Math::PI/4;
+        bool enemyFaceGoal = fabs(Utils::Normalize(enemy2ourGoal.dir() - enemy.Dir())) < PARAM::Math::PI/2;
 //        if(ourTime - theirTime > -0.2){
 //            taskMode = TaskMode::ZBREAK;
 //        }
 //        else {
 //            taskMode = TaskMode::ZMARKING;
 //        }
-        if(enemyHoldBall && enemyFaceGoal && me2ball.mod() - enemy2ball.mod() > Param::Vehicle::V2::PLAYER_SIZE){
+        if(enemyHoldBall && enemyFaceGoal && me2ball.mod() - enemy2ball.mod() > PARAM::Vehicle::V2::PLAYER_SIZE){
             taskMode = TaskMode::ZBLOCKING;
         }
         else{
@@ -171,10 +171,10 @@ void CZAttack::plan(const CVisionModule* pVision) {
     }
     if (taskMode == TaskMode::ZBLOCKING){
         if(verbose) GDebugEngine::Instance()->gui_debug_msg(me.Pos()+ Utils::Polar2Vector(DEBUG_TEXT_MOD, DEBUG_TEXT_DIR), "ZBLOCKING", COLOR_RED);
-        double blockingDist = 20*10;//Param::Vehicle::V2::PLAYER_CENTER_TO_BALL_CENTER + Param::Vehicle::V2::PLAYER_SIZE;
+        double blockingDist = 20*10;//PARAM::Vehicle::V2::PLAYER_CENTER_TO_BALL_CENTER + PARAM::Vehicle::V2::PLAYER_SIZE;
         double rotDir = enemy.RotVel() > 0 ? 1.0 : -1.0;
         auto blockingPoint = enemy.Pos() + Utils::Polar2Vector(blockingDist, enemy2ourGoal.dir());
-        auto blockingVel = enemy.Vel() + Utils::Polar2Vector(enemy.RotVel()*blockingDist , enemy.Dir() + rotDir*Param::Math::PI/2);
+        auto blockingVel = enemy.Vel() + Utils::Polar2Vector(enemy.RotVel()*blockingDist , enemy.Dir() + rotDir*PARAM::Math::PI/2);
         if (me2enemy.mod() < 90*10)
             setSubTask(PlayerRole::makeItGoto(robotNum, blockingPoint, me2enemy.dir(), blockingVel, 0, flag));
         else
@@ -200,7 +200,7 @@ void CZAttack::plan(const CVisionModule* pVision) {
             gotoPoint = interPoint;
             if((enemy.Pos()-foot).mod() < enemy2interPoint.mod()) gotoPoint = foot;
             if((foot-me.Pos()).mod() < 30*10) gotoPoint = ball.Pos();
-            if(Utils::OutOfField(gotoPoint, 9*10)) gotoPoint = ball.Pos();
+            if(!Utils::IsInField(gotoPoint, 9*10)) gotoPoint = ball.Pos();
             if(Utils::InTheirPenaltyArea(gotoPoint, 32*10)) gotoPoint = Utils::MakeOutOfTheirPenaltyArea(gotoPoint, 32*10);
 //            GDebugEngine::Instance()->gui_debug_arc(interPoint, 10, 0.0f, 360.0f, COLOR_ORANGE);
 //            GDebugEngine::Instance()->gui_debug_line(me.Pos(), foot, COLOR_YELLOW);

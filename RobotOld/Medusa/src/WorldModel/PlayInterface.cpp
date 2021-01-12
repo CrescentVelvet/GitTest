@@ -3,12 +3,12 @@
 
 //CPlayInterface::CPlayInterface()
 //{
-//    for(int i = 0;i<=Param::Field::MAX_PLAYER;i++){
+//    for(int i = 0;i<=PARAM::Field::MAX_PLAYER;i++){
 //		_realIndex[i] = 0;
 //		_visionIndex[i] = 0;
 //	}
-////	_visionIndex[Param::Field::MAX_PLAYER] = 0;
-////	_visionIndex[Param::Field::MAX_PLAYER+1] = 0;
+////	_visionIndex[PARAM::Field::MAX_PLAYER] = 0;
+////	_visionIndex[PARAM::Field::MAX_PLAYER] = 0;
 //}
 
 //CPlayInterface::~CPlayInterface()
@@ -20,13 +20,13 @@
 //void CPlayInterface::setRealIndex(int Num, int realNum)
 //{
 //	// error cout
-//	if (Num < 1 || Num > Param::Field::MAX_PLAYER) {
+//	if (Num < 1 || Num > PARAM::Field::MAX_PLAYER) {
 //		STD_DEBUG_OUT("@@@@@@@@@@@@@@@@Strategy Num","input invalid");
 //		return ;
 //	}
 
 //	// error cout
-//    if (realNum < 1 || realNum > Param::Field::MAX_PLAYER) {
+//    if (realNum < 1 || realNum > PARAM::Field::MAX_PLAYER) {
 //		STD_DEBUG_OUT("@@@@@@@@@@@@@@@Vision Index","input invalid");
 //		return ;
 //	}
@@ -41,7 +41,7 @@
 
 ////int CPlayInterface::getRealIndexByNum(int Num)
 ////{
-////	if (Num < 1 || Num > Param::Field::MAX_PLAYER) {
+////	if (Num < 1 || Num > PARAM::Field::MAX_PLAYER) {
 ////		STD_DEBUG_OUT("#############Get RealIndex Error","must between 1-5 , Please check!!!");
 ////		return 0;
 ////	} else {
@@ -51,7 +51,7 @@
 
 ////int CPlayInterface::getNumbByRealIndex(int realNum)
 ////{
-////    if (realNum < 1 || realNum > Param::Field::MAX_PLAYER) {
+////    if (realNum < 1 || realNum > PARAM::Field::MAX_PLAYER) {
 ////		STD_DEBUG_OUT("#############Get StrategyNum Error","must between 1-12, Please check!!!");
 ////		return 0;
 ////	} else {
@@ -65,7 +65,7 @@
 
 ////		//		// TODO [9/11/2011 ZJUNlict]
 ////		//		if (0 == goalieIndex) {
-////		//			for(int i = 1; i <= Param::Field::MAX_PLAYER; i ++){
+////		//			for(int i = 0; i < PARAM::Field::MAX_PLAYER; i ++){
 ////		//				if (0 == getRealIndexByNum(i)) {
 ////		//					needReturnModify = true;
 ////		//					indexReturnModify = i;
@@ -94,12 +94,12 @@
 //void CPlayInterface::clearRealIndex()
 //{
 //	// clear real vehicle index
-//	for (int i = 0; i < Param::Field::MAX_PLAYER; i ++) {
+//	for (int i = 0; i < PARAM::Field::MAX_PLAYER; i ++) {
 //		_realIndex[i] = 0;
 //	}
 
 //	// clear vision vehicle index
-//    for (int i = 0; i < Param::Field::MAX_PLAYER; i ++) {
+//    for (int i = 0; i < PARAM::Field::MAX_PLAYER; i ++) {
 //		_visionIndex[i] = 0;
 //	}
 

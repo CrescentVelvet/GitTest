@@ -4,7 +4,7 @@
 #include "singleton.h"
 #include <vector>
 #include <iostream>
-#include "param.h"
+#include "staticparams.h"
 #include "OppPlayer.h"
 #include "geometry.h"
 using namespace std;
@@ -96,16 +96,16 @@ private:
 
 private:
 	int _lastCycle;
-	int _markCycle[Param::Field::MAX_PLAYER + 1];
+	int _markCycle[PARAM::Field::MAX_PLAYER];
 	MarkList _markList;
-	bool _isMarked[Param::Field::MAX_PLAYER + 1];
-	bool _markMode[Param::Field::MAX_PLAYER+ 1];//盯人模式，普通盯人还是前盯
+	bool _isMarked[PARAM::Field::MAX_PLAYER];
+	bool _markMode[PARAM::Field::MAX_PLAYER];//盯人模式，普通盯人还是前盯
 
 	int _attackerNum;									//对手参与进攻的人数,根据威胁度计算，而不是根据单单一条x方向阈值
-	int _attackArray[Param::Field::MAX_PLAYER+1];			//对手参与进攻的人的号码，*通过威胁度依次排列* 
-	int _steadyAttackArray[Param::Field::MAX_PLAYER+1];	//变化平稳的attackArray
+	int _attackArray[PARAM::Field::MAX_PLAYER];			//对手参与进攻的人的号码，*通过威胁度依次排列* 
+	int _steadyAttackArray[PARAM::Field::MAX_PLAYER];	//变化平稳的attackArray
 	
-	COppPlayer* _oplayer[Param::Field::MAX_PLAYER + 1];
+	COppPlayer* _oplayer[PARAM::Field::MAX_PLAYER];
 	vector<CTrigger*> _trigger;
 	bool _triggerOccur;//状态量
 	bool _ballTaken;
@@ -116,9 +116,9 @@ private:
 	CGeoPoint _downRight;
 
 	bool _noChangeFlag;
-	COppPlayer* _noChangeOplayer[Param::Field::MAX_PLAYER + 1];
-	int _noChangeAttackArray[Param::Field::MAX_PLAYER+1];			
-	int _noChangeSteadyAttackArray[Param::Field::MAX_PLAYER+1];
+	COppPlayer* _noChangeOplayer[PARAM::Field::MAX_PLAYER];
+	int _noChangeAttackArray[PARAM::Field::MAX_PLAYER];			
+	int _noChangeSteadyAttackArray[PARAM::Field::MAX_PLAYER];
 	int _noChangeAttackNum;
 
 	vector<int> _normalNoMarkList;

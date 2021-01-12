@@ -6,7 +6,7 @@
 #include <vector>
 #include <string>
 #include "singleton.h"
-#include "param.h"
+#include "staticparams.h"
 using namespace std;
 class COppPlayer;
 class COppRole;
@@ -26,7 +26,7 @@ private:
 
 private:
 	OppRoleVector _oppRolePriList;//带有优先级的list，排在前面的优先级高,并且经过config文档配置
-	COppRole * _role[Param::Field::MAX_PLAYER + 1];//1~6 对应1~6号车
+	COppRole * _role[PARAM::Field::MAX_PLAYER];//1~6 对应1~6号车
 };
 
 typedef NormalSingleton<COppRoleMatcher> OppRoleMatcher;

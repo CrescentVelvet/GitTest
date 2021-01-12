@@ -3,7 +3,7 @@
 
 //#include <CommControl.h>
 #include <singleton.h>
-#include <param.h>
+#include "staticparams.h"
 
 /*
 * 小车本体感知信息接收处理 created by qxz
@@ -48,18 +48,18 @@ public:
     // 全局更新接口
     void Update(const CVisionModule* pVision){
         static const int MAX_FRARED = 999;
-        static const double DEBUG_X = -Param::Field::PITCH_LENGTH / 12;
+        static const double DEBUG_X = -PARAM::Field::PITCH_LENGTH / 12;
         static const double DEBUG_TEXT_LENGTH = 200.0;
-        static const double DEBUG_X_STEP = Param::Field::PITCH_LENGTH / 30;
-        static const double DEBUG_Y = -Param::Field::PITCH_WIDTH / 10;
-        static const double DEBUG_Y_STEP = Param::Field::PITCH_WIDTH / 60;
+        static const double DEBUG_X_STEP = PARAM::Field::PITCH_LENGTH / 30;
+        static const double DEBUG_Y = -PARAM::Field::PITCH_WIDTH * 4 / 10;
+        static const double DEBUG_Y_STEP = PARAM::Field::PITCH_WIDTH / 45;
         if(DEBUG_DEVICE){
             GDebugEngine::Instance()->gui_debug_msg(CGeoPoint(DEBUG_X, DEBUG_Y + DEBUG_Y_STEP * 0),"INFRARED : ",COLOR_YELLOW);
             GDebugEngine::Instance()->gui_debug_msg(CGeoPoint(DEBUG_X, DEBUG_Y + DEBUG_Y_STEP * 1),"FLATKICK : ",COLOR_YELLOW);
             GDebugEngine::Instance()->gui_debug_msg(CGeoPoint(DEBUG_X, DEBUG_Y + DEBUG_Y_STEP * 2),"CHIPKICK : ",COLOR_YELLOW);
             GDebugEngine::Instance()->gui_debug_msg(CGeoPoint(DEBUG_X, DEBUG_Y + DEBUG_Y_STEP * 3),"FRAREDON : ",COLOR_YELLOW);
             GDebugEngine::Instance()->gui_debug_msg(CGeoPoint(DEBUG_X, DEBUG_Y + DEBUG_Y_STEP * 4),"FRAREDOFF: ",COLOR_YELLOW);
-            for(int i=0;i<Param::Field::MAX_PLAYER_NUM;i++){
+            for(int i=0;i<PARAM::Field::MAX_PLAYER;i++){
                 robotMsg[i]._mutex.lock();
                 GDebugEngine::Instance()->gui_debug_msg(CGeoPoint(DEBUG_TEXT_LENGTH + DEBUG_X_STEP * i, DEBUG_Y + DEBUG_Y_STEP * 0),robotMsg[i].infrared  ? "1" : "0",COLOR_YELLOW);
                 GDebugEngine::Instance()->gui_debug_msg(CGeoPoint(DEBUG_TEXT_LENGTH + DEBUG_X_STEP * i, DEBUG_Y + DEBUG_Y_STEP * 1),robotMsg[i].flat_kick ? "1" : "0",COLOR_YELLOW);
@@ -69,14 +69,14 @@ public:
                 robotMsg[i]._mutex.unlock();
             }
         }
-        for(int i=0;i<Param::Field::MAX_PLAYER_NUM;i++){
+        for(int i=0;i<PARAM::Field::MAX_PLAYER;i++){
             robotMsg[i]._mutex.lock();
             if(robotMsg[i].chip_kick > 0)
                 robotMsg[i].chip_kick--;
             if(robotMsg[i].flat_kick > 0)
                 robotMsg[i].flat_kick--;
             if(robotMsg[i].infrared){
-                if(robotMsg[i].fraredOff != 0) robotMsg[i].dribblePoint = pVision->ourPlayer(i+1).Pos();
+                if(robotMsg[i].fraredOff != 0) robotMsg[i].dribblePoint = pVision->ourPlayer(i).Pos();
                 robotMsg[i].fraredOn = robotMsg[i].fraredOn >= MAX_FRARED ? MAX_FRARED : robotMsg[i].fraredOn + 1;
                 robotMsg[i].fraredOff = 0;
             }
@@ -89,28 +89,28 @@ public:
     }
 
 	// 小车是否产生红外信号，一般表示球在嘴前方
-    bool IsInfraredOn(int num)              { return robotMsg[num -1].infrared; }
+    bool IsInfraredOn(int num)              { return robotMsg[num].infrared; }
 
-    int fraredOn(int num) { return robotMsg[num-1].fraredOn; }
+    int fraredOn(int num) { return robotMsg[num].fraredOn; }
 
-    int fraredOff(int num) { return robotMsg[num-1].fraredOff; }
+    int fraredOff(int num) { return robotMsg[num].fraredOff; }
 
-    CGeoPoint dribblePoint(int num) { return robotMsg[num-1].dribblePoint; }
+    CGeoPoint dribblePoint(int num) { return robotMsg[num].dribblePoint; }
 
 	// 小车有否启动平射或挑射的机构
     int IsKickerOn(int num) {
-        if(robotMsg[num -1].chip_kick > 0)
+        if(robotMsg[num].chip_kick > 0)
             return IS_CHIP_KICK_ON;
-        else if(robotMsg[num -1].flat_kick > 0)
+        else if(robotMsg[num].flat_kick > 0)
             return IS_FLAT_KICK_ON;
         else
             return 0;
     }
 	
 	// 小车是否控制着球，要修改
-    bool isBallControled(int num)			{ return robotMsg[num - 1].infrared; }
+    bool isBallControled(int num)			{ return robotMsg[num].infrared; }
 
-    RobotMsg robotMsg[Param::Field::MAX_PLAYER_NUM];
+    RobotMsg robotMsg[PARAM::Field::MAX_PLAYER];
     bool DEBUG_DEVICE;
 };
 

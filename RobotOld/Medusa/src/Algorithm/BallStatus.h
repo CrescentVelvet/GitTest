@@ -133,7 +133,7 @@ public:
 	void clearKickCmd(); // 清除所有车指令
 	void initializeCmdStored();
 private:
-	CSendCmd _kickCmd[Param::Field::MAX_PLAYER+1][MAX_CMD_STORED];
+	CSendCmd _kickCmd[PARAM::Field::MAX_PLAYER][MAX_CMD_STORED];
 	bool _chipkickstate; // true为处在空中,false为已经落地
 	int _ballState;
 	int _ballStateCouter;

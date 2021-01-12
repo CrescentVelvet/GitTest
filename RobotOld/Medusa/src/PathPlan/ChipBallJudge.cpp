@@ -58,7 +58,7 @@
 //	//获取开球车开球时候的朝向。
 //	if (checkKickerGoKick(pVision) && !goKickAlrealdy && ("TheirIndirectKick" == refMsg || "TheirDirectKick" == refMsg || "TheirKickOff" == refMsg ) )
 //	{
-//		initialKickerDir = pVision->TheirPlayer(theirKickerID).Dir();
+//		initialKickerDir = pVision->theirPlayer(theirKickerID).Dir();
 //		goKickAlrealdy = true;
 //	}
 //	//如果开球车去开球了，开始判断
@@ -114,11 +114,11 @@
 
 //bool CChipBallJudge::checkKickerGoKick(const CVisionModule* pVision)
 //{
-//	const PlayerVisionT& theirKicker = pVision->TheirPlayer(theirKickerID);
+//	const PlayerVisionT& theirKicker = pVision->theirPlayer(theirKickerID);
 //	const MobileVisionT& ball = pVision->Ball();
 //	double distTheirKicker2Ball = (theirKicker.Pos() - ball.Pos()).mod();
-//	bool isTheirKickerFaceBall  = abs(Utils::Normalize(theirKicker.Dir() - (ball.Pos() - theirKicker.Pos()).dir()) )< Param::Math::PI / 6;
-//	if (isTheirKickerFaceBall && (distTheirKicker2Ball < (Param::Vehicle::V2::PLAYER_FRONT_TO_CENTER + Param::Field::BALL_SIZE + 3)))
+//	bool isTheirKickerFaceBall  = abs(Utils::Normalize(theirKicker.Dir() - (ball.Pos() - theirKicker.Pos()).dir()) )< PARAM::Math::PI / 6;
+//	if (isTheirKickerFaceBall && (distTheirKicker2Ball < (PARAM::Vehicle::V2::PLAYER_FRONT_TO_CENTER + PARAM::Field::BALL_SIZE + 3)))
 //	{
 //		return true;
 //	}
@@ -153,7 +153,7 @@
 //	///////////////
 	
 //	//cout << abs(Utils::Normalize(ballMovingDir - InitialBallDir2currentBall)) << endl;
-//	if (abs(ball.Vel().mod() > 10)&&abs(Utils::Normalize(ballMovingDir - InitialBallDir2currentBall)) > Param::Math::PI / 40)
+//	if (abs(ball.Vel().mod() > 10)&&abs(Utils::Normalize(ballMovingDir - InitialBallDir2currentBall)) > PARAM::Math::PI / 40)
 //	{
 //		//cout  << "DIRjudeg CHIP" << endl;
 //		dirJudgeChip = true;
@@ -164,7 +164,7 @@
 //		dirJudgeChip = false;
 //	}
 ////cout << "dirJudge:"  << dirJudgeChip <<" "<<"distJudge:"<<distJudgeChip<<endl;
-////	cout << "flyingBall2LineDist:" << flyingBall2LineDist << "  " <<"dir:" << abs(Utils::Normalize(ballMovingDir - InitialBallDir2currentBall)) * 180 / Param::Math::PI;
+////	cout << "flyingBall2LineDist:" << flyingBall2LineDist << "  " <<"dir:" << abs(Utils::Normalize(ballMovingDir - InitialBallDir2currentBall)) * 180 / PARAM::Math::PI;
 //	double finalJudge = distJudgeChip || dirJudgeChip;
 //	return finalJudge;
 //}

@@ -126,10 +126,10 @@ public:
     bool canProtectBall(int current_cycle);
     bool canShootOnBallPos(int current_cycle, int myNum = myDefaultNum);
 //    bool canPassOnBallPos(int current_cycle,CGeoPoint& passPos,CGeoPoint& guisePos, int myNum = myDefaultNum);
-    bool canKickAtEnemy(int current_cycle, CGeoPoint& kickDir,int myNum = myDefaultNum,int priority=0);
+    // bool canKickAtEnemy(int current_cycle, CGeoPoint& kickDir,int myNum = myDefaultNum,int priority=0);
 	const string getBallStatus(int current_cycle,int meNum=0);
 //	const string getAttackDecision(int current_cycle,int meNum = 0);
-    bool getMessiAttackDecision(int current_cycle);
+//    bool getMessiAttackDecision(int current_cycle);
 //    int getAttackerAmount(int current_cycle);
 //    bool generateTwoPassPoint(CGeoPoint& passOne,CGeoPoint& passTwo){
 //		CGeoPoint predictBallPos=BallSpeedModel::Instance()->posForTime(15,_pVision);
@@ -154,7 +154,7 @@ public:
 		return BallStatus::Instance()->ballChipLine();
 	}
     bool IsOurBallByAutoReferee(){
-        return BallStatus::Instance()->getBallToucher()<Param::Field::MAX_PLAYER?false:true;
+        return BallStatus::Instance()->getBallToucher()<PARAM::Field::MAX_PLAYER?false:true;
 	}
 	void clearBallStateCouter(){
 		BallStatus::Instance()->clearBallStateCouter();
@@ -180,8 +180,8 @@ public:
 	const CGeoPoint getRightReflectPos(int myNum);
 	const CGeoPoint getReflectPos(int myNum);
 	const CGeoPoint getReflectTouchPos(int myNum, double y);
-	double getPointShootMaxAngle(CGeoPoint);
-    bool isMarked(int);
+//	double getPointShootMaxAngle(CGeoPoint);
+//    bool isMarked(int);
 
     //add by wangzai
     bool getEnemyAmountInArea(double x1, double x2, double y1, double y2, double buffer = 0);

@@ -7,7 +7,7 @@ function specified(p)
 end
 
 function full()
-	return 370
+	return 3700
 end
 
 
@@ -18,7 +18,7 @@ function toPlayer(role1)
 	return function(role2)
 		local dist = player.toPlayerDist(role1, role2)
 		if IS_SIMULATION then
-			return dist*dist/980.0
+			return dist*dist/9800.0
 		else
 			return dist
 		end

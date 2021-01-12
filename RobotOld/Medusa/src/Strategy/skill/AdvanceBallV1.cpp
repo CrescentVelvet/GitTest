@@ -20,13 +20,13 @@ namespace{
 	bool WEAK_OPP = true;      // 针对静态队
 	bool GENTLE_MODE = false;
 	//对方禁区点信息
-	const CGeoPoint theirLeft = CGeoPoint(Param::Field::PITCH_LENGTH/2, -Param::Field::GOAL_WIDTH/2 );
+	const CGeoPoint theirLeft = CGeoPoint(PARAM::Field::PITCH_LENGTH/2, -PARAM::Field::GOAL_WIDTH/2 );
 
-	const CGeoPoint theirRight = CGeoPoint(Param::Field::PITCH_LENGTH/2, Param::Field::GOAL_WIDTH/2 );
+	const CGeoPoint theirRight = CGeoPoint(PARAM::Field::PITCH_LENGTH/2, PARAM::Field::GOAL_WIDTH/2 );
 
-	const CGeoPoint theirCenter = CGeoPoint(Param::Field::PITCH_LENGTH/2, 0);
-	const CGeoPoint ourGoal = CGeoPoint(-Param::Field::PITCH_LENGTH/2, 0);
-	const CGeoPoint defenceGoal0(-Param::Field::PITCH_LENGTH/2, 0);
+	const CGeoPoint theirCenter = CGeoPoint(PARAM::Field::PITCH_LENGTH/2, 0);
+	const CGeoPoint ourGoal = CGeoPoint(-PARAM::Field::PITCH_LENGTH/2, 0);
+	const CGeoPoint defenceGoal0(-PARAM::Field::PITCH_LENGTH/2, 0);
 	const int maxFrared = 100;
 	const int maxMeHasBall = 50;
 	double OPP_HAS_BALL_DIST = 30;
@@ -68,7 +68,7 @@ void CAdvanceBallV1::plan(const CVisionModule* pVision)
 	//图像信息
 	const PlayerVisionT& me = pVision->ourPlayer(_executor);
 	const MobileVisionT& ball = pVision->ball();
-	double kickDir = (CGeoPoint(Param::Field::PITCH_LENGTH / 2.0,0) - pVision->ball().Pos()).dir();
+	double kickDir = (CGeoPoint(PARAM::Field::PITCH_LENGTH / 2.0,0) - pVision->ball().Pos()).dir();
 	//角度信息
 	const CVector self2Ball = ball.Pos() - me.Pos();
 //	CVector ball2TheirCenter = theirCenter - ball.Pos();
@@ -87,8 +87,8 @@ void CAdvanceBallV1::plan(const CVisionModule* pVision)
 		infraredOn = 0;
 		infraredOff = infraredOff >= maxFrared ? maxFrared : infraredOff+1;
 	}
-	bool is_runner_dir_ok = WorldModel::Instance()->KickDirArrived(pVision->getCycle(), kickDir, Param::Math::PI / 36, _executor);
-	bool is_runner_dir_ok_penaltyArea = WorldModel::Instance()->KickDirArrived(pVision->getCycle(), kickDir, Param::Math::PI / 9, _executor);
+	bool is_runner_dir_ok = WorldModel::Instance()->KickDirArrived(pVision->getCycle(), kickDir, PARAM::Math::PI / 36, _executor);
+	bool is_runner_dir_ok_penaltyArea = WorldModel::Instance()->KickDirArrived(pVision->getCycle(), kickDir, PARAM::Math::PI / 9, _executor);
 	/*cout << is_runner_dir_ok<<endl;*/
 	_pushBallTarget = theirCenter;
 	//对敌方的处理1
@@ -97,7 +97,7 @@ void CAdvanceBallV1::plan(const CVisionModule* pVision)
 	const CVector opp2ball = ball.Pos() - opp.Pos();
 	double ball2oppDist = opp2ball.mod();
 	CVector me2goal = theirCenter - me.Pos();
-//	double me2BestOppDist = CVector(pVision->TheirPlayer(opponentID).Pos() - me.Pos()).mod();
+//	double me2BestOppDist = CVector(pVision->theirPlayer(opponentID).Pos() - me.Pos()).mod();
 	//自已有球的判断
 	bool isMeHasBall;
 	bool isMechHasBall = infraredOn > 1;
@@ -130,13 +130,13 @@ void CAdvanceBallV1::plan(const CVisionModule* pVision)
 			break;
 		case GOTO:
 
-			if (pullBackFlag == true && isOppFaceTheirDoor(pVision,Param::Math::PI/2) || (Utils::InTheirPenaltyArea(ball.Pos(),0) && oppBlockMe(pVision,_executor)))
+			if (pullBackFlag == true && isOppFaceTheirDoor(pVision,PARAM::Math::PI/2) || (Utils::InTheirPenaltyArea(ball.Pos(),0) && oppBlockMe(pVision,_executor)))
 			{
 				if (pullCnt > 30 && meHasBall>meHasBallMaxCnt)
 				{
 					pullCnt = 0;
 					pullBackFlag = false;
-					pullBallTarget = me.Pos() + Utils::Polar2Vector(25,Utils::Normalize(me.Dir()+Param::Math::PI));
+					pullBallTarget = me.Pos() + Utils::Polar2Vector(25,Utils::Normalize(me.Dir()+PARAM::Math::PI));
 					_state = DRIBBLE_PULL;
 					if (DEBUG_ENGINE)
 					{
@@ -162,7 +162,7 @@ void CAdvanceBallV1::plan(const CVisionModule* pVision)
 					}
 					_state = TURN;
 					turnPos = me.Pos();
-					finalTurnDir =Utils::Normalize(me.Dir() + Param::Math::PI)  ;
+					finalTurnDir =Utils::Normalize(me.Dir() + PARAM::Math::PI)  ;
 				}
 			}
 			else
@@ -176,13 +176,13 @@ void CAdvanceBallV1::plan(const CVisionModule* pVision)
 					if (DEBUG_ENGINE)
 						cout << "goto-->crazyPush" << endl;
 					_state = CRAZYPUSH;
-				}/*else if ((meHasBall > 5 &&dribbleFlag== true&& pullBackFlag == true&&isOppFaceTheirDoor(pVision,Param::Math::PI/2)) || (meHasBall > 5 && Utils::InTheirPenaltyArea(ball.Pos(),0) && oppBlockMe(pVision,_executor)))
+				}/*else if ((meHasBall > 5 &&dribbleFlag== true&& pullBackFlag == true&&isOppFaceTheirDoor(pVision,PARAM::Math::PI/2)) || (meHasBall > 5 && Utils::InTheirPenaltyArea(ball.Pos(),0) && oppBlockMe(pVision,_executor)))
 				 {
 				 if (DEBUG_ENGINE)
 
 				 _state = DRIBBLE_PULL;
 				 pullBackFlag = false;
-				 pullBallTarget = me.Pos() + Utils::Polar2Vector(25,Utils::Normalize(me.Dir()+Param::Math::PI));
+				 pullBallTarget = me.Pos() + Utils::Polar2Vector(25,Utils::Normalize(me.Dir()+PARAM::Math::PI));
 				 if (DEBUG_ENGINE)
 				 {
 				 cout << "goto-->dribblePushPull"<<endl;
@@ -232,7 +232,7 @@ void CAdvanceBallV1::plan(const CVisionModule* pVision)
 				}
 				break;
 		case CRAZYPUSH:
-			if (self2Ball.mod() > 30 || abs(Utils::Normalize(me.Dir() - me2goal.dir())) > Param::Math::PI / 4)
+			if (self2Ball.mod() > 30 || abs(Utils::Normalize(me.Dir() - me2goal.dir())) > PARAM::Math::PI / 4)
 			{
 				if (DEBUG_ENGINE)
 				{
@@ -285,7 +285,7 @@ void CAdvanceBallV1::plan(const CVisionModule* pVision)
 	flag = flag | PlayerStatus::DRIBBLING;
 
 	//DribbleStatus::Instance()->setDribbleCommand(_executor, 3);
-	if (ball.X() < -Param::Field::PITCH_LENGTH/4 && abs(ball.Y()) > Param::Field::PENALTY_AREA_WIDTH / 2 )
+	if (ball.X() < -PARAM::Field::PITCH_LENGTH/4 && abs(ball.Y()) > PARAM::Field::PENALTY_AREA_WIDTH / 2 )
 		_pushBallTarget = ball.Pos() + Utils::Polar2Vector(100, 0);
 	else
 		calcPushTarget(pVision);
@@ -313,10 +313,10 @@ void CAdvanceBallV1::plan(const CVisionModule* pVision)
 
 			if (!ballOnTheirHalf(pVision))//后半场
 			{						
-				if (checkBallFront(pVision)&& ball2oppDist < Param::Vehicle::V2::PLAYER_SIZE*4 && ballBetweentMeAndOpp(pVision,_executor))
+				if (checkBallFront(pVision)&& ball2oppDist < PARAM::Vehicle::V2::PLAYER_SIZE*4 && ballBetweentMeAndOpp(pVision,_executor))
 				{
 					//cout <<"face opp get ball" << endl;
-					faceDir = opp.Dir() + Param::Math::PI;
+					faceDir = opp.Dir() + PARAM::Math::PI;
 					if (WEAK_OPP)
 					{
 						setSubTask(PlayerRole::makeItNoneTrajGetBall(_executor,faceDir,CVector(0,0),flag_not_dribble,-2));
@@ -349,10 +349,10 @@ void CAdvanceBallV1::plan(const CVisionModule* pVision)
 					}
 				}else //不在禁区
 				{
-				//	cout << "ballbetweeOpp:"<<ballBetweentMeAndOpp(pVision,_executor) << " "<<"lala:"<<(abs(Utils::Normalize(me2goal.dir() - self2Ball.dir())) < Param::Math::PI / 2.0) << endl;
+				//	cout << "ballbetweeOpp:"<<ballBetweentMeAndOpp(pVision,_executor) << " "<<"lala:"<<(abs(Utils::Normalize(me2goal.dir() - self2Ball.dir())) < PARAM::Math::PI / 2.0) << endl;
 					pullBackFlag = false;
 					dribbleFlag = false;
-					if ( isOppFaceTheirDoor(pVision,Param::Math::PI/2)&&ballBetweentMeAndOpp(pVision,_executor) )
+					if ( isOppFaceTheirDoor(pVision,PARAM::Math::PI/2)&&ballBetweentMeAndOpp(pVision,_executor) )
 					{
 					//	cout << "SDFSDF"<<endl;
 						pullBackFlag = true;
@@ -543,7 +543,7 @@ bool CAdvanceBallV1::ballBetweentMeAndOpp(const CVisionModule* pVision,const int
 	CVector me2Ball = ball.Pos() - me.Pos();
 	CVector ball2Opp = opp.Pos() - ball.Pos();
 
-	if (abs(Utils::Normalize(me2Ball.dir() - ball2Opp.dir())) < Param::Math::PI /3.0)
+	if (abs(Utils::Normalize(me2Ball.dir() - ball2Opp.dir())) < PARAM::Math::PI /3.0)
 	{
 		return true;
 	}else
@@ -561,7 +561,7 @@ bool CAdvanceBallV1::checkBallFrontOrBehindBigPre(const CVisionModule* pVision)
 	double oppDir = opp.Dir();
 	double opp2BallDir_oppDir_Diff = abs(Utils::Normalize(opp2BallDir - oppDir));
 	bool isBallFrontOpp;
-	isBallFrontOpp = opp2BallDir_oppDir_Diff< Param::Math::PI * 2.0 / 3.0 /*/ 1.5*/ ;
+	isBallFrontOpp = opp2BallDir_oppDir_Diff< PARAM::Math::PI * 2.0 / 3.0 /*/ 1.5*/ ;
 	return isBallFrontOpp;
 }
 bool CAdvanceBallV1::isOppFaceTheirDoor(const CVisionModule* pVision,const double angle)
@@ -569,11 +569,11 @@ bool CAdvanceBallV1::isOppFaceTheirDoor(const CVisionModule* pVision,const doubl
 	const MobileVisionT& ball = pVision->ball();
 	const PlayerVisionT& opp = pVision->theirPlayer(opponentID);
 	double opp2BallDist = (opp.Pos() - ball.Pos()).mod();
-	double judgeAngle = abs (Utils::Normalize((opp.Dir() - CVector(CGeoPoint(Param::Field::PITCH_LENGTH / 2.0,0) - opp.Pos() ).dir())) );
+	double judgeAngle = abs (Utils::Normalize((opp.Dir() - CVector(CGeoPoint(PARAM::Field::PITCH_LENGTH / 2.0,0) - opp.Pos() ).dir())) );
 	bool isFaceTheirDoor = judgeAngle < angle || judgeAngle == angle;
 	bool isBallNearOpp = opp2BallDist < OPP_HAS_BALL_DIST;
-	//GDebugEngine::Instance()->gui_debug_line(opp.Pos(), opp.Pos() + Utils::Polar2Vector(200,Utils::Normalize(opp.Dir() + Param::Math::PI / 3)),COLOR_WHITE);
-	//GDebugEngine::Instance()->gui_debug_line(opp.Pos(), opp.Pos() + Utils::Polar2Vector(200,Utils::Normalize(opp.Dir() - Param::Math::PI / 3)),COLOR_WHITE);
+	//GDebugEngine::Instance()->gui_debug_line(opp.Pos(), opp.Pos() + Utils::Polar2Vector(200,Utils::Normalize(opp.Dir() + PARAM::Math::PI / 3)),COLOR_WHITE);
+	//GDebugEngine::Instance()->gui_debug_line(opp.Pos(), opp.Pos() + Utils::Polar2Vector(200,Utils::Normalize(opp.Dir() - PARAM::Math::PI / 3)),COLOR_WHITE);
 	return isFaceTheirDoor&&isBallNearOpp;
 
 }
@@ -583,7 +583,7 @@ bool CAdvanceBallV1::isOppFaceOurDoor(const CVisionModule* pVision,double angle)
 	const PlayerVisionT& opp = pVision->theirPlayer(opponentID);
 	double opp2BallDist = (opp.Pos() - ball.Pos()).mod();
 	bool isBallNearOpp = opp2BallDist < OPP_HAS_BALL_DIST;
-	double judgeAngle = abs (Utils::Normalize((opp.Dir() - CVector(CGeoPoint(-Param::Field::PITCH_LENGTH / 2.0,0) - opp.Pos() ).dir())) );
+	double judgeAngle = abs (Utils::Normalize((opp.Dir() - CVector(CGeoPoint(-PARAM::Field::PITCH_LENGTH / 2.0,0) - opp.Pos() ).dir())) );
 	bool isFaceOurDoor = judgeAngle < angle || judgeAngle == angle;
 	return isFaceOurDoor && isBallNearOpp;
 }
@@ -600,8 +600,8 @@ bool CAdvanceBallV1::meFaceTheirDoor(const CVisionModule* pVision,const int vecN
 {
 	const PlayerVisionT& me = pVision->ourPlayer(vecNumber);
 	double me2GoalAngle;
-	me2GoalAngle =abs(Utils::Normalize((CVector(CGeoPoint(Param::Field::PITCH_LENGTH / 2.0,0) - me.Pos()).dir() - me.Dir()))) ;
-	if (me2GoalAngle < Param::Math::PI / 3)
+	me2GoalAngle =abs(Utils::Normalize((CVector(CGeoPoint(PARAM::Field::PITCH_LENGTH / 2.0,0) - me.Pos()).dir() - me.Dir()))) ;
+	if (me2GoalAngle < PARAM::Math::PI / 3)
 	{
 		return true;
 	}
@@ -628,7 +628,7 @@ void CAdvanceBallV1::voilenceActionTime(const CVisionModule* pVision,int vecNumb
 			extr_dist = 150;
 		}
 		CGeoPoint fast_point = faceTarget + Utils::Polar2Vector(extr_dist,(faceTarget - me.Pos()).dir());
-		if (! Utils::OutOfField(fast_point,0))
+		if (Utils::IsInField(fast_point,0))
 		{
 			faceTarget = fast_point;
 		}		
@@ -636,7 +636,7 @@ void CAdvanceBallV1::voilenceActionTime(const CVisionModule* pVision,int vecNumb
 	CVector finalSpeed = Utils::Polar2Vector(500,(faceTarget - me.Pos()).dir());
 	TaskT task;
 	task.executor = vecNumber;
-	task.player.angle =Utils::Normalize(self2ball.dir() + Param::Math::PI) ;
+	task.player.angle =Utils::Normalize(self2ball.dir() + PARAM::Math::PI) ;
 	task.player.max_acceleration = 650;
 	task.player.pos = opp.Pos();
 	task.player.vel = finalSpeed;
@@ -648,7 +648,7 @@ void CAdvanceBallV1::blockingOuterOppTime(const CVisionModule* pVision,int vecNu
 {
 //	const MobileVisionT& ball = pVision->Ball();
 	const PlayerVisionT& me = pVision->ourPlayer(vecNumber);
-//	const PlayerVisionT& opp = pVision->TheirPlayer(opponentID);
+//	const PlayerVisionT& opp = pVision->theirPlayer(opponentID);
 	int flag =task().player.flag;
 
 	CGeoPoint blockingIntoPenaltyPoint =CGeoPoint(0,0);
@@ -659,12 +659,12 @@ void CAdvanceBallV1::blockingOuterOppTime(const CVisionModule* pVision,int vecNu
 //    int OppNum = oppList.size();
 //    for (int i = 0; i< OppNum;i ++)
 //    {
-//        CGeoPoint oppPos = pVision->TheirPlayer(oppList[i].num).Pos();
+//        CGeoPoint oppPos = pVision->theirPlayer(oppList[i].num).Pos();
 //        if (!Utils::InOurPenaltyArea(oppPos,0))
 //        {
 //            theirBestPlayerOutOurPenalty = oppList[i].num;
 //            posSide side  = POS_SIDE_MIDDLE;
-//            theirBestPlayerOutOurPenalty2Goal = CVector(oppPos - CGeoPoint(-Param::Field::PITCH_LENGTH/2.0,0)).dir();
+//            theirBestPlayerOutOurPenalty2Goal = CVector(oppPos - CGeoPoint(-PARAM::Field::PITCH_LENGTH/2.0,0)).dir();
 //            blockingIntoPenaltyPoint = DefendUtils::calcPenaltyLinePoint(theirBestPlayerOutOurPenalty2Goal,side,1);
 //            break;
 //        }
@@ -672,7 +672,7 @@ void CAdvanceBallV1::blockingOuterOppTime(const CVisionModule* pVision,int vecNu
     theirBestPlayerOutOurPenalty = ZSkillUtils::instance()->getTheirBestPlayer();
     CGeoPoint oppPos = pVision->theirPlayer(theirBestPlayerOutOurPenalty).Pos();
     posSide side  = POS_SIDE_MIDDLE;
-    theirBestPlayerOutOurPenalty2Goal = CVector(oppPos - CGeoPoint(-Param::Field::PITCH_LENGTH/2.0,0)).dir();
+    theirBestPlayerOutOurPenalty2Goal = CVector(oppPos - CGeoPoint(-PARAM::Field::PITCH_LENGTH/2.0,0)).dir();
     blockingIntoPenaltyPoint = DefendUtils::calcPenaltyLinePoint(theirBestPlayerOutOurPenalty2Goal,side,1);
 	double me2TheOppDir = (pVision->theirPlayer(theirBestPlayerOutOurPenalty).Pos() - me.Pos()).dir();
 	setSubTask(PlayerRole::makeItSimpleGoto(vecNumber,blockingIntoPenaltyPoint,me2TheOppDir,CVector(0,0),0,flag));
@@ -682,8 +682,8 @@ void CAdvanceBallV1::blockingBestOppTime(const CVisionModule* pVision,int vecNum
 	const PlayerVisionT& opp = pVision->theirPlayer(opponentID);
 	const PlayerVisionT& me = pVision->ourPlayer(vecNumber);
 	const MobileVisionT& ball = pVision->ball();
-	CVector opp2ourGoal = CGeoPoint(-Param::Field::PITCH_LENGTH / 2.0 , 0) - opp.Pos();
-	CGeoSegment oppShootLine = CGeoSegment(opp.Pos(), CGeoPoint(-Param::Field::PITCH_LENGTH / 2.0 , 0));
+	CVector opp2ourGoal = CGeoPoint(-PARAM::Field::PITCH_LENGTH / 2.0 , 0) - opp.Pos();
+	CGeoSegment oppShootLine = CGeoSegment(opp.Pos(), CGeoPoint(-PARAM::Field::PITCH_LENGTH / 2.0 , 0));
 	CGeoCirlce oppCircle = CGeoCirlce(opp.Pos(),OPP_HAS_BALL_DIST* 0.25);
 	CGeoSegmentCircleIntersection intersectionPoint = CGeoSegmentCircleIntersection(oppShootLine,oppCircle);
 	CGeoPoint moviongPoint = intersectionPoint.point1();
@@ -696,13 +696,13 @@ bool CAdvanceBallV1::ballMoving2Opp(const CVisionModule* pVision,const int vecNu
 	const PlayerVisionT& me = pVision->ourPlayer(vecNumber);
 	const MobileVisionT& ball = pVision->ball();
 	CVector self2ball = ball.Pos() - me.Pos();
-	double diff_ballMoving2me = Utils::Normalize(ball.Vel().dir() - self2ball.dir() - Param::Math::PI);
+	double diff_ballMoving2me = Utils::Normalize(ball.Vel().dir() - self2ball.dir() - PARAM::Math::PI);
 	if ( opponentID > 0 ){
 		const PlayerVisionT& opp = pVision->theirPlayer(opponentID);
 		CVector ball2enemy = opp.Pos() - ball.Pos();
 		double diff_ballMoving2Opp = Utils::Normalize(ball2enemy.dir() - ball.Vel().dir());
-		if ( abs(diff_ballMoving2Opp) < Param::Math::PI/6 
-			&& abs(diff_ballMoving2me) - abs(diff_ballMoving2Opp) > Param::Math::PI/20)
+		if ( abs(diff_ballMoving2Opp) < PARAM::Math::PI/6 
+			&& abs(diff_ballMoving2me) - abs(diff_ballMoving2Opp) > PARAM::Math::PI/20)
 		{
 			return  true;
 		}
@@ -719,10 +719,10 @@ bool CAdvanceBallV1::isMePassedOpp(const CVisionModule* pVision,const int vecNum
 //	CVector opp2Ball = ball.Pos() - opp.Pos();
 	CVector ball2Opp = opp.Pos() - ball.Pos();
 	CVector me2Ball = ball.Pos() - me.Pos();
-//	bool meDirControlBall = abs(Utils::Normalize(me2Ball.dir() - me.Dir())) < Param::Math::PI / 4;
-	bool meDistControlBall = me2Ball.mod() < Param::Vehicle::V2::PLAYER_FRONT_TO_CENTER + 11;
-	bool mePassOpp_1 =abs(Utils::Normalize(me2Ball.dir() - me2opp.dir())  )>Param::Math::PI / 2.5;
-	bool mePassOpp_2 = abs(Utils::Normalize(opp.Dir() - ball2Opp.dir()))<Param::Math::PI / 3.0;
+//	bool meDirControlBall = abs(Utils::Normalize(me2Ball.dir() - me.Dir())) < PARAM::Math::PI / 4;
+	bool meDistControlBall = me2Ball.mod() < PARAM::Vehicle::V2::PLAYER_FRONT_TO_CENTER + 11;
+	bool mePassOpp_1 =abs(Utils::Normalize(me2Ball.dir() - me2opp.dir())  )>PARAM::Math::PI / 2.5;
+	bool mePassOpp_2 = abs(Utils::Normalize(opp.Dir() - ball2Opp.dir()))<PARAM::Math::PI / 3.0;
 	if (meDistControlBall && meDistControlBall && (mePassOpp_1||mePassOpp_2)||me2opp.mod()>50)
 	{
 		//GDebugEngine::Instance()->gui_debug_msg(CGeoPoint(0,0),"PASS!!!!!!!!!!!",COLOR_WHITE);
@@ -737,14 +737,14 @@ bool CAdvanceBallV1::isVisionHasBall(const CVisionModule* pVision,const int vecN
 
 	const PlayerVisionT& me = pVision->ourPlayer(vecNumber);
 	const MobileVisionT& ball =pVision->ball();
-	//double visionJudgDist= Param::Vehicle::V2::PLAYER_FRONT_TO_CENTER + Param::Field::BALL_SIZE +2;
+	//double visionJudgDist= PARAM::Vehicle::V2::PLAYER_FRONT_TO_CENTER + PARAM::Field::BALL_SIZE +2;
 	double visionJudgDist= 11;
 	bool distVisionHasBall = CVector(me.Pos() - ball.Pos()).mod() <= visionJudgDist;
 	bool dirVisionHasBall ;
 	double meDir = me.Dir();
 	double me2Ball = (ball.Pos() - me.Pos()).dir();
 	double meDir_me2Ball_Diff = abs(Utils::Normalize((meDir - me2Ball)));
-	if (meDir_me2Ball_Diff < Param::Math::PI / 4.0)
+	if (meDir_me2Ball_Diff < PARAM::Math::PI / 4.0)
 	{
 		dirVisionHasBall = true;
 	}
@@ -771,9 +771,9 @@ bool CAdvanceBallV1::isShootBlockedInPenaltyArea(const CVisionModule* pVision,co
 	CGeoPoint projectionPoint = ball2ourGoal.projection(opp.Pos());
 	double opp2LineDist = (projectionPoint - opp.Pos()).mod();
 	//	bool isPassOpp;//false表示没Pass
-	//isPassOpp =/*Utils::Normalize( me.Dir() - (opp.Pos() - me.Pos()).dir()) > Param::Math::PI/3; */isMePassedOpp(pVision,vecNumber);
+	//isPassOpp =/*Utils::Normalize( me.Dir() - (opp.Pos() - me.Pos()).dir()) > PARAM::Math::PI/3; */isMePassedOpp(pVision,vecNumber);
 
-	isBlocked = opp2LineDist < (Param::Vehicle::V2::PLAYER_SIZE / 2.0  +  5 )/*&& !isPassOpp*/;
+	isBlocked = opp2LineDist < (PARAM::Vehicle::V2::PLAYER_SIZE / 2.0  +  5 )/*&& !isPassOpp*/;
 	//cout <<"opp2LineDist"<<opp2LineDist<<"   dist:"<<opp2LineDist<<" "<<endl;
 	if (isBlocked){
 		return true;
@@ -800,9 +800,9 @@ bool CAdvanceBallV1::isShootBlocked(const CVisionModule* pVision,const int vecNu
 	CGeoPoint projectionPoint = ball2ourGoal.projection(opp.Pos());
 	double opp2LineDist = (projectionPoint - opp.Pos()).mod();
 	bool isPassOpp;//false表示没Pass
-	isPassOpp =/*Utils::Normalize( me.Dir() - (opp.Pos() - me.Pos()).dir()) > Param::Math::PI/3; */isMePassedOpp(pVision,vecNumber);
+	isPassOpp =/*Utils::Normalize( me.Dir() - (opp.Pos() - me.Pos()).dir()) > PARAM::Math::PI/3; */isMePassedOpp(pVision,vecNumber);
 
-	isBlocked = opp2LineDist < Param::Vehicle::V2::PLAYER_SIZE / 2.0 && !isPassOpp;
+	isBlocked = opp2LineDist < PARAM::Vehicle::V2::PLAYER_SIZE / 2.0 && !isPassOpp;
 	//cout << "opp2LineDist:"<<opp2LineDist<<"  "<<"isPassOpp"<<isPassOpp<<endl;
 	if (isBlocked){
 		return true;
@@ -827,7 +827,7 @@ bool CAdvanceBallV1::checkOppHasBall(const CVisionModule* pVision)
 //	else
 //		opponentID = oppList[0].num;
 
-//	if (!pVision->TheirPlayer(opponentID).Valid()) {
+//	if (!pVision->theirPlayer(opponentID).Valid()) {
 //		opponentID = getTheirMostClosetoPosPlayerNum(pVision, pVision->Ball().Pos());
 //	}
     opponentID = ZSkillUtils::instance()->getTheirBestPlayer();
@@ -843,10 +843,10 @@ bool CAdvanceBallV1::checkOppHasBall(const CVisionModule* pVision)
 	CVector opp2ourGoal = ourGoal - opponent.Pos();
 	double opponent2ball_diff = fabs(Utils::Normalize(opponent2ball.dir() - opponent.Dir()));
 	double judgeDist = OPP_HAS_BALL_DIST;
-	//if ( (opponent2ball.mod() < 40 && self2ball.mod()+15 > opponent2ball.mod()/* && opponent2ball_diff < Param::Math::PI * 90 / 180*/)
-	//	|| (opponent2ball.mod() < Param::Vehicle::V2::PLAYER_SIZE + Param::Field::BALL_SIZE + 5 /*&& opponent2ball_diff < Param::Math::PI * 100 / 180*/))	
+	//if ( (opponent2ball.mod() < 40 && self2ball.mod()+15 > opponent2ball.mod()/* && opponent2ball_diff < PARAM::Math::PI * 90 / 180*/)
+	//	|| (opponent2ball.mod() < PARAM::Vehicle::V2::PLAYER_SIZE + PARAM::Field::BALL_SIZE + 5 /*&& opponent2ball_diff < PARAM::Math::PI * 100 / 180*/))	
 	//GDebugEngine::Instance()->gui_debug_arc(opponent.Pos(),judgeDist,0,360,COLOR_WHITE);
-	if(opponent2ball.mod() < judgeDist  && opponent2ball_diff < Param::Math::PI * 70 / 180)
+	if(opponent2ball.mod() < judgeDist  && opponent2ball_diff < PARAM::Math::PI * 70 / 180)
 		return true; // 考虑对手的朝向,没有对着球则忽略
 	else 
 		return false;
@@ -855,7 +855,7 @@ bool CAdvanceBallV1::checkUsingVoilence(const CVisionModule*pVision,int vecNumbe
 {
 	const MobileVisionT& ball = pVision->ball();
 //	const PlayerVisionT& me = pVision->ourPlayer(vecNumber);
-//	const PlayerVisionT& opp = pVision->TheirPlayer(opponentID);
+//	const PlayerVisionT& opp = pVision->theirPlayer(opponentID);
 //	CVector opp2ball = ball.Pos() - opp.Pos();
 
 	if (ball.X() < 0 && !WEAK_OPP && isOppFaceOurDoor(pVision)&&checkBallFront(pVision) && !ballBetweentMeAndOpp(pVision,vecNumber))
@@ -874,9 +874,9 @@ bool CAdvanceBallV1::oppBlockMe(const CVisionModule* pVision,const int vecNumber
 	CVector ball2opp = opp.Pos() - ball.Pos();
 	CVector me2Opp = opp.Pos() - me.Pos();
 	bool isBallNearOpp = ball2opp.mod() < 15;
-	bool isMeFaceTheirGoal = abs(Utils::Normalize(me.Dir() - me2Goal.dir())) < Param::Math::PI / 6.0;
-	bool oppFrontMe = abs(Utils::Normalize(me2Ball.dir() - me2Opp.dir())) < Param::Math::PI / 9.0;
-	if (projecPoint.dist(opp.Pos()) < Param::Vehicle::V2::PLAYER_SIZE&&(ball.Pos().x()> me.Pos().x() && ball.Pos().x() < opp.Pos().x()))
+	bool isMeFaceTheirGoal = abs(Utils::Normalize(me.Dir() - me2Goal.dir())) < PARAM::Math::PI / 6.0;
+	bool oppFrontMe = abs(Utils::Normalize(me2Ball.dir() - me2Opp.dir())) < PARAM::Math::PI / 9.0;
+	if (projecPoint.dist(opp.Pos()) < PARAM::Vehicle::V2::PLAYER_SIZE&&(ball.Pos().x()> me.Pos().x() && ball.Pos().x() < opp.Pos().x()))
 	{
 		return true && isMeFaceTheirGoal && isBallNearOpp&&oppFrontMe ;
 	}
@@ -901,7 +901,7 @@ bool CAdvanceBallV1::selectChipKick(const CVisionModule* pVision,int vecNumber)
 	CGeoLine ball2Goal = CGeoLine(ball.Pos(), kickDir);
 	CGeoPoint projPoint = ball2Goal.projection(opp.Pos());
 	double blockDist = opp.Pos().dist(projPoint);
-	if(ball2opp.mod() > 26 && ball2opp.mod() < 50 && abs(Utils::Normalize(me2ball.dir() -ball2opp.dir() )) < Param::Math::PI / 4.0 && blockDist < Param::Field::MAX_PLAYER_SIZE * 0.5 )
+	if(ball2opp.mod() > 26 && ball2opp.mod() < 50 && abs(Utils::Normalize(me2ball.dir() -ball2opp.dir() )) < PARAM::Math::PI / 4.0 && blockDist < PARAM::Field::MAX_PLAYER_SIZE * 0.5 )
 	{
 		return true;
 	}
@@ -922,7 +922,7 @@ void CAdvanceBallV1::calcPushTarget(const CVisionModule* pVision)
 	double oppDist2Ball = 1000;
 	int left_opp_num = 0;
 	int right_opp_num = 0;
-	for (int i=1; i<=Param::Field::MAX_PLAYER; i++){
+	for (int i=0; i<PARAM::Field::MAX_PLAYER; i++){
 		if ( !pVision->theirPlayer(i).Valid() )
 			continue;
 
@@ -933,7 +933,7 @@ void CAdvanceBallV1::calcPushTarget(const CVisionModule* pVision)
 		CVector ball2opp = opp.Pos() - ball.Pos();
 		double diff_block = Utils::Normalize(ball2opp.dir() - ball2theirGoal.dir());
 
-		if ( abs(diff_block) < Param::Math::PI/4 && ball2opp.mod() < 50 )
+		if ( abs(diff_block) < PARAM::Math::PI/4 && ball2opp.mod() < 50 )
 			is_shootline_blocked = true;
 
 		if ( opp.Y() > 0 )
@@ -954,7 +954,7 @@ void CAdvanceBallV1::calcPushTarget(const CVisionModule* pVision)
 		CVector bestOpp2ball = ball.Pos() - bestOpp.Pos();
 		double usBlockAngle = Utils::Normalize(bestOpp2ball.dir() - self2ball.dir());
 		if (RobotSensor::Instance()->IsInfraredOn(_executor) &&
-			abs(usBlockAngle) < Param::Math::PI/2.0 )
+			abs(usBlockAngle) < PARAM::Math::PI/2.0 )
 			safe_change_dir = true;
 	}
 
@@ -979,7 +979,7 @@ void CAdvanceBallV1::calcPushTarget(const CVisionModule* pVision)
 	double minDist = 100;
 	int friendID = 0;
 	int friendSide = 0; // 1表示右边,-1表示左边
-	for (int i=1; i<=Param::Field::MAX_PLAYER; i++){
+	for (int i=0; i<PARAM::Field::MAX_PLAYER; i++){
 		if ( i == _executor )
 			continue;
 		if ( !pVision->ourPlayer(i).Valid() )
@@ -995,7 +995,7 @@ void CAdvanceBallV1::calcPushTarget(const CVisionModule* pVision)
 			CVector ball2friend = myfriend.Pos() - ball.Pos();
 			double diff2friend = Utils::Normalize(ball2friend.dir() - self2ball.dir());
 			//cout<<"No."<<i<<" diff friend:"<<Utils::Rad2Deg(diff2friend)<<endl;
-			if ( abs(diff2friend) > 5*Param::Math::PI/12 )
+			if ( abs(diff2friend) > 5*PARAM::Math::PI/12 )
 				continue;
 
 			// 这里假设我拿球的朝向是向着对方半场的
@@ -1006,14 +1006,14 @@ void CAdvanceBallV1::calcPushTarget(const CVisionModule* pVision)
 	double push_dir;
 	if ( friendSide != 0 ){
 		const PlayerVisionT& selected_friend = pVision->ourPlayer(friendID);
-		CGeoPoint friend_front = selected_friend.Pos() + Utils::Polar2Vector(Param::Vehicle::V2::PLAYER_FRONT_TO_CENTER, selected_friend.Dir());
+		CGeoPoint friend_front = selected_friend.Pos() + Utils::Polar2Vector(PARAM::Vehicle::V2::PLAYER_FRONT_TO_CENTER, selected_friend.Dir());
 		CVector ball2friend = friend_front - ball.Pos();
 		double temp_diff = Utils::Normalize(ball2theirGoal.dir() - ball2friend.dir());
 		push_dir = Utils::Normalize(ball2friend.dir() + 0.2*temp_diff);
 		if ( friendSide > 0 )
-			push_dir = min(Param::Math::PI/2, push_dir);
+			push_dir = min(PARAM::Math::PI/2, push_dir);
 		else if ( friendSide < 0 )
-			push_dir = max(-Param::Math::PI/2, push_dir);
+			push_dir = max(-PARAM::Math::PI/2, push_dir);
 	}
 
 	switch (attack_side) 
@@ -1022,21 +1022,21 @@ void CAdvanceBallV1::calcPushTarget(const CVisionModule* pVision)
 		_pushBallTarget = theirCenter;
 		break;
 	case ATTACK_TO_LEFT:
-		if ( friendSide < 0 || friendSide > 0 && ball.Y() < Param::Field::PITCH_WIDTH/2 - 80 )
+		if ( friendSide < 0 || friendSide > 0 && ball.Y() < PARAM::Field::PITCH_WIDTH/2 - 80 )
 			_pushBallTarget = ball.Pos() + Utils::Polar2Vector(60, push_dir);
 		else{
-			double pd = Utils::Normalize(ball2theirGoal.dir()-Param::Math::PI/3);
-			pd = max(-Param::Math::PI/2, pd);
+			double pd = Utils::Normalize(ball2theirGoal.dir()-PARAM::Math::PI/3);
+			pd = max(-PARAM::Math::PI/2, pd);
 			_pushBallTarget = ball.Pos() + Utils::Polar2Vector(60, pd);
 			//cout<<"attack left\n";
 		}
 		break;
 	case ATTACK_TO_RIGHT:
-		if ( friendSide > 0 || friendSide < 0 && ball.Y() > -Param::Field::PITCH_WIDTH/2 + 80)
+		if ( friendSide > 0 || friendSide < 0 && ball.Y() > -PARAM::Field::PITCH_WIDTH/2 + 80)
 			_pushBallTarget = ball.Pos() + Utils::Polar2Vector(60, push_dir);
 		else{
-			double pd = Utils::Normalize(ball2theirGoal.dir()+Param::Math::PI/3);
-			pd = min(Param::Math::PI/2, pd);
+			double pd = Utils::Normalize(ball2theirGoal.dir()+PARAM::Math::PI/3);
+			pd = min(PARAM::Math::PI/2, pd);
 			_pushBallTarget = ball.Pos() + Utils::Polar2Vector(60, pd);
 			//cout<<"attack right\n";
 		}
@@ -1049,7 +1049,7 @@ void CAdvanceBallV1::calcPushTarget(const CVisionModule* pVision)
 bool CAdvanceBallV1::checkEnoughSpaceToTurnKick(const CVisionModule* pVision)
 {
 	const MobileVisionT& ball = pVision->ball();
-	CGeoPoint goalCenter = CGeoPoint(Param::Field::PITCH_LENGTH / 2.0 ,0);
+	CGeoPoint goalCenter = CGeoPoint(PARAM::Field::PITCH_LENGTH / 2.0 ,0);
 	double ball2GoalCenterDist = (ball.Pos() - goalCenter).mod();
 	if (ball2GoalCenterDist >120 && ball2GoalCenterDist < 230)
 	{
@@ -1123,10 +1123,10 @@ CPlayerCommand* CAdvanceBallV1::execute(const CVisionModule* pVision)
 }
 
 bool CAdvanceBallV1::faceTheirGoal(const CVisionModule* pVision, const int executor) {
-	double dist = Param::Field::PITCH_LENGTH / 2 - pVision->ourPlayer(executor).Pos().x();
+	double dist = PARAM::Field::PITCH_LENGTH / 2 - pVision->ourPlayer(executor).Pos().x();
 	double buffer = 0.05 * dist + 20;
-	const CGeoPoint theirLeft = CGeoPoint(Param::Field::PITCH_LENGTH / 2, -Param::Field::GOAL_WIDTH / 2 - buffer);
-	const CGeoPoint theirRight = CGeoPoint(Param::Field::PITCH_LENGTH / 2, Param::Field::GOAL_WIDTH / 2 + buffer);
+	const CGeoPoint theirLeft = CGeoPoint(PARAM::Field::PITCH_LENGTH / 2, -PARAM::Field::GOAL_WIDTH / 2 - buffer);
+	const CGeoPoint theirRight = CGeoPoint(PARAM::Field::PITCH_LENGTH / 2, PARAM::Field::GOAL_WIDTH / 2 + buffer);
 	double leftAngle = Utils::Normalize((theirLeft - pVision->ourPlayer(executor).Pos()).dir());
 	double rightAngle = Utils::Normalize((theirRight - pVision->ourPlayer(executor).Pos()).dir());
 	double myDir = pVision->ourPlayer(executor).Dir();
@@ -1153,7 +1153,7 @@ bool CAdvanceBallV1::faceTheirGoal(const CVisionModule* pVision, const int execu
 int CAdvanceBallV1::getTheirMostClosetoPosPlayerNum(const CVisionModule* pVision, CGeoPoint pos) {
 	double dist = 1000;
 	int num = 0;
-	for (int i = 1; i <= Param::Field::MAX_PLAYER; i++) {
+	for (int i = 0; i < PARAM::Field::MAX_PLAYER; i++) {
 		if (pVision->theirPlayer(i).Valid()) {
 			if (pVision->theirPlayer(i).Pos().dist(pos)<dist) {
 				dist = pVision->theirPlayer(i).Pos().dist(pos);

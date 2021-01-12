@@ -19,7 +19,7 @@ CZBlocking::CZBlocking(){
 void CZBlocking::plan(const CVisionModule* pVision){
     static bool is_first = true;
     //内部状态进行重置
-    if ( pVision->getCycle() - _lastCycle > Param::Vision::FRAME_RATE * 0.1 )
+    if ( pVision->getCycle() - _lastCycle > PARAM::Vision::FRAME_RATE * 0.1 )
         setState(BEGINNING);
 
     int vecNumber = task().executor;
@@ -37,7 +37,7 @@ void CZBlocking::plan(const CVisionModule* pVision){
     TaskT BlockingTask(task());
 
     BlockingTask.player.pos = ZSkillUtils::instance()->getMarkingPoint(enemyPos, enemy.Vel(), 450*10, 450*10, 450, 300*10, defPos);
-    BlockingTask.player.angle = (ball.RawPos() - me.RawPos()).dir();//me2enemy.dir();//CVector(CGeoPoint(Param::Field::PITCH_LENGTH/2.0,0) - me.Pos()).dir();
+    BlockingTask.player.angle = (ball.RawPos() - me.RawPos()).dir();//me2enemy.dir();//CVector(CGeoPoint(PARAM::Field::PITCH_LENGTH/2.0,0) - me.Pos()).dir();
     BlockingTask.player.is_specify_ctrl_method = true;
     BlockingTask.player.specified_ctrl_method = CMU_TRAJ;
     BlockingTask.player.flag |= PlayerStatus::ALLOW_DSS;

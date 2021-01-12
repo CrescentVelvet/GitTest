@@ -164,15 +164,15 @@ CGeoPoint CDefaultPos::generatePos(const CVisionModule* pVision){
 bool CDefaultPos::inCourt(int side, int enemyNum){
 	bool result = false;
 	if (side == -1){
-		if (vision->theirPlayer(enemyNum).Y() < -Param::Field::PITCH_WIDTH/4){
+		if (vision->theirPlayer(enemyNum).Y() < -PARAM::Field::PITCH_WIDTH/4){
 			result = true;
 		}
 	}else if (side == 0){
-		if (vision->theirPlayer(enemyNum).Y()>= - Param::Field::PITCH_WIDTH/4 && vision->theirPlayer(enemyNum).Y()<= Param::Field::PITCH_WIDTH/4){
+		if (vision->theirPlayer(enemyNum).Y()>= - PARAM::Field::PITCH_WIDTH/4 && vision->theirPlayer(enemyNum).Y()<= PARAM::Field::PITCH_WIDTH/4){
 			result = true;
 		}
 	}else if (side == 1){
-		if (vision->theirPlayer(enemyNum).Y()>Param::Field::PITCH_WIDTH/4){
+		if (vision->theirPlayer(enemyNum).Y()>PARAM::Field::PITCH_WIDTH/4){
 			result = true;
 		}
 	}
@@ -185,7 +185,7 @@ void CDefaultPos::updateDefInfo(){
 	_rightDefList.clear();
 	_middleDefList.clear();
 
-	for(int i=0;i<Param::Field::MAX_PLAYER;i++){
+	for(int i=0;i<PARAM::Field::MAX_PLAYER;i++){
 		if (DefenceInfo::Instance()->getOppPlayerByNum(i)->isTheRole("RDefender")){
 			Defender tmpDef;
 			tmpDef.defender = DefenceInfo::Instance()->getOppPlayerByNum(i)->getNum();

@@ -36,7 +36,7 @@ namespace
 	//状态切换相关变量
 	const double RUSH_TO_BALL_CRITICAL_DIST = 100;	//100cm
 	const double FOLLOWBALL_CRITICAL_DIST = 50;		//50cm
-	const double GO_KICK_BALL_CRITICAL_DIST = 2*Param::Vehicle::V2::PLAYER_SIZE + Param::Field::BALL_SIZE;
+	const double GO_KICK_BALL_CRITICAL_DIST = 2*PARAM::Vehicle::V2::PLAYER_SIZE + PARAM::Field::BALL_SIZE;
 
 	//预测相关
 	double CM_PREDICT_FACTOR = 1.5;
@@ -70,7 +70,7 @@ CChaseKickV2::CChaseKickV2()
 void CChaseKickV2::plan(const CVisionModule* pVision)
 {
 	//刚进入本skill，为初始状态，即BEGINNING，需要做一些清理工作
-	if ( pVision->getCycle() - _lastCycle > Param::Vision::FRAME_RATE * 0.1 ){
+	if ( pVision->getCycle() - _lastCycle > PARAM::Vision::FRAME_RATE * 0.1 ){
 		setState(BEGINNING);
 		_goKickCouter=0;
 		_compensateDir=0;
@@ -96,7 +96,7 @@ void CChaseKickV2::plan(const CVisionModule* pVision)
 	const CVector self2rawball = ball.Pos() - me.Pos();									//小车到当前球向量
 //	const double dist2predictball = self2ball.mod();									//小车到预测球距离
 	const double dist2ball = self2rawball.mod();										//小车到当前球距离
-	const double reverse_finalDir = Utils::Normalize(finalKickDir+Param::Math::PI);		//最终踢球方向的反向
+	const double reverse_finalDir = Utils::Normalize(finalKickDir+PARAM::Math::PI);		//最终踢球方向的反向
 //	const double dAngDiff = Utils::Normalize(self2ball.dir()-finalKickDir);
 	const double dAngDiffRaw = Utils::Normalize(self2rawball.dir()-finalKickDir);		//小车到当前球 - 踢球方向 夹角	TSB
 	const CVector ballVel = ball.Vel();
@@ -105,10 +105,10 @@ void CChaseKickV2::plan(const CVisionModule* pVision)
 //	bool isBallSpeedFast = (ballSpeed >= Ball_Moving_Fast_Speed)?true:false;		//根据设定的阈值判断球速是否足够大
 
 	//?????
-	double allowInfrontAngleBuffer = (dist2ball/(Param::Vehicle::V2::PLAYER_SIZE))*Param::Vehicle::V2::KICK_ANGLE < Param::Math::PI/5.0?
-		(dist2ball/(Param::Vehicle::V2::PLAYER_SIZE))*Param::Vehicle::V2::KICK_ANGLE:Param::Math::PI/5.0;
+	double allowInfrontAngleBuffer = (dist2ball/(PARAM::Vehicle::V2::PLAYER_SIZE))*PARAM::Vehicle::V2::KICK_ANGLE < PARAM::Math::PI/5.0?
+		(dist2ball/(PARAM::Vehicle::V2::PLAYER_SIZE))*PARAM::Vehicle::V2::KICK_ANGLE:PARAM::Math::PI/5.0;
 	bool isBallInFront = fabs(Utils::Normalize(self2rawball.dir()-me.Dir())) < allowInfrontAngleBuffer
-		&& dist2ball < (2.5*Param::Vehicle::V2::PLAYER_SIZE + Param::Field::BALL_SIZE);
+		&& dist2ball < (2.5*PARAM::Vehicle::V2::PLAYER_SIZE + PARAM::Field::BALL_SIZE);
 
 	//红外信号
 //    double isSensored = RobotSensor::Instance()->IsInfraredOn(robotNum);	//是否有检测到红外
@@ -118,7 +118,7 @@ void CChaseKickV2::plan(const CVisionModule* pVision)
 	const double dAngleMeBall2MeDir = fabs(Utils::Normalize(self2rawball.dir() - me.Dir()));		//球车向量与小车朝向夹角
 	const double dAngleBall2FinalKick=fabs(Utils::Normalize(self2rawball.dir() - finalKickDir));	
 	const double dAngleFinalKick2BallVelDir = fabs(Utils::Normalize(finalKickDir - ballVelDir));	
-	const double antiKickDir=Utils::Normalize(finalKickDir+Param::Math::PI);
+	const double antiKickDir=Utils::Normalize(finalKickDir+PARAM::Math::PI);
 	const CGeoPoint myPos = me.Pos();
 	const CGeoLine self2targetLine = CGeoLine(myPos,myPos+Utils::Polar2Vector(800,Utils::Normalize(finalKickDir)));			//小车到踢球目标点的直线
 //	const CGeoSegment self2targetSeg = CGeoSegment(myPos,myPos+Utils::Polar2Vector(800,Utils::Normalize(finalKickDir)));
@@ -134,9 +134,9 @@ void CChaseKickV2::plan(const CVisionModule* pVision)
 //	const CGeoPoint ballProj = self2targetLine.projection(ball.Pos());
 //	const bool ballOnTargetSeg = self2targetSeg.IsPointOnLineOnSegment(ballProj);
 
-	CGeoPoint kickPos=ball.Pos()+Utils::Polar2Vector(Param::Vehicle::V2::PLAYER_FRONT_TO_CENTER+1.5,antiKickDir);
-	CGeoPoint goalPos1=CGeoPoint(Param::Field::PITCH_LENGTH/2,-40);
-	CGeoPoint goalPos2=CGeoPoint(Param::Field::PITCH_LENGTH/2,40);
+	CGeoPoint kickPos=ball.Pos()+Utils::Polar2Vector(PARAM::Vehicle::V2::PLAYER_FRONT_TO_CENTER+1.5,antiKickDir);
+	CGeoPoint goalPos1=CGeoPoint(PARAM::Field::PITCH_LENGTH/2,-40);
+	CGeoPoint goalPos2=CGeoPoint(PARAM::Field::PITCH_LENGTH/2,40);
 	const CGeoSegment goalSeg=CGeoSegment(goalPos1,goalPos2);
 	const CGeoLine	goalLine=CGeoLine(goalPos1,goalPos2);
 	CGeoLineLineIntersection goalLine_ballVel=CGeoLineLineIntersection(goalLine,ballMovingLine);
@@ -157,16 +157,16 @@ void CChaseKickV2::plan(const CVisionModule* pVision)
 
 
 	//横向踢球角度补偿
-	if (ballSpeed>80&&state()==SPEED_UP&&fabs(ballVelDir)>Param::Math::PI/6)
+	if (ballSpeed>80&&state()==SPEED_UP&&fabs(ballVelDir)>PARAM::Math::PI/6)
 	{
 		if (verBos)
 		{
 			cout<<"compensate"<<endl;
 		}
-		_compensateDir=-Utils::Sign(ballVelDir)*Param::Math::PI*8/180;
+		_compensateDir=-Utils::Sign(ballVelDir)*PARAM::Math::PI*8/180;
 	}
 
-	//if (fabs(ballVelDir)>Param::Math::PI/6){
+	//if (fabs(ballVelDir)>PARAM::Math::PI/6){
 	//	finalKickDir=finalKickDir-ballVelDir/3;
 	//	GDebugEngine::Instance()->gui_debug_line(me.Pos(),me.Pos()+Utils::Polar2Vector(800,Utils::Normalize(finalKickDir)),COLOR_BLACK);
 	//}
@@ -176,7 +176,7 @@ void CChaseKickV2::plan(const CVisionModule* pVision)
 	bool isCanDirectKick = false;
 	//红外信息：仿真没有??
 //	if( isSensored ){
-    if( dAngleMeDir2FinalKick < Param::Math::PI/10 ){
+    if( dAngleMeDir2FinalKick < PARAM::Math::PI/10 ){
         isCanDirectKick = true;
     }
 //	}
@@ -184,23 +184,23 @@ void CChaseKickV2::plan(const CVisionModule* pVision)
 	double go_kick_factor = self2rawball.mod() / GO_KICK_BALL_CRITICAL_DIST;	
 	go_kick_factor = go_kick_factor > 1.0? 1.0 : go_kick_factor;	//角度控制,上限
 	go_kick_factor = go_kick_factor < 0.5? 0.5 : go_kick_factor;	//角度控制,下限
-	double DirectKickAllowAngle = go_kick_factor*Param::Vehicle::V2::KICK_ANGLE;
+	double DirectKickAllowAngle = go_kick_factor*PARAM::Vehicle::V2::KICK_ANGLE;
 	//球快速，根据原始球信息
 	if( fabs(Utils::Normalize(self2rawball.dir()-me.Dir())) </* 1.25**/DirectKickAllowAngle
-		&& dAngleMeDir2FinalKick < Param::Math::PI/30
+		&& dAngleMeDir2FinalKick < PARAM::Math::PI/30
 		&& self2rawball.mod() <= GO_KICK_BALL_CRITICAL_DIST ){	//球在身体前方 且  小车已朝向目标方向
 			isCanDirectKick = true;
 	}
 	if( fabs(Utils::Normalize(self2rawball.dir() - me.Dir())) </* 1.25**/DirectKickAllowAngle
-		&& dAngleMeDir2FinalKick < Param::Math::PI/20 
-		&& dAngleFinalKick2BallVelDir<Param::Math::PI/18&&isBallVelOnGoalLine
-		&& dAngleMeBall2BallVelDir < Param::Math::PI/15
-		|| dAngleMeBall2BallVelDir > 14*Param::Math::PI/15){		//球速方向及其反方向 和 目标踢球方向 相一致
+		&& dAngleMeDir2FinalKick < PARAM::Math::PI/20 
+		&& dAngleFinalKick2BallVelDir<PARAM::Math::PI/18&&isBallVelOnGoalLine
+		&& dAngleMeBall2BallVelDir < PARAM::Math::PI/15
+		|| dAngleMeBall2BallVelDir > 14*PARAM::Math::PI/15){		//球速方向及其反方向 和 目标踢球方向 相一致
 			isCanDirectKick = true;
 	}
 
-	bool is_ball_just_front = fabs(Utils::Normalize(self2rawball.dir()-me.Dir())) < Param::Vehicle::V2::KICK_ANGLE
-		&& self2rawball.mod() < 2.5*Param::Vehicle::V2::PLAYER_SIZE;
+	bool is_ball_just_front = fabs(Utils::Normalize(self2rawball.dir()-me.Dir())) < PARAM::Vehicle::V2::KICK_ANGLE
+		&& self2rawball.mod() < 2.5*PARAM::Vehicle::V2::PLAYER_SIZE;
 
 	isCanDirectKick = isCanDirectKick || is_ball_just_front;
 	isBallInFront = isBallInFront || is_ball_just_front;
@@ -214,12 +214,12 @@ void CChaseKickV2::plan(const CVisionModule* pVision)
 
 
 	//角度条件有点问题，这个角度去跟球
-	bool need_follow = dist2ball > GO_KICK_BALL_CRITICAL_DIST + 15	||  fabs(Utils::Normalize(self2rawball.dir() - me.Dir())) > Param::Math::PI/2.0/*2*Param::Vehicle::V2::KICK_ANGLE*/;
+	bool need_follow = dist2ball > GO_KICK_BALL_CRITICAL_DIST + 15	||  fabs(Utils::Normalize(self2rawball.dir() - me.Dir())) > PARAM::Math::PI/2.0/*2*PARAM::Vehicle::V2::KICK_ANGLE*/;
 
 
-	bool allow_touch_shoot = (fabs(dAngDiffRaw) <= Param::Math::PI/2.0)
-								&& (fabs(Utils::Normalize(ballVelDir - Utils::Normalize(self2rawball.dir()+Param::Math::PI))) < Param::Math::PI/2.5)
-								&& (ballSpeed > 30)&&ball.Pos().x()>me.Pos().x()+8&&fabs(ballVelDir)>Param::Math::PI/1.8;
+	bool allow_touch_shoot = (fabs(dAngDiffRaw) <= PARAM::Math::PI/2.0)
+								&& (fabs(Utils::Normalize(ballVelDir - Utils::Normalize(self2rawball.dir()+PARAM::Math::PI))) < PARAM::Math::PI/2.5)
+								&& (ballSpeed > 30)&&ball.Pos().x()>me.Pos().x()+8&&fabs(ballVelDir)>PARAM::Math::PI/1.8;
 
 	//bool allow_touch_shoot=false;
 
@@ -228,7 +228,7 @@ void CChaseKickV2::plan(const CVisionModule* pVision)
 	int  isLeft=-1; //需要赶到的方向
 	//cout<<ballVelDir<<endl;
 	//cout<<isLeft<<endl;
-	if (sin(ballVelDir)*Param::Field::PITCH_LENGTH/2<ball.Pos().x()*sin(ballVelDir)-ball.Pos().y()*cos(ballVelDir)){
+	if (sin(ballVelDir)*PARAM::Field::PITCH_LENGTH/2<ball.Pos().x()*sin(ballVelDir)-ball.Pos().y()*cos(ballVelDir)){
 		isLeft=1;
 	}
 	if (isLeft==1){
@@ -241,19 +241,19 @@ void CChaseKickV2::plan(const CVisionModule* pVision)
 	}else{
 		notReached=kickPos.y()>me.Pos().y();
 	}
-	bool badAngle=(fabs(ballVelDir)>Param::Math::PI*25/180&&dAngleFinalKick2BallVelDir>Param::Math::PI*15/180
-		||dAngleFinalKick2BallVelDir>Param::Math::PI*25/180)&&(!isBallVelOnGoalLine);
+	bool badAngle=(fabs(ballVelDir)>PARAM::Math::PI*25/180&&dAngleFinalKick2BallVelDir>PARAM::Math::PI*15/180
+		||dAngleFinalKick2BallVelDir>PARAM::Math::PI*25/180)&&(!isBallVelOnGoalLine);
 
 	bool need_speed_up=badAngle&&notReached;
 	bool need_wait_ball=badAngle&&isReached&&dist2ball>45&&(kickPos.x()-me.Pos().x())/fabs(kickPos.y()-me.Pos().y())<1;
 	bool wait_follow= isReached&&(kickPos.x()-me.Pos().x())/fabs(kickPos.y()-me.Pos().y())>1.2
-		||dAngleBall2FinalKick<Param::Math::PI/6 
-		|| fabs(Utils::Normalize(me.Vel().dir()-ballVelDir))<Param::Math::PI*45/180&&meSpeed>30 
+		||dAngleBall2FinalKick<PARAM::Math::PI/6 
+		|| fabs(Utils::Normalize(me.Vel().dir()-ballVelDir))<PARAM::Math::PI*45/180&&meSpeed>30 
 		|| ballSpeed<meSpeed*cos(Utils::Normalize(me.Vel().dir()-ballVelDir))+50
 		|| notReached;
 
-	bool bigAngle=fabs(ballVelDir)>Param::Math::PI*100/180||ball.Pos().x()<kickPos.x()+5;
-	bool notBigAngle=fabs(ballVelDir)<Param::Math::PI*80/180||ball.Pos().x()>kickPos.x()+15;
+	bool bigAngle=fabs(ballVelDir)>PARAM::Math::PI*100/180||ball.Pos().x()<kickPos.x()+5;
+	bool notBigAngle=fabs(ballVelDir)<PARAM::Math::PI*80/180||ball.Pos().x()>kickPos.x()+15;
 
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	//4.进行状态机维护
@@ -374,7 +374,7 @@ void CChaseKickV2::plan(const CVisionModule* pVision)
 		}
 		predict_factor -= 0.25;
 		double maxFactor=0.75,minFactor=0.25;
-		if (fabs(ballVelDir)>Param::Math::PI*65/180)
+		if (fabs(ballVelDir)>PARAM::Math::PI*65/180)
 		{
 			predict_factor*=1.25;
 		}
@@ -382,7 +382,7 @@ void CChaseKickV2::plan(const CVisionModule* pVision)
 		predict_factor = predict_factor<minFactor?minFactor:predict_factor;
 		CVector extra_ball_vel = rawBall2predictBall * predict_factor ;
 		//??
-		if (fabs(Utils::Normalize(extra_ball_vel.dir()-ball.Vel().dir())) > Param::Math::PI/3.0) {
+		if (fabs(Utils::Normalize(extra_ball_vel.dir()-ball.Vel().dir())) > PARAM::Math::PI/3.0) {
 			extra_ball_vel = extra_ball_vel * (-1.0);
 		}
 		CGeoPoint real_predict_ballPos = ball.Pos() + extra_ball_vel*1.2;
@@ -411,9 +411,9 @@ void CChaseKickV2::plan(const CVisionModule* pVision)
             //cout<<"RUSH_TO_BALL"<<endl;
 //			GDebugEngine::Instance()->gui_debug_msg(real_predict_ballPos,"RUSH_TO_BALL");
 			GDebugEngine::Instance()->gui_debug_x(real_predict_ballPos,COLOR_CYAN);
-			if( fabs(dAngDiffRaw) <= Param::Math::PI/2.0 ){
+			if( fabs(dAngDiffRaw) <= PARAM::Math::PI/2.0 ){
 				//设定跑的点，不考虑避球
-				chase_kick_task.player.pos = real_predict_ballPos + Utils::Polar2Vector(3*Param::Vehicle::V2::PLAYER_SIZE+Param::Field::BALL_SIZE,reverse_finalDir);
+				chase_kick_task.player.pos = real_predict_ballPos + Utils::Polar2Vector(3*PARAM::Vehicle::V2::PLAYER_SIZE+PARAM::Field::BALL_SIZE,reverse_finalDir);
 				//add front vel
 				if( myVelSpeedRelative2Final < 50 ) {
 					chase_kick_task.player.vel = chase_kick_task.player.vel + Utils::Polar2Vector(50,Utils::Normalize(finalKickDir));
@@ -426,10 +426,10 @@ void CChaseKickV2::plan(const CVisionModule* pVision)
 					chase_kick_task.player.vel = chase_kick_task.player.vel * (speed_factor * MaxSpeed /chase_kick_task.player.vel.mod());
 				}
 			}else{	//考虑避球 球从车后方过来，靠近车。
-				double nowdir = Utils::Normalize(self2rawball.dir()+Param::Math::PI);
+				double nowdir = Utils::Normalize(self2rawball.dir()+PARAM::Math::PI);
 				int sign = Utils::Normalize((nowdir - finalKickDir))>0?1:-1;
-				nowdir = Utils::Normalize(nowdir+sign*Param::Math::PI/2.0);
-				chase_kick_task.player.pos = ball.Pos() + Utils::Polar2Vector(1.5*Param::Field::MAX_PLAYER_SIZE,nowdir);
+				nowdir = Utils::Normalize(nowdir+sign*PARAM::Math::PI/2.0);
+				chase_kick_task.player.pos = ball.Pos() + Utils::Polar2Vector(1.5*PARAM::Field::MAX_PLAYER_SIZE,nowdir);
 				chase_kick_task.player.vel = CVector(0,0);
 			}
 			break;
@@ -440,14 +440,14 @@ void CChaseKickV2::plan(const CVisionModule* pVision)
 			//speedUpDistanceX则影响球车纵向距离，和球速方向相关，大角度时应为负值。
 			//speedUpVel设置为球速方便后面跟球，
             //cout<<"speed Up"<<endl;
-            speedUpDistanceY=fabs(kickPos.y()-me.Pos().y())+crossWiseFactor*Param::Vehicle::V2::PLAYER_SIZE+max((ballSpeed-100)*sin(fabs(ballVelDir-Param::Math::PI*20/180))*0.25,0.0);
+            speedUpDistanceY=fabs(kickPos.y()-me.Pos().y())+crossWiseFactor*PARAM::Vehicle::V2::PLAYER_SIZE+max((ballSpeed-100)*sin(fabs(ballVelDir-PARAM::Math::PI*20/180))*0.25,0.0);
             speedUpDistanceY=min(speedUpDistanceY,50.0);
 			speedUpDistanceX=15-sin(fabs(ballVelDir))*10+kickPos.x()-me.Pos().x();
             speedUpDistanceX=min(speedUpDistanceX,20.0);
             speedUpDistanceX=max(speedUpDistanceX,0.0);
 			//speedUpVel=ballVel/ballSpeed*((ballSpeed-80)*1.8+(fabs(ballVelDir)/3.14*180-20)*2);
 			speedUpVel=ball.Vel()/ballSpeed*(ballSpeed+dist2ball+(50-(meSpeed-ballSpeed)));
-			if (fabs(ballVelDir)>Param::Math::PI*65/180){
+			if (fabs(ballVelDir)>PARAM::Math::PI*65/180){
 				double diffX=fabs(kickPos.x()-me.Pos().x());
 				if (meSpeed<ballSpeed&&diffX>25)
 				{
@@ -486,14 +486,14 @@ void CChaseKickV2::plan(const CVisionModule* pVision)
 			GDebugEngine::Instance()->gui_debug_x(real_predict_ballPos,COLOR_BLUE);
             //cout<<"FOLLOW_BALL"<<endl;
 //			GDebugEngine::Instance()->gui_debug_msg(ball.Pos(),"FOLLOW_BALL");
-			projDist = ( projDist < Param::Vehicle::V2::PLAYER_SIZE+Param::Field::BALL_SIZE+3 )?
-				Param::Vehicle::V2::PLAYER_SIZE+Param::Field::BALL_SIZE+3 : projDist-3;
-			projDist = ( projDist > 1.2*Param::Vehicle::V2::PLAYER_SIZE+Param::Field::BALL_SIZE )?
-				1.2*Param::Vehicle::V2::PLAYER_SIZE+Param::Field::BALL_SIZE : projDist-2;
+			projDist = ( projDist < PARAM::Vehicle::V2::PLAYER_SIZE+PARAM::Field::BALL_SIZE+3 )?
+				PARAM::Vehicle::V2::PLAYER_SIZE+PARAM::Field::BALL_SIZE+3 : projDist-3;
+			projDist = ( projDist > 1.2*PARAM::Vehicle::V2::PLAYER_SIZE+PARAM::Field::BALL_SIZE )?
+				1.2*PARAM::Vehicle::V2::PLAYER_SIZE+PARAM::Field::BALL_SIZE : projDist-2;
 
 			chase_kick_task.player.pos = real_predict_ballPos + Utils::Polar2Vector(projDist,reverse_finalDir);
 
-			ballVel_factor = sqrt(ball2projDist/(Param::Vehicle::V2::PLAYER_SIZE+Param::Field::BALL_SIZE));
+			ballVel_factor = sqrt(ball2projDist/(PARAM::Vehicle::V2::PLAYER_SIZE+PARAM::Field::BALL_SIZE));
 			ballVel_factor = ballVel_factor > 1.25?1.25:ballVel_factor;				
 			if( ballMovingSeg.IsPointOnLineOnSegment(projMe) ){		//小车已经追上球
 				if (meSpeed>ballSpeed+50)
@@ -524,7 +524,7 @@ void CChaseKickV2::plan(const CVisionModule* pVision)
 		case GO_KICK_BALL:
             //cout<<"GO_KICK_BALL"<<endl;
 			//cout<<"ball"<<isBallInFront<<endl;
-			gokickFactor = (dAngleMeBall2MeDir/Param::Vehicle::V2::KICK_ANGLE) * dist2ball/(2*Param::Vehicle::V2::PLAYER_SIZE+Param::Field::BALL_SIZE);
+			gokickFactor = (dAngleMeBall2MeDir/PARAM::Vehicle::V2::KICK_ANGLE) * dist2ball/(2*PARAM::Vehicle::V2::PLAYER_SIZE+PARAM::Field::BALL_SIZE);
 			if( gokickFactor >= 0.75 ){
 				gokickFactor = 0.75;
 			} else if( gokickFactor < 0.75 ){
@@ -536,13 +536,13 @@ void CChaseKickV2::plan(const CVisionModule* pVision)
 			}
 			if( !isBallInFront ){
 				gokickFactor = 1;
-				chase_kick_task.player.pos = real_predict_ballPos + Utils::Polar2Vector(gokickFactor*Param::Vehicle::V2::PLAYER_FRONT_TO_CENTER,reverse_finalDir);
+				chase_kick_task.player.pos = real_predict_ballPos + Utils::Polar2Vector(gokickFactor*PARAM::Vehicle::V2::PLAYER_FRONT_TO_CENTER,reverse_finalDir);
 			}else{
 				chase_kick_task.player.pos = real_predict_ballPos
-					+ Utils::Polar2Vector(gokickFactor*Param::Vehicle::V2::PLAYER_FRONT_TO_CENTER,reverse_finalDir);
+					+ Utils::Polar2Vector(gokickFactor*PARAM::Vehicle::V2::PLAYER_FRONT_TO_CENTER,reverse_finalDir);
 			}
 
-			ballVel_factor = sqrt(ball2projDist/(Param::Vehicle::V2::PLAYER_SIZE+Param::Field::BALL_SIZE))*sqrt(ballSpeed/100);
+			ballVel_factor = sqrt(ball2projDist/(PARAM::Vehicle::V2::PLAYER_SIZE+PARAM::Field::BALL_SIZE))*sqrt(ballSpeed/100);
 			ballVel_factor = ballVel_factor > 1.0?1.0:ballVel_factor;
 			if( ballMovingSeg.IsPointOnLineOnSegment(projMe) ){		//小车已经追上球
 				if (meSpeed>ballSpeed+20)
@@ -577,25 +577,25 @@ void CChaseKickV2::plan(const CVisionModule* pVision)
 		}
 		//躲避球
 		//if( state() == FOLLOW_BALL||state()==WAIT_BALL){
-		//	if( meOnBallMovingSeg && projDist < 2*Param::Vehicle::V2::PLAYER_SIZE && ballSpeed > 50 && (dAngleMeBall2BallVelDir < Param::Math::PI/4 || dAngleMeBall2BallVelDir > Param::Math::PI*3/4)){
-		//		if( fabs(Utils::Normalize(finalKickDir-ballVelDir)) < Param::Math::PI/3.0 || fabs(Utils::Normalize(finalKickDir-ballVelDir)) > Param::Math::PI*2.0/3.0 ){
-		//			chase_kick_task.player.pos = ball.Pos() + Utils::Polar2Vector(2.0*Param::Field::MAX_PLAYER_SIZE,Utils::Normalize((me.Pos()-projMe).dir()));
+		//	if( meOnBallMovingSeg && projDist < 2*PARAM::Vehicle::V2::PLAYER_SIZE && ballSpeed > 50 && (dAngleMeBall2BallVelDir < PARAM::Math::PI/4 || dAngleMeBall2BallVelDir > PARAM::Math::PI*3/4)){
+		//		if( fabs(Utils::Normalize(finalKickDir-ballVelDir)) < PARAM::Math::PI/3.0 || fabs(Utils::Normalize(finalKickDir-ballVelDir)) > PARAM::Math::PI*2.0/3.0 ){
+		//			chase_kick_task.player.pos = ball.Pos() + Utils::Polar2Vector(2.0*PARAM::Field::MAX_PLAYER_SIZE,Utils::Normalize((me.Pos()-projMe).dir()));
 		//			chase_kick_task.player.vel = CVector(0.0,0.0);
 		//		}else{
-		//			chase_kick_task.player.pos = ball.Pos() + Utils::Polar2Vector(1.5*Param::Field::MAX_PLAYER_SIZE,Utils::Normalize((me.Pos()-projMe).dir()) );
+		//			chase_kick_task.player.pos = ball.Pos() + Utils::Polar2Vector(1.5*PARAM::Field::MAX_PLAYER_SIZE,Utils::Normalize((me.Pos()-projMe).dir()) );
 		//			chase_kick_task.player.vel = CVector(0.0,0.0);
 		//		}		
 
-		//		if( dAngleMeBall2BallVelDir < Param::Math::PI/5 ){
-		//			chase_kick_task.player.pos = chase_kick_task.player.pos + Utils::Polar2Vector(2.0*Param::Field::MAX_PLAYER_SIZE,Utils::Normalize((me.Pos()-projMe).dir()) );
+		//		if( dAngleMeBall2BallVelDir < PARAM::Math::PI/5 ){
+		//			chase_kick_task.player.pos = chase_kick_task.player.pos + Utils::Polar2Vector(2.0*PARAM::Field::MAX_PLAYER_SIZE,Utils::Normalize((me.Pos()-projMe).dir()) );
 		//		}
 		//	}
-		//	if( /*fabs(dAngDiffRaw) >= Param::Math::PI/3.0 &&*/ !isBallInFront && dist2ball < Param::Field::MAX_PLAYER_SIZE+5){
-		//		double nowdir = Utils::Normalize(self2rawball.dir()+Param::Math::PI);
+		//	if( /*fabs(dAngDiffRaw) >= PARAM::Math::PI/3.0 &&*/ !isBallInFront && dist2ball < PARAM::Field::MAX_PLAYER_SIZE+5){
+		//		double nowdir = Utils::Normalize(self2rawball.dir()+PARAM::Math::PI);
 		//		int sign = Utils::Normalize((nowdir - finalKickDir))>0?1:-1;
-		//		nowdir = Utils::Normalize(nowdir+sign*Param::Math::PI/2.0);
+		//		nowdir = Utils::Normalize(nowdir+sign*PARAM::Math::PI/2.0);
 
-		//		chase_kick_task.player.pos = real_predict_ballPos + Utils::Polar2Vector(5.0*Param::Field::MAX_PLAYER_SIZE,nowdir);
+		//		chase_kick_task.player.pos = real_predict_ballPos + Utils::Polar2Vector(5.0*PARAM::Field::MAX_PLAYER_SIZE,nowdir);
 		//		chase_kick_task.player.vel = CVector(0,0);
 		//	}
 		//}
@@ -605,13 +605,13 @@ void CChaseKickV2::plan(const CVisionModule* pVision)
 		/************************************************************************/
 		/* 6.Touch Kick　判断及调取底层skill											*/
 		/************************************************************************/
-		if (NormalPlayUtils::faceTheirGoal(pVision,robotNum,Param::Math::PI*2/180)
-			||WorldModel::Instance()->KickDirArrived(pVision->getCycle(),finalKickDir,Param::Math::PI*2/180,robotNum))
+		if (NormalPlayUtils::faceTheirGoal(pVision,robotNum,PARAM::Math::PI*2/180)
+			||WorldModel::Instance()->KickDirArrived(pVision->getCycle(),finalKickDir,PARAM::Math::PI*2/180,robotNum))
 		{
 			//if (verBos)	{cout<<"chase-kickOk"<<endl;}
 			//KickStatus::Instance()->setKick(robotNum,1200);
 
-            double finalBallSpeed = Param::Field::MAX_BALL_SPEED - 0.5 * abs(pVision->ourPlayer(robotNum).Vel().x());
+            double finalBallSpeed = PARAM::Field::MAX_BALL_SPEED - 0.5 * abs(pVision->ourPlayer(robotNum).Vel().x());
 			//cout << "setKickINCHASE" << endl;
 			KickStatus::Instance()->setKick(robotNum, finalBallSpeed);
 		}

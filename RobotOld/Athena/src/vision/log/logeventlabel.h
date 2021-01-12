@@ -24,9 +24,9 @@ struct robot {
 };
 struct frame {
     QList<ball> ballList;
-    QList<robot> botList[PARAM::TEAMS][PARAM::ROBOTMAXID];
+    QList<robot> botList[PARAM::TEAMS][PARAM::ROBOTNUM];
     ball realBall;
-    robot bot[PARAM::TEAMS][PARAM::ROBOTMAXID];
+    robot bot[PARAM::TEAMS][PARAM::ROBOTNUM];
     qint64 timestamp;
     int state = 0;
 };

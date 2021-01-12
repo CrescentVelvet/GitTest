@@ -28,7 +28,7 @@
 //	memset(_lastKickingChecked, false, sizeof(_lastKickingChecked));
 //	memset(_lastCheckedKickingCycle, 0, sizeof(_lastCheckedKickingCycle));
 
-//	for(int i = 0; i < Param::Field::MAX_PLAYER+1; i ++) {
+//	for(int i = 0; i < PARAM::Field::MAX_PLAYER; i ++) {
 //		robotInfoBuffer[i].kickId = -1;
 //		robotInfoBuffer[i].bInfraredInfo = false;
 //		robotInfoBuffer[i].bControledInfo = false;
@@ -40,7 +40,7 @@
 //		_lastBallCtrlInfo[i] = false;
 //	}
 
-//	for (int i=0;i < Param::Field::MAX_PLAYER+1; i ++){
+//	for (int i=0;i < PARAM::Field::MAX_PLAYER; i ++){
 //		_robotMsg[i].robotNum = 0;
 //		_robotMsg[i].capacity = 0;
 //		_robotMsg[i].battery = 0;
@@ -79,7 +79,7 @@
 
 
 ////	if(vision->GetCurrentRefereeMsg()!="GameStop"){
-////		for (int i = 1; i <= Param::Field::MAX_PLAYER; i ++) {
+////		for (int i = 0; i < PARAM::Field::MAX_PLAYER; i ++) {
 ////			// 下位本体信息获取
 ////			int tempIndex = CommandSender::Instance()->getRobotInfo(i, &rawDataBuffer);
 			
@@ -115,9 +115,9 @@
 ////		}
 ////	}else{
 ////		//cout<<"in stop"<<endl;
-////		static bool hasreceived[Param::Field::MAX_PLAYER]={false};
-////		static bool timeout[Param::Field::MAX_PLAYER]={false};
-////		static int count[Param::Field::MAX_PLAYER]={0};
+////		static bool hasreceived[PARAM::Field::MAX_PLAYER]={false};
+////		static bool timeout[PARAM::Field::MAX_PLAYER]={false};
+////		static int count[PARAM::Field::MAX_PLAYER]={0};
 ////		static int i=1;
 ////		//i表示每次置位的决策车号
 ////		static bool noneedcheck=false;
@@ -125,13 +125,13 @@
 ////		if ((vision->Cycle()-cycle)>6){
 ////			noneedcheck=false;
 ////			cycle=WorldModel::Instance()->vision()->Cycle()-cycle;
-////			//for (int num=1;num<Param::Field::MAX_PLAYER+1;num++){
+////			//for (int num=1;num<PARAM::Field::MAX_PLAYER;num++){
 ////			//	memset(outputmsg[num],0,sizeof(outputmsg[num]));
 ////			//}
 ////			//cout<<"firstin cycle:"<<cycle<<endl;
 ////		}
 ////		  cycle = WorldModel::Instance()->vision()->Cycle();
-////		if (i>Param::Field::MAX_PLAYER){
+////		if (i>PARAM::Field::MAX_PLAYER){
 ////			i=1;
 ////			noneedcheck=true;
 ////			//cout<<"********************************"<<endl;
@@ -188,7 +188,7 @@
 ////						capacity=0;
 ////						CommandSender::Instance()->setstop(i,false);
 ////						i++;
-////						if (i<=Param::Field::MAX_PLAYER){
+////						if (i<=PARAM::Field::MAX_PLAYER){
 ////							CommandSender::Instance()->setstop(i,true);
 ////						}
 ////					}else{
@@ -201,7 +201,7 @@
 ////							timeout[i]=false;
 ////						//cout<<i<<" "<<"not matched"<<endl;
 ////							i++;
-////							if (i<=Param::Field::MAX_PLAYER){
+////							if (i<=PARAM::Field::MAX_PLAYER){
 ////								CommandSender::Instance()->setstop(i,true);
 ////							}
 ////						}

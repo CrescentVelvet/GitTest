@@ -68,47 +68,46 @@ struct PlayerStatus{
     double path_plan_circle_radius;
 
     bool specify_path_plan_area;
-
+    static const bool IS_RECTANGLE_PENALTY			= true;		  // 选择矩形/类椭圆禁区 added by Wang in 2018/3/21
 
 	/// 标签常量
 	// 默认的flags
 	static const int NOTHING						= 0x00000000; // 没有flag
 	// 行走的flags
-	static const int SLOWLY							= 0x00000001; // 慢速
-	static const int QUICKLY						= 0x00000002; // 快速（（躲避碰撞，守门员扑球，截球）
-	static const int DO_NOT_STOP					= 0x00000008; // 用最快速度行走 --xxx---
+//	static const int SLOWLY							= 0x00000001; // 慢速
+//	static const int QUICKLY						= 0x00000002; // 快速（（躲避碰撞，守门员扑球，截球）
+//	static const int DO_NOT_STOP					= 0x00000008; // 用最快速度行走 --xxx---
 	static const int DODGE_BALL						= 0x00000010; // 躲避球
-	static const int POS_ONLY						= 0x00000020; // 只考虑位置,不考虑角度
+//	static const int POS_ONLY						= 0x00000020; // 只考虑位置,不考虑角度
 	static const int AVOID_SHOOTLINE				= 0x00000040; // 躲避射门线
-	static const int NOT_DRIBBLE					= 0x00000080; // 在Factory中强制不开吸球
+//	static const int NOT_DRIBBLE					= 0x00000080; // 在Factory中强制不开吸球
 	static const int DRIBBLING						= 0x00000100; // 走的过程中带球
 	static const int DODGE_OUR_DEFENSE_BOX			= 0x00000200; // 不要进入己方禁区
 	static const int NOT_AVOID_THEIR_VEHICLE		= 0x00000400; // 不躲避对方车
-	static const int ACCURATELY						= 0x00000800; // 精确行走，不考虑是否已经到达
+//    static const int ACCURATELY					= 0x00000800; // 精确行走，不考虑是否已经到达
 	static const int TURN_AROUND_FRONT				= 0x00001000; // 以车体正前方为中心旋转 --xxx---
-	static const int DODGE_REFEREE_AREA				= 0x00002000; // 躲避开球50cm区域
-	static const int SPECIFY_SPEED					= 0x00004000; // 指定速度
-	static const int SPECIFY_ROTATE_SPEED			= 0x00008000; // 指定旋转速度
-	static const int SPECIFY_ACCELERATION			= 0x00010000; // 指定加速度
-	static const int SPECIFY_ROTATE_ACCELERATION	= 0x00020000; // 指定旋转加速度
+//    static const int DODGE_REFEREE_AREA			= 0x00002000; // 躲避开球50cm区域
+//    static const int SPECIFY_SPEED				= 0x00004000; // 指定速度
+//    static const int SPECIFY_ROTATE_SPEED			= 0x00008000; // 指定旋转速度
+//    static const int SPECIFY_ACCELERATION			= 0x00010000; // 指定加速度
+//    static const int SPECIFY_ROTATE_ACCELERATION	= 0x00020000; // 指定旋转加速度
     static const int BREAK_THROUGH					= 0x00040000; // 带球过车的朝向flag
 	static const int NOT_AVOID_OUR_VEHICLE			= 0x00080000; // 不躲避我方车
     static const int AVOID_STOP_BALL_CIRCLE         = 0x00100000; // 躲避stop时球周围的环形区域
     static const int AVOID_THEIR_BALLPLACEMENT_AREA = 0x00200000; // 躲避their ballplacement的环形区域
     static const int AVOID_HALF_FIELD               = 0x00400000; // kickoff不能越过半场
-	static const bool IS_RECTANGLE_PENALTY			= true;		  // 选择矩形/类椭圆禁区 added by Wang in 2018/3/21
+
     //kick flag
     static const int KICK                           = 0x00000001;
     static const int CHIP                           = 0x00000002;
     static const int DRIBBLE                        = 0x00000004;
     static const int SAFE                           = 0x00000008;
 	// 处理球的flags
-	static const int SPECIFY_DIRECTION				= 0x01000000; // 指定身体朝向
+//	static const int SPECIFY_DIRECTION				= 0x01000000; // 指定身体朝向
     static const int MIN_DSS                        = 0x02000000; // 忽略挡住目标点的队员
     static const int NOT_AVOID_PENALTY				= 0x04000000; // 自动放球 added by Wayne in 2018/6/6
 	static const int ALLOW_DSS						= 0x08000000; // DSS的开启开关
     static const int FORCE_KICK         			= 0x80000000; // 强制开踢球
-	static const int KICK_WHEN_POSSIABLE			= 0x00200000; // 能击球的时候就击球
     static const int FREE_KICK      				= 0x20000000; // 面向某个点
 
     static const int USE_IMMORTAL_RUSH              = 0x40000000; // 用immortal的规划方式

@@ -14,9 +14,9 @@ void CCollisionSimulator::simulate(PlayerVisionT robot, const double time)
 {
 	const double timeStep = 0.005; // 模拟的迭代时间
 	double timeSimulated = 0;
-	const double boxSize = Param::Field::BALL_SIZE + Param::Vehicle::V2::PLAYER_SIZE;
-	const double dribbleBarSize = (Param::Field::BALL_SIZE + Param::Vehicle::V2::PLAYER_SIZE * std::sin(Param::Vehicle::V2::HEAD_ANGLE/2) * 2); // 带球装置的宽度
-	const double dribbleBarDist = Param::Vehicle::V2::PLAYER_SIZE * std::cos(Param::Vehicle::V2::HEAD_ANGLE/2) + Param::Field::BALL_SIZE;
+	const double boxSize = PARAM::Field::BALL_SIZE + PARAM::Vehicle::V2::PLAYER_SIZE;
+	const double dribbleBarSize = (PARAM::Field::BALL_SIZE + PARAM::Vehicle::V2::PLAYER_SIZE * std::sin(PARAM::Vehicle::V2::HEAD_ANGLE/2) * 2); // 带球装置的宽度
+	const double dribbleBarDist = PARAM::Vehicle::V2::PLAYER_SIZE * std::cos(PARAM::Vehicle::V2::HEAD_ANGLE/2) + PARAM::Field::BALL_SIZE;
 	if( !_hasCollision ){
 		while( !_hasCollision && timeSimulated < time - 0.001 ){
 			timeSimulated += timeStep;
@@ -31,21 +31,21 @@ void CCollisionSimulator::simulate(PlayerVisionT robot, const double time)
 				const double ballRelDir = Utils::Normalize( ballAbsDir - robot.Dir()); // 球的相对角度
 				const double absBallRelDir = std::abs(ballRelDir);
 				const double ballVerticalDist = ballDist * std::sin(ballRelDir);
-				//原先absBallRelDir < Param::Math::PI*38/180 .实际车的控球角度只有15度左右,现改为PI*15/180试试,2009.1.14
-				if( absBallRelDir < Param::Math::PI*10.1/180 /*&& std::abs(ballVerticalDist)  < dribbleBarSize*/ ){
+				//原先absBallRelDir < PARAM::Math::PI*38/180 .实际车的控球角度只有15度左右,现改为PI*15/180试试,2009.1.14
+				if( absBallRelDir < PARAM::Math::PI*10.1/180 /*&& std::abs(ballVerticalDist)  < dribbleBarSize*/ ){
 					if ( ballDist - dribbleBarDist/cos(absBallRelDir) < 0.1 && 
 						ballDist - dribbleBarDist/cos(absBallRelDir) > 0 ){
 						_hasCollision = true;
 						_ball.SetPos(robot.Pos() + Utils::Polar2Vector(dribbleBarDist/cos(absBallRelDir), ballAbsDir));
 					} else if ( ballDist - dribbleBarDist/cos(absBallRelDir) < 0 ){
 						_hasCollision = true;
-                        double minRelDir = std::min(absBallRelDir, Param::Vehicle::V2::DRIBBLE_ANGLE);
+                        double minRelDir = std::min(absBallRelDir, PARAM::Vehicle::V2::DRIBBLE_ANGLE);
 						double minAbsDir = robot.Dir() + Utils::Sign(ballRelDir)*minRelDir;
 						_ball.SetPos(robot.Pos() + Utils::Polar2Vector(dribbleBarDist/cos(minRelDir), minAbsDir));
 					} else {
 						_hasCollision = false;
 					}
-				}else if( absBallRelDir > Param::Math::PI*10/180){
+				}else if( absBallRelDir > PARAM::Math::PI*10/180){
 					_ball.SetPos(robot.Pos() + Utils::Polar2Vector(boxSize, ballAbsDir));
 				}
 

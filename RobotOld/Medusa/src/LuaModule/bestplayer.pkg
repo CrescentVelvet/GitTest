@@ -1,6 +1,6 @@
 $#include <geometry.h>
 $#include <VisionModule.h>
-$#include <param.h>
+$#include "staticparams.h"
 $#include "BestPlayer.h"
 
 class CBestPlayer

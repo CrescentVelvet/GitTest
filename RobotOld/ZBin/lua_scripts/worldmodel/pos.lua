@@ -182,6 +182,12 @@ function defaultDefPos(p)
 	end
 end
 
+function multiBackPos(guardNum, index)
+	return function()
+		return guardpos:backPos(guardNum, index)
+	end
+end
+
 function leftBackPos()
 	return defPos2015:getDefPos2015(vision):getLeftPos()
 end

@@ -1,4 +1,4 @@
- local waitPos = CGeoPoint:new_local(300, 250)
+ local waitPos = CGeoPoint:new_local(3000, 2500)
 local passPos = pos.passForTouch(waitPos)
 local goalPoint = CGeoPoint:new_local(param.pitchLength/2,0)
 local inFlag = true 	-- 用于记录入角的标记位，在球靠近到距离40的时候只记录一次数据
@@ -15,9 +15,9 @@ local outAngel = 0
 
 gPlayTable.CreatePlay{
 switch = function()
-	debugEngine:gui_debug_msg(CGeoPoint:new_local(30,0),string.format("%s = %f","ballSpeed",ballSpeed),3)
-	debugEngine:gui_debug_msg(CGeoPoint:new_local(70,0),string.format("%s = %f","Alpha",inAngel),3)
-	debugEngine:gui_debug_msg(CGeoPoint:new_local(110,0),string.format("%s = %f","Theta",outAngel),3)
+	debugEngine:gui_debug_msg(CGeoPoint:new_local(300,0),string.format("%s = %f","ballSpeed",ballSpeed),3)
+	debugEngine:gui_debug_msg(CGeoPoint:new_local(700,0),string.format("%s = %f","Alpha",inAngel),3)
+	debugEngine:gui_debug_msg(CGeoPoint:new_local(1100,0),string.format("%s = %f","Theta",outAngel),3)
 	if bufcnt(not ball.valid(),10,9999) then
 		return "stop"
 	end
@@ -32,14 +32,14 @@ switch = function()
 			return "stop"
 		end
 	end
-	if gCurrentState ~= "goto" and gCurrentState ~= "pass" and bufcnt(ball.valid() and ball.velMod() < 25 and ball.toPlayerDist("Kicker") > 100,20,9999) then					
+	if gCurrentState ~= "goto" and gCurrentState ~= "pass" and bufcnt(ball.valid() and ball.velMod() < 250 and ball.toPlayerDist("Kicker") > 100,20,9999) then					
 		-- local recordfile = io.open("onepassshoot.txt","a")
 		-- recordfile:write(compensateflag.."  "..ballSpeed.."  "..realdirection.."  "..targetdirection.."\n")
 		-- recordfile:close()
 		return "goto"
 	end
 	if gCurrentState == "goto" then
-		if bufcnt(player.toTargetDist("Kicker")< 40 and player.toBallDist("Tier")<40, 40,9999) then
+		if bufcnt(player.toTargetDist("Kicker")< 40 and player.toBallDist("Tier")<400, 40,9999) then
 			return "pass"
 		end
 	elseif gCurrentState == "pass" then
@@ -62,7 +62,7 @@ switch = function()
 			outFlag = true
 			return "stop"
 		end
-		if player.toBallDist("Kicker") > 80 and ball.velMod() > 300 and outFlag then
+		if player.toBallDist("Kicker") > 800 and ball.velMod() > 300 and outFlag then
 			outFlag = false
 			outAngel = Utils.Normalize(ball.velDir() - player2Goal) -- 射出角。 	
 			count = count + 1
@@ -106,7 +106,7 @@ firstState = "goto",
 ["pass"] = {  
 	Kicker = task.goCmuRush(waitPos, _, _, flag.allow_dss),
 	--Tier   = task.goAndTurnKick(pos.passForTouch(waitPos),430), --传球力度
-	Tier   = task.zget(passPos,_, 350, flag.kick + flag.safe+flag.dribble),
+	Tier   = task.zget(passPos,_, 3500, flag.kick + flag.safe+flag.dribble),
 	match = ""
 },
 
@@ -114,7 +114,7 @@ firstState = "goto",
 	-- debugEngine:gui_debug_msg(CGeoPoint:new_local(30,0),string.format("%s = %f","ballSpeed",ballSpeed),3)
 	-- debugEngine:gui_debug_msg(CGeoPoint:new_local(70,0),string.format("%s = %f","realdirection",realdirection),3)
 	-- debugEngine:gui_debug_msg(CGeoPoint:new_local(110,0),string.format("%s = %f","targetdirection",targetdirection),3)
-	Kicker = task.InterTouch(waitPos,testFlag,630),--false为测试补偿数据专用
+	Kicker = task.zget(waitPos,_,_, flag.kick),--false为测试补偿数据专用
 	Tier   = task.stop(),
 	match  = ""
 },

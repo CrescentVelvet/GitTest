@@ -1,5 +1,5 @@
 #include "GDebugEngine.h"
-#include <param.h>
+#include "staticparams.h"
 #include <cstring>
 #include <WorldModel.h>
 #include "zss_debug.pb.h"
@@ -15,12 +15,12 @@ CGDebugEngine::~CGDebugEngine(){
 void CGDebugEngine::gui_debug_x(const CGeoPoint& p, int debug_color,int RGB_value){
 	CGeoPoint basePos = p;
 
-    const CGeoPoint p1 = basePos + CVector(30, 30);
-    const CGeoPoint p2 = basePos + CVector(-30,-30);
+    const CGeoPoint p1 = basePos + CVector(3, 3);
+    const CGeoPoint p2 = basePos + CVector(-3,-3);
     gui_debug_line(p1, p2, debug_color,RGB_value);
 
-    const CGeoPoint p3 = basePos + CVector(30,-30);
-    const CGeoPoint p4 = basePos + CVector(-30, 30);
+    const CGeoPoint p3 = basePos + CVector(3,-3);
+    const CGeoPoint p4 = basePos + CVector(-3, 3);
     gui_debug_line(p3,p4, debug_color,RGB_value);
 }
 void CGDebugEngine::gui_debug_points(const std::vector<CGeoPoint> points, int debug_color,int RGB_value){
@@ -32,7 +32,7 @@ void CGDebugEngine::gui_debug_points(const std::vector<CGeoPoint> points, int de
     ZSS::Protocol::Debug_Points* debugPoints = msg->mutable_points();
     for (int i=0; i < points.size(); i++) {
         ZSS::Protocol::Point* point = debugPoints->add_point();
-        if ( WorldModel::Instance()->option()->MySide() == Param::Field::POS_SIDE_RIGHT ){
+        if ( WorldModel::Instance()->option()->MySide() == PARAM::Field::POS_SIDE_RIGHT ){
             point->set_x(-points[i].x());
             point->set_y(-points[i].y());
         }else{
@@ -53,7 +53,7 @@ void CGDebugEngine::gui_debug_line(const CGeoPoint& p1, const CGeoPoint& p2, int
     ZSS::Protocol::Point
 		*pos1 = line->mutable_start(),
 		*pos2 = line->mutable_end();
-	if ( WorldModel::Instance()->option()->MySide() == Param::Field::POS_SIDE_RIGHT ){
+	if ( WorldModel::Instance()->option()->MySide() == PARAM::Field::POS_SIDE_RIGHT ){
 		pos1->set_x(-p1.x());
         pos1->set_y(-p1.y());
 		pos2->set_x(-p2.x());
@@ -85,7 +85,7 @@ void CGDebugEngine::gui_debug_arc(const CGeoPoint& p, double r, double start_ang
 		*p1 = rec->mutable_point1(),
 		*p2 = rec->mutable_point2();
 	PosT center;
-	if ( WorldModel::Instance()->option()->MySide() == Param::Field::POS_SIDE_RIGHT ){
+	if ( WorldModel::Instance()->option()->MySide() == PARAM::Field::POS_SIDE_RIGHT ){
 		center.x = -p.x();
         center.y = -p.y();
 	}
@@ -111,7 +111,7 @@ void CGDebugEngine::gui_debug_triangle(const CGeoPoint& p1, const CGeoPoint& p2,
     ZSS::Protocol::Point* pos1 = tri->add_vertex();
     ZSS::Protocol::Point* pos2 = tri->add_vertex();
     ZSS::Protocol::Point* pos3 = tri->add_vertex();
-	if ( WorldModel::Instance()->option()->MySide() == Param::Field::POS_SIDE_RIGHT ){
+	if ( WorldModel::Instance()->option()->MySide() == PARAM::Field::POS_SIDE_RIGHT ){
 		pos1->set_x(-p1.x());
         pos1->set_y(-p1.y());
 		pos2->set_x(-p2.x());
@@ -140,15 +140,15 @@ void CGDebugEngine::gui_debug_robot(const CGeoPoint& p, double robot_dir, int de
     ZSS::Protocol::Debug_Robot* robot = msg->mutable_robot();
 
 	float rdir;
-	if ( WorldModel::Instance()->option()->MySide() == Param::Field::POS_SIDE_RIGHT ){
-		robot_dir = Utils::Normalize(robot_dir + Param::Math::PI);
+	if ( WorldModel::Instance()->option()->MySide() == PARAM::Field::POS_SIDE_RIGHT ){
+		robot_dir = Utils::Normalize(robot_dir + PARAM::Math::PI);
 	}
-    rdir = robot_dir*180/Param::Math::PI; // 转成角度
+    rdir = robot_dir*180/PARAM::Math::PI; // 转成角度
 	robot->set_dir(rdir);
 
     ZSS::Protocol::Point* robot_pos = robot->mutable_pos();
 
-	if ( WorldModel::Instance()->option()->MySide() == Param::Field::POS_SIDE_RIGHT ){
+	if ( WorldModel::Instance()->option()->MySide() == PARAM::Field::POS_SIDE_RIGHT ){
 		robot_pos->set_x(-p.x());
         robot_pos->set_y(-p.y());
 	}
@@ -169,7 +169,7 @@ void CGDebugEngine::gui_debug_msg(const CGeoPoint& p, const char* msgstr, int de
        }
     ZSS::Protocol::Debug_Text* text = msg->mutable_text();
     ZSS::Protocol::Point* center = text->mutable_pos();
-    if ( WorldModel::Instance()->option()->MySide() == Param::Field::POS_SIDE_RIGHT){
+    if ( WorldModel::Instance()->option()->MySide() == PARAM::Field::POS_SIDE_RIGHT){
 		center->set_x(-p.x());
         center->set_y(-p.y());
 	}

@@ -1,6 +1,6 @@
 ﻿#include "utils.h"
 #include "WorldModel.h"
-#include "param.h"
+#include "staticparams.h"
 #include <GDebugEngine.h>
 #include <iostream>
 
@@ -12,16 +12,16 @@ namespace Utils{
 			cout<<angle<<" Normalize Error!!!!!!!!!!!!!!!!!!!!"<<endl;
 			return 0;
 		}
-		const double M_2PI = Param::Math::PI * 2;
+        static const double M_2PI = PARAM::Math::PI * 2;
 		// 快速粗调整
 		angle -= (int)(angle / M_2PI) * M_2PI; 
 		
 		// 细调整 (-PI,PI]
-		while( angle > Param::Math::PI ) {
+		while( angle > PARAM::Math::PI ) {
 			angle -= M_2PI;
 		}
 
-		while( angle <= -Param::Math::PI ) {
+		while( angle <= -PARAM::Math::PI ) {
 			angle += M_2PI;
 		}
 
@@ -53,7 +53,7 @@ namespace Utils{
 
 	bool AngleBetween(double d, double d1, double d2, double buffer)
 	{
-		using namespace Param::Math;
+		using namespace PARAM::Math;
 		// d, d1, d2为向量v, v1, v2的方向弧度
 
 		// 当v和v1或v2的角度相差很小,在buffer允许范围之内时,认为满足条件
@@ -74,30 +74,30 @@ namespace Utils{
 
 	CGeoPoint MakeInField(const CGeoPoint& p,const double buffer){
         auto new_p = p;
-        if (new_p.x() < buffer - Param::Field::PITCH_LENGTH / 2) new_p.setX(buffer - Param::Field::PITCH_LENGTH / 2);
-        if (new_p.x() > Param::Field::PITCH_LENGTH / 2 - buffer) new_p.setX(Param::Field::PITCH_LENGTH / 2 - buffer);
-        if (new_p.y() < buffer - Param::Field::PITCH_WIDTH / 2) new_p.setY(buffer - Param::Field::PITCH_WIDTH / 2);
-        if (new_p.y() > Param::Field::PITCH_WIDTH / 2 - buffer) new_p.setY(Param::Field::PITCH_WIDTH / 2 - buffer);
+        if (new_p.x() < buffer - PARAM::Field::PITCH_LENGTH / 2) new_p.setX(buffer - PARAM::Field::PITCH_LENGTH / 2);
+        if (new_p.x() > PARAM::Field::PITCH_LENGTH / 2 - buffer) new_p.setX(PARAM::Field::PITCH_LENGTH / 2 - buffer);
+        if (new_p.y() < buffer - PARAM::Field::PITCH_WIDTH / 2) new_p.setY(buffer - PARAM::Field::PITCH_WIDTH / 2);
+        if (new_p.y() > PARAM::Field::PITCH_WIDTH / 2 - buffer) new_p.setY(PARAM::Field::PITCH_WIDTH / 2 - buffer);
         return new_p;
 	}
 	//modified by Wang in 2018/3/17
 	bool InOurPenaltyArea(const CGeoPoint& p, const double buffer) {
         // rectangle penalty
-        return (p.x() < -Param::Field::PITCH_LENGTH / 2 +
-                Param::Field::PENALTY_AREA_DEPTH + buffer
+        return (p.x() < -PARAM::Field::PITCH_LENGTH / 2 +
+                PARAM::Field::PENALTY_AREA_DEPTH + buffer
                 &&
                 std::fabs(p.y()) <
-                Param::Field::PENALTY_AREA_WIDTH / 2 + buffer);
+                PARAM::Field::PENALTY_AREA_WIDTH / 2 + buffer);
     }
 	//modified by Wang in 2018/3/17
 	bool InTheirPenaltyArea(const CGeoPoint& p, const double buffer) {
             // rectanlge penalty
         return (p.x() >
-                Param::Field::PITCH_LENGTH / 2 -
-                Param::Field::PENALTY_AREA_DEPTH - buffer
+                PARAM::Field::PITCH_LENGTH / 2 -
+                PARAM::Field::PENALTY_AREA_DEPTH - buffer
                 &&
                 std::fabs(p.y()) <
-                Param::Field::PENALTY_AREA_WIDTH / 2 + buffer);
+                PARAM::Field::PENALTY_AREA_WIDTH / 2 + buffer);
     }
 
 
@@ -112,11 +112,13 @@ namespace Utils{
         else return false;
     }
 
-	bool OutOfField(const CGeoPoint& p, const double buffer	)	//buffer为正在场内，负在场外
-	{
-		return p.x() < FieldLeft() + buffer || p.x() > FieldRight() - buffer 
-			|| p.y() < FieldTop() + buffer || p.y() > FieldBottom() - buffer;
-	}
+    bool IsInField(const CGeoPoint p, double buffer) {
+        return (p.x() > buffer - PARAM::Field::PITCH_LENGTH / 2 && p.x() < PARAM::Field::PITCH_LENGTH / 2 - buffer &&
+                p.y() > buffer - PARAM::Field::PITCH_WIDTH / 2 && p.y() < PARAM::Field::PITCH_WIDTH / 2 - buffer);
+    }
+    bool IsInFieldV2(const CGeoPoint p, double buffer) {
+        return (IsInField(p, buffer) && !Utils::InOurPenaltyArea(p, buffer) && !Utils::InTheirPenaltyArea(p, buffer));
+    }
 
 	//modified by Wang in 2018/3/21
 	CGeoPoint MakeOutOfOurPenaltyArea(const CGeoPoint& p, const double buffer) {
@@ -126,18 +128,18 @@ namespace Utils{
         //右半禁区点
         if (p.y() > 0) {
             //距离禁区上边近，取上边投影
-            if (-Param::Field::PITCH_LENGTH / 2 + Param::Field::PENALTY_AREA_DEPTH - p.x() < Param::Field::PENALTY_AREA_WIDTH / 2 - p.y())
-                return CGeoPoint(-Param::Field::PITCH_LENGTH / 2 + Param::Field::PENALTY_AREA_DEPTH + buffer, p.y());
+            if (-PARAM::Field::PITCH_LENGTH / 2 + PARAM::Field::PENALTY_AREA_DEPTH - p.x() < PARAM::Field::PENALTY_AREA_WIDTH / 2 - p.y())
+                return CGeoPoint(-PARAM::Field::PITCH_LENGTH / 2 + PARAM::Field::PENALTY_AREA_DEPTH + buffer, p.y());
             //距离禁区右边近，取右边投影
-            else return CGeoPoint(p.x(), Param::Field::PENALTY_AREA_WIDTH / 2 + buffer);
+            else return CGeoPoint(p.x(), PARAM::Field::PENALTY_AREA_WIDTH / 2 + buffer);
         }
         //左半禁区点
         else {
             //距离禁区上边近，取上边投影
-            if (-Param::Field::PITCH_LENGTH / 2 + Param::Field::PENALTY_AREA_DEPTH - p.x() < p.y() - (-Param::Field::PENALTY_AREA_WIDTH / 2) )
-                return CGeoPoint(-Param::Field::PITCH_LENGTH / 2 + Param::Field::PENALTY_AREA_DEPTH + buffer, p.y());
+            if (-PARAM::Field::PITCH_LENGTH / 2 + PARAM::Field::PENALTY_AREA_DEPTH - p.x() < p.y() - (-PARAM::Field::PENALTY_AREA_WIDTH / 2) )
+                return CGeoPoint(-PARAM::Field::PITCH_LENGTH / 2 + PARAM::Field::PENALTY_AREA_DEPTH + buffer, p.y());
             //距离禁区左边近，取左边投影
-            else return CGeoPoint(p.x(), -Param::Field::PENALTY_AREA_WIDTH / 2 - buffer);
+            else return CGeoPoint(p.x(), -PARAM::Field::PENALTY_AREA_WIDTH / 2 - buffer);
         }
 	}
 
@@ -152,33 +154,33 @@ namespace Utils{
             double adjustStep = 2.0;
             CVector adjustVec = Polar2Vector(adjustStep, normDir);
             newPoint = newPoint + adjustVec;
-            while(InTheirPenaltyArea(newPoint, buffer) && newPoint.x() < Param::Field::PITCH_LENGTH / 2)
+            while(InTheirPenaltyArea(newPoint, buffer) && newPoint.x() < PARAM::Field::PITCH_LENGTH / 2)
                 newPoint = newPoint + adjustVec;
-            if(newPoint.x() > Param::Field::PITCH_LENGTH / 2)
-                newPoint.setX(Param::Field::PITCH_LENGTH / 2);
-            if(fabs(newPoint.y()) > Param::Field::PENALTY_AREA_WIDTH / 2 ||
-                    (fabs(newPoint.y()) < Param::Field::PENALTY_AREA_WIDTH / 2 && fabs(newPoint.x()) < Param::Field::PITCH_LENGTH / 2 - Param::Field::PENALTY_AREA_DEPTH))
+            if(newPoint.x() > PARAM::Field::PITCH_LENGTH / 2)
+                newPoint.setX(PARAM::Field::PITCH_LENGTH / 2);
+            if(fabs(newPoint.y()) > PARAM::Field::PENALTY_AREA_WIDTH / 2 ||
+                    (fabs(newPoint.y()) < PARAM::Field::PENALTY_AREA_WIDTH / 2 && fabs(newPoint.x()) < PARAM::Field::PITCH_LENGTH / 2 - PARAM::Field::PENALTY_AREA_DEPTH))
                 return newPoint;
         }
 
         newPoint = p;
-        if(newPoint.x() > Param::Field::PITCH_LENGTH / 2)
+        if(newPoint.x() > PARAM::Field::PITCH_LENGTH / 2)
             newPoint.setX(200);
         //右半禁区点
         if (newPoint.y() > 0) {
             //距离禁区下边近，取下边投影
-            if (newPoint.x() - Param::Field::PITCH_LENGTH / 2 + Param::Field::PENALTY_AREA_DEPTH < Param::Field::PENALTY_AREA_WIDTH / 2 - newPoint.y())
-                return CGeoPoint(Param::Field::PITCH_LENGTH / 2 - Param::Field::PENALTY_AREA_DEPTH - buffer, newPoint.y());
+            if (newPoint.x() - PARAM::Field::PITCH_LENGTH / 2 + PARAM::Field::PENALTY_AREA_DEPTH < PARAM::Field::PENALTY_AREA_WIDTH / 2 - newPoint.y())
+                return CGeoPoint(PARAM::Field::PITCH_LENGTH / 2 - PARAM::Field::PENALTY_AREA_DEPTH - buffer, newPoint.y());
             //距离禁区右边近，取右边投影
-            else return CGeoPoint(newPoint.x(), Param::Field::PENALTY_AREA_WIDTH / 2 + buffer);
+            else return CGeoPoint(newPoint.x(), PARAM::Field::PENALTY_AREA_WIDTH / 2 + buffer);
         }
         //左半禁区点
         else {
             //距离禁区下边近，取下边投影
-            if (newPoint.x() - Param::Field::PITCH_LENGTH / 2 + Param::Field::PENALTY_AREA_DEPTH < Param::Field::PENALTY_AREA_WIDTH / 2 + newPoint.y())
-                return CGeoPoint(Param::Field::PITCH_LENGTH / 2 - Param::Field::PENALTY_AREA_DEPTH - buffer, newPoint.y());
+            if (newPoint.x() - PARAM::Field::PITCH_LENGTH / 2 + PARAM::Field::PENALTY_AREA_DEPTH < PARAM::Field::PENALTY_AREA_WIDTH / 2 + newPoint.y())
+                return CGeoPoint(PARAM::Field::PITCH_LENGTH / 2 - PARAM::Field::PENALTY_AREA_DEPTH - buffer, newPoint.y());
             //距离禁区左边近，取左边投影
-            else return CGeoPoint(newPoint.x(), -Param::Field::PENALTY_AREA_WIDTH / 2 - buffer);
+            else return CGeoPoint(newPoint.x(), -PARAM::Field::PENALTY_AREA_WIDTH / 2 - buffer);
         }
 	}
 
@@ -192,7 +194,7 @@ namespace Utils{
             adjustDir = adjustVec;
         else {
             adjustDir = target - center;
-            if(adjustDir.mod() < Param::Vehicle::V2::PLAYER_SIZE / 2.0)
+            if(adjustDir.mod() < PARAM::Vehicle::V2::PLAYER_SIZE / 2.0)
                 adjustDir = mePos - target;
         }
 
@@ -231,7 +233,7 @@ namespace Utils{
                 targetNew.y() > lowerBound - buffer &&
                 targetNew.x() > leftBound - buffer &&
                 targetNew.x() < rightBound + buffer) {
-            if(fabs(middleX) < Param::Field::PITCH_LENGTH / 2 + Param::Field::GOAL_DEPTH * 2.0 / 3.0) { //边门柱
+            if(fabs(middleX) < PARAM::Field::PITCH_LENGTH / 2 + PARAM::Field::GOAL_DEPTH * 2.0 / 3.0) { //边门柱
                 double xInside = copysign(min(fabs(leftBound), fabs(rightBound)), leftBound);
                 double yInside = copysign(min(fabs(upperBound), fabs(lowerBound)), lowerBound);
                 double yOutside = copysign(max(fabs(upperBound), fabs(lowerBound)), lowerBound);
@@ -306,7 +308,7 @@ namespace Utils{
 
 	bool PlayerNumValid(int num)
 	{
-		if (num>=1 && num<=Param::Field::MAX_PLAYER){
+		if (num>=0 && num<PARAM::Field::MAX_PLAYER){
 			return true;
 		}
 		else{
@@ -317,7 +319,7 @@ namespace Utils{
 	// 离禁区线较近的点
 	CGeoPoint GetOutSidePenaltyPos(double dir, double delta, const CGeoPoint targetPoint)
 	{	
-		//double delta = Param::Field::MAX_PLAYER_SIZE + 1.5;
+		//double delta = PARAM::Field::MAX_PLAYER_SIZE + 1.5;
 		CGeoPoint pInter = GetInterPos(dir, targetPoint);
 		CGeoPoint pDefend = pInter + Polar2Vector(delta, dir);
 		return pDefend;
@@ -333,16 +335,16 @@ namespace Utils{
 	//给定点需在禁区内
 	//modified by Wang in 2018/3/17
 	CGeoPoint GetInterPos(double dir, const CGeoPoint targetPoint) {
-		using namespace Param::Field;
+		using namespace PARAM::Field;
         if ( IF_USE_ELLIPSE ){
             // ellipse penalty
             // 禁区的两段圆弧,用圆来表示
             CGeoCirlce c1(CGeoPoint(-PITCH_LENGTH/2,  PENALTY_AREA_L/2), PENALTY_AREA_R);
             CGeoCirlce c2(CGeoPoint(-PITCH_LENGTH/2, -PENALTY_AREA_L/2), PENALTY_AREA_R);
             CGeoPoint targetPointInstead = targetPoint;
-            if (dir >= Param::Math::PI/2 - 5/180*Param::Math::PI && dir <= Param::Math::PI)
+            if (dir >= PARAM::Math::PI/2 - 5/180*PARAM::Math::PI && dir <= PARAM::Math::PI)
         return CGeoPoint(-PITCH_LENGTH/2,PENALTY_AREA_L/2+PENALTY_AREA_R);
-            else if (dir <= -Param::Math::PI/2 + 5/180*Param::Math::PI && dir >= -Param::Math::PI)
+            else if (dir <= -PARAM::Math::PI/2 + 5/180*PARAM::Math::PI && dir >= -PARAM::Math::PI)
                 return CGeoPoint(-PITCH_LENGTH/2,-PENALTY_AREA_L/2-PENALTY_AREA_R);
 
             // 连接两段圆弧的直线(pLine),用直线来表示
@@ -355,7 +357,7 @@ namespace Utils{
             // 求该直线和c1的交点
             if (targetPoint.y() == c1.Center().y())
             {
-                if (dir>=0 && dir<Param::Math::PI/2)
+                if (dir>=0 && dir<PARAM::Math::PI/2)
                 {
                     CGeoPoint p = c1.Center()+Polar2Vector(PENALTY_AREA_R,dir);
                     return p;
@@ -369,12 +371,12 @@ namespace Utils{
                     CGeoPoint p2 = dirLine_c1_inter.point2();
                     double dir1 = Normalize((p1-c1.Center()).dir());
                     double dir2 = Normalize((p2-c1.Center()).dir());
-                    if (dir1>=0 && dir1<=Param::Math::PI/2)
+                    if (dir1>=0 && dir1<=PARAM::Math::PI/2)
                     {
                         return p1;
 
                     }
-                    else if (dir2>=0 && dir2<=Param::Math::PI/2)
+                    else if (dir2>=0 && dir2<=PARAM::Math::PI/2)
                     {
                         return p2;
 
@@ -385,7 +387,7 @@ namespace Utils{
             // 求该直线和c2的交点
             if (targetPoint.y() == c2.Center().y())
             {
-                if ( dir<=0 && dir>(-Param::Math::PI/2))
+                if ( dir<=0 && dir>(-PARAM::Math::PI/2))
                 {
                     CGeoPoint p = c2.Center()+Polar2Vector(PENALTY_AREA_R,dir);
                     return p;
@@ -399,12 +401,12 @@ namespace Utils{
                     CGeoPoint p2 = dirLine_c2_inter.point2();
                     double dir1 = Normalize((p1-c2.Center()).dir());
                     double dir2 = Normalize((p2-c2.Center()).dir());
-                    if (dir1>=(-Param::Math::PI/2) && dir1<=0)
+                    if (dir1>=(-PARAM::Math::PI/2) && dir1<=0)
                     {
                         return p1;
 
                     }
-                    else if (dir2>=(-Param::Math::PI/2) && dir2<=0)
+                    else if (dir2>=(-PARAM::Math::PI/2) && dir2<=0)
                     {
                         return p2;
 
@@ -485,16 +487,16 @@ namespace Utils{
 	}
 	//modified by Wang in 2018/3/17
     CGeoPoint GetTheirInterPos(double dir, const CGeoPoint& targetPoint) {
-        using namespace Param::Field;
+        using namespace PARAM::Field;
         if ( IF_USE_ELLIPSE ){
             // ellipse penalty
             // 禁区的两段圆弧,用圆来表示
             CGeoCirlce c1(CGeoPoint(-PITCH_LENGTH/2,  PENALTY_AREA_L/2), PENALTY_AREA_R);
             CGeoCirlce c2(CGeoPoint(-PITCH_LENGTH/2, -PENALTY_AREA_L/2), PENALTY_AREA_R);
             CGeoPoint targetPointInstead = targetPoint;
-            if (dir >= Param::Math::PI/2 - 5/180*Param::Math::PI && dir <= Param::Math::PI)
+            if (dir >= PARAM::Math::PI/2 - 5/180*PARAM::Math::PI && dir <= PARAM::Math::PI)
                 return CGeoPoint(-PITCH_LENGTH/2,PENALTY_AREA_L/2+PENALTY_AREA_R);
-            else if (dir <= -Param::Math::PI/2 + 5/180*Param::Math::PI && dir >= -Param::Math::PI)
+            else if (dir <= -PARAM::Math::PI/2 + 5/180*PARAM::Math::PI && dir >= -PARAM::Math::PI)
                 return CGeoPoint(-PITCH_LENGTH/2,-PENALTY_AREA_L/2-PENALTY_AREA_R);
 
             // 连接两段圆弧的直线(pLine),用直线来表示
@@ -507,7 +509,7 @@ namespace Utils{
             // 求该直线和c1的交点
             if (targetPoint.y() == c1.Center().y())
             {
-                if (dir>=0 && dir<Param::Math::PI/2)
+                if (dir>=0 && dir<PARAM::Math::PI/2)
                 {
                     CGeoPoint p = c1.Center()+Polar2Vector(PENALTY_AREA_R,dir);
                     return p;
@@ -521,12 +523,12 @@ namespace Utils{
                     CGeoPoint p2 = dirLine_c1_inter.point2();
                     double dir1 = Normalize((p1-c1.Center()).dir());
                     double dir2 = Normalize((p2-c1.Center()).dir());
-                    if (dir1>=0 && dir1<=Param::Math::PI/2)
+                    if (dir1>=0 && dir1<=PARAM::Math::PI/2)
                     {
                         return p1;
 
                     }
-                    else if (dir2>=0 && dir2<=Param::Math::PI/2)
+                    else if (dir2>=0 && dir2<=PARAM::Math::PI/2)
                     {
                         return p2;
 
@@ -537,7 +539,7 @@ namespace Utils{
             // 求该直线和c2的交点
             if (targetPoint.y() == c2.Center().y())
             {
-                if ( dir<=0 && dir>(-Param::Math::PI/2))
+                if ( dir<=0 && dir>(-PARAM::Math::PI/2))
                 {
                     CGeoPoint p = c2.Center()+Polar2Vector(PENALTY_AREA_R,dir);
                     return p;
@@ -551,12 +553,12 @@ namespace Utils{
                     CGeoPoint p2 = dirLine_c2_inter.point2();
                     double dir1 = Normalize((p1-c2.Center()).dir());
                     double dir2 = Normalize((p2-c2.Center()).dir());
-                    if (dir1>=(-Param::Math::PI/2) && dir1<=0)
+                    if (dir1>=(-PARAM::Math::PI/2) && dir1<=0)
                     {
                         return p1;
 
                     }
-                    else if (dir2>=(-Param::Math::PI/2) && dir2<=0)
+                    else if (dir2>=(-PARAM::Math::PI/2) && dir2<=0)
                     {
                         return p2;
 
@@ -629,16 +631,16 @@ namespace Utils{
 	/*
 	CGeoPoint GetInterPos(double dir, const CGeoPoint targetPoint)
 	{
-		using namespace Param::Field;
-		if (Param::Rule::Version == 2008)
+		using namespace PARAM::Field;
+		if (PARAM::Rule::Version == 2008)
 		{
 			// 禁区的两段圆弧,用圆来表示
 			CGeoCirlce c1(CGeoPoint(-PITCH_LENGTH/2,  PENALTY_AREA_L/2), PENALTY_AREA_R); 
 			CGeoCirlce c2(CGeoPoint(-PITCH_LENGTH/2, -PENALTY_AREA_L/2), PENALTY_AREA_R);
 			CGeoPoint targetPointInstead = targetPoint;
-			if (dir >= Param::Math::PI/2 - 5/180*Param::Math::PI && dir <= Param::Math::PI)
+			if (dir >= PARAM::Math::PI/2 - 5/180*PARAM::Math::PI && dir <= PARAM::Math::PI)
         return CGeoPoint(-PITCH_LENGTH/2,PENALTY_AREA_L/2+PENALTY_AREA_R);
-			else if (dir <= -Param::Math::PI/2 + 5/180*Param::Math::PI && dir >= -Param::Math::PI)
+			else if (dir <= -PARAM::Math::PI/2 + 5/180*PARAM::Math::PI && dir >= -PARAM::Math::PI)
 				return CGeoPoint(-PITCH_LENGTH/2,-PENALTY_AREA_L/2-PENALTY_AREA_R);
 
 			// 连接两段圆弧的直线(pLine),用直线来表示
@@ -651,7 +653,7 @@ namespace Utils{
 			// 求该直线和c1的交点
 			if (targetPoint.y() == c1.Center().y())
 			{
-				if (dir>=0 && dir<Param::Math::PI/2)
+				if (dir>=0 && dir<PARAM::Math::PI/2)
 				{
 					CGeoPoint p = c1.Center()+Polar2Vector(PENALTY_AREA_R,dir);
 					return p;
@@ -665,12 +667,12 @@ namespace Utils{
 					CGeoPoint p2 = dirLine_c1_inter.point2();
 					double dir1 = Normalize((p1-c1.Center()).dir());
 					double dir2 = Normalize((p2-c1.Center()).dir());
-					if (dir1>=0 && dir1<=Param::Math::PI/2)
+					if (dir1>=0 && dir1<=PARAM::Math::PI/2)
 					{ 
 						return p1;
 
 					} 
-					else if (dir2>=0 && dir2<=Param::Math::PI/2)
+					else if (dir2>=0 && dir2<=PARAM::Math::PI/2)
 					{
 						return p2;
 
@@ -681,7 +683,7 @@ namespace Utils{
 			// 求该直线和c2的交点
 			if (targetPoint.y() == c2.Center().y())
 			{
-				if ( dir<=0 && dir>(-Param::Math::PI/2))
+				if ( dir<=0 && dir>(-PARAM::Math::PI/2))
 				{
 					CGeoPoint p = c2.Center()+Polar2Vector(PENALTY_AREA_R,dir);
 					return p;
@@ -695,12 +697,12 @@ namespace Utils{
 					CGeoPoint p2 = dirLine_c2_inter.point2();
 					double dir1 = Normalize((p1-c2.Center()).dir());
 					double dir2 = Normalize((p2-c2.Center()).dir());
-					if (dir1>=(-Param::Math::PI/2) && dir1<=0)
+					if (dir1>=(-PARAM::Math::PI/2) && dir1<=0)
 					{
 						return p1;
 
 					} 
-					else if (dir2>=(-Param::Math::PI/2) && dir2<=0)
+					else if (dir2>=(-PARAM::Math::PI/2) && dir2<=0)
 					{
 						return p2;
 
@@ -722,14 +724,14 @@ namespace Utils{
 			std::cout<<"our default pos!!"<<std::endl;
 			return CGeoPoint(-PITCH_LENGTH/2+PENALTY_AREA_R, 0);
     }
-		else if (Param::Rule::Version == 2004)
+		else if (PARAM::Rule::Version == 2004)
 		{
 			CGeoCirlce penaltyCircle(CGeoPoint(-PITCH_LENGTH/2, 0),PENALTY_AREA_WIDTH/2);
 			CGeoLine dirLine(targetPoint,dir);
 			CGeoLineCircleIntersection dirLine_penaltyCircle(dirLine,penaltyCircle);
 			if (dirLine_penaltyCircle.intersectant())
 			{
-				CGeoPoint p = Utils::OutOfField(dirLine_penaltyCircle.point1())?dirLine_penaltyCircle.point2():dirLine_penaltyCircle.point1();
+				CGeoPoint p = !Utils::IsInField(dirLine_penaltyCircle.point1())?dirLine_penaltyCircle.point2():dirLine_penaltyCircle.point1();
 				return p;
 			}		
 		}			
@@ -737,13 +739,13 @@ namespace Utils{
 	}
 
 	CGeoPoint GetTheirInterPos(double dir, const CGeoPoint& targetPoint) {
-		using namespace Param::Field;
+		using namespace PARAM::Field;
 		// 禁区的两段圆弧,用圆来表示
 		CGeoCirlce c1(CGeoPoint(PITCH_LENGTH/2, PENALTY_AREA_L/2), PENALTY_AREA_R); 
 		CGeoCirlce c2(CGeoPoint(PITCH_LENGTH/2, -PENALTY_AREA_L/2), PENALTY_AREA_R);
-		if (dir <= Param::Math::PI/2 + 5/180*Param::Math::PI && dir >= 0)
+		if (dir <= PARAM::Math::PI/2 + 5/180*PARAM::Math::PI && dir >= 0)
 			return CGeoPoint(PITCH_LENGTH/2, PENALTY_AREA_L/2 + PENALTY_AREA_R);
-		else if	 (dir >= -Param::Math::PI - 5/180*Param::Math::PI	&& dir <= 0)
+		else if	 (dir >= -PARAM::Math::PI - 5/180*PARAM::Math::PI	&& dir <= 0)
 			return CGeoPoint(PITCH_LENGTH/2, -(PENALTY_AREA_L/2 + PENALTY_AREA_R));
 
 		// 连接两段圆弧的直线(pLine),用直线来表示
@@ -755,7 +757,7 @@ namespace Utils{
 
 		// 求该直线和c1的交点
 		if (abs(targetPoint.y() - c1.Center().y()) < 0.0001) {
-			if (dir > Param::Math::PI/2 && dir < Param::Math::PI) {
+			if (dir > PARAM::Math::PI/2 && dir < PARAM::Math::PI) {
 				CGeoPoint p = c1.Center() + Polar2Vector(PENALTY_AREA_R, dir);
 				return p;
 			}
@@ -766,15 +768,15 @@ namespace Utils{
 				CGeoPoint p2 = dirLine_c1_inter.point2();
 				double dir1 = Normalize((p1-c1.Center()).dir());
 				double dir2 = Normalize((p2-c1.Center()).dir());
-				if (dir1 >= Param::Math::PI / 2 && dir1 <= Param::Math::PI)
+				if (dir1 >= PARAM::Math::PI / 2 && dir1 <= PARAM::Math::PI)
 					return p1;
-				else if (dir2 >= Param::Math::PI / 2 && dir2 <= Param::Math::PI)
+				else if (dir2 >= PARAM::Math::PI / 2 && dir2 <= PARAM::Math::PI)
 					return p2;
 			}
 		}
 		// 求该直线和c2的交点
 		if (abs(targetPoint.y() - c2.Center().y()) < 0.0001) {
-			if (dir < -Param::Math::PI/2 && dir > -Param::Math::PI) {
+			if (dir < -PARAM::Math::PI/2 && dir > -PARAM::Math::PI) {
 				CGeoPoint p = c2.Center() + Polar2Vector(PENALTY_AREA_R, dir);
 				return p;
 			}
@@ -785,9 +787,9 @@ namespace Utils{
 				CGeoPoint p2 = dirLine_c2_inter.point2();
 				double dir1 = Normalize((p1-c2.Center()).dir());
 				double dir2 = Normalize((p2-c2.Center()).dir());
-				if (dir1 <= -Param::Math::PI/2 && dir1 >= -Param::Math::PI)
+				if (dir1 <= -PARAM::Math::PI/2 && dir1 >= -PARAM::Math::PI)
 					return p1;
-				else if (dir2 <= -Param::Math::PI/2 && dir2 >= -Param::Math::PI)
+				else if (dir2 <= -PARAM::Math::PI/2 && dir2 >= -PARAM::Math::PI)
 					return p2;
 			}
 		}
@@ -822,8 +824,8 @@ namespace Utils{
 		static bool _canGo = true;
 		const CGeoPoint& vecPos = pVision->ourPlayer(vecNumber).Pos();
 		CGeoSegment moving_seg(vecPos, target);
-		const double minBlockDist2 = (Param::Field::MAX_PLAYER_SIZE/2 + avoidBuffer) * (Param::Field::MAX_PLAYER_SIZE/2 + avoidBuffer);
-		for( int i=1; i<=Param::Field::MAX_PLAYER * 2; ++i ){ // 看路线上有没有人
+		const double minBlockDist2 = (PARAM::Field::MAX_PLAYER_SIZE/2 + avoidBuffer) * (PARAM::Field::MAX_PLAYER_SIZE/2 + avoidBuffer);
+		for( int i=0; i<PARAM::Field::MAX_PLAYER * 2; ++i ){ // 看路线上有没有人
 			if( i == vecNumber || !pVision->allPlayer(i).Valid()){
 				continue;
 			}
@@ -844,14 +846,14 @@ namespace Utils{
 		if( _canGo && (flags & PlayerStatus::DODGE_BALL) ){ // 躲避球
 			const CGeoPoint& obs_pos = pVision->ball().Pos();
 			CGeoPoint prj_point = moving_seg.projection(obs_pos);
-			if( obs_pos.dist(prj_point) < avoidBuffer + Param::Field::BALL_SIZE && moving_seg.IsPointOnLineOnSegment(prj_point) ){
+			if( obs_pos.dist(prj_point) < avoidBuffer + PARAM::Field::BALL_SIZE && moving_seg.IsPointOnLineOnSegment(prj_point) ){
 				_canGo = false;
 				return _canGo;
 			}
 		}
 		if( _canGo && (flags & PlayerStatus::DODGE_OUR_DEFENSE_BOX) ){ // 避免进入本方禁区
-			if( Param::Rule::Version == 2003 ){	// 2003年的规则禁区是矩形
-				CGeoRectangle defenseBox(-Param::Field::PITCH_LENGTH/2, -Param::Field::PENALTY_AREA_WIDTH/2 - avoidBuffer, -Param::Field::PITCH_LENGTH/2 + Param::Field::PENALTY_AREA_WIDTH + avoidBuffer, Param::Field::PENALTY_AREA_WIDTH/2 + avoidBuffer);
+			if( PARAM::Rule::Version == 2003 ){	// 2003年的规则禁区是矩形
+				CGeoRectangle defenseBox(-PARAM::Field::PITCH_LENGTH/2, -PARAM::Field::PENALTY_AREA_WIDTH/2 - avoidBuffer, -PARAM::Field::PITCH_LENGTH/2 + PARAM::Field::PENALTY_AREA_WIDTH + avoidBuffer, PARAM::Field::PENALTY_AREA_WIDTH/2 + avoidBuffer);
 				CGeoLineRectangleIntersection intersection(moving_seg, defenseBox);
 				if( intersection.intersectant() ){
 					if( moving_seg.IsPointOnLineOnSegment(intersection.point1()) || moving_seg.IsPointOnLineOnSegment(intersection.point2())){
@@ -859,8 +861,8 @@ namespace Utils{
 						return _canGo;
 					}
 				}
-			}else if (Param::Rule::Version == 2004) { // 2004年的规则禁区是半圆形
-				CGeoCirlce defenseBox(CGeoPoint(-Param::Field::PITCH_LENGTH/2, 0), Param::Field::PENALTY_AREA_WIDTH/2 + avoidBuffer);
+			}else if (PARAM::Rule::Version == 2004) { // 2004年的规则禁区是半圆形
+				CGeoCirlce defenseBox(CGeoPoint(-PARAM::Field::PITCH_LENGTH/2, 0), PARAM::Field::PENALTY_AREA_WIDTH/2 + avoidBuffer);
 				CGeoLineCircleIntersection intersection(moving_seg, defenseBox);
 				if( intersection.intersectant() ){
 					if( moving_seg.IsPointOnLineOnSegment(intersection.point1()) || moving_seg.IsPointOnLineOnSegment(intersection.point2())){
@@ -870,21 +872,21 @@ namespace Utils{
 				}
 			}
             // 2019, china open, ellipse penalty
-            else if (Param::Rule::Version == 2019 &&
-                     Param::Field::IF_USE_ELLIPSE) {
-                CGeoCirlce c1(CGeoPoint(-Param::Field::PITCH_LENGTH/2,
-                                        Param::Field::PENALTY_AREA_L/2),
-                              Param::Field::PENALTY_AREA_R + avoidBuffer);
-                CGeoCirlce c2(CGeoPoint(-Param::Field::PITCH_LENGTH/2,
-                                        -Param::Field::PENALTY_AREA_L/2),
-                              Param::Field::PENALTY_AREA_R + avoidBuffer);
+            else if (PARAM::Rule::Version == 2019 &&
+                     PARAM::Field::IF_USE_ELLIPSE) {
+                CGeoCirlce c1(CGeoPoint(-PARAM::Field::PITCH_LENGTH/2,
+                                        PARAM::Field::PENALTY_AREA_L/2),
+                              PARAM::Field::PENALTY_AREA_R + avoidBuffer);
+                CGeoCirlce c2(CGeoPoint(-PARAM::Field::PITCH_LENGTH/2,
+                                        -PARAM::Field::PENALTY_AREA_L/2),
+                              PARAM::Field::PENALTY_AREA_R + avoidBuffer);
                 CGeoRectangle defenseBox(
-                            -Param::Field::PITCH_LENGTH / 2 +
-                            Param::Field::PENALTY_AREA_R +
+                            -PARAM::Field::PITCH_LENGTH / 2 +
+                            PARAM::Field::PENALTY_AREA_R +
                             avoidBuffer,
-                            -Param::Field::PENALTY_AREA_L / 2,
-                            -Param::Field::PITCH_LENGTH / 2,
-                            Param::Field::PENALTY_AREA_L/ 2);
+                            -PARAM::Field::PENALTY_AREA_L / 2,
+                            -PARAM::Field::PITCH_LENGTH / 2,
+                            PARAM::Field::PENALTY_AREA_L/ 2);
                 CGeoLineCircleIntersection intersection1(moving_seg, c1);
                 CGeoLineCircleIntersection intersection2(moving_seg, c2);
                 CGeoLineRectangleIntersection intersection3(moving_seg,
@@ -905,7 +907,7 @@ namespace Utils{
 
             }
             else {// 2018年的规则禁区是矩形
-				CGeoRectangle defenseBox(-Param::Field::PITCH_LENGTH / 2 + Param::Field::PENALTY_AREA_DEPTH + avoidBuffer, -Param::Field::PENALTY_AREA_WIDTH / 2 - avoidBuffer, -Param::Field::PITCH_LENGTH / 2, Param::Field::PENALTY_AREA_WIDTH / 2 + avoidBuffer);
+				CGeoRectangle defenseBox(-PARAM::Field::PITCH_LENGTH / 2 + PARAM::Field::PENALTY_AREA_DEPTH + avoidBuffer, -PARAM::Field::PENALTY_AREA_WIDTH / 2 - avoidBuffer, -PARAM::Field::PITCH_LENGTH / 2, PARAM::Field::PENALTY_AREA_WIDTH / 2 + avoidBuffer);
 				CGeoLineRectangleIntersection intersection(moving_seg, defenseBox);
 				if (intersection.intersectant()) {
 					if (moving_seg.IsPointOnLineOnSegment(intersection.point1()) || moving_seg.IsPointOnLineOnSegment(intersection.point2())) {
@@ -920,8 +922,8 @@ namespace Utils{
 
     bool isValidFlatPass(const CVisionModule *pVision, CGeoPoint start, CGeoPoint end, bool isShoot, bool ignoreCloseEnemy, bool ignoreTheirGuard){
         // 判断能否传球的角度限制
-        static const double CLOSE_ANGLE_LIMIT = 8 * Param::Math::PI / 180;
-        static const double FAR_ANGLE_LIMIT = 12 * Param::Math::PI / 180;
+        static const double CLOSE_ANGLE_LIMIT = 8 * PARAM::Math::PI / 180;
+        static const double FAR_ANGLE_LIMIT = 12 * PARAM::Math::PI / 180;
         static const double CLOSE_THRESHOLD = 50;
         static const double THEIR_ROBOT_INTER_THREADHOLD = 30;
         static const double SAFE_DIST = 50;
@@ -932,18 +934,18 @@ namespace Utils{
             // 使用扇形进行计算
             CVector passLine = end - start;
             double passDir = passLine.dir();
-            for (int i = 0; i < Param::Field::MAX_PLAYER_NUM; ++i) {
-                if(pVision->theirPlayer(i+1).Valid()){
-                    if(ignoreCloseEnemy && pVision->theirPlayer(i+1).Pos().dist(start) < CLOSE_ENEMY_DIST) continue;
-                    if(ignoreTheirGuard && Utils::InTheirPenaltyArea(pVision->theirPlayer(i+1).Pos(), 30)) continue;
-                    CGeoPoint enemyPos = pVision->theirPlayer(i+1).Pos();
+            for (int i = 0; i < PARAM::Field::MAX_PLAYER; ++i) {
+                if(pVision->theirPlayer(i).Valid()){
+                    if(ignoreCloseEnemy && pVision->theirPlayer(i).Pos().dist(start) < CLOSE_ENEMY_DIST) continue;
+                    if(ignoreTheirGuard && Utils::InTheirPenaltyArea(pVision->theirPlayer(i).Pos(), 30)) continue;
+                    CGeoPoint enemyPos = pVision->theirPlayer(i).Pos();
                     CVector enemyLine = enemyPos - start;
                     double enemyDir = enemyLine.dir();
                     // 计算敌方车与传球线路的差角
                     double diffAngle = fabs(enemyDir - passDir);
-                    diffAngle = diffAngle > Param::Math::PI ? 2*Param::Math::PI - diffAngle : diffAngle;
+                    diffAngle = diffAngle > PARAM::Math::PI ? 2*PARAM::Math::PI - diffAngle : diffAngle;
                     // 计算补偿角
-                    double compensateAngle = fabs(atan2(Param::Vehicle::V2::PLAYER_SIZE + Param::Field::BALL_SIZE, start.dist(enemyPos)));
+                    double compensateAngle = fabs(atan2(PARAM::Vehicle::V2::PLAYER_SIZE + PARAM::Field::BALL_SIZE, start.dist(enemyPos)));
         //            qDebug() << "compensate angle: " << enemyPos.x() << enemyPos.y() << enemyDir << passDir << compensateAngle;
                     double distanceToEnemy = start.dist(enemyPos);
                     double limit_angle = distanceToEnemy > CLOSE_THRESHOLD ? FAR_ANGLE_LIMIT : CLOSE_ANGLE_LIMIT;
@@ -957,11 +959,11 @@ namespace Utils{
         }
         // 使用平行线进行计算，解决近距离扇形计算不准问题
         CGeoSegment BallLine(start, end);
-            for(int i = 0; i < Param::Field::MAX_PLAYER_NUM; i++) {
-                if(!pVision->theirPlayer(i + 1).Valid()) continue;
-                if(ignoreCloseEnemy && pVision->theirPlayer(i+1).Pos().dist(start) < CLOSE_ENEMY_DIST) continue;
-                if(ignoreTheirGuard && Utils::InTheirPenaltyArea(pVision->theirPlayer(i+1).Pos(), 30)) continue;
-                CGeoPoint targetPos = pVision->theirPlayer(i + 1).Pos();
+            for(int i = 0; i < PARAM::Field::MAX_PLAYER; i++) {
+                if(!pVision->theirPlayer(i ).Valid()) continue;
+                if(ignoreCloseEnemy && pVision->theirPlayer(i).Pos().dist(start) < CLOSE_ENEMY_DIST) continue;
+                if(ignoreTheirGuard && Utils::InTheirPenaltyArea(pVision->theirPlayer(i).Pos(), 30)) continue;
+                CGeoPoint targetPos = pVision->theirPlayer(i ).Pos();
                 double dist = BallLine.dist2Point(targetPos);
                 if(dist < THEIR_ROBOT_INTER_THREADHOLD){
                     valid = false;
@@ -973,7 +975,7 @@ namespace Utils{
 
     bool isValidChipPass(const CVisionModule *pVision, CGeoPoint start, CGeoPoint end){
         // 判断能否传球的角度限制
-        static const double ANGLE_LIMIT = 5 * Param::Math::PI / 180;
+        static const double ANGLE_LIMIT = 5 * PARAM::Math::PI / 180;
         static const double CLOSE_SAFE_DIST = 50;
         static const double FAR_SAFE_DIST = 50;
         static const double FRONT_SAFE_DIST = 30;
@@ -982,16 +984,16 @@ namespace Utils{
         // 使用扇形进行计算
         CVector passLine = end - start;
         double passDir = passLine.dir();
-        for (int i = 0; i < Param::Field::MAX_PLAYER_NUM; ++i) {
-            if(pVision->theirPlayer(i+1).Valid()){
-                CGeoPoint enemyPos = pVision->theirPlayer(i+1).Pos();
+        for (int i = 0; i < PARAM::Field::MAX_PLAYER; ++i) {
+            if(pVision->theirPlayer(i).Valid()){
+                CGeoPoint enemyPos = pVision->theirPlayer(i).Pos();
                 CVector enemyLine = enemyPos - start;
                 double enemyDir = enemyLine.dir();
                 // 计算敌方车与传球线路的差角
                 double diffAngle = fabs(enemyDir - passDir);
-                diffAngle = diffAngle > Param::Math::PI ? 2*Param::Math::PI - diffAngle : diffAngle;
+                diffAngle = diffAngle > PARAM::Math::PI ? 2*PARAM::Math::PI - diffAngle : diffAngle;
                 // 计算补偿角
-                double compensateAngle = fabs(atan2(Param::Vehicle::V2::PLAYER_SIZE + Param::Field::BALL_SIZE, start.dist(enemyPos)));
+                double compensateAngle = fabs(atan2(PARAM::Vehicle::V2::PLAYER_SIZE + PARAM::Field::BALL_SIZE, start.dist(enemyPos)));
     //            qDebug() << "compensate angle: " << enemyPos.x() << enemyPos.y() << enemyDir << passDir << compensateAngle;
                 if(diffAngle - compensateAngle < ANGLE_LIMIT && ((enemyPos.dist(start) < end.dist(start) + FAR_SAFE_DIST && enemyPos.dist(start) > end.dist(start) - CLOSE_SAFE_DIST) || enemyPos.dist(start) < FRONT_SAFE_DIST)){
                     valid = false;

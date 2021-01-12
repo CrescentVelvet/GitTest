@@ -71,7 +71,7 @@ void CDecisionModule::GenerateTasks(const bool visualStop)
 	// 图像停止 ： 收不到 或者 暂停接受
 	if (visualStop) {
 		// 每辆小车下发停止任务
-		for (int vecNumber = 1; vecNumber <= Param::Field::MAX_PLAYER; ++ vecNumber) {
+		for (int vecNumber = 0; vecNumber < PARAM::Field::MAX_PLAYER; ++ vecNumber) {
 			TaskMediator::Instance()->setPlayerTask(vecNumber, PlayerRole::makeItStop(vecNumber), LowestPriority);
 		}
 		return;
@@ -112,7 +112,7 @@ void CDecisionModule::PlanTasks()
 	taskPairList.clear();
 
 	// 根据获取到得小车任务，进行优先级排序
-    for (int num = 1; num <= Param::Field::MAX_PLAYER; ++ num) {
+    for (int num = 0; num < PARAM::Field::MAX_PLAYER; ++ num) {
 		// TODO 只有场上看得到且被赋予任务的小车才进行优先级排序，是否会存在问题
 		
 		if (/*_pVision->ourPlayer(num).Valid() && */TaskMediator::Instance()->getPlayerTask(num)) {

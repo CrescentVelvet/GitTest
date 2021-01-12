@@ -32,7 +32,7 @@ namespace {
     bool FORCE_AVOID = true;
 
     const double directGetBallDist = 35*10;               // 直接冲上去拿球的距离
-    const double directGetBallDirLimit = Param::Math::PI / 6;
+    const double directGetBallDirLimit = PARAM::Math::PI / 6;
     const double touchDist = 150*10;					   //在touchDist内能截球则Touch
     int FraredBuffer = 30;
 
@@ -78,7 +78,7 @@ CGetBallV4::CGetBallV4() {
 void CGetBallV4::plan(const CVisionModule* pVision) {
     const int robotNum = task().executor;
     // new call
-    if (pVision->getCycle() - _lastCycle > Param::Vision::FRAME_RATE * 0.1) {
+    if (pVision->getCycle() - _lastCycle > PARAM::Vision::FRAME_RATE * 0.1) {
         setState(BEGINNING);
         needAvoidBall = false;
         canGetBall = false;
@@ -102,7 +102,7 @@ void CGetBallV4::plan(const CVisionModule* pVision) {
     const CVector me2Ball = ball.RawPos() - me.RawPos();
     const CVector ball2Me = me.RawPos() - ball.RawPos();
     CGeoLine ballLine(ball.Pos(), ball.Vel().dir());
-    ballLineProjection = ballLine.projection(me.RawPos() + Utils::Polar2Vector(Param::Vehicle::V2::PLAYER_CENTER_TO_BALL_CENTER, me.RawDir()));
+    ballLineProjection = ballLine.projection(me.RawPos() + Utils::Polar2Vector(PARAM::Vehicle::V2::PLAYER_CENTER_TO_BALL_CENTER, me.RawDir()));
     CVector ball2Projection = ballLineProjection - ball.Pos();
     targetPoint = task().player.pos;//目标点
 //    CVector me2target = targetPoint - me.Pos();
@@ -142,7 +142,7 @@ void CGetBallV4::plan(const CVisionModule* pVision) {
         getballTask.player.flag |= PlayerStatus::ALLOW_DSS;
         GDebugEngine::Instance()->gui_debug_arc(me.Pos(), 20*10, 0.0f, 360.0f, COLOR_YELLOW);
     }
-    if (ZSkillUtils::instance()->IsInField(waitPoint)) {//若下发了wait的点，则尽量用touch
+    if (Utils::IsInField(waitPoint)) {//若下发了wait的点，则尽量用touch
         isTouch = true;
     }
 
@@ -156,16 +156,16 @@ void CGetBallV4::plan(const CVisionModule* pVision) {
     /*************** Touch **************/
     if (getBallMode == WAIT_TOUCH) {
         CGeoLine ballVelLine(ball.Pos(), ball.Vel().dir());//球线
-        double perpendicularDir = Utils::Normalize(ball.Vel().dir() + Param::Math::PI / 2);//垂直球线的方向
+        double perpendicularDir = Utils::Normalize(ball.Vel().dir() + PARAM::Math::PI / 2);//垂直球线的方向
         CGeoLine perpLineAcrossMyPos(waitPoint, perpendicularDir);//过截球点的垂线
         CGeoPoint projectionPos = CGeoLineLineIntersection(ballVelLine, perpLineAcrossMyPos).IntersectPoint();//垂线与球线的交点
         double ballDist = (ball.RawPos() - projectionPos).mod();
         bool isBallMovingToWaitPoint = ball.Vel().mod() > 30*10;//球是30否在动
         bool canInterceptBall = false;
         //在touch半径内，且离场地边界9cm内，且球向waitpoint移动
-        if (ZSkillUtils::instance()->IsInFieldV2(projectionPos, Param::Vehicle::V2::PLAYER_SIZE) && projectionPos.dist(waitPoint) < touchDist && isBallMovingToWaitPoint) {
-            double meArriveTime = predictedTime(me, projectionPos + Utils::Polar2Vector(-Param::Vehicle::V2::PLAYER_CENTER_TO_BALL_CENTER, getballTask.player.angle));
-            if((me.RawPos() - (projectionPos + Utils::Polar2Vector(-Param::Vehicle::V2::PLAYER_CENTER_TO_BALL_CENTER, getballTask.player.angle))).mod() < 5*10) meArriveTime = 0;
+        if (Utils::IsInFieldV2(projectionPos, PARAM::Vehicle::V2::PLAYER_SIZE) && projectionPos.dist(waitPoint) < touchDist && isBallMovingToWaitPoint) {
+            double meArriveTime = predictedTime(me, projectionPos + Utils::Polar2Vector(-PARAM::Vehicle::V2::PLAYER_CENTER_TO_BALL_CENTER, getballTask.player.angle));
+            if((me.RawPos() - (projectionPos + Utils::Polar2Vector(-PARAM::Vehicle::V2::PLAYER_CENTER_TO_BALL_CENTER, getballTask.player.angle))).mod() < 5*10) meArriveTime = 0;
             double ballArriveTime = 0;
             if (ball.Vel().mod2() / FRICTION > ballDist) {//球能到
                 ballArriveTime = (ball.Vel().mod() - sqrt(ball.Vel().mod2() - FRICTION * ballDist)) / (FRICTION/2);
@@ -175,14 +175,14 @@ void CGetBallV4::plan(const CVisionModule* pVision) {
         CVector interPoint2target =  targetPoint - projectionPos;
         double ballBias = fabs(Utils::Normalize(ball.Vel().dir() - interPoint2target.dir()));
         //加特判，不要用屁股截球
-        if (canInterceptBall && Param::Math::PI - ballBias > 90 * Param::Math::PI / 180){
+        if (canInterceptBall && PARAM::Math::PI - ballBias > 90 * PARAM::Math::PI / 180){
             waitPoint = CGeoPoint(99999,99999);
             isTouch = false;
             judgeMode(pVision);
         }
         else if (canInterceptBall) {
-            if(IF_DEBUG) GDebugEngine::Instance()->gui_debug_msg(me.Pos()+ Utils::Polar2Vector(DEBUG_TEXT_HIGH, -Param::Math::PI/1.5), "Wait Touch", COLOR_YELLOW);
-            getballTask.player.pos = projectionPos + Utils::Polar2Vector(-Param::Vehicle::V2::PLAYER_CENTER_TO_BALL_CENTER, getballTask.player.angle);
+            if(IF_DEBUG) GDebugEngine::Instance()->gui_debug_msg(me.Pos()+ Utils::Polar2Vector(DEBUG_TEXT_HIGH, -PARAM::Math::PI/1.5), "Wait Touch", COLOR_YELLOW);
+            getballTask.player.pos = projectionPos + Utils::Polar2Vector(-PARAM::Vehicle::V2::PLAYER_CENTER_TO_BALL_CENTER, getballTask.player.angle);
             if (Utils::InTheirPenaltyArea(getballTask.player.pos,AVOID_PENALTY))
                 getballTask.player.pos = Utils::MakeOutOfTheirPenaltyArea(getballTask.player.pos,AVOID_PENALTY,ball.Vel().dir());
             setSubTask(PlayerRole::makeItGoto(robotNum, getballTask.player.pos, getballTask.player.angle, getballTask.player.flag));
@@ -193,11 +193,11 @@ void CGetBallV4::plan(const CVisionModule* pVision) {
     }
     /***************** rush *****************/
     if(getBallMode == RUSH) {
-        if(IF_DEBUG) GDebugEngine::Instance()->gui_debug_msg(me.Pos()+ Utils::Polar2Vector(DEBUG_TEXT_HIGH, -Param::Math::PI/1.5), "Rush", COLOR_ORANGE);
+        if(IF_DEBUG) GDebugEngine::Instance()->gui_debug_msg(me.Pos()+ Utils::Polar2Vector(DEBUG_TEXT_HIGH, -PARAM::Math::PI/1.5), "Rush", COLOR_ORANGE);
         double angle = (ball.RawPos() - me.RawPos()).dir();
         if(!ball.Valid()) angle = (interPoint-me.RawPos()).dir();
         CVector ball2target = targetPoint - ball.RawPos();
-        if (!Utils::InTheirPenaltyArea(targetPoint, Param::Vehicle::V2::PLAYER_SIZE)) {
+        if (!Utils::InTheirPenaltyArea(targetPoint, PARAM::Vehicle::V2::PLAYER_SIZE)) {
             getballTask.player.angle = ball2target.dir();
         }
         getballTask.player.flag |= PlayerStatus::DRIBBLING;
@@ -211,30 +211,30 @@ void CGetBallV4::plan(const CVisionModule* pVision) {
             vel = Utils::Polar2Vector(300*10, ball.Vel().dir());
             if(Utils::InTheirPenaltyArea(getballTask.player.pos, 80*10) || Utils::InOurPenaltyArea(getballTask.player.pos, 80*10)) vel = Utils::Polar2Vector(100*10, ball.Vel().dir());
 
-            if(Utils::OutOfField(getballTask.player.pos,Param::Vehicle::V2::PLAYER_SIZE) || Utils::OutOfField(ball.RawPos(),Param::Vehicle::V2::PLAYER_SIZE)){
-                Utils::MakeInField(getballTask.player.pos,Param::Vehicle::V2::PLAYER_SIZE);
+            if(!Utils::IsInField(getballTask.player.pos,PARAM::Vehicle::V2::PLAYER_SIZE) || !Utils::IsInField(ball.RawPos(),PARAM::Vehicle::V2::PLAYER_SIZE)){
+                Utils::MakeInField(getballTask.player.pos,PARAM::Vehicle::V2::PLAYER_SIZE);
                 vel = CVector(0,0);
             }
             if (Utils::InTheirPenaltyArea(getballTask.player.pos,AVOID_PENALTY)){
                 getballTask.player.pos = Utils::MakeOutOfTheirPenaltyArea(getballTask.player.pos,AVOID_PENALTY,ball.Vel().dir());
                 vel = CVector(0,0);
             }
-            if (robotNum != goalieNumber && Utils::InOurPenaltyArea(getballTask.player.pos,Param::Vehicle::V2::PLAYER_SIZE)){
-                getballTask.player.pos = Utils::MakeOutOfOurPenaltyArea(ball.RawPos(),Param::Vehicle::V2::PLAYER_SIZE);
+            if (robotNum != goalieNumber && Utils::InOurPenaltyArea(getballTask.player.pos,PARAM::Vehicle::V2::PLAYER_SIZE)){
+                getballTask.player.pos = Utils::MakeOutOfOurPenaltyArea(ball.RawPos(),PARAM::Vehicle::V2::PLAYER_SIZE);
                 vel = CVector(0,0);
             }
             setSubTask(PlayerRole::makeItGoto(robotNum, getballTask.player.pos, angle, vel,0, RUSH_ACC, RUSH_ROTATE_ACC, 400*10, 15,getballTask.player.flag));
         }else{
             angle = getballTask.player.angle;
-            double bias_dir = Utils::Normalize(me2Ball.dir()+Param::Math::PI/3);
-            if(fabs(Utils::Normalize(me.RawDir() - angle)) < Param::Math::PI/6) bias_dir = angle;//Utils::Normalize(me2Ball.dir()+Param::Math::PI/6);//angle;
+            double bias_dir = Utils::Normalize(me2Ball.dir()+PARAM::Math::PI/3);
+            if(fabs(Utils::Normalize(me.RawDir() - angle)) < PARAM::Math::PI/6) bias_dir = angle;//Utils::Normalize(me2Ball.dir()+PARAM::Math::PI/6);//angle;
             getballTask.player.pos = ball.Pos() + Utils::Polar2Vector(20*10, bias_dir);
             if (Utils::InTheirPenaltyArea(getballTask.player.pos,AVOID_PENALTY)){
                 getballTask.player.pos = Utils::MakeOutOfTheirPenaltyArea(getballTask.player.pos,AVOID_PENALTY,ball.Vel().dir());
             }
             int goalieNumber = TaskMediator::Instance()->goalie();
-            if (robotNum != goalieNumber && Utils::InOurPenaltyArea(getballTask.player.pos,Param::Vehicle::V2::PLAYER_SIZE))
-                getballTask.player.pos = Utils::MakeOutOfOurPenaltyArea(ball.RawPos(),Param::Vehicle::V2::PLAYER_SIZE);
+            if (robotNum != goalieNumber && Utils::InOurPenaltyArea(getballTask.player.pos,PARAM::Vehicle::V2::PLAYER_SIZE))
+                getballTask.player.pos = Utils::MakeOutOfOurPenaltyArea(ball.RawPos(),PARAM::Vehicle::V2::PLAYER_SIZE);
             //红外触发达到一定程度时，原地持球
             getballTask.player.pos = me.Pos();
             setSubTask(PlayerRole::makeItGoto(robotNum, getballTask.player.pos, angle,
@@ -247,14 +247,14 @@ void CGetBallV4::plan(const CVisionModule* pVision) {
 
     /***************** inter touch *****************/
     if(getBallMode == INTER_TOUCH) {
-        if(IF_DEBUG) GDebugEngine::Instance()->gui_debug_msg(me.Pos()+ Utils::Polar2Vector(DEBUG_TEXT_HIGH, -Param::Math::PI/1.5), "Inter Touch", COLOR_CYAN);
+        if(IF_DEBUG) GDebugEngine::Instance()->gui_debug_msg(me.Pos()+ Utils::Polar2Vector(DEBUG_TEXT_HIGH, -PARAM::Math::PI/1.5), "Inter Touch", COLOR_CYAN);
         CVector projection2Me = me.RawPos() - ballLineProjection;
-        getballTask.player.pos = interPoint + Utils::Polar2Vector(-Param::Vehicle::V2::PLAYER_CENTER_TO_BALL_CENTER, getballTask.player.angle);
-        if (fabs(Utils::Normalize(ball2Me.dir() -  ball.Vel().dir())) < 30 * Param::Math::PI / 180 && (ball.RawPos() - me.RawPos()).mod() < 30*10 + ball.Vel().mod() * 0.25 && fabs(Utils::Normalize(ball2Projection.dir() - ball.Vel().dir())) < 0.1) {
-            getballTask.player.pos = ballLineProjection + Utils::Polar2Vector(-Param::Vehicle::V2::PLAYER_CENTER_TO_BALL_CENTER, getballTask.player.angle);
+        getballTask.player.pos = interPoint + Utils::Polar2Vector(-PARAM::Vehicle::V2::PLAYER_CENTER_TO_BALL_CENTER, getballTask.player.angle);
+        if (fabs(Utils::Normalize(ball2Me.dir() -  ball.Vel().dir())) < 30 * PARAM::Math::PI / 180 && (ball.RawPos() - me.RawPos()).mod() < 30*10 + ball.Vel().mod() * 0.25 && fabs(Utils::Normalize(ball2Projection.dir() - ball.Vel().dir())) < 0.1) {
+            getballTask.player.pos = ballLineProjection + Utils::Polar2Vector(-PARAM::Vehicle::V2::PLAYER_CENTER_TO_BALL_CENTER, getballTask.player.angle);
         }
-        if ((fabs(Utils::Normalize(me2Ball.dir() - ball.Vel().dir())) < Param::Math::PI / 4) ||
-                (fabs(Utils::Normalize(me2Ball.dir() - ball.Vel().dir())) < Param::Math::PI / 2 && me2Ball.mod() <= 40*10)){//追在球屁股后面，且可能撞上球
+        if ((fabs(Utils::Normalize(me2Ball.dir() - ball.Vel().dir())) < PARAM::Math::PI / 4) ||
+                (fabs(Utils::Normalize(me2Ball.dir() - ball.Vel().dir())) < PARAM::Math::PI / 2 && me2Ball.mod() <= 40*10)){//追在球屁股后面，且可能撞上球
             getballTask.player.pos = getballTask.player.pos + (projection2Me / projection2Me.mod() * 40*10);//跑到球的侧面
         }
         if (Utils::InTheirPenaltyArea(getballTask.player.pos,AVOID_PENALTY)){
@@ -273,7 +273,7 @@ void CGetBallV4::plan(const CVisionModule* pVision) {
     }
     /*************** chase kick **************/
     if (getBallMode == CHASE) {
-        if(IF_DEBUG) GDebugEngine::Instance()->gui_debug_msg(me.Pos()+ Utils::Polar2Vector(DEBUG_TEXT_HIGH, -Param::Math::PI/1.5), "Chase Kick", COLOR_RED);
+        if(IF_DEBUG) GDebugEngine::Instance()->gui_debug_msg(me.Pos()+ Utils::Polar2Vector(DEBUG_TEXT_HIGH, -PARAM::Math::PI/1.5), "Chase Kick", COLOR_RED);
         canForwardShoot = judgeShootMode(pVision);
         setSubTask(PlayerRole::makeItZChaseKick(robotNum, getballTask.player.angle));
     }
@@ -284,17 +284,17 @@ void CGetBallV4::plan(const CVisionModule* pVision) {
         getballTask.player.angle = me2Ball.dir();//面向球截球
         getballTask.player.flag |= PlayerStatus::MIN_DSS; ///这种情况把dss开到最小，否则容易因为避障请不到球 by jsh 2019/6/27
         if (me.RawPos().dist(ballLineProjection) < 50*10 && me2Ball.mod()<150*10 && fabs(Utils::Normalize(ball2Projection.dir() - ball.Vel().dir()))<0.1) {
-            if(IF_DEBUG) GDebugEngine::Instance()->gui_debug_msg(me.Pos()+ Utils::Polar2Vector(DEBUG_TEXT_HIGH, -Param::Math::PI/1.5), "Intercept", COLOR_WHITE);
+            if(IF_DEBUG) GDebugEngine::Instance()->gui_debug_msg(me.Pos()+ Utils::Polar2Vector(DEBUG_TEXT_HIGH, -PARAM::Math::PI/1.5), "Intercept", COLOR_WHITE);
             getballTask.player.pos = ballLine.projection(me.RawPos());
         }
         //普通情况，计算接球点
         else {
-            if(IF_DEBUG) GDebugEngine::Instance()->gui_debug_msg(me.Pos()+ Utils::Polar2Vector(DEBUG_TEXT_HIGH, -Param::Math::PI/1.5), "Intercept", COLOR_RED);
+            if(IF_DEBUG) GDebugEngine::Instance()->gui_debug_msg(me.Pos()+ Utils::Polar2Vector(DEBUG_TEXT_HIGH, -PARAM::Math::PI/1.5), "Intercept", COLOR_RED);
             CVector interPoint2Ball = ball.RawPos() - interPoint;
             if(me2Ball.mod() > 80*10) getballTask.player.angle = interPoint2Ball.dir();//面向球截球
             else getballTask.player.angle = me2Ball.dir();//面向球截球
-            if ((fabs(Utils::Normalize(me2Ball.dir() - ball.Vel().dir())) < Param::Math::PI / 4) ||
-                (fabs(Utils::Normalize(me2Ball.dir() - ball.Vel().dir())) < Param::Math::PI / 2 && me2Ball.mod() <= 40*10))//追在球屁股后面，且可能撞上球
+            if ((fabs(Utils::Normalize(me2Ball.dir() - ball.Vel().dir())) < PARAM::Math::PI / 4) ||
+                (fabs(Utils::Normalize(me2Ball.dir() - ball.Vel().dir())) < PARAM::Math::PI / 2 && me2Ball.mod() <= 40*10))//追在球屁股后面，且可能撞上球
                 getballTask.player.pos = interPoint + (projection2Me / projection2Me.mod() * 40*10);//跑到球的侧面
             else
                 getballTask.player.pos = interPoint;
@@ -302,20 +302,20 @@ void CGetBallV4::plan(const CVisionModule* pVision) {
         if (Utils::InTheirPenaltyArea(getballTask.player.pos,AVOID_PENALTY)){
             getballTask.player.pos = Utils::MakeOutOfTheirPenaltyArea(getballTask.player.pos,AVOID_PENALTY,ball.Vel().dir());
         }
-        if (robotNum != goalieNumber && Utils::InOurPenaltyArea(getballTask.player.pos,Param::Vehicle::V2::PLAYER_SIZE))
-            getballTask.player.pos = Utils::MakeOutOfOurPenaltyArea(ball.RawPos(),Param::Vehicle::V2::PLAYER_SIZE);
+        if (robotNum != goalieNumber && Utils::InOurPenaltyArea(getballTask.player.pos,PARAM::Vehicle::V2::PLAYER_SIZE))
+            getballTask.player.pos = Utils::MakeOutOfOurPenaltyArea(ball.RawPos(),PARAM::Vehicle::V2::PLAYER_SIZE);
         setSubTask(PlayerRole::makeItGoto(robotNum, getballTask.player.pos, getballTask.player.angle, getballTask.player.flag));
     }
 
     /******************static get ball**************/
     if (getBallMode == STATIC) {
         needdribble = true;
-        if(IF_DEBUG) GDebugEngine::Instance()->gui_debug_msg(me.Pos()+ Utils::Polar2Vector(DEBUG_TEXT_HIGH, -Param::Math::PI/1.5), "Static", COLOR_WHITE);
+        if(IF_DEBUG) GDebugEngine::Instance()->gui_debug_msg(me.Pos()+ Utils::Polar2Vector(DEBUG_TEXT_HIGH, -PARAM::Math::PI/1.5), "Static", COLOR_WHITE);
         getballTask.player.flag |= PlayerStatus::MIN_DSS; ///这种情况把dss开到最小，否则容易因为避障请不到球 by jsh 2019/6/27
-        if(Utils::InOurPenaltyArea(ball.RawPos(), 0) || (me2Ball.mod() < 50*10 && fabs(Utils::Normalize(me.RawDir() - me2Ball.dir())) > Param::Math::PI/8)) {
+        if(Utils::InOurPenaltyArea(ball.RawPos(), 0) || (me2Ball.mod() < 50*10 && fabs(Utils::Normalize(me.RawDir() - me2Ball.dir())) > PARAM::Math::PI/8)) {
 
             double me2BallDirDiff = Utils::Normalize(me2Ball.dir() - finalDir);
-            bool isInDirectGetBallCircle = me.RawPos().dist(ball.RawPos()) < directGetBallDist && me.RawPos().dist(ball.RawPos()) > Param::Vehicle::V2::PLAYER_SIZE + 5 * 10;    //是否在直接冲上去拿球距离之内
+            bool isInDirectGetBallCircle = me.RawPos().dist(ball.RawPos()) < directGetBallDist && me.RawPos().dist(ball.RawPos()) > PARAM::Vehicle::V2::PLAYER_SIZE + 5 * 10;    //是否在直接冲上去拿球距离之内
             bool isGetBallDirReached = fabs(me2BallDirDiff) < directGetBallDirLimit;
             canGetBall = isInDirectGetBallCircle && isGetBallDirReached;     //重要布尔量:是否能直接上前拿球
             bool fraredGetball = fraredOn > 10;
@@ -325,15 +325,15 @@ void CGetBallV4::plan(const CVisionModule* pVision) {
 
             if (needAvoidBall) {
                 getballTask.player.angle = me2Ball.dir();
-                if (fabs(me2BallDirDiff) > Param::Math::PI / 3) {
-                    double avoidDir = Utils::Normalize(ball2Me.dir() + staticDir * Param::Math::PI / 4);
+                if (fabs(me2BallDirDiff) > PARAM::Math::PI / 3) {
+                    double avoidDir = Utils::Normalize(ball2Me.dir() + staticDir * PARAM::Math::PI / 4);
                     getballTask.player.pos = ball.RawPos() + Utils::Polar2Vector(30*10, avoidDir);
                 } else {
-                    double directDist = Param::Vehicle::V2::PLAYER_CENTER_TO_BALL_CENTER + Param::Field::BALL_SIZE + 1;
+                    double directDist = PARAM::Vehicle::V2::PLAYER_CENTER_TO_BALL_CENTER + PARAM::Field::BALL_SIZE + 1;
                     if (fabs(me2BallDirDiff) < 0.2) {
-                        getballTask.player.pos = ball.RawPos() + Utils::Polar2Vector(directDist - 5*10, Utils::Normalize(finalDir - Param::Math::PI));
+                        getballTask.player.pos = ball.RawPos() + Utils::Polar2Vector(directDist - 5*10, Utils::Normalize(finalDir - PARAM::Math::PI));
                     } else {
-                        getballTask.player.pos = ball.RawPos() + Utils::Polar2Vector(directDist, Utils::Normalize(finalDir - Param::Math::PI));
+                        getballTask.player.pos = ball.RawPos() + Utils::Polar2Vector(directDist, Utils::Normalize(finalDir - PARAM::Math::PI));
                     }
                 }
                 if (Utils::InTheirPenaltyArea(getballTask.player.pos,AVOID_PENALTY)){
@@ -347,17 +347,17 @@ void CGetBallV4::plan(const CVisionModule* pVision) {
                                                   300*10, 15, //max speed
                                                   getballTask.player.flag));
             } else {
-                if (fabs(me2BallDirDiff) > Param::Math::PI / 2) {
-                    double gotoDir = Utils::Normalize(finalDir + staticDir * Param::Math::PI * 3.5 / 5);
+                if (fabs(me2BallDirDiff) > PARAM::Math::PI / 2) {
+                    double gotoDir = Utils::Normalize(finalDir + staticDir * PARAM::Math::PI * 3.5 / 5);
                     getballTask.player.pos = ball.RawPos() + Utils::Polar2Vector(40*10, gotoDir);
-                } else if(fabs(me2BallDirDiff) <  15 * Param::Math::PI / 180) {
+                } else if(fabs(me2BallDirDiff) <  15 * PARAM::Math::PI / 180) {
                     getballTask.player.pos = ball.RawPos();
                 } else {
-                    double directDist = Param::Vehicle::V2::PLAYER_CENTER_TO_BALL_CENTER  + Param::Field::BALL_SIZE - 1.5*10;
-                    getballTask.player.pos = ball.RawPos() + Utils::Polar2Vector(directDist, Utils::Normalize(finalDir - Param::Math::PI));
+                    double directDist = PARAM::Vehicle::V2::PLAYER_CENTER_TO_BALL_CENTER  + PARAM::Field::BALL_SIZE - 1.5*10;
+                    getballTask.player.pos = ball.RawPos() + Utils::Polar2Vector(directDist, Utils::Normalize(finalDir - PARAM::Math::PI));
                 }
-                if (Utils::InTheirPenaltyArea(getballTask.player.pos,Param::Vehicle::V2::PLAYER_SIZE)){
-                    getballTask.player.pos = Utils::MakeOutOfTheirPenaltyArea(getballTask.player.pos,Param::Vehicle::V2::PLAYER_SIZE);
+                if (Utils::InTheirPenaltyArea(getballTask.player.pos,PARAM::Vehicle::V2::PLAYER_SIZE)){
+                    getballTask.player.pos = Utils::MakeOutOfTheirPenaltyArea(getballTask.player.pos,PARAM::Vehicle::V2::PLAYER_SIZE);
                 }
                 if (robotNum != goalieNumber && Utils::InOurPenaltyArea(getballTask.player.pos,AVOID_PENALTY))
                     getballTask.player.pos = Utils::MakeOutOfOurPenaltyArea(ball.RawPos(),AVOID_PENALTY);
@@ -367,7 +367,7 @@ void CGetBallV4::plan(const CVisionModule* pVision) {
         else{
             double angle = me2Ball.dir();
             CVector ball2target = targetPoint - ball.RawPos();
-            if (!Utils::InTheirPenaltyArea(targetPoint, Param::Vehicle::V2::PLAYER_SIZE)) {
+            if (!Utils::InTheirPenaltyArea(targetPoint, PARAM::Vehicle::V2::PLAYER_SIZE)) {
                 getballTask.player.angle = ball2target.dir();//me2target.dir();
             }
             getballTask.player.flag |= PlayerStatus::DRIBBLING;
@@ -376,15 +376,15 @@ void CGetBallV4::plan(const CVisionModule* pVision) {
                 getballTask.player.pos = ball.RawPos();// + Utils::Polar2Vector(1, me2Ball.dir());
             }else{
                 angle = getballTask.player.angle;
-                double bias_dir = Utils::Normalize(me2Ball.dir()+Param::Math::PI/3);
-                if(fabs(Utils::Normalize(me.RawDir() - angle)) < Param::Math::PI/6) bias_dir = angle;//Utils::Normalize(me2Ball.dir()+Param::Math::PI/6);//angle;
+                double bias_dir = Utils::Normalize(me2Ball.dir()+PARAM::Math::PI/3);
+                if(fabs(Utils::Normalize(me.RawDir() - angle)) < PARAM::Math::PI/6) bias_dir = angle;//Utils::Normalize(me2Ball.dir()+PARAM::Math::PI/6);//angle;
 //                getballTask.player.pos = ball.RawPos() + Utils::Polar2Vector(20, bias_dir);
                 //红外触发达到一定程度时，原地持球
                 getballTask.player.pos = me.Pos();
             }
 
-            if (Utils::InTheirPenaltyArea(getballTask.player.pos,Param::Vehicle::V2::PLAYER_SIZE)){
-                getballTask.player.pos = Utils::MakeOutOfTheirPenaltyArea(getballTask.player.pos,Param::Vehicle::V2::PLAYER_SIZE);
+            if (Utils::InTheirPenaltyArea(getballTask.player.pos,PARAM::Vehicle::V2::PLAYER_SIZE)){
+                getballTask.player.pos = Utils::MakeOutOfTheirPenaltyArea(getballTask.player.pos,PARAM::Vehicle::V2::PLAYER_SIZE);
             }
             int goalieNumber = TaskMediator::Instance()->goalie();
             if (robotNum != goalieNumber && Utils::InOurPenaltyArea(getballTask.player.pos,AVOID_PENALTY))
@@ -404,19 +404,14 @@ void CGetBallV4::plan(const CVisionModule* pVision) {
     //是否射门
 //    GDebugEngine::Instance()->gui_debug_line(me.RawPos(), me.RawPos()+Utils::Polar2Vector(1000, getballTask.player.angle), COLOR_PURPLE);
 //    GDebugEngine::Instance()->gui_debug_line(me.RawPos(), me.RawPos()+Utils::Polar2Vector(1000, me.RawDir()), COLOR_GREEN);
-//    GDebugEngine::Instance()->gui_debug_msg(me.Pos()+ Utils::Polar2Vector(1.5*DEBUG_TEXT_HIGH, -Param::Math::PI/2), QString("KP: %1").arg(power).toLatin1(), COLOR_ORANGE);
+//    GDebugEngine::Instance()->gui_debug_msg(me.Pos()+ Utils::Polar2Vector(1.5*DEBUG_TEXT_HIGH, -PARAM::Math::PI/2), QString("KP: %1").arg(power).toLatin1(), COLOR_ORANGE);
     if(power > 500*10) power = power - 0.8 * std::max(0.0, me.RawVel().mod()*cos(fabs(Utils::Normalize(me.RawDir() - me.RawVel().dir()))));
 //    GDebugEngine::Instance()->gui_debug_msg(me.Pos()+ Utils::Polar2Vector(2*DEBUG_TEXT_HIGH, -Param::Math::PI/2), QString("new KP: %1").arg(power).toLatin1(), COLOR_ORANGE);
-//    qDebug()<<"----------------";
-//    qDebug()<<needkick;
-//    qDebug()<<(fabs(Utils::Normalize(me.RawDir() - getballTask.player.angle)) < precision*Param::Math::PI/180.0);
-//    qDebug()<<(getBallMode != INTER);
-//    qDebug()<<power;
-    if (needkick && fabs(Utils::Normalize(me.RawDir() - getballTask.player.angle)) < precision*Param::Math::PI/180.0 && getBallMode != INTER) {
+    if (needkick && fabs(Utils::Normalize(me.RawDir() - getballTask.player.angle)) < precision*PARAM::Math::PI/180.0 && getBallMode != INTER) {
         if(!chip) KickStatus::Instance()->setKick(robotNum, power);
         else if(fraredOn >= 20) KickStatus::Instance()->setChipKick(robotNum, power);
     }
-    else if (needkick && (getBallMode == WAIT_TOUCH || getBallMode == INTER_TOUCH) && fabs(Utils::Normalize(me.RawDir() - getballTask.player.angle)) < TOUCH_ACCURACY*Param::Math::PI/180.0) {
+    else if (needkick && (getBallMode == WAIT_TOUCH || getBallMode == INTER_TOUCH) && fabs(Utils::Normalize(me.RawDir() - getballTask.player.angle)) < TOUCH_ACCURACY*PARAM::Math::PI/180.0) {
         if(!chip) KickStatus::Instance()->setKick(robotNum, power);
         else if(fraredOn >= 20) KickStatus::Instance()->setChipKick(robotNum, power);
     }
@@ -485,19 +480,19 @@ void CGetBallV4::judgeMode(const CVisionModule * pVision) {
 
 
     if(interPointJump > 30*10)
-//    if(ZSkillUtils::instance()->IsInField(interPoint, 9))
+//    if(Utils::IsInField(interPoint, 9))
         lastInterState = true;
     else lastInterState = false;
 
     CVector interPoint2target = targetPoint - interPoint;
     double ballBias = fabs(Utils::Normalize(ball.Vel().dir() - interPoint2target.dir()));
 
-    if(fraredOff > 3 && Param::Math::PI - ballBias < NORMAL_TOUCH_DIR * Param::Math::PI / 180) { // May touch
+    if(fraredOff > 3 && PARAM::Math::PI - ballBias < NORMAL_TOUCH_DIR * PARAM::Math::PI / 180) { // May touch
         getBallMode = INTER_TOUCH;
-    } else if(ballBias < (NORMAL_CHASE_DIR / 180)*Param::Math::PI && !safeMode) { // May chase
+    } else if(ballBias < (NORMAL_CHASE_DIR / 180)*PARAM::Math::PI && !safeMode) { // May chase
         getBallMode = CHASE;
     }
-    if(fabs(Utils::Normalize(ball.Vel().dir() - (ball.RawPos() - me.RawPos()).dir())) < RUSH_BALL_DIR *Param::Math::PI /180.0){
+    if(fabs(Utils::Normalize(ball.Vel().dir() - (ball.RawPos() - me.RawPos()).dir())) < RUSH_BALL_DIR *PARAM::Math::PI /180.0){
         getBallMode = RUSH;
         return;
     }
@@ -518,7 +513,6 @@ bool CGetBallV4::judgeShootMode(const CVisionModule * pVision) {
 }
 
 void CGetBallV4::meanFilter(int robotNum, double &interTime, CGeoPoint &interPoint){
-    robotNum = robotNum - 1;
     for(int i=0; i < FILTER_NUM - 1; i++){
         interTimes[i] = interTimes[i+1];
         interPointXs[i] = interPointXs[i+1];
@@ -585,8 +579,8 @@ bool CGetBallV4::hysteresisPredict(const CVisionModule* pVision, int robotNum, C
     CGeoLine ballLine(ball.Pos(), ball.Vel().dir());
     CGeoPoint ballLineProjection = ballLine.projection(me.Pos());
     CVector projection2me = me.Pos() - ballLineProjection;
-//    double width = projection2me.mod() < Param::Vehicle::V2::PLAYER_SIZE ? projection2me.mod() : Param::Vehicle::V2::PLAYER_SIZE;
-    for (ballArriveTime = 0; ballArriveTime < max_time; ballArriveTime += 1.0 / (Param::Vision::FRAME_RATE * 2) ) {
+//    double width = projection2me.mod() < PARAM::Vehicle::V2::PLAYER_SIZE ? projection2me.mod() : PARAM::Vehicle::V2::PLAYER_SIZE;
+    for (ballArriveTime = 0; ballArriveTime < max_time; ballArriveTime += 1.0 / (PARAM::Vision::FRAME_RATE * 2) ) {
         testVel = ball.Vel().mod() - ballAcc * ballArriveTime; //v_0-at
         testBallLength = (ball.Vel().mod() + testVel) * ballArriveTime / 2; //梯形法计算球移动距离
         testPoint = ball.Pos() + Utils::Polar2Vector(testBallLength, ball.Vel().dir());
@@ -595,7 +589,7 @@ bool CGetBallV4::hysteresisPredict(const CVisionModule* pVision, int robotNum, C
         if(meArriveTime < 0.3) meArriveTime = 0;
         if(me.Vel().mod() < 100*10 && projection2me.mod() < 15*10 && me2testPoint.mod() < 15*10) meArriveTime = 0;
 //        if(isBall2Me && projection2me.mod() < 10) meArriveTime = 0;
-        if (!ZSkillUtils::instance()->IsInField(testPoint)){// ball out of field
+        if (!Utils::IsInField(testPoint)){// ball out of field
             //lastInterState[robotNum] = false;
             break;
         }

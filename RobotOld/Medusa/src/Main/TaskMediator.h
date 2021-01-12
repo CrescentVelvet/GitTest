@@ -3,7 +3,7 @@
 
 #include <singleton.h>
 #include <geometry.h>
-#include <param.h>
+#include "staticparams.h"
 #include <skill/PlayerTask.h>
 #include "utils.h"
 #include "Global.h"
@@ -25,7 +25,7 @@ public:
 	CTaskMediator() : _ballHandler(0)
 	{
         USE_LUA_SCRIPTS = true;
-        for(int i=0; i<=Param::Field::MAX_PLAYER; ++i ){
+        for(int i=0; i<PARAM::Field::MAX_PLAYER; ++i ){
 			_playerTask[i] = 0;
 		}
 	}
@@ -42,7 +42,7 @@ public:
 	// 左后卫
 	int leftBack(){
 		if(vision->getCycle() - _leftBack.lastCycle > 5){
-			_leftBack.num = 0;
+            _leftBack.num = -1;
 		}
 		return _leftBack.num;
 	}
@@ -50,7 +50,7 @@ public:
 	// 右后卫
 	int rightBack(){
 		if(vision->getCycle() - _rightBack.lastCycle > 5){
-			_rightBack.num = 0;
+            _rightBack.num = -1;
 		}
 		return _rightBack.num;
 	}
@@ -58,7 +58,7 @@ public:
 	// 单后卫
 	int singleBack(){
 		if(vision->getCycle() - _singleBack.lastCycle > 5){
-			_singleBack.num = 0;
+            _singleBack.num = -1;
 		}
 		return _singleBack.num;
 	}
@@ -66,7 +66,7 @@ public:
 	// 防守后腰
 	int defendMiddle(){
 		if(vision->getCycle() - _defendMiddle.lastCycle > 5){
-			_defendMiddle.num = 0;
+            _defendMiddle.num = -1;
 		}
 		return _defendMiddle.num;
 	}
@@ -74,14 +74,14 @@ public:
 	//边后卫
 	int sideBack(){
 		if(vision->getCycle() - _sideBack.lastCycle > 5){
-			_sideBack.num = 0;
+            _sideBack.num = -1;
 		}
 		return _sideBack.num;
 	}
 
 	int advancer(){
 		if (vision->getCycle() - _advancer.lastCycle> 5){
-			_advancer.num = 0;
+            _advancer.num = -1;
 		}
 		return _advancer.num;
 	}
@@ -115,7 +115,7 @@ public:
 	void cleanOldTasks()
 	{
 		// 执行完该函数后,标志数组都为false, 任务数组则设定了任务的队员位置保留, 其他队员位置清零.
-        for(int num=0; num<=Param::Field::MAX_PLAYER; ++num ){
+        for(int num=0; num<PARAM::Field::MAX_PLAYER; ++num ){
 			_playerTask[num] = 0;
 		}
 	}
@@ -157,8 +157,8 @@ private:
 	SpecialRole _sideBack;
 	SpecialRole _advancer;
 	int _ballHandler; // 拿球队员
-	CPlayerTask* _playerTask[Param::Field::MAX_PLAYER+1]; // 队员的任务
-	int _playerTaskPriority[Param::Field::MAX_PLAYER+1]; // 队员任务的优先级
+	CPlayerTask* _playerTask[PARAM::Field::MAX_PLAYER]; // 队员的任务
+	int _playerTaskPriority[PARAM::Field::MAX_PLAYER]; // 队员任务的优先级
 };
 typedef NormalSingleton< CTaskMediator > TaskMediator;
 

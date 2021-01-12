@@ -5,15 +5,15 @@
 #include "BestPlayer.h"
 #include <fstream>
 #include <sstream>
-#include "os_param.h"
+#include "staticparams.h"
 namespace{
-    const string CONFIG_PATH = Param::File::OppConfigPath;
+    const string CONFIG_PATH = PARAM::File::OppConfigPath;
 	bool output_num = true;
 }
 COppRoleMatcher::COppRoleMatcher()
 {
 	_oppRolePriList.clear();
-	for (int i = 0 ; i <= Param::Field::MAX_PLAYER ; ++i)_role[i] = new RNull();//实际上只用到编号的1~6
+	for (int i = 0 ; i < PARAM::Field::MAX_PLAYER ; ++i)_role[i] = new RNull();//实际上只用到编号的1~6
 	OppRoleFactory::Instance();
 	readInConfig("TestOppRoleMatch.txt");
 }
@@ -91,7 +91,7 @@ COppRole* COppRoleMatcher::matchRole(COppPlayer& oplayer)
 {
 	int num = oplayer.getNum();
 	//wrong number
-	if (num < 1 || num > Param::Field::MAX_PLAYER)
+	if (num < 0 || num > PARAM::Field::MAX_PLAYER-1)
 	{
 		cout << "ERROR: wrong num with opp role match!!!" << endl;
 		return NULL;

@@ -11,7 +11,7 @@ public:
 	template < class T >
 	T* newCommand(const T& cmd)
 	{
-        static T* pCmds[Param::Field::MAX_PLAYER_NUM + 1] = {};
+        static T* pCmds[PARAM::Field::MAX_PLAYER] = {};
 		if( pCmds[cmd.number()] == 0 ){
 			pCmds[cmd.number()] = new T(cmd);
 		}else{

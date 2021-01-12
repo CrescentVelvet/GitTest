@@ -38,7 +38,7 @@ public:
 private:
 	int _lastCycle;
 	int _lastTwoKickCycle;
-	double _targetDir[Param::Field::MAX_PLAYER+1];
+	double _targetDir[PARAM::Field::MAX_PLAYER];
 	CGeoPoint _leftUp;
 	CGeoPoint _rightDown;
 	double _radius;

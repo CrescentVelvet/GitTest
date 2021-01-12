@@ -22,7 +22,7 @@ enum{
     const double newVehicleBuffer = 0.6;
     const double StopDist = 1;
     const double directGetBallDist = 35;
-    const double directGetBallDirLimit = Param::Math::PI / 4;
+    const double directGetBallDirLimit = PARAM::Math::PI / 4;
     const double SHOOT_ACCURATE  = 3;   // degree
     const double TURN_COMPENSATE = 0;   // radius
     const double TURN_RADIUS     = 30;  // radius
@@ -52,7 +52,7 @@ void CCmuTurnKickV1::plan(const CVisionModule * pVision)
     chip = flag & PlayerStatus::CHIP;//是否挑射
 
     const MobileVisionT& ball = pVision->Ball();
-    const PlayerVisionT& me = pVision->OurPlayer(robotNum);
+    const PlayerVisionT& me = pVision->ourPlayer(robotNum);
 
     TaskT chase_kick_task(task());
     //double ballArriveTime = 0;
@@ -98,12 +98,12 @@ void CCmuTurnKickV1::plan(const CVisionModule * pVision)
 
 //    cout << "[CmuTurnKickV1.cpp] " << isSensored << endl;
     //红外触发 且方向正确，则直接射门
-    if (needkick  && me2Ball.mod() < Param::Vehicle::V2::PLAYER_SIZE + buffer){
-//        GDebugEngine::Instance()->gui_debug_msg( me.Pos() + Utils::Polar2Vector(10, Param::Math::PI / 4),
-//                                                 std::to_string(abs(final_angle - me.Dir()) / Param::Math::PI * 180).c_str() );
-//        std::cout << "[CmuTurnKickV1.cpp] " << abs(final_angle - me.Dir()) / Param::Math::PI * 180 << std::endl;
+    if (needkick  && me2Ball.mod() < PARAM::Vehicle::V2::PLAYER_SIZE + buffer){
+//        GDebugEngine::Instance()->gui_debug_msg( me.Pos() + Utils::Polar2Vector(10, PARAM::Math::PI / 4),
+//                                                 std::to_string(abs(final_angle - me.Dir()) / PARAM::Math::PI * 180).c_str() );
+//        std::cout << "[CmuTurnKickV1.cpp] " << abs(final_angle - me.Dir()) / PARAM::Math::PI * 180 << std::endl;
         if ( fabs(Utils::Normalize(final_angle - me.Dir()) ) <
-             SHOOT_ACCURATE * Param::Math::PI / 180 ) {
+             SHOOT_ACCURATE * PARAM::Math::PI / 180 ) {
             _new_status = KICK;
         }
         else {
@@ -130,7 +130,7 @@ void CCmuTurnKickV1::plan(const CVisionModule * pVision)
 //    GDebugEngine::Instance()->gui_debug_line( me.Pos(),
 //                                              me.Pos() + Utils::Polar2Vector(100, final_angle),
 //                                              COLOR_GREEN);
-//    GDebugEngine::Instance()->gui_debug_msg( me.Pos() + Utils::Polar2Vector(10, Param::Math::PI / 4),
+//    GDebugEngine::Instance()->gui_debug_msg( me.Pos() + Utils::Polar2Vector(10, PARAM::Math::PI / 4),
 //                                             std::to_string(_new_status).c_str());
 //    _new_status = TURN;
     switch (_new_status) {
@@ -143,7 +143,7 @@ void CCmuTurnKickV1::plan(const CVisionModule * pVision)
         }
         case WAITBALL:{
         if (fabs(Utils::Normalize(me2Ball.dir() - ball.Vel().dir())) >
-                Param::Math::PI / 3 * 2)//夹角小于60度直接去截球线
+                PARAM::Math::PI / 3 * 2)//夹角小于60度直接去截球线
             chase_kick_task.player.pos = ballLineProjection;
         else
             chase_kick_task.player.pos = ballLineProjection +
@@ -166,7 +166,7 @@ void CCmuTurnKickV1::plan(const CVisionModule * pVision)
 
         //追在球屁股后面，且可能撞上球
         if (fabs(Utils::Normalize(me2Ball.dir() - ball.Vel().dir())) <
-                Param::Math::PI / 2 && me2Ball.mod() <= 40)
+                PARAM::Math::PI / 2 && me2Ball.mod() <= 40)
             chase_kick_task.player.pos = testPoint +
                     (projection2Me / projection2Me.mod() * 40);//跑到球的侧面
         else
@@ -180,7 +180,7 @@ void CCmuTurnKickV1::plan(const CVisionModule * pVision)
         break;
         }
         case TURN:{
-        if ( fabs(Utils::Normalize(final_angle - me.Dir())) / Param::Math::PI * 180 >
+        if ( fabs(Utils::Normalize(final_angle - me.Dir())) / PARAM::Math::PI * 180 >
              TURN_MODE_THRESHOLD ){
             if ( Utils::Normalize( final_angle - me.Dir() ) > 0 ){
                 turnway = 2;
@@ -193,7 +193,7 @@ void CCmuTurnKickV1::plan(const CVisionModule * pVision)
             setSubTask(PlayerRole::makeItOpenSpeedCircle(robotNum, TURN_RADIUS,
                                                          turnway, final_angle,
                                                          1,
-                                                         kAngleBias / 180 * Param::Math::PI, 2));
+                                                         kAngleBias / 180 * PARAM::Math::PI, 2));
         }
         else {
             setSubTask(PlayerRole::makeItGoAndTurnKickV4(robotNum,
@@ -223,46 +223,46 @@ void CCmuTurnKickV1::plan(const CVisionModule * pVision)
         staticDir = getStaticDir(pVision, staticDir);
 
         if (needAvoidBall) {
-            if (fabs(me2BallDirDiff) > Param::Math::PI / 3) {
+            if (fabs(me2BallDirDiff) > PARAM::Math::PI / 3) {
                 double avoidDir =
                         Utils::Normalize(ball2Me.dir() +
-                                         staticDir * Param::Math::PI / 4);
+                                         staticDir * PARAM::Math::PI / 4);
                 chase_kick_task.player.pos =
                         ball.Pos() + Utils::Polar2Vector(30, avoidDir);
             }
             else {
                 double directDist =
-                        Param::Vehicle::V2::PLAYER_FRONT_TO_CENTER +
-                        newVehicleBuffer + Param::Field::BALL_SIZE +
+                        PARAM::Vehicle::V2::PLAYER_FRONT_TO_CENTER +
+                        newVehicleBuffer + PARAM::Field::BALL_SIZE +
                         StopDist - 2.5;
                 chase_kick_task.player.pos =
                         ball.Pos() +
                         Utils::Polar2Vector(directDist,
                                             Utils::Normalize(final_angle -
-                                                         Param::Math::PI));
+                                                         PARAM::Math::PI));
                 if (fabs(me2BallDirDiff) < 0.2)
                     chase_kick_task.player.pos =
                          ball.Pos() +
                          Utils::Polar2Vector(directDist,
                             Utils::Normalize(final_angle -
-                                             Param::Math::PI));
+                                             PARAM::Math::PI));
             }
         }
         else {
-            if (fabs(me2BallDirDiff) > Param::Math::PI / 2) {
+            if (fabs(me2BallDirDiff) > PARAM::Math::PI / 2) {
                 double gotoDir =
                         Utils::Normalize(me2target.dir() +
-                                         staticDir * Param::Math::PI*3/5);
+                                         staticDir * PARAM::Math::PI*3/5);
                 chase_kick_task.player.pos =
                         ball.Pos() + Utils::Polar2Vector(40, gotoDir);
             }
             else {
                 double directDist =
-                        Param::Vehicle::V2::PLAYER_FRONT_TO_CENTER - 2.5;
+                        PARAM::Vehicle::V2::PLAYER_FRONT_TO_CENTER - 2.5;
                 chase_kick_task.player.pos = ball.Pos() +
                         Utils::Polar2Vector(directDist,
                                         Utils::Normalize(me2target.dir() -
-                                                         Param::Math::PI));
+                                                         PARAM::Math::PI));
             }
             if (verbose) cout << "GETBALL" << endl;
         }
@@ -293,7 +293,7 @@ int CCmuTurnKickV1::getStaticDir(const CVisionModule * pVision, int staticDir)
     const MobileVisionT& ball = pVision->Ball();
     const int robotNum = task().executor;
     const CGeoPoint target = task().player.pos;
-    const PlayerVisionT& me = pVision->OurPlayer(robotNum);
+    const PlayerVisionT& me = pVision->ourPlayer(robotNum);
     const CVector me2Target = target - me.Pos();
     double ball2MeDir = (me.Pos() - ball.Pos()).dir();
     double finalDir = me2Target.dir();

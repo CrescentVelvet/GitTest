@@ -21,10 +21,10 @@ class CShootModule{
 public:
     CShootModule();
     bool generateShootDir(const int player=-1);
-    bool generateBestTarget(const CVisionModule *pVision, CGeoPoint &bestTarget, const CGeoPoint pos = CGeoPoint(0, 0));
-    bool  validShootPos(const CVisionModule* pVision, CGeoPoint shootPos, double ballVel, CGeoPoint target, double &interTime,
-                       const double responseTime = 0, double ignoreCloseEnemyDist = -9999, bool ignoreTheirGoalie = false,
-                       bool ignoreTheirGuard = false, bool DEBUG_MODE = false);
+    bool generateBestTarget(const CVisionModule *pVision, CGeoPoint &bestTarget, const CGeoPoint &pos = CGeoPoint(0, 0));
+//    bool  validShootPos(const CVisionModule* pVision, CGeoPoint shootPos, double ballVel, CGeoPoint target, double &interTime,
+//                       const double responseTime = 0, double ignoreCloseEnemyDist = -9999, bool ignoreTheirGoalie = false,
+//                       bool ignoreTheirGuard = false, bool DEBUG_MODE = false);
     bool canShoot(const CVisionModule *pVision, CGeoPoint shootPos);
 //---------内部接口-----------
     bool getKickValid ()  {return _kick_valid;}

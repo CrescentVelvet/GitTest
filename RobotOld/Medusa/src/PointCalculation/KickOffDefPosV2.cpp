@@ -4,27 +4,27 @@
 
 namespace
 {
-	const double DefDist = - Param::Vehicle::V2::PLAYER_SIZE;
+	const double DefDist = - PARAM::Vehicle::V2::PLAYER_SIZE;
 	CGeoLine def_line;
 	double DefY[3];
 }
 CKickOffDefPosV2::CKickOffDefPosV2()
 {
 	VERBOSE_MODE = false;
-	def_line = CGeoLine(CGeoPoint(DefDist, -Param::Field::PITCH_WIDTH / 2)
-		, CGeoPoint(DefDist, Param::Field::PITCH_WIDTH / 2));
+	def_line = CGeoLine(CGeoPoint(DefDist, -PARAM::Field::PITCH_WIDTH / 2)
+		, CGeoPoint(DefDist, PARAM::Field::PITCH_WIDTH / 2));
 	DefY[0]= 0;
-	DefY[1]= - Param::Field::CENTER_CIRCLE_R;
-	DefY[2]= Param::Field::CENTER_CIRCLE_R;
+	DefY[1]= - PARAM::Field::CENTER_CIRCLE_R;
+	DefY[2]= PARAM::Field::CENTER_CIRCLE_R;
 } 
 CGeoPoint CKickOffDefPosV2::GetKickOffDefPos(const CVisionModule *pVision, const int pos_num)
 {
-	const CGeoPoint goal_center(- Param::Field::PITCH_LENGTH / 2, 0);
-	double dist_min = Param::Field::PITCH_LENGTH;
+	const CGeoPoint goal_center(- PARAM::Field::PITCH_LENGTH / 2, 0);
+	double dist_min = PARAM::Field::PITCH_LENGTH;
 	int enemy_min = 0;
-	for (int i = 1; i <= Param::Field::MAX_PLAYER; i ++)
+	for (int i = 0; i < PARAM::Field::MAX_PLAYER; i ++)
 	{
-		if (pVision->theirPlayer(i).Valid() == true && pVision->theirPlayer(i).Pos().x() < 200*Param::Field::RATIO
+		if (pVision->theirPlayer(i).Valid() == true && pVision->theirPlayer(i).Pos().x() < 200*PARAM::Field::RATIO
 			&& this->GetPosNum(pVision, pVision->theirPlayer(i).Pos()) == pos_num)
 		{
 			if (pVision->theirPlayer(i).Pos().dist(goal_center) < dist_min)
@@ -52,10 +52,10 @@ CGeoPoint CKickOffDefPosV2::GetKickOffDefPos(const CVisionModule *pVision, const
 			target = CGeoPoint(DefDist, DefY[pos_num - 1]);
 		}
 	}
-	const double Buffer = Param::Vehicle::V2::PLAYER_SIZE;
+	const double Buffer = PARAM::Vehicle::V2::PLAYER_SIZE;
 	target = Utils::MakeOutOfOurPenaltyArea(target, Buffer);
 	target = Utils::MakeInField(target, Buffer);
-	target = Utils::MakeOutOfCircleAndInField(CGeoPoint(0, 0), Param::Field::CENTER_CIRCLE_R, target, Buffer);
+	target = Utils::MakeOutOfCircleAndInField(CGeoPoint(0, 0), PARAM::Field::CENTER_CIRCLE_R, target, Buffer);
 	if (VERBOSE_MODE)
 	{
 		GDebugEngine::Instance()->gui_debug_x(target, COLOR_YELLOW);
@@ -64,11 +64,11 @@ CGeoPoint CKickOffDefPosV2::GetKickOffDefPos(const CVisionModule *pVision, const
 }
 int CKickOffDefPosV2::GetPosNum(const CVisionModule *pVision, const CGeoPoint pos)
 {
-	if (pos.y() < - Param::Field::CENTER_CIRCLE_R)
+	if (pos.y() < - PARAM::Field::CENTER_CIRCLE_R)
 	{
 		return 2;	// 左点 [7/1/2011 zhanfei]
 	}
-	else if (pos.y() > Param::Field::CENTER_CIRCLE_R)
+	else if (pos.y() > PARAM::Field::CENTER_CIRCLE_R)
 	{
 		return 3;	// 右点 [7/1/2011 zhanfei]
 	}
@@ -80,7 +80,7 @@ int CKickOffDefPosV2::GetPosNum(const CVisionModule *pVision, const CGeoPoint po
 CGeoPoint CKickOffDefPosV2::GetMidPos(const CVisionModule *pVision)
 {
 	//return this->GetKickOffDefPos(pVision, 1);
-	return CGeoPoint(- Param::Field::CENTER_CIRCLE_R - Param::Vehicle::V2::PLAYER_SIZE - 1, 0);
+	return CGeoPoint(- PARAM::Field::CENTER_CIRCLE_R - PARAM::Vehicle::V2::PLAYER_SIZE - 1, 0);
 }
 CGeoPoint CKickOffDefPosV2::GetLeftPos(const CVisionModule *pVision)
 {

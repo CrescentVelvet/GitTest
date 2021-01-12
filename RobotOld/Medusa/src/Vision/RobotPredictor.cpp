@@ -4,7 +4,7 @@
 #include <string.h>
 using namespace std;
 //namespace {
-////const int MAX_ROBOT_LOST_TIME = int(0.5 * Param::Vision::FRAME_RATE + 0.5);
+////const int MAX_ROBOT_LOST_TIME = int(0.5 * PARAM::Vision::FRAME_RATE + 0.5);
 
 ////// 由于图像的一次事故，帧率和系统延时改变了
 ////const double TOTAL_MOV_LATED_FRAME = 4.2f; //平移的延时(原来为5.4)
@@ -21,17 +21,17 @@ using namespace std;
 ////double beta = 0.6;
 //}
 CRobotPredictor::CRobotPredictor() : _robotLostTime(0), _isHasRotation(true) {
-//    _robotFilter.initialize(Param::File::RobotPosFilterDir + "slowMatrices.txt", Param::File::RobotPosFilterDir + "fastMatrices.txt");
-//    _robotRotationFilter.initialize(Param::File::RobotRotFilterDir + "slowMatrices.txt", Param::File::RobotRotFilterDir + "fastMatrices.txt");
+//    _robotFilter.initialize(PARAM::File::RobotPosFilterDir + "slowMatrices.txt", PARAM::File::RobotPosFilterDir + "fastMatrices.txt");
+//    _robotRotationFilter.initialize(PARAM::File::RobotRotFilterDir + "slowMatrices.txt", PARAM::File::RobotRotFilterDir + "fastMatrices.txt");
 }
 
 CRobotPredictor::CRobotPredictor(bool isHasRotation) : _robotLostTime(0), _isHasRotation(isHasRotation) {
     // _isHasRotation将在visionModule的构造函数里被设定, 并针对其值构造具有(或不具有)朝向的对手的CRobotPredictor对象
 //    if (_isHasRotation) {
-//        _robotFilter.initialize(Param::File::RobotPosFilterDir + "slowMatrices.txt", Param::File::RobotPosFilterDir + "fastMatrices.txt");
-//        _robotRotationFilter.initialize(Param::File::RobotRotFilterDir + "slowMatrices.txt", Param::File::RobotRotFilterDir + "fastMatrices.txt");
+//        _robotFilter.initialize(PARAM::File::RobotPosFilterDir + "slowMatrices.txt", PARAM::File::RobotPosFilterDir + "fastMatrices.txt");
+//        _robotRotationFilter.initialize(PARAM::File::RobotRotFilterDir + "slowMatrices.txt", PARAM::File::RobotRotFilterDir + "fastMatrices.txt");
 //    } else {
-//        _robotFilter.initialize(Param::File::RobotPosFilterDir + "slowMatrices.txt", Param::File::RobotPosFilterDir + "fastMatrices.txt");
+//        _robotFilter.initialize(PARAM::File::RobotPosFilterDir + "slowMatrices.txt", PARAM::File::RobotPosFilterDir + "fastMatrices.txt");
 //    }
 }
 void CRobotPredictor::updateVision(int cycle, const VehicleInfoT& player, const MobileVisionT& ball, bool invert) {
@@ -53,8 +53,8 @@ void CRobotPredictor::updateVision(int cycle, const VehicleInfoT& player, const 
     //         << "\tdir:" << player.dir << std::endl;
     double dir, rawdir, dirVel, rawDirVel;
 
-    dir = invert ? Utils::Normalize(player.dir + Param::Math::PI) : Utils::Normalize(player.dir);
-    rawdir = invert ? Utils::Normalize(player.rawdir + Param::Math::PI) : Utils::Normalize(player.rawdir);
+    dir = invert ? Utils::Normalize(player.dir + PARAM::Math::PI) : Utils::Normalize(player.dir);
+    rawdir = invert ? Utils::Normalize(player.rawdir + PARAM::Math::PI) : Utils::Normalize(player.rawdir);
 
 //    if(fabs(player.dirvel) > 6 || fabs(player.raw_dirVel) > 6) {
 //        dirVel = 0;
@@ -102,7 +102,7 @@ void CRobotPredictor::updateVision(int cycle, const VehicleInfoT& player, const 
 //    if(fabs(player.dir) > 6) {
 //        dir = 0;
 //    } else {
-//        dir = invert ? Utils::Normalize(player.dir + Param::Math::PI) : player.dir;
+//        dir = invert ? Utils::Normalize(player.dir + PARAM::Math::PI) : player.dir;
 //    }
 
 //    const bool seen = player.pos.valid;
@@ -118,13 +118,13 @@ void CRobotPredictor::updateVision(int cycle, const VehicleInfoT& player, const 
 //    if( seen ) {
 //        predictedVision.SetRawPos(x, y);
 //    } else { // 没看到车，猜测一个原始位置
-//        for( int i = 1; i < Param::Field::MAX_PLAYER; ++i ) {
+//        for( int i = 1; i < PARAM::Field::MAX_PLAYER; ++i ) {
 //            if( _visionLogger.visionValid(cycle - i) ) {
 //                for( int j = cycle - i; j < cycle; ++j ) {
 //                    const RobotVisionData& previousVision = _visionLogger.getVision(j);
 //                    RobotVisionData& nextVision = _visionLogger.getVision(j + 1);
 //                    if( _visionLogger.getVision(j - NUM_MOV_LATENCY_FRAMES).Valid() ) { //j-5
-//                        nextVision.SetRawPos(previousVision.RawPos() + _visionLogger.getVision(j - NUM_MOV_LATENCY_FRAMES).Vel() / Param::Vision::FRAME_RATE);
+//                        nextVision.SetRawPos(previousVision.RawPos() + _visionLogger.getVision(j - NUM_MOV_LATENCY_FRAMES).Vel() / PARAM::Vision::FRAME_RATE);
 //                    } else {
 //                        nextVision.SetRawPos(previousVision.RawPos());
 //                    }
@@ -176,12 +176,12 @@ void CRobotPredictor::updateVision(int cycle, const VehicleInfoT& player, const 
 //                cmd.vel = CVector(0, 0);
 //            }
 //            if( ballClose) {
-//                _collisionSimulator.simulate(predictedVision, 1.0 / Param::Vision::FRAME_RATE);
+//                _collisionSimulator.simulate(predictedVision, 1.0 / PARAM::Vision::FRAME_RATE);
 //            }
 //            /*if(print)
 //                std::cout << "cmd " << cmd.vel.rotate(_visionLogger.getVision(cycle-1-NUM_LATENCY_FRAMES).Dir()) << "\t" << predictedVision.Pos() << std::endl;*/
 //            double dir = _visionLogger.getVision(cycle - 1 - NUM_MOV_LATENCY_FRAMES).Dir();
-//            double timeLength = MOV_LATENCY_FRACTION / Param::Vision::FRAME_RATE;
+//            double timeLength = MOV_LATENCY_FRACTION / PARAM::Vision::FRAME_RATE;
 //            //cout << timeLength<< endl;
 //            predictedVision.SetPos(predictedVision.Pos() + cmd.vel.rotate(dir)*timeLength);
 //            if ( RobotsCollisionDetector::Instance()->checkCollision(predictedVision, timeLength) )
@@ -211,15 +211,15 @@ void CRobotPredictor::updateVision(int cycle, const VehicleInfoT& player, const 
 //            }
 //            //const RobotCommandEffect&cmd = _commandLogger.getCommand(i);
 //            if( ballClose) {
-//                _collisionSimulator.simulate(predictedVision, 1.0 / Param::Vision::FRAME_RATE);
+//                _collisionSimulator.simulate(predictedVision, 1.0 / PARAM::Vision::FRAME_RATE);
 //            }
 //            /*if(print)
 //                std::cout << "cmd " << cmd.vel.rotate(_visionLogger.getVision(i).Dir()) << "\t" << predictedVision.Pos() << std::endl;*/
 //            CVector ave_vel = cmd.vel.rotate(_visionLogger.getVision(i).Dir()) * beta + last_cmd.vel.rotate(_visionLogger.getVision(i - 1).Dir()) * (1 - beta);
-//            predictedVision.SetPos(predictedVision.Pos() + ave_vel / Param::Vision::FRAME_RATE);
+//            predictedVision.SetPos(predictedVision.Pos() + ave_vel / PARAM::Vision::FRAME_RATE);
 
 //            last_cmd = cmd;
-//            if ( RobotsCollisionDetector::Instance()->checkCollision(predictedVision, 1.0 / Param::Vision::FRAME_RATE) )
+//            if ( RobotsCollisionDetector::Instance()->checkCollision(predictedVision, 1.0 / PARAM::Vision::FRAME_RATE) )
 //                collision_with_opp = true;
 //        }
 
@@ -234,7 +234,7 @@ void CRobotPredictor::updateVision(int cycle, const VehicleInfoT& player, const 
 //                cmd.rot_speed = 0;
 //                cmd.vel = CVector(0, 0);
 //            }
-//            predictedVision.SetDir(Utils::Normalize(predictedVision.Dir() + cmd.rot_speed  / Param::Vision::FRAME_RATE * ROT_LATENCY_FRACTION) );
+//            predictedVision.SetDir(Utils::Normalize(predictedVision.Dir() + cmd.rot_speed  / PARAM::Vision::FRAME_RATE * ROT_LATENCY_FRACTION) );
 //        }
 
 //        if ( _commandLogger.commandValid(cycle - NUM_MOV_LATENCY_FRAMES - 1) )
@@ -255,7 +255,7 @@ void CRobotPredictor::updateVision(int cycle, const VehicleInfoT& player, const 
 //                cmd.vel = CVector(0, 0);
 //            }
 //            double ave_rot = last_cmd.rot_speed * (1 - beta) + cmd.rot_speed * beta;
-//            predictedVision.SetDir(Utils::Normalize(predictedVision.Dir() + ave_rot  / Param::Vision::FRAME_RATE) );
+//            predictedVision.SetDir(Utils::Normalize(predictedVision.Dir() + ave_rot  / PARAM::Vision::FRAME_RATE) );
 //            last_cmd = cmd;
 //        }
 
@@ -286,7 +286,7 @@ void CRobotPredictor::updateVision(int cycle, const VehicleInfoT& player, const 
 //    if(fabs(player.dir) > 6) {
 //        dir = 0;
 //    } else {
-//        dir = invert ? Utils::Normalize(player.dir + Param::Math::PI) : player.dir;
+//        dir = invert ? Utils::Normalize(player.dir + PARAM::Math::PI) : player.dir;
 //    }
 
 //    const bool seen = player.pos.valid;
@@ -308,8 +308,8 @@ void CRobotPredictor::updateVision(int cycle, const VehicleInfoT& player, const 
 //                for( int j = cycle - i; j < cycle; ++j ) {
 //                    const RobotVisionData& previousVision = _visionLogger.getVision(j);
 //                    RobotVisionData& nextVision = _visionLogger.getVision(j + 1);
-//                    if( _visionLogger.getVision(j - Param::Latency::TOTAL_LATED_FRAME).Valid() ) {
-//                        nextVision.SetRawPos(previousVision.RawPos() + _visionLogger.getVision(j - Param::Latency::TOTAL_LATED_FRAME).Vel() / Param::Vision::FRAME_RATE);
+//                    if( _visionLogger.getVision(j - PARAM::Latency::TOTAL_LATED_FRAME).Valid() ) {
+//                        nextVision.SetRawPos(previousVision.RawPos() + _visionLogger.getVision(j - PARAM::Latency::TOTAL_LATED_FRAME).Vel() / PARAM::Vision::FRAME_RATE);
 //                    } else {
 //                        nextVision.SetRawPos(previousVision.RawPos());
 //                    }
@@ -339,13 +339,13 @@ void CRobotPredictor::updateVision(int cycle, const VehicleInfoT& player, const 
 //        // 根据动作进行推算
 //        bool collision_with_us = false;
 //        if (MOV_LATENCY_FRACTION > 0) {
-//            predictedVision.SetPos(predictedVision.Pos() + predictedVision.Vel() / Param::Vision::FRAME_RATE * MOV_LATENCY_FRACTION);
+//            predictedVision.SetPos(predictedVision.Pos() + predictedVision.Vel() / PARAM::Vision::FRAME_RATE * MOV_LATENCY_FRACTION);
 //            // 我们只在朝向有效时才对朝向进行(-PI,PI)的转换处理,否则返回无效朝向值(图像传过来是1000度,即弧度17).
 //            // 这样上层可以利用无效值做是否选用对手朝向的选择 by WLJiang.
 //            if(_isHasRotation)
-//                predictedVision.SetDir(Utils::Normalize(predictedVision.Dir() + predictedVision.RotVel()  / Param::Vision::FRAME_RATE * MOV_LATENCY_FRACTION) );
+//                predictedVision.SetDir(Utils::Normalize(predictedVision.Dir() + predictedVision.RotVel()  / PARAM::Vision::FRAME_RATE * MOV_LATENCY_FRACTION) );
 
-//            if ( RobotsCollisionDetector::Instance()->checkCollision(predictedVision, MOV_LATENCY_FRACTION / Param::Vision::FRAME_RATE))
+//            if ( RobotsCollisionDetector::Instance()->checkCollision(predictedVision, MOV_LATENCY_FRACTION / PARAM::Vision::FRAME_RATE))
 //                collision_with_us = true;
 //        }
 //        for(int i = cycle - NUM_MOV_LATENCY_FRAMES; i < cycle ; ++i ) {
@@ -354,15 +354,15 @@ void CRobotPredictor::updateVision(int cycle, const VehicleInfoT& player, const 
 
 //            //const RobotCommandEffect&cmd = _commandLogger.getCommand(i);
 //            if( ballClose) {
-//                _collisionSimulator.simulate(predictedVision, 1.0 / Param::Vision::FRAME_RATE);
+//                _collisionSimulator.simulate(predictedVision, 1.0 / PARAM::Vision::FRAME_RATE);
 //            }
-//            predictedVision.SetPos(predictedVision.Pos() + predictedVision.Vel() / Param::Vision::FRAME_RATE);
+//            predictedVision.SetPos(predictedVision.Pos() + predictedVision.Vel() / PARAM::Vision::FRAME_RATE);
 //            // 我们只在朝向有效时才对朝向进行(-PI,PI)的转换处理,否则返回无效朝向值(图像传过来是1000度,即弧度17).
 //            // 这样上层可以利用无效值做是否选用对手朝向的选择 by WLJiang.
 //            if(_isHasRotation)
-//                predictedVision.SetDir(Utils::Normalize(predictedVision.Dir() + predictedVision.RotVel() / Param::Vision::FRAME_RATE) );
+//                predictedVision.SetDir(Utils::Normalize(predictedVision.Dir() + predictedVision.RotVel() / PARAM::Vision::FRAME_RATE) );
 
-//            if ( RobotsCollisionDetector::Instance()->checkCollision(predictedVision, MOV_LATENCY_FRACTION / Param::Vision::FRAME_RATE))
+//            if ( RobotsCollisionDetector::Instance()->checkCollision(predictedVision, MOV_LATENCY_FRACTION / PARAM::Vision::FRAME_RATE))
 //                collision_with_us = true;
 //        }
 //        predictedVision.SetValid(true);
@@ -399,7 +399,7 @@ void CRobotPredictor::updateVision(int cycle, const VehicleInfoT& player, const 
 //            //如果有朝向，则计算转速
 //            _robotRotationFilter.updatePosition(playerRotation, playerRotVel);
 //            filterDir = std::atan2(playerRotVel[1][0], playerRotVel[0][0]);
-//            rotVel = playerRotVel[0][1] * std::cos(90 * Param::Math::PI / 180 + filterDir) + playerRotVel[1][1] * std::sin(90 * Param::Math::PI / 180 + filterDir);
+//            rotVel = playerRotVel[0][1] * std::cos(90 * PARAM::Math::PI / 180 + filterDir) + playerRotVel[1][1] * std::sin(90 * PARAM::Math::PI / 180 + filterDir);
 //        } else {
 //            //std::cout<<"opp filter vel: "<<PlayVel<<endl;
 //            filterDir = dir;
@@ -418,15 +418,15 @@ void CRobotPredictor::updateVision(int cycle, const VehicleInfoT& player, const 
 //}
 bool CRobotPredictor::checkValid(int cycle, const CGeoPoint & pos) {
     // 通过和上一帧的位置来比较,来确定当前以为的小车位置pos是否有效
-    const double PLAYER_OUT_BUFFER = Param::Rule::Version == 2003 ? -20 : -50;
-    if( Utils::OutOfField(pos, PLAYER_OUT_BUFFER) ) {
+    const double PLAYER_OUT_BUFFER = PARAM::Rule::Version == 2003 ? -20 : -50;
+    if( !Utils::IsInField(pos, PLAYER_OUT_BUFFER) ) {
         return false; // 队员在边界以外很多
     }
     if( _visionLogger.visionValid(cycle - 1) ) {
         const RobotVisionData& lastRobot = _visionLogger.getVision(cycle - 1);
         if( lastRobot.Valid() ) {
             const double MAX_PLAYER_MOVE_DIST_PER_CYCLE = 10;
-            const double MAX_PLAYER_ROTATE_ANGLE_PER_CYCLE = Param::Math::PI / 2;
+            const double MAX_PLAYER_ROTATE_ANGLE_PER_CYCLE = PARAM::Math::PI / 2;
             const CVector playerMoved = pos - lastRobot.RawPos();
             if( playerMoved.mod() > MAX_PLAYER_MOVE_DIST_PER_CYCLE ) {
                 return false; // 走得太多，不可能，一定是看错了
@@ -473,10 +473,10 @@ void CRobotPredictor::predictLost(int cycle, const MobileVisionT & ball) {
 
         if( (lastCycle.RawPos() - ball.RawPos()).mod2() < 2500) {
             _collisionSimulator.reset(ball.Pos(), ball.Vel());
-            _collisionSimulator.simulate(thisCycle, 1.0 / Param::Vision::FRAME_RATE);
+            _collisionSimulator.simulate(thisCycle, 1.0 / PARAM::Vision::FRAME_RATE);
         }
-        thisCycle.SetPos(lastCycle.Pos() + thisCycle.Vel() / Param::Vision::FRAME_RATE);
-        thisCycle.SetDir(Utils::Normalize(lastCycle.Dir() + thisCycle.RotVel() / Param::Vision::FRAME_RATE));
+        thisCycle.SetPos(lastCycle.Pos() + thisCycle.Vel() / PARAM::Vision::FRAME_RATE);
+        thisCycle.SetDir(Utils::Normalize(lastCycle.Dir() + thisCycle.RotVel() / PARAM::Vision::FRAME_RATE));
         thisCycle.SetValid(true);
     }
 }

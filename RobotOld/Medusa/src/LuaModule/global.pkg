@@ -7,6 +7,7 @@ CGDebugEngine*  debugEngine;
 CWorldModel*	world;
 CKickDirection* kickDirection;
 CDefPos2015* defPos2015;
+CGuardPos* guardpos;
 //CSupportPos* supportPos;
 CTandemPos* tandemPos;
 SkillUtils* skillUtils;

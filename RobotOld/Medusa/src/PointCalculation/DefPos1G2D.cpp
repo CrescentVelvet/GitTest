@@ -11,7 +11,7 @@
 /************************************************************************/
 
 #include "DefPos1G2D.h"
-#include "param.h"
+#include "staticparams.h"
 #include "utils.h"
 #include "WorldModel.h"
 #include "BestPlayer.h"

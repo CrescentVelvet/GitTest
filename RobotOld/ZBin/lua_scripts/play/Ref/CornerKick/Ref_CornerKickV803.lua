@@ -134,7 +134,7 @@ firstState = "init",
         end
     end,
     Assister = HALF_TEST and task.stop() or task.defendMiddle(),
-    Special  = task.zpass(),--USE_ZPASS and task.receivePass("Assister",0) or task.InterTouch(),
+    Special  = task.zpass(),--USE_ZPASS and task.receivePass("Assister",0) or task.zget(_, _, _, flag.kick),
     Leader   = HALF_TEST and task.goCmuRush(HALF_POS[1],_,_,flag.allow_dss + flag.free_kick) or task.continue(),
     Middle   = HALF_TEST and task.goCmuRush(HALF_POS[2],_,_,flag.allow_dss + flag.free_kick) or task.continue(),
     Defender = HALF_TEST and task.goCmuRush(HALF_POS[3],_,_,flag.allow_dss + flag.free_kick) or task.continue(),

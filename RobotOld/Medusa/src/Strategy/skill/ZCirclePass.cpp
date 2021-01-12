@@ -14,11 +14,11 @@
 namespace {
     const int verbose = true;
     double MAX_DRIBBLE_DIST = 50; // dribbling ball cannot move more than 80 cm
-    double SHOOT_ACCURACY = 3 * Param::Math::PI / 180;
+    double SHOOT_ACCURACY = 3 * PARAM::Math::PI / 180;
     double MAX_ACC = 200;
     double MAX_ROT_ACC = 5;
     double MAX_ROT_SPEED = 5;
-    double MAX_TURN_DIR = 100 * Param::Math::PI/180;
+    double MAX_TURN_DIR = 100 * PARAM::Math::PI/180;
     int MAX_BLOCK_CNT = 100;
     const double DEBUG_TEXT_HIGH = 30;
     enum {
@@ -33,9 +33,9 @@ namespace {
     CGeoPoint dribblePoint;
     bool isDribble = false;
     int maxFrared = 180;
-    bool isTurning[Param::Field::MAX_PLAYER + 1];
-    int blockCnt[Param::Field::MAX_PLAYER + 1] = {0};
-    bool shepi[Param::Field::MAX_PLAYER + 1];
+    bool isTurning[PARAM::Field::MAX_PLAYER];
+    int blockCnt[PARAM::Field::MAX_PLAYER] = {0};
+    bool shepi[PARAM::Field::MAX_PLAYER];
     int turnWay = 2;
     int movingWay = 1;
     bool returnPoint = false;
@@ -55,7 +55,7 @@ void CZCirclePass::plan(const CVisionModule* pVision) {
     CVector me2Ball = ball.Pos() - me.Pos();
     CVector me2enemy = enemy.Pos() - me.Pos();
     CVector me2target = passTarget - me.Pos();
-    bool canMoveOn = !(fabs(Utils::Normalize(me2target.dir() - me2enemy.dir())) < Param::Math::PI/4 && me2enemy.mod() < 50);//???寡膠?臬?血?冽??????
+    bool canMoveOn = !(fabs(Utils::Normalize(me2target.dir() - me2enemy.dir())) < PARAM::Math::PI/4 && me2enemy.mod() < 50);//???寡膠?臬?血?冽??????
     double delta = fabs(Utils::Normalize(me2enemy.dir() - me.Dir()));
     //撠??刻??詨??
     double finalDir;
@@ -110,7 +110,7 @@ void CZCirclePass::plan(const CVisionModule* pVision) {
 //    TaskT grabTask(task());
     /*********************** judge mode ********************/
     if(fraredOn > 30){
-//        if(delta < MAX_TURN_DIR && me.Dir() < Param::Math::PI/2) grabMode = TURN;
+//        if(delta < MAX_TURN_DIR && me.Dir() < PARAM::Math::PI/2) grabMode = TURN;
         if(delta < MAX_TURN_DIR) grabMode = TURN;
         else grabMode = SIDEMOVE;
     }
@@ -122,24 +122,24 @@ void CZCirclePass::plan(const CVisionModule* pVision) {
 
     /*********************** set subTask ********************/
     if(grabMode == TURN){
-        if (verbose) GDebugEngine::Instance()->gui_debug_msg(me.Pos()+ Utils::Polar2Vector(DEBUG_TEXT_HIGH, -Param::Math::PI/1.5), "Turn", COLOR_CYAN);
+        if (verbose) GDebugEngine::Instance()->gui_debug_msg(me.Pos()+ Utils::Polar2Vector(DEBUG_TEXT_HIGH, -PARAM::Math::PI/1.5), "Turn", COLOR_CYAN);
         if(isTurning[vecNumber] == false){
 //            turnWay = Utils::Normalize(me2Ball.dir() - me2target.dir()) > 0 ? 4 : 2;//2嚗?撌血??嚗?4:?喳??
             turnWay = me2target.dir() > 0 ? 2 : 4;//2嚗?撌血??嚗?4:?喳??
             isTurning[vecNumber] = true;
         }
-        setSubTask(PlayerRole::makeItOpenSpeedCircle(vecNumber, 5, turnWay, finalDir, 1, Param::Math::PI/2));
+        setSubTask(PlayerRole::makeItOpenSpeedCircle(vecNumber, 5, turnWay, finalDir, 1, PARAM::Math::PI/2));
     }
     if(grabMode == SIDEMOVE){
-        if (verbose) GDebugEngine::Instance()->gui_debug_msg(me.Pos()+ Utils::Polar2Vector(DEBUG_TEXT_HIGH, -Param::Math::PI/1.5), "Side Move", COLOR_CYAN);
+        if (verbose) GDebugEngine::Instance()->gui_debug_msg(me.Pos()+ Utils::Polar2Vector(DEBUG_TEXT_HIGH, -PARAM::Math::PI/1.5), "Side Move", COLOR_CYAN);
         turnWay = me2target.dir() > 0 ? 2 : 4;
-        if(Utils::InTheirPenaltyArea(me.Pos(), Param::Vehicle::V2::PLAYER_SIZE+2*Param::Field::BALL_SIZE))
-            setSubTask(PlayerRole::makeItGoto(vecNumber, Utils::MakeOutOfTheirPenaltyArea(me.Pos(), Param::Vehicle::V2::PLAYER_SIZE+2*Param::Field::BALL_SIZE), finalDir, PlayerStatus::DRIBBLING));
+        if(Utils::InTheirPenaltyArea(me.Pos(), PARAM::Vehicle::V2::PLAYER_SIZE+2*PARAM::Field::BALL_SIZE))
+            setSubTask(PlayerRole::makeItGoto(vecNumber, Utils::MakeOutOfTheirPenaltyArea(me.Pos(), PARAM::Vehicle::V2::PLAYER_SIZE+2*PARAM::Field::BALL_SIZE), finalDir, PlayerStatus::DRIBBLING));
         else
-            setSubTask(PlayerRole::makeItOpenSpeedCircle(vecNumber, 27, turnWay, finalDir, 1, Param::Math::PI/2));
+            setSubTask(PlayerRole::makeItOpenSpeedCircle(vecNumber, 27, turnWay, finalDir, 1, PARAM::Math::PI/2));
     }
     if(grabMode == DRIBBLE){
-        if (verbose) GDebugEngine::Instance()->gui_debug_msg(me.Pos()+ Utils::Polar2Vector(DEBUG_TEXT_HIGH, -Param::Math::PI/1.5), "Dribble", COLOR_CYAN);
+        if (verbose) GDebugEngine::Instance()->gui_debug_msg(me.Pos()+ Utils::Polar2Vector(DEBUG_TEXT_HIGH, -PARAM::Math::PI/1.5), "Dribble", COLOR_CYAN);
         CGeoPoint target;
         double dir;
         if(ball.Valid()) target = ball.Pos() + Utils::Polar2Vector(5, enemy.Dir());
@@ -149,13 +149,13 @@ void CZCirclePass::plan(const CVisionModule* pVision) {
         if(me2Ball.mod() > 50 || ball.Vel().mod() > 50)
             setSubTask(PlayerRole::makeItGetBallV4(vecNumber, PlayerStatus::DRIBBLE, target, CGeoPoint(999, 999), 0));
         else{
-            if(Utils::OutOfField(target,Param::Vehicle::V2::PLAYER_SIZE+Param::Field::BALL_SIZE*2))
-                target = Utils::MakeInField(target,Param::Vehicle::V2::PLAYER_SIZE+Param::Field::BALL_SIZE*2);
+            if(!Utils::IsInField(target,PARAM::Vehicle::V2::PLAYER_SIZE+PARAM::Field::BALL_SIZE*2))
+                target = Utils::MakeInField(target,PARAM::Vehicle::V2::PLAYER_SIZE+PARAM::Field::BALL_SIZE*2);
             setSubTask(PlayerRole::makeItGoto(vecNumber, target, dir, PlayerStatus::NOT_AVOID_THEIR_VEHICLE));
         }
     }
     /****************** other ***************/
-    bool meInFrontOfBall = me2Ball.mod() < 30;//ball.Valid() ? (me2Ball.mod() < 20 && Utils::Normalize(me2BallDir - me.Dir()) < Param::Math::PI / 3) : RobotSensor::Instance()->IsInfraredOn(task().executor);
+    bool meInFrontOfBall = me2Ball.mod() < 30;//ball.Valid() ? (me2Ball.mod() < 20 && Utils::Normalize(me2BallDir - me.Dir()) < PARAM::Math::PI / 3) : RobotSensor::Instance()->IsInfraredOn(task().executor);
     if (meInFrontOfBall) {
         DribbleStatus::Instance()->setDribbleCommand(vecNumber, 3);
     }

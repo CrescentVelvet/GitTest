@@ -12,7 +12,7 @@ CZMarking::CZMarking(){
 }
 
 void CZMarking::plan(const CVisionModule* pVision){
-    if ( pVision->getCycle() - _lastCycle > Param::Vision::FRAME_RATE * 0.1 ){
+    if ( pVision->getCycle() - _lastCycle > PARAM::Vision::FRAME_RATE * 0.1 ){
 		setState(BEGINNING);
     }
 
@@ -62,7 +62,7 @@ void CZMarking::plan(const CVisionModule* pVision){
     double meVelDir = Utils::Normalize(theta_2 + me2ball.dir());//速度线 = 夹角 + 球线
     double meVelMod = 300*10;//sqrt(meVn*meVn + meVt*meVt);
     if(enemy.Vel().mod() <  50*10) meVelMod = 0;
-    if(Utils::InOurPenaltyArea(MarkingTask.player.pos + Utils::Polar2Vector(meVelMod/3, meVelDir), Param::Vehicle::V2::PLAYER_SIZE) || Utils::InTheirPenaltyArea(MarkingTask.player.pos + Utils::Polar2Vector(meVelMod/3, meVelDir), Param::Vehicle::V2::PLAYER_SIZE)) meVelMod = 0;
+    if(Utils::InOurPenaltyArea(MarkingTask.player.pos + Utils::Polar2Vector(meVelMod/3, meVelDir), PARAM::Vehicle::V2::PLAYER_SIZE) || Utils::InTheirPenaltyArea(MarkingTask.player.pos + Utils::Polar2Vector(meVelMod/3, meVelDir), PARAM::Vehicle::V2::PLAYER_SIZE)) meVelMod = 0;
 //    GDebugEngine::Instance()->gui_debug_line(MarkingTask.player.pos + Utils::Polar2Vector(meVelMod/3, meVelDir), MarkingTask.player.pos, COLOR_ORANGE);
     MarkingTask.player.vel = Utils::Polar2Vector(meVelMod, meVelDir);
 

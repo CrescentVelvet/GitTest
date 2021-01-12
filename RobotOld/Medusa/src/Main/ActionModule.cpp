@@ -39,29 +39,25 @@ bool CActionModule::sendAction() {
     /************************************************************************/
     /* 第一步：遍历小车，执行赋予的任务，生成动作指令                       */
     /************************************************************************/
-    for (int vecNum = 1; vecNum <= Param::Field::MAX_PLAYER; ++ vecNum) {
+    for (int vecNum = 0; vecNum < PARAM::Field::MAX_PLAYER; ++ vecNum) {
         // 获取当前小车任务
-        auto robotIndex = vecNum;
-        if (robotIndex < 0 || robotIndex > Param::Field::MAX_PLAYER) {
-            cout << "Invalid number in actionmodule : " << int(robotIndex) << endl;
-        }
         CPlayerTask* pTask = TaskMediator::Instance()->getPlayerTask(vecNum);
         // 没有任务，跳过
-        if (NULL == pTask) {
+        if (nullptr == pTask) {
             continue;
         }
 
         // 执行skill，任务层层调用执行，得到最终的指令：<vx vy w> + <kick dribble>
         // 执行的结果：命令接口（仿真-DCom，实物-CommandSender） + 指令记录（运动-Vision，踢控-PlayInterface)
         bool dribble = false;
-        CPlayerCommand* pCmd = NULL;
+        CPlayerCommand* pCmd = nullptr;
         pCmd = pTask->execute(_pVision);
 
         // 跑：有效的运动指令
         if (pCmd) {
             dribble = pCmd->dribble() > 0;
             // 下发运动 <vx vy w>
-            pCmd->execute(robotIndex); //this by Wang
+            pCmd->execute(vecNum); //this by Wang
             // 记录指令
             _pVision->setPlayerCommand(pCmd->number(), pCmd);
         }
@@ -78,10 +74,10 @@ bool CActionModule::sendAction() {
             // 涉及到平/挑射分档，这里只关系相关参数，实际分档请关注 CommandSender
             CPlayerKickV2 kickCmd(vecNum, kickPower, chipkickDist, passdist, dribble);
             // 机构动作 <kick dribble>
-            kickCmd.execute(robotIndex);
+            kickCmd.execute(vecNum);
         } else {
             CPlayerKickV2 kickCmd(vecNum, 0, 0, 0, dribble);
-            kickCmd.execute(robotIndex);
+            kickCmd.execute(vecNum);
         }
 
         // 记录命令
@@ -105,7 +101,7 @@ bool CActionModule::sendAction() {
 }
 
 bool CActionModule::sendNoAction() {
-    for (int vecNum = 1; vecNum <= Param::Field::MAX_PLAYER; ++ vecNum) {
+    for (int vecNum = 0; vecNum < PARAM::Field::MAX_PLAYER; ++ vecNum) {
         // 生成停止命令
         CPlayerCommand *pCmd = CmdFactory::Instance()->newCommand(CPlayerSpeedV2(vecNum, 0, 0, 0, 0));
         // 执行且下发
@@ -119,7 +115,7 @@ bool CActionModule::sendNoAction() {
 }
 
 void CActionModule::stopAll() {
-    for (int vecNum = 1; vecNum <= Param::Field::MAX_PLAYER; ++ vecNum) {
+    for (int vecNum = 0; vecNum < PARAM::Field::MAX_PLAYER; ++ vecNum) {
         // 生成停止命令
         CPlayerCommand *pCmd = CmdFactory::Instance()->newCommand(CPlayerSpeedV2(vecNum, 0, 0, 0, 0));
         // 执行且下发

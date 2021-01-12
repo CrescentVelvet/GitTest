@@ -1,6 +1,6 @@
 $#include <singleton.h>
 $#include <geometry.h>
-$#include <param.h>
+$#include "staticparams.h"
 $#include <skill/PlayerTask.h>
 $#include "utils.h"
 $#include "TaskMediator.h"

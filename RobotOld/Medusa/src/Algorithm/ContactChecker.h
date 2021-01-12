@@ -1,6 +1,6 @@
 #ifndef _CONTACT_CHECKER_H
 #define _CONTACT_CHECKER_H
-#include <param.h>
+#include "staticparams.h"
 #include <WorldDefine.h>
 #include "BallPredictor.h"
 #include "RobotPredictor.h"

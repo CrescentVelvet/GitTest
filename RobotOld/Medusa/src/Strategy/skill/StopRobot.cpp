@@ -18,7 +18,7 @@ CPlayerCommand* CStopRobotV2::execute(const CVisionModule* pVision)
 	const double maxDeccel = 1.0*robotCap->maxAcceleration(self.Vel(), 0);
 	const double vecSpeed = self.Vel().mod();
 
-	double decSpeedPerFrame = maxDeccel/Param::Vision::FRAME_RATE;
+	double decSpeedPerFrame = maxDeccel/PARAM::Vision::FRAME_RATE;
 	if( vecSpeed > decSpeedPerFrame ){
 		CVector newVel = (self.Vel() * (vecSpeed - decSpeedPerFrame) / vecSpeed).rotate(-self.Dir());
 		return CmdFactory::Instance()->newCommand(CPlayerSpeedV2(task().executor, newVel.x(), newVel.y(), 3, DRIBBLE_DISABLED));

@@ -1,5 +1,5 @@
 #include "RobotPredictError.h"
-#include <param.h>
+#include "staticparams.h"
 #include <cmath>
 #include <utils.h>
 #include <fstream>
@@ -28,7 +28,7 @@ void CRobotPredictError::calculatePredictionError(int cycle, const CRobotRawVisi
 		RobotVisionErrorData& errorData = _visionErrorLogger.getError(cycle);
 		int count = 1;
 		errorData.distanceTravelled = errorData.rotationTravelled = 0;
-		while (count < Param::Latency::TOTAL_LATED_FRAME) {
+		while (count < PARAM::Latency::TOTAL_LATED_FRAME) {
 			if( rawVisionLogger.visionValid(cycle - count) ){
 				const RobotRawVisionData& lastRawVision = rawVisionLogger.getVision(cycle - count);
 				errorData.distanceTravelled = std::sqrt( (thisRawVision.x - lastRawVision.x) * (thisRawVision.x - lastRawVision.x) + (thisRawVision.y - lastRawVision.y) * (thisRawVision.y - lastRawVision.y));
@@ -39,7 +39,7 @@ void CRobotPredictError::calculatePredictionError(int cycle, const CRobotRawVisi
 				count++; // 向前退一个周期
 			}
 		}
-		int predictedCycle = cycle -  Param::Latency::TOTAL_LATED_FRAME; // 当前原始视觉信息对应的n个周期前的预测过的视觉信息
+		int predictedCycle = cycle -  PARAM::Latency::TOTAL_LATED_FRAME; // 当前原始视觉信息对应的n个周期前的预测过的视觉信息
 		// 计算预测的误差
 		if ( visionLogger.visionValid(predictedCycle) ){
 			const PlayerVisionT& predictedVision = visionLogger.getVision(predictedCycle);
@@ -84,8 +84,8 @@ void CRobotPredictError::evaluatePredictionError(int cycle, const CRobotRawVisio
 	}
 
     if ( rotationalErrorCount > MAX_ROTATIONAL_ERROR_COUNT ){
-//		int predictedCycle = cycle -  Param::Latency::TOTAL_LATED_FRAME; // 当前原始视觉信息对应的n个周期前的预测过的视觉信息
-		for (int j=Param::Latency::TOTAL_LATED_FRAME; j >= 1; --j) {
+//		int predictedCycle = cycle -  PARAM::Latency::TOTAL_LATED_FRAME; // 当前原始视觉信息对应的n个周期前的预测过的视觉信息
+		for (int j=PARAM::Latency::TOTAL_LATED_FRAME; j >= 1; --j) {
 			if( _visionErrorLogger.errorValid(cycle - j) ){
 				RobotVisionErrorData& formerErrorData = _visionErrorLogger.getError(cycle - j);
 				formerErrorData.resetRotationalVelocity = true;
@@ -94,7 +94,7 @@ void CRobotPredictError::evaluatePredictionError(int cycle, const CRobotRawVisio
 		}
 		rotationalErrorCount = 0;
     }else if ( translationalErrorCount > MAX_TRANSLATIONAL_ERROR_COUNT){
-		for (int j=Param::Latency::TOTAL_LATED_FRAME; j >= 1; --j) {
+		for (int j=PARAM::Latency::TOTAL_LATED_FRAME; j >= 1; --j) {
 			if( _visionErrorLogger.errorValid(cycle - j) ){
 				RobotVisionErrorData& formerErrorData = _visionErrorLogger.getError(cycle - j);
 				formerErrorData.resetTranslationalVelocity = true;

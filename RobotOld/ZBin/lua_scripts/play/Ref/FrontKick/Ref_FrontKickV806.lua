@@ -76,7 +76,7 @@ firstState = "start",
 		end
 	end,
 	Assister = task.goSpeciPos(FAKE_POS1, _, DSS_FLAG),
-	Leader   = task.InterTouch(_,PASS_POS2),--task.InterTouch(_,PASS_POS2,400),
+	Leader   = task.zget(_,PASS_POS2, _, flag.kick),--task.InterTouch(_,PASS_POS2,400),
 	Breaker  = task.goSpeciPos(WAIT_POS2, _, flag.not_avoid_our_vehicle),
 	match    = "{A}{LB}"
 },
@@ -101,7 +101,7 @@ firstState = "start",
 	end,
 	Assister = task.goSpeciPos(FAKE_POS1, _, DSS_FLAG),
 	Leader   = task.stop(),--task.defendMiddle(),
-	Breaker  = task.InterTouch(),
+	Breaker  = task.zget(_, _, _, flag.kick),
 	match    = "{A}{LB}"
 },
 

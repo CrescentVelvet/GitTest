@@ -2,15 +2,15 @@
 //#include "Global.h"
 //#include <sstream>
 
-//CKickParam::CKickParam():A_flatKick(0), B_flatKick(0),A_chipKick(0), B_chipKick(0), C_chipKick(0) {
+//CKickPARAM::CKickParam():A_flatKick(0), B_flatKick(0),A_chipKick(0), B_chipKick(0), C_chipKick(0) {
 //	// nothing
 //}
 
-////void CKickParam::getData(KICKTYPE kickType, int playerNum) {
+////void CKickPARAM::getData(KICKTYPE kickType, int playerNum) {
 ////	// get Data from Lua
 ////	// overall interface
 ////	if (kickType == FLAT) {
-////		cout << " CKickParam::getData" << endl;
+////		cout << " CKickPARAM::getData" << endl;
 ////		static stringstream fullname(".txt");
 ////		fullname << "kickParam_flat_"  << playerNum << ".txt";
 ////		static ifstream infile(fullname.str().c_str());
@@ -24,12 +24,12 @@
 ////			if(!getline(infile, line)) break;
 ////			istringstream lineStream(line);
 ////			lineStream >> flatShootData[i][0] >> flatShootData[i][1];
-////			cout << "KickParam::" << flatShootData[i][0] << " " << flatShootData[i][1] << endl;
+////			cout << "KickPARAM::" << flatShootData[i][0] << " " << flatShootData[i][1] << endl;
 ////			i++;
 ////		}
 ////		flatSampleNum = i;
 ////		// calculate parameters
-////		KickParam::Instance()->calcFlatParam(playerNum);
+////		KickPARAM::Instance()->calcFlatParam(playerNum);
 ////	}
 ////	else if (kickType == CHIP) {
 ////		// TODO
@@ -38,7 +38,7 @@
 ////}
 
 ///* --------nlopt functions--------*/
-////double CKickParam::calcFlatFunction(const double *x) {
+////double CKickPARAM::calcFlatFunction(const double *x) {
 ////	// power = 0.00001 * A * speed^2 + B * speed + C
 ////	double res = 0;
 ////	for (int i = 0; i < flatSampleNum; i++) {
@@ -51,7 +51,7 @@
 ////	return res / 2 / flatSampleNum;
 ////}
 
-//void CKickParam::calcFlatGrad(const double *x, double *grad) {
+//void CKickPARAM::calcFlatGrad(const double *x, double *grad) {
 //    grad[0] = 0; grad[1] = 0;
 //    for (int i = 0; i < flatSampleNum; i++) {
 //        //grad[0] = grad[0] + (0.00001 * x[0] * pow(flatShootData[i][1], 2) + x[1] * flatShootData[i][1] + x[2] - flatShootData[i][0]) * pow(flatShootData[i][1], 2);
@@ -67,12 +67,12 @@
 //{
 //	// cost function. quadric
 //	if (grad) {
-//		KickParam::Instance()->calcFlatGrad(x, grad);
+//		KickPARAM::Instance()->calcFlatGrad(x, grad);
 //	}
-//	return KickParam::Instance()->calcFlatFunction(x);
+//	return KickPARAM::Instance()->calcFlatFunction(x);
 //}
 
-//void CKickParam::calcFlatParam(int playerNum) {
+//void CKickPARAM::calcFlatParam(int playerNum) {
 //	nlopt_opt opt;
 //	double lb[2] = { -0.01, 0 };  /* lower bounds */
 

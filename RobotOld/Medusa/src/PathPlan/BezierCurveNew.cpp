@@ -15,15 +15,15 @@ double accFactorBack = 1.3; /// must bigger than 1.0
 const double MIN_FRAME_NUM_BETWEEN_PATH_POINT = 5.0; ///used in validate path dist function
 const double CURVE_PRECISION = 1.0;  ///the max distance between two of the path points
 const double MIN_IP_CURVATURE = 0.025;
-const double MIN_DIST_BETWEEN_SUB_DESTINATION = Param::Vehicle::V2::PLAYER_SIZE / 2.0;
+const double MIN_DIST_BETWEEN_SUB_DESTINATION = PARAM::Vehicle::V2::PLAYER_SIZE / 2.0;
 
-const double thetaUpperBound =  Param::Math::PI / 5; //模拟搜索路径时给定的最大theta值
+const double thetaUpperBound =  PARAM::Math::PI / 5; //模拟搜索路径时给定的最大theta值
 const double maxCuratureSetted = 0.00001; //拟合时给定的最大曲率半径
 
 const double minCurvaToCalculate = 0.01;
 const double maxCurvaToDelete = 0.13;
-const double safeDist = 2.5 * Param::Vehicle::V2::PLAYER_SIZE;
-const double maxSafeDist = 6.0 * Param::Vehicle::V2::PLAYER_SIZE;
+const double safeDist = 2.5 * PARAM::Vehicle::V2::PLAYER_SIZE;
+const double maxSafeDist = 6.0 * PARAM::Vehicle::V2::PLAYER_SIZE;
 ///for path evaluate
 const double wFirstCollisionDist = 20; //big is better
 const double wTotalCurvature = -120.0;  //small is better
@@ -640,7 +640,7 @@ void BezierController::validatePrecision() {
         _originCurvature.push_back(_curvature[i]);
         nextSegLength += _pathSegLength[i];
         i++;
-        while(i < _stateList.size() - 1 && stateList.back().pos.dist(_stateList[i].pos) * 2 / (stateList.back().vel.mod() + _stateList[i].vel.mod()) < MIN_FRAME_NUM_BETWEEN_PATH_POINT / Param::Vision::FRAME_RATE) {
+        while(i < _stateList.size() - 1 && stateList.back().pos.dist(_stateList[i].pos) * 2 / (stateList.back().vel.mod() + _stateList[i].vel.mod()) < MIN_FRAME_NUM_BETWEEN_PATH_POINT / PARAM::Vision::FRAME_RATE) {
             nextSegLength += _pathSegLength[i];
             i++;
         }
@@ -743,7 +743,7 @@ double BezierController::evaluatePath(const stateNew& currentState, ObstaclesNew
 
     ///initial vel constraient
     if(_arrivedNum > 0 && currentState.vel.mod() > 1e-8)
-        velContriant = fabs(Utils::Normalize(currentState.vel.dir() - (_stateList[_arrivedNum].pos - _stateList[_arrivedNum - 1].pos).dir())) / Param::Math::PI;
+        velContriant = fabs(Utils::Normalize(currentState.vel.dir() - (_stateList[_arrivedNum].pos - _stateList[_arrivedNum - 1].pos).dir())) / PARAM::Math::PI;
     if(velContriant < 5.0 / 180) {
         velContriant = 0.0;
     }

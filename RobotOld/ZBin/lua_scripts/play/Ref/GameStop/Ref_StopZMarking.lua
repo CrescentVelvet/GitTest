@@ -21,10 +21,10 @@ switch = function()
 end,
 -- headback sideback defend middle
 ["beginning"] = {
-	Leader   = task.goCmuRush(STOP_POS1, player.toBallDir, _, flag.slowly+flag.dodge_ball+flag.allow_dss+flag.free_kick),
-	Special  = task.goPassPos("Leader", flag.slowly+flag.dodge_ball+flag.allow_dss+flag.free_kick),
-	Middle   = task.goCmuRush(COR_DEF_POS1, player.toBallDir, _, flag.slowly+flag.dodge_ball+flag.allow_dss+flag.free_kick),
-	Fronter  = task.goCmuRush(INTER_POS, player.toBallDir, _, flag.slowly+flag.dodge_ball+flag.allow_dss+flag.free_kick),
+	Leader   = task.goCmuRush(STOP_POS1, player.toBallDir, _, flag.dodge_ball+flag.allow_dss+flag.free_kick),
+	Special  = task.goPassPos("Leader", flag.dodge_ball+flag.allow_dss+flag.free_kick),
+	Middle   = task.goCmuRush(COR_DEF_POS1, player.toBallDir, _, flag.dodge_ball+flag.allow_dss+flag.free_kick),
+	Fronter  = task.goCmuRush(INTER_POS, player.toBallDir, _, flag.dodge_ball+flag.allow_dss+flag.free_kick),
 	Center   = task.sideBack(),
 	Defender = task.leftBack(),
 	Assister = task.rightBack(),
@@ -33,10 +33,10 @@ end,
 },
 
 ["attacker1"] = {
-	Leader   = task.goCmuRush(STOP_POS1, player.toBallDir, _, flag.slowly+flag.dodge_ball+flag.allow_dss+flag.free_kick),
-	Special  = task.goPassPos("Leader", flag.slowly+flag.dodge_ball+flag.allow_dss+flag.free_kick),
-	Middle   = task.goCmuRush(COR_DEF_POS1, player.toBallDir, _, flag.slowly+flag.dodge_ball+flag.allow_dss+flag.free_kick),
-	Fronter  = task.goCmuRush(INTER_POS, player.toBallDir, _, flag.slowly+flag.dodge_ball+flag.allow_dss+flag.free_kick),
+	Leader   = task.goCmuRush(STOP_POS1, player.toBallDir, _, flag.dodge_ball+flag.allow_dss+flag.free_kick),
+	Special  = task.goPassPos("Leader", flag.dodge_ball+flag.allow_dss+flag.free_kick),
+	Middle   = task.goCmuRush(COR_DEF_POS1, player.toBallDir, _, flag.dodge_ball+flag.allow_dss+flag.free_kick),
+	Fronter  = task.goCmuRush(INTER_POS, player.toBallDir, _, flag.dodge_ball+flag.allow_dss+flag.free_kick),
 	Center   = task.sideBack(),
 	Defender = task.leftBack(),
 	Assister = task.rightBack(),
@@ -45,67 +45,67 @@ end,
 },
 
 ["attacker2"] = {
-	Leader   = task.goCmuRush(STOP_POS1, player.toBallDir, _, flag.slowly+flag.dodge_ball+flag.allow_dss+flag.free_kick),
-	Special  = task.goPassPos("Leader", flag.slowly+flag.dodge_ball+flag.allow_dss+flag.free_kick),
-	Middle   = task.goCmuRush(COR_DEF_POS1, player.toBallDir, _, flag.slowly+flag.dodge_ball+flag.allow_dss+flag.free_kick),
+	Leader   = task.goCmuRush(STOP_POS1, player.toBallDir, _, flag.dodge_ball+flag.allow_dss+flag.free_kick),
+	Special  = task.goPassPos("Leader", flag.dodge_ball+flag.allow_dss+flag.free_kick),
+	Middle   = task.goCmuRush(COR_DEF_POS1, player.toBallDir, _, flag.dodge_ball+flag.allow_dss+flag.free_kick),
 	Center   = task.zmarking("First", flag.avoid_stop_ball_circle+flag.free_kick),
 	Defender = task.leftBack(),
-	Fronter  = task.defendHead(flag.slowly+flag.dodge_ball+flag.allow_dss+flag.free_kick),
+	Fronter  = task.defendHead(flag.dodge_ball+flag.allow_dss+flag.free_kick),
 	Assister = task.rightBack(),
 	Goalie   = task.zgoalie(),
 	match    = "[L][DA][SMFC]"
 },
 
 ["attacker3"] = {
-	Leader   = task.goCmuRush(STOP_POS1, player.toBallDir, _, flag.slowly+flag.dodge_ball+flag.allow_dss+flag.free_kick),
+	Leader   = task.goCmuRush(STOP_POS1, player.toBallDir, _, flag.dodge_ball+flag.allow_dss+flag.free_kick),
 	Special  = task.zmarking("First", flag.avoid_stop_ball_circle+flag.free_kick),
 	Middle   = task.zmarking("Second", flag.avoid_stop_ball_circle+flag.free_kick),
-	Defender = task.goCmuRush(COR_DEF_POS1, player.toBallDir, _, flag.slowly+flag.dodge_ball+flag.allow_dss+flag.free_kick),
+	Defender = task.goCmuRush(COR_DEF_POS1, player.toBallDir, _, flag.dodge_ball+flag.allow_dss+flag.free_kick),
 	Center   = task.leftBack(),
 	Fronter  = task.rightBack(),
-	Assister = task.defendHead(flag.slowly+flag.dodge_ball+flag.allow_dss+flag.free_kick),
+	Assister = task.defendHead(flag.dodge_ball+flag.allow_dss+flag.free_kick),
 	Goalie   = task.zgoalie(),
 	match    = "[L][CF][SMDA]"
 },
 
 ["attacker4"] = {
-	Leader   = task.goCmuRush(STOP_POS1, player.toBallDir, _, flag.slowly+flag.dodge_ball+flag.allow_dss+flag.free_kick),
+	Leader   = task.goCmuRush(STOP_POS1, player.toBallDir, _, flag.dodge_ball+flag.allow_dss+flag.free_kick),
 	Special  = task.zmarking("First", flag.avoid_stop_ball_circle+flag.free_kick),
 	Middle   = task.zmarking("Second", flag.avoid_stop_ball_circle+flag.free_kick),
 	Defender = task.zmarking("Third", flag.avoid_stop_ball_circle+flag.free_kick),
 	Center   = task.leftBack(),
 	Fronter  = task.rightBack(),
-	Assister = task.defendHead(flag.slowly+flag.dodge_ball+flag.allow_dss+flag.free_kick),
+	Assister = task.defendHead(flag.dodge_ball+flag.allow_dss+flag.free_kick),
 	Goalie   = task.zgoalie(),
 	match    = "[L][CF][SMDA]"
 },
 
 ["attacker5"] = {
-	Leader   = task.goCmuRush(STOP_POS1, player.toBallDir, _, flag.slowly+flag.dodge_ball+flag.allow_dss+flag.free_kick),
+	Leader   = task.goCmuRush(STOP_POS1, player.toBallDir, _, flag.dodge_ball+flag.allow_dss+flag.free_kick),
 	Special  = task.zmarking("First", flag.avoid_stop_ball_circle+flag.free_kick),
 	Middle   = task.zmarking("Second", flag.avoid_stop_ball_circle+flag.free_kick),
 	Defender = task.zmarking("Third", flag.avoid_stop_ball_circle+flag.free_kick),
 	Center   = task.zmarking("Fourth", flag.avoid_stop_ball_circle+flag.free_kick),
 	Fronter  = task.singleBack(),
-	Assister = task.defendHead(flag.slowly+flag.dodge_ball+flag.allow_dss+flag.free_kick),
+	Assister = task.defendHead(flag.dodge_ball+flag.allow_dss+flag.free_kick),
 	Goalie   = task.zgoalie(),
 	match    = "[L][SMDFCA]"
 },
 
 ["attacker6"] = {
-	Leader   = task.goCmuRush(STOP_POS1, player.toBallDir, _, flag.slowly+flag.dodge_ball+flag.allow_dss+flag.free_kick),
+	Leader   = task.goCmuRush(STOP_POS1, player.toBallDir, _, flag.dodge_ball+flag.allow_dss+flag.free_kick),
 	Special  = task.zmarking("First", flag.avoid_stop_ball_circle+flag.free_kick),
 	Middle   = task.zmarking("Second", flag.avoid_stop_ball_circle+flag.free_kick),
 	Defender = task.zmarking("Third", flag.avoid_stop_ball_circle+flag.free_kick),
 	Center   = task.zmarking("Fourth", flag.avoid_stop_ball_circle+flag.free_kick),
 	Fronter  = task.zmarking("Fifth", flag.avoid_stop_ball_circle+flag.free_kick),
-	Assister = task.defendHead(flag.slowly+flag.dodge_ball+flag.allow_dss+flag.free_kick),
+	Assister = task.defendHead(flag.dodge_ball+flag.allow_dss+flag.free_kick),
 	Goalie   = task.zgoalie(),
 	match    = "[L][SMDFCA]"
 },
 
 ["attacker7"] = {
-	Leader   = task.goCmuRush(STOP_POS1, player.toBallDir, _, flag.slowly+flag.dodge_ball+flag.allow_dss+flag.free_kick),
+	Leader   = task.goCmuRush(STOP_POS1, player.toBallDir, _, flag.dodge_ball+flag.allow_dss+flag.free_kick),
 	Special  = task.zmarking("First", flag.avoid_stop_ball_circle+flag.free_kick),
 	Middle   = task.zmarking("Second", flag.avoid_stop_ball_circle+flag.free_kick),
 	Defender = task.zmarking("Third", flag.avoid_stop_ball_circle+flag.free_kick),
@@ -117,13 +117,13 @@ end,
 },
 
 ["attacker8"] = {
-	Leader   = task.goCmuRush(STOP_POS1, player.toBallDir, _, flag.slowly+flag.dodge_ball+flag.allow_dss+flag.free_kick),
+	Leader   = task.goCmuRush(STOP_POS1, player.toBallDir, _, flag.dodge_ball+flag.allow_dss+flag.free_kick),
 	Special  = task.zmarking("First", flag.avoid_stop_ball_circle+flag.free_kick),
 	Middle   = task.zmarking("Second", flag.avoid_stop_ball_circle+flag.free_kick),
 	Defender = task.zmarking("Third", flag.avoid_stop_ball_circle+flag.free_kick),
 	Center   = task.zmarking("Fourth", flag.avoid_stop_ball_circle+flag.free_kick),
 	Fronter  = task.zmarking("Fifth", flag.avoid_stop_ball_circle+flag.free_kick),
-	Assister = task.defendHead(flag.slowly+flag.dodge_ball+flag.allow_dss+flag.free_kick),
+	Assister = task.defendHead(flag.dodge_ball+flag.allow_dss+flag.free_kick),
 	Goalie   = task.zgoalie(),
 	match    = "[L][SMDFCA]"
 },

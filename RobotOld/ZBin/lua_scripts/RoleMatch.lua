@@ -1,43 +1,43 @@
 --
 gRoleNum = {
-	["Goalie"] = 0,
-	["Kicker"] = 0,
-	["Assister"] = 0,
-	["Special"] = 0,
-	["Defender"] = 0,
-	["Middle"] = 0,
-	["Leader"] = 0,
-	["Tier"] = 0,
-	["Breaker"] = 0,
-	["Fronter"] = 0,
-	["Receiver"] = 0,
-	["Center"]  = 0,
-	["a"] = 0,
-	["b"] = 0,
-	["c"] = 0,
-	["d"] = 0,
-	["e"] = 0,
-	["f"] = 0,
-	["g"] = 0,
-	["h"] = 0,
-	["i"] = 0,
-	["j"] = 0,
-	["k"] = 0,
-	["l"] = 0,
-	["m"] = 0,
-	["n"] = 0,
-	["o"] = 0,
-	["p"] = 0,
-	["q"] = 0,
-	["r"] = 0,
-	["s"] = 0,
-	["t"] = 0,
-	["u"] = 0,
-	["v"] = 0,
-	["w"] = 0,
-	["x"] = 0,
-	["y"] = 0,
-	["z"] = 0
+	["Goalie"] = -1,
+	["Kicker"] = -1,
+	["Assister"] = -1,
+	["Special"] = -1,
+	["Defender"] = -1,
+	["Middle"] = -1,
+	["Leader"] = -1,
+	["Tier"] = -1,
+	["Breaker"] = -1,
+	["Fronter"] = -1,
+	["Receiver"] = -1,
+	["Center"]  = -1,
+	["a"] = -1,
+	["b"] = -1,
+	["c"] = -1,
+	["d"] = -1,
+	["e"] = -1,
+	["f"] = -1,
+	["g"] = -1,
+	["h"] = -1,
+	["i"] = -1,
+	["j"] = -1,
+	["k"] = -1,
+	["l"] = -1,
+	["m"] = -1,
+	["n"] = -1,
+	["o"] = -1,
+	["p"] = -1,
+	["q"] = -1,
+	["r"] = -1,
+	["s"] = -1,
+	["t"] = -1,
+	["u"] = -1,
+	["v"] = -1,
+	["w"] = -1,
+	["x"] = -1,
+	["y"] = -1,
+	["z"] = -1
 }
 
 gLastRoleNum = {
@@ -48,13 +48,10 @@ gRolePos = {
 
 }
 
-gRolePriority = { "Goalie","Kicker","Tier","Receiver"}
--- gRolePriority = { "Goalie","Kicker", "Tier"} --wangzai test
+gRolePriority = { "Goalie","Kicker","Tier"}
 
 
-gOurExistNum = {
-
-}
+gOurExistNum = {} --为了使车号统一从0开始，强行给gOurExistNum[0]赋值，但table自身接口全都无法使用了
 
 gRoleLookUpTable = {
 -- 角色分为两类
@@ -156,11 +153,7 @@ function GetMatchPotential(num, role)
 end
 
 function RemoveExistNum(num)
-	for index, value in ipairs(gOurExistNum) do
-		if value == num then
-			table.remove(gOurExistNum, index)
-		end
-	end
+	gOurExistNum[num] = -1
 end
 
 function DoRoleMatchReset(str)
@@ -210,11 +203,18 @@ end
 
 function DoMunkresMatch(rolePos)
 	local nrows = table.getn(rolePos)
-	local ncols = table.getn(gOurExistNum)
+	local ncolsIndex = {}
+	local ncols = 0 --table.getn(gOurExistNum)
+	for i = 0, param.maxPlayer - 1 do
+		if gOurExistNum[i] ~= -1 then
+			ncols = ncols + 1
+			ncolsIndex[ncols] = i
+		end
+	end
 	local matrix = Matrix_double_:new_local(nrows, ncols)
 	for row = 1, nrows do
 		for col = 1, ncols do
-			matrix:setValue(row-1, col-1, GetMatchPotential(gOurExistNum[col], rolePos[row]))
+			matrix:setValue(row-1, col-1, GetMatchPotential(gOurExistNum[ncolsIndex[col]], rolePos[row]))
 		end
 	end
 
@@ -226,8 +226,8 @@ function DoMunkresMatch(rolePos)
 		for col = 1, ncols do
 			if matrix:getValue(row-1, col-1) == 0 then
 --~ 				print(rolePos[row], gOurExistNum[col])
-				gRoleNum[rolePos[row]] = gOurExistNum[col]
-				table.insert(eraseList, gOurExistNum[col])				
+				gRoleNum[rolePos[row]] = gOurExistNum[ncolsIndex[col]]
+				table.insert(eraseList, gOurExistNum[ncolsIndex[col]])
 				break
 			end
 		end
@@ -241,21 +241,27 @@ end
 
 function DoFixNumMatch(fixNums)
 	for _, fixNum in ipairs(fixNums) do
-		for index, carNum in ipairs(gOurExistNum) do
-			if carNum == fixNum then  --CGetRealNum(carNum) //test by wz
-				-- print("Wzdebug: rolematch", "carNum", carNum, "C++ num" , CGetRealNum(carNum))
-				table.remove(gOurExistNum, index)
-				return carNum
+		for i = 0, param.maxPlayer - 1 do
+			if gOurExistNum[i] == fixNum then
+				gOurExistNum[i] = -1
+				return i
 			end
 		end
+		-- for index, carNum in ipairs(gOurExistNum) do
+		-- 	if carNum == fixNum then  --CGetRealNum(carNum) //test by wz
+		-- 		-- print("Wzdebug: rolematch", "carNum", carNum, "C++ num" , CGetRealNum(carNum))
+		-- 		table.remove(gOurExistNum, index)
+		-- 		return carNum
+		-- 	end
+		-- end
 	end
-	return 0
+	return -1
 end
 
 function SetNoMatchRoleZero()
 	for _, rolename in pairs(gRoleLookUpTable) do
 		if gRoleNum[rolename] == nil then
-			gRoleNum[rolename] = 0
+			gRoleNum[rolename] = -1
 		end
 	end	
 end
@@ -265,15 +271,16 @@ function UpdateRole(matchTactic, isPlaySwitched, isStateSwitched)
 		gRoleNum = {}
 	end
 	--print("---------------------------------")
-	local ourExistNum = {}
 
-	for i = 1, param.maxPlayer do
+	-- 为了使车号统一从0开始
+	-- 但这样lua的table接口全都无法使用，所以只能强行trick放弃代码简洁性保证功能
+	for i = 0, param.maxPlayer - 1 do
 		if player.valid(i) then
-			table.insert(ourExistNum, i)
+			gOurExistNum[i] = i -- table.insert(ourExistNum, i)
+		else
+			gOurExistNum[i] = -1
 		end
 	end
-
-	gOurExistNum = ourExistNum
 		
 	for _, rolename in pairs(gRolePriority) do
 		for existname, _ in pairs(gRolePos) do
@@ -300,20 +307,25 @@ function UpdateRole(matchTactic, isPlaySwitched, isStateSwitched)
 		end
 	end
 	
-	for _, value in ipairs(matchList) do
+	for _, value in ipairs(matchList) do -- value -> 需要匹配的角色名表
 		local role = {}
 		for index = 1, table.getn(value) do
 			local haveMatchRobot = false
+			local canMatchNum = 0 --table.getn(gOurExistNum)
+			for i = 0, param.maxPlayer - 1 do
+				if gOurExistNum[i] ~= -1 then
+					canMatchNum = canMatchNum + 1
+				end
+			end
 			for rolename, pos in pairs(gRolePos) do
-				if value[index] == rolename and
-					table.getn(gOurExistNum) >= index then
+				if value[index] == rolename and canMatchNum >= index then
 					table.insert(role, rolename)
 					haveMatchRobot = true
 					break
 				end
 			end
 			if not haveMatchRobot then
-				gRoleNum[value[index]] = 0
+				gRoleNum[value[index]] = -1
 			end
 		end
 		DoMunkresMatch(role)

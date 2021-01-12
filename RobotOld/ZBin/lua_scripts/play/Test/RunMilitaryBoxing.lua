@@ -1,21 +1,21 @@
 local TOTAL = 5
-local centerXF = 200
+local centerXF = 2000
 local centerYF = 0
-local radiusF = 35
-local radius = 55
+local radiusF = 350
+local radius = 550
 local rotateSpeedF = 0.015
 local rotateSpeed = 0.02
 local count = 0
 local stateCount = 0
 --[[]]
-local smallR = 25
-local centerX = 200
+local smallR = 250
+local centerX = 2000
 local centerY = 0
 local count = 0
 local Rcount= 0 
 local dirFlag=1
-local lineInterval = 60
-local rowInterval = 60
+local lineInterval = 600
+local rowInterval = 600
 --[[]]
 local run = function()
     count = count + 1
@@ -42,7 +42,7 @@ local runPos = function(n,TOTAL)
 end
 local sttPos_circle = function(n,TOTAL)
     assert(n<TOTAL)
-    return CGeoPoint:new_local(100+n*30,180)
+    return CGeoPoint:new_local(1000+n*300,1800)
 end
 
 --[[]]
@@ -53,16 +53,16 @@ end
 --]]
 local function circlePosMove( radius,number )
     return function ()
-        return CGeoPoint:new_local(centerX, centerY) +  Utils.Polar2Vector(radius+20*(Rcount-2),math.pi*2/5*(number+dirFlag*(count-2)))
+        return CGeoPoint:new_local(centerX, centerY) +  Utils.Polar2Vector(radius+200*(Rcount-2),math.pi*2/5*(number+dirFlag*(count-2)))
     end
 
 end
 --[[]]
 local sttPos_snake = function(n,TOTAL)
     assert(n<TOTAL)
-    return CGeoPoint:new_local(240,30*(n-TOTAL/2.0))
+    return CGeoPoint:new_local(2400,300*(n-TOTAL/2.0))
 end
-local STEP = 30
+local STEP = 300
 local X = {  8, 8, 8, 8, 8, 8, 9, 9, 9,10,
             10,10, 9, 9, 8, 8, 7, 6, 6, 5,
              5, 4, 4, 3, 3, 2, 2, 2, 3, 4,
@@ -161,11 +161,11 @@ firstState = "state0",
 ["initCircle"]={
     switch= function ()
         if bufcnt(
-            player.toTargetDist("Assister") <20 and 
-            player.toTargetDist("Leader")   <20 and 
-            player.toTargetDist("Special")  <20 and 
-            player.toTargetDist("Defender") <20 and 
-            player.toTargetDist("Middle")   <20 
+            player.toTargetDist("Assister") <200 and 
+            player.toTargetDist("Leader")   <200 and 
+            player.toTargetDist("Special")  <200 and 
+            player.toTargetDist("Defender") <200 and 
+            player.toTargetDist("Middle")   <200 
             ,20,300) then
             count=2
             Rcount=2
@@ -186,11 +186,11 @@ firstState = "state0",
 ["largeCircle"]={
     switch= function ()
         if bufcnt(
-            player.toTargetDist("Assister") <20 and 
-            player.toTargetDist("Leader")   <20 and 
-            player.toTargetDist("Special")  <20 and 
-            player.toTargetDist("Defender") <20 and 
-            player.toTargetDist("Middle")   <20 
+            player.toTargetDist("Assister") <200 and 
+            player.toTargetDist("Leader")   <200 and 
+            player.toTargetDist("Special")  <200 and 
+            player.toTargetDist("Defender") <200 and 
+            player.toTargetDist("Middle")   <200 
             ,20,300) then
             count=count+1   
             Rcount=Rcount+1
@@ -211,11 +211,11 @@ firstState = "state0",
 ["smallCircle"]={
     switch= function ()
         if bufcnt(
-            player.toTargetDist("Assister") <20 and 
-            player.toTargetDist("Leader")   <20 and 
-            player.toTargetDist("Special")  <20 and 
-            player.toTargetDist("Defender") <20 and 
-            player.toTargetDist("Middle")   <20 
+            player.toTargetDist("Assister") <200 and 
+            player.toTargetDist("Leader")   <200 and 
+            player.toTargetDist("Special")  <200 and 
+            player.toTargetDist("Defender") <200 and 
+            player.toTargetDist("Middle")   <200 
             ,20,300) then
             count=count+1
             Rcount=Rcount-1 
@@ -241,11 +241,11 @@ firstState = "state0",
 ["goLine"]={
     switch = function ()
         if bufcnt(
-            player.toTargetDist("Assister") <20 and 
-            player.toTargetDist("Leader")   <20 and 
-            player.toTargetDist("Special")  <20 and 
-            player.toTargetDist("Defender") <20 and 
-            player.toTargetDist("Middle")   <20 
+            player.toTargetDist("Assister") <200 and 
+            player.toTargetDist("Leader")   <200 and 
+            player.toTargetDist("Special")  <200 and 
+            player.toTargetDist("Defender") <200 and 
+            player.toTargetDist("Middle")   <200 
             ,20,300) then
             return "goDown"
         end
@@ -260,11 +260,11 @@ firstState = "state0",
 ["goDown"]={
     switch = function ()
         if bufcnt(
-            player.toTargetDist("Assister") <20 and 
-            player.toTargetDist("Leader")   <20 and 
-            player.toTargetDist("Special")  <20 and 
-            player.toTargetDist("Defender") <20 and 
-            player.toTargetDist("Middle")   <20 
+            player.toTargetDist("Assister") <200 and 
+            player.toTargetDist("Leader")   <200 and 
+            player.toTargetDist("Special")  <200 and 
+            player.toTargetDist("Defender") <200 and 
+            player.toTargetDist("Middle")   <200 
             ,20,300) then
             return "turnAround"
         end
@@ -300,11 +300,11 @@ firstState = "state0",
 ["goBack"]= {
     switch = function ()
         if bufcnt(
-            player.toTargetDist("Assister") <20 and 
-            player.toTargetDist("Leader")   <20 and 
-            player.toTargetDist("Special")  <20 and 
-            player.toTargetDist("Defender") <20 and 
-            player.toTargetDist("Middle")   <20 
+            player.toTargetDist("Assister") <200 and 
+            player.toTargetDist("Leader")   <200 and 
+            player.toTargetDist("Special")  <200 and 
+            player.toTargetDist("Defender") <200 and 
+            player.toTargetDist("Middle")   <200 
             ,20,300) then
             return "start"
         end

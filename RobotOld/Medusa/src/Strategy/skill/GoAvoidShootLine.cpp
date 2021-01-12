@@ -22,7 +22,7 @@ CGoAvoidShootLine::CGoAvoidShootLine()
 
 void CGoAvoidShootLine::plan(const CVisionModule* pVision)
 {
-	if ( pVision->getCycle() - _lastCycle > Param::Vision::FRAME_RATE * 0.1 ){
+	if ( pVision->getCycle() - _lastCycle > PARAM::Vision::FRAME_RATE * 0.1 ){
 		setState(BEGINNING);
 		_stateCouter=0;
 		mediumPos=CGeoPoint(9999,9999);
@@ -36,7 +36,7 @@ void CGoAvoidShootLine::plan(const CVisionModule* pVision)
 	const CGeoPoint targetPos=task().player.pos;
 //	const double arriveAngle=task().player.angle;
 	
-	const CGeoPoint theirGoalPos=CGeoPoint(Param::Field::PITCH_LENGTH/2,0);
+	const CGeoPoint theirGoalPos=CGeoPoint(PARAM::Field::PITCH_LENGTH/2,0);
 	
 	const double avoidPostoGoalDir=(theirGoalPos-avoidPos).dir();
 	const double avoidPostoMeDir=(me.Pos()-avoidPos).dir();
@@ -48,7 +48,7 @@ void CGoAvoidShootLine::plan(const CVisionModule* pVision)
 
 	int sideY=lastSideY;
 
-	double buffer=Param::Math::PI*3/180;
+	double buffer=PARAM::Math::PI*3/180;
 	if (lastSideY==-1){
 		if (Utils::Normalize(avoidPostoMeDir-avoidPostoGoalDir)>buffer){
 			sideY=1;
@@ -76,7 +76,7 @@ void CGoAvoidShootLine::plan(const CVisionModule* pVision)
 		willBlock=true;
 	}
 
-	bool canShoot=shooter.Pos().dist(ball.Pos())<60&&fabs(Utils::Normalize(shooter.Dir()-avoidPostoGoalDir))<Param::Math::PI*120/180;
+	bool canShoot=shooter.Pos().dist(ball.Pos())<60&&fabs(Utils::Normalize(shooter.Dir()-avoidPostoGoalDir))<PARAM::Math::PI*120/180;
 	canShoot=true;
 
 	const double shooterProjDist=Utils::pointToLineDist(shooter.Pos(),metoTargetLine);
@@ -85,7 +85,7 @@ void CGoAvoidShootLine::plan(const CVisionModule* pVision)
 
 	TaskT goTask(task());
 	if (canShoot&&willBlock&&!NormalPlayUtils::isEnemyBlockShootLine(avoidPos,avoidPostoGoalDir,50)){
-		double projDir=Utils::Normalize(avoidPostoGoalDir+sideY*Param::Math::PI*100/180);
+		double projDir=Utils::Normalize(avoidPostoGoalDir+sideY*PARAM::Math::PI*100/180);
 		//CGeoPoint goPoint=Utils::CenterOfTwoPoint(theirGoalPos,shooter.Pos());
 		CGeoPoint goPoint=avoidPostoGoalSeg.projection(targetPos);
 		if (goPoint.x()>(avoidPos.x()+theirGoalPos.x())/2){
@@ -96,12 +96,12 @@ void CGoAvoidShootLine::plan(const CVisionModule* pVision)
 			goPoint.setY(avoidPos.y()+(theirGoalPos.y()-avoidPos.y())*1/4);
 		}
 		mediumPos=goPoint+Utils::Polar2Vector(80,projDir);
-		if (mediumPos.x()>Param::Field::PITCH_LENGTH/2-10){
-			double tempY=Param::Field::PITCH_WIDTH/2-fabs(shooter.Pos().y());
+		if (mediumPos.x()>PARAM::Field::PITCH_LENGTH/2-10){
+			double tempY=PARAM::Field::PITCH_WIDTH/2-fabs(shooter.Pos().y());
             tempY=std::max(100.0,tempY);
             tempY=std::min(215.0,tempY);
 			mediumPos.setY(Utils::Sign(shooter.Y())*fabs(tempY));
-			mediumPos.setX(Param::Field::PITCH_LENGTH/2-10);
+			mediumPos.setX(PARAM::Field::PITCH_LENGTH/2-10);
 		}
 		goTask.player.pos=mediumPos;
 		goTask.player.angle=(theirGoalPos-me.Pos()).dir();

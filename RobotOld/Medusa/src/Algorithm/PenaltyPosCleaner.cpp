@@ -1,5 +1,5 @@
 #include "PenaltyPosCleaner.h"
-#include "param.h"
+#include "staticparams.h"
 #include "utils.h"
 #include <algorithm>
 #include <math.h>
@@ -10,7 +10,7 @@
 #endif
 namespace{
     CGeoPoint OUR_GOAL_CENTER;
-	const double IMPACT_DIST = Param::Vehicle::V2::PLAYER_SIZE * 2 + 1;
+	const double IMPACT_DIST = PARAM::Vehicle::V2::PLAYER_SIZE * 2 + 1;
 	const double REAL_POS_CHECK_LIMIT = 25;//当真实车位置到到IMPACT_DIST+REAL_POS_CHECK_LIMIT内部时才认为碰撞
 	double distBuffer = 1.0;
 	double HALF_ANGLE = asin(8.0/90);
@@ -21,13 +21,13 @@ CPenaltyPosCleaner::CPenaltyPosCleaner(){
 	_reset = true;
 	_inputNum = 0;
 	_calcTimes = 0;
-	_oriPoints = new SPointVector[Param::Field::MAX_PLAYER];
-	_impactPoints = new SIPointVector[Param::Field::MAX_PLAYER];
+	_oriPoints = new SPointVector[PARAM::Field::MAX_PLAYER];
+	_impactPoints = new SIPointVector[PARAM::Field::MAX_PLAYER];
 	_groupStatus = new GroupStatus;
 	_oriPoints->clear();
 	_impactPoints->clear();
 	_groupStatus->clear();
-	OUR_GOAL_CENTER = CGeoPoint(-Param::Field::PITCH_LENGTH/2.0,0);
+	OUR_GOAL_CENTER = CGeoPoint(-PARAM::Field::PITCH_LENGTH/2.0,0);
 }
 
 CPenaltyPosCleaner::~CPenaltyPosCleaner()
@@ -64,7 +64,7 @@ bool CPenaltyPosCleaner::add(const string roleName,const int num,const CGeoPoint
 #endif	
 	_oriPoints->push_back(SPoint(roleName,num,point,calcAngle(point)));
 	_inputNum++;
-	if (_inputNum >= Param::Field::MAX_PLAYER)//门将不匹配
+	if (_inputNum >= PARAM::Field::MAX_PLAYER)//门将不匹配
 	{
 		cout << "Error: Penalty Pos Cleaner: roleNum OverFlew " <<endl;
 		return false;
@@ -247,16 +247,16 @@ void CPenaltyPosCleaner::calcPoint()
 		//calc angle
 		midAngle = midAngle/it->second._num;
 		leftAngle = midAngle - it->second._num * HALF_ANGLE;
-		leftAngle = leftAngle < -Param::Math::PI/2+HALF_ANGLE ? -Param::Math::PI/2+HALF_ANGLE : leftAngle;
-		leftAngle = leftAngle > Param::Math::PI/2-2*HALF_ANGLE ? Param::Math::PI/2-2*HALF_ANGLE : leftAngle;
+		leftAngle = leftAngle < -PARAM::Math::PI/2+HALF_ANGLE ? -PARAM::Math::PI/2+HALF_ANGLE : leftAngle;
+		leftAngle = leftAngle > PARAM::Math::PI/2-2*HALF_ANGLE ? PARAM::Math::PI/2-2*HALF_ANGLE : leftAngle;
 		rightAngle = midAngle + it->second._num * HALF_ANGLE;
-		rightAngle = rightAngle > Param::Math::PI/2 ? Param::Math::PI/2 : rightAngle;
-		rightAngle = rightAngle < -Param::Math::PI/2+2*HALF_ANGLE ? -Param::Math::PI/2+2*HALF_ANGLE : rightAngle;
+		rightAngle = rightAngle > PARAM::Math::PI/2 ? PARAM::Math::PI/2 : rightAngle;
+		rightAngle = rightAngle < -PARAM::Math::PI/2+2*HALF_ANGLE ? -PARAM::Math::PI/2+2*HALF_ANGLE : rightAngle;
 #ifdef _DEBUG
 		GDebugEngine::Instance()->gui_debug_line(OUR_GOAL_CENTER,OUR_GOAL_CENTER+Utils::Polar2Vector(500,leftAngle),COLOR_YELLOW);
 		GDebugEngine::Instance()->gui_debug_line(OUR_GOAL_CENTER,OUR_GOAL_CENTER+Utils::Polar2Vector(500,rightAngle),COLOR_YELLOW);
 #endif
-		if (rightAngle < Param::Math::PI / 2 - 0.01)
+		if (rightAngle < PARAM::Math::PI / 2 - 0.01)
 		{
 			useAngle = leftAngle;
 			side = POS_SIDE_RIGHT;//采用右边的线，则向左算

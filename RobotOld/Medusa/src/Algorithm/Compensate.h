@@ -22,11 +22,11 @@ public:
 	~CCompensate();
     double checkCompensate(double ballspeed,double rawdir);
 	double getKickDir(int playerNum, CGeoPoint kickTarget);
-	void setOurRobotIndex(unsigned char*_ourRobotIndex);
+//	void setOurRobotIndex(unsigned char*_ourRobotIndex);
 private:
 	void readCompensateTable();
 	double compensatevalue[100][50];
-	unsigned char ourRobotIndex[Param::Field::MAX_PLAYER_NUM+1];
+//	unsigned char ourRobotIndex[PARAM::Field::MAX_PLAYER];
 };
 
 // new compensate
@@ -56,7 +56,7 @@ private:
 //private:
 //	void readCompensateTable(); // 不需要读表，其实是可以通过拟合直接算的。（加一个速度
 //	double compensatevalue[100][50];
-//	unsigned char ourRobotIndex[Param::Field::MAX_PLAYER_NUM + 1];
+//	unsigned char ourRobotIndex[PARAM::Field::MAX_PLAYER];
 
 //	// 模型参数和数据
 //	// 参数 theta_out = A * v_in * sin(theta_in) + B

@@ -10,7 +10,7 @@ CCrazyPush::CCrazyPush() {}
 CCrazyPush::~CCrazyPush() {}
 
 void CCrazyPush::plan(const CVisionModule* pVision) {
-	if ( pVision->getCycle() - _lastCycle > Param::Vision::FRAME_RATE * 0.1) { setState(BEGINNING); }
+	if ( pVision->getCycle() - _lastCycle > PARAM::Vision::FRAME_RATE * 0.1) { setState(BEGINNING); }
 	int _executor  = task().executor;
 	double faceDir = task().player.angle;
 	const PlayerVisionT& me = pVision->ourPlayer(_executor);

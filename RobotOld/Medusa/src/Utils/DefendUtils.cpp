@@ -1,5 +1,5 @@
 #include "DefendUtils.h"
-#include <param.h>
+#include "staticparams.h"
 #include <iostream>
 #include <cmath>
 #include <sstream>
@@ -18,44 +18,44 @@
 namespace DefendUtils{
     double GoalieFrontBuffer = 0.5;
     double GoalBuffer = 2;
-    double PLAYERSIZE = Param::Vehicle::V2::PLAYER_SIZE * 0.8; //本篇所用的player size  0.5
-    CGeoPoint RGOAL_LEFT_POS = CGeoPoint(Param::Field::PITCH_LENGTH / 2, -Param::Field::GOAL_WIDTH / 2 - GoalBuffer);
-    CGeoPoint RGOAL_RIGHT_POS = CGeoPoint(Param::Field::PITCH_LENGTH / 2, Param::Field::GOAL_WIDTH / 2 + GoalBuffer);
-    CGeoPoint RPENALTY_LEFT_POS = CGeoPoint(Param::Field::PITCH_LENGTH / 2, -Param::Field::PENALTY_AREA_WIDTH / 2);
-    CGeoPoint RPENALTY_RIGHT_POS = CGeoPoint(Param::Field::PITCH_LENGTH / 2, Param::Field::PENALTY_AREA_WIDTH / 2);
-    CGeoPoint RGOAL_CENTRE_POS = CGeoPoint(Param::Field::PITCH_LENGTH / 2,0);
-    CGeoPoint GOAL_CENTRE_POS = CGeoPoint(-Param::Field::PITCH_LENGTH / 2,0);
-    CGeoPoint GOAL_LEFT_POS = CGeoPoint(-Param::Field::PITCH_LENGTH / 2, -Param::Field::GOAL_WIDTH / 2);
-    CGeoPoint GOAL_RIGHT_POS = CGeoPoint(-Param::Field::PITCH_LENGTH / 2, Param::Field::GOAL_WIDTH / 2);
-    CGeoPoint RLEFT = CGeoPoint(-Param::Field::PITCH_LENGTH / 2, Param::Field::PITCH_WIDTH / 2);
-    CGeoPoint RRIGHT = CGeoPoint(-Param::Field::PITCH_LENGTH / 2, Param::Field::PITCH_WIDTH / 2);
+    double PLAYERSIZE = PARAM::Vehicle::V2::PLAYER_SIZE * 0.8; //本篇所用的player size  0.5
+    CGeoPoint RGOAL_LEFT_POS = CGeoPoint(PARAM::Field::PITCH_LENGTH / 2, -PARAM::Field::GOAL_WIDTH / 2 - GoalBuffer);
+    CGeoPoint RGOAL_RIGHT_POS = CGeoPoint(PARAM::Field::PITCH_LENGTH / 2, PARAM::Field::GOAL_WIDTH / 2 + GoalBuffer);
+    CGeoPoint RPENALTY_LEFT_POS = CGeoPoint(PARAM::Field::PITCH_LENGTH / 2, -PARAM::Field::PENALTY_AREA_WIDTH / 2);
+    CGeoPoint RPENALTY_RIGHT_POS = CGeoPoint(PARAM::Field::PITCH_LENGTH / 2, PARAM::Field::PENALTY_AREA_WIDTH / 2);
+    CGeoPoint RGOAL_CENTRE_POS = CGeoPoint(PARAM::Field::PITCH_LENGTH / 2,0);
+    CGeoPoint GOAL_CENTRE_POS = CGeoPoint(-PARAM::Field::PITCH_LENGTH / 2,0);
+    CGeoPoint GOAL_LEFT_POS = CGeoPoint(-PARAM::Field::PITCH_LENGTH / 2, -PARAM::Field::GOAL_WIDTH / 2);
+    CGeoPoint GOAL_RIGHT_POS = CGeoPoint(-PARAM::Field::PITCH_LENGTH / 2, PARAM::Field::GOAL_WIDTH / 2);
+    CGeoPoint RLEFT = CGeoPoint(-PARAM::Field::PITCH_LENGTH / 2, PARAM::Field::PITCH_WIDTH / 2);
+    CGeoPoint RRIGHT = CGeoPoint(-PARAM::Field::PITCH_LENGTH / 2, PARAM::Field::PITCH_WIDTH / 2);
 
     // temp for use
-    const double OUR_PENALTY_Y_LEFT = -Param::Field::PENALTY_AREA_WIDTH/2;
-    const double OUR_PENALTY_Y_RIGHT = Param::Field::PENALTY_AREA_WIDTH/2;
-    const double OUR_PENALTY_X_TOP = -Param::Field::PITCH_LENGTH / 2 + Param::Field::PENALTY_AREA_DEPTH;
-    const double OUR_PENALTY_X_BOTTOM = -Param::Field::PITCH_LENGTH / 2;
+    const double OUR_PENALTY_Y_LEFT = -PARAM::Field::PENALTY_AREA_WIDTH/2;
+    const double OUR_PENALTY_Y_RIGHT = PARAM::Field::PENALTY_AREA_WIDTH/2;
+    const double OUR_PENALTY_X_TOP = -PARAM::Field::PITCH_LENGTH / 2 + PARAM::Field::PENALTY_AREA_DEPTH;
+    const double OUR_PENALTY_X_BOTTOM = -PARAM::Field::PITCH_LENGTH / 2;
     const CGeoPoint OUR_PENALTY_LEFT_TOP(OUR_PENALTY_X_TOP, OUR_PENALTY_Y_LEFT);
     const CGeoPoint OUR_PENALTY_RIGHT_TOP(OUR_PENALTY_X_TOP, OUR_PENALTY_Y_RIGHT);
 
     //一些计算用的中间点
-    double AVOID_PENALTY_BUFFER = Param::Vehicle::V2::PLAYER_SIZE;
-    double PEN_RADIUS = sqrt( pow(Param::Field::PENALTY_AREA_WIDTH / 2, 2) + pow(Param::Field::PENALTY_AREA_DEPTH, 2)) + Param::Vehicle::V2::PLAYER_SIZE + AVOID_PENALTY_BUFFER;
-    double PEN_DEPTH = Param::Field::PENALTY_AREA_DEPTH + Param::Vehicle::V2::PLAYER_SIZE + AVOID_PENALTY_BUFFER;
+    double AVOID_PENALTY_BUFFER = PARAM::Vehicle::V2::PLAYER_SIZE;
+    double PEN_RADIUS = sqrt( pow(PARAM::Field::PENALTY_AREA_WIDTH / 2, 2) + pow(PARAM::Field::PENALTY_AREA_DEPTH, 2)) + PARAM::Vehicle::V2::PLAYER_SIZE + AVOID_PENALTY_BUFFER;
+    double PEN_DEPTH = PARAM::Field::PENALTY_AREA_DEPTH + PARAM::Vehicle::V2::PLAYER_SIZE + AVOID_PENALTY_BUFFER;
     //防守队员 站位的 门前线段两边的两个极限点
-    //CGeoPoint RCENTER_LEFT = CGeoPoint(Param::Field::PITCH_LENGTH/2 - PEN_DEPTH,-Param::Field::PENALTY_AREA_L/2);
-    //CGeoPoint RCENTER_RIGHT = CGeoPoint(Param::Field::PITCH_LENGTH/2 - PEN_DEPTH,Param::Field::PENALTY_AREA_L/2);
-    CGeoPoint RCENTER_LEFT = CGeoPoint(Param::Field::PITCH_LENGTH / 2 - PEN_DEPTH - AVOID_PENALTY_BUFFER, -Param::Field::PENALTY_L / 2);
-    CGeoPoint RCENTER_RIGHT = CGeoPoint(Param::Field::PITCH_LENGTH / 2 - PEN_DEPTH - AVOID_PENALTY_BUFFER, Param::Field::PENALTY_L / 2);
+    //CGeoPoint RCENTER_LEFT = CGeoPoint(PARAM::Field::PITCH_LENGTH/2 - PEN_DEPTH,-PARAM::Field::PENALTY_AREA_L/2);
+    //CGeoPoint RCENTER_RIGHT = CGeoPoint(PARAM::Field::PITCH_LENGTH/2 - PEN_DEPTH,PARAM::Field::PENALTY_AREA_L/2);
+    CGeoPoint RCENTER_LEFT = CGeoPoint(PARAM::Field::PITCH_LENGTH / 2 - PEN_DEPTH - AVOID_PENALTY_BUFFER, -PARAM::Field::PENALTY_L / 2);
+    CGeoPoint RCENTER_RIGHT = CGeoPoint(PARAM::Field::PITCH_LENGTH / 2 - PEN_DEPTH - AVOID_PENALTY_BUFFER, PARAM::Field::PENALTY_L / 2);
     //底线两端的两个极限点
-    CGeoPoint RBOTTOM_LEFT = CGeoPoint(Param::Field::PITCH_LENGTH/2,-PEN_RADIUS - Param::Field::PENALTY_AREA_L/2);
-    CGeoPoint RBOTTOM_RIGHT = CGeoPoint(Param::Field::PITCH_LENGTH/2,PEN_RADIUS + Param::Field::PENALTY_AREA_L/2);
+    CGeoPoint RBOTTOM_LEFT = CGeoPoint(PARAM::Field::PITCH_LENGTH/2,-PEN_RADIUS - PARAM::Field::PENALTY_AREA_L/2);
+    CGeoPoint RBOTTOM_RIGHT = CGeoPoint(PARAM::Field::PITCH_LENGTH/2,PEN_RADIUS + PARAM::Field::PENALTY_AREA_L/2);
     //门前线段映射到底线的两个点
-    CGeoPoint RCENTER2BOTTOM_LEFT = CGeoPoint(Param::Field::PITCH_LENGTH/2,-Param::Field::PENALTY_L /2);
-    CGeoPoint RCENTER2BOTTOM_RIGHT = CGeoPoint(Param::Field::PITCH_LENGTH/2,Param::Field::PENALTY_L /2);
+    CGeoPoint RCENTER2BOTTOM_LEFT = CGeoPoint(PARAM::Field::PITCH_LENGTH/2,-PARAM::Field::PENALTY_L /2);
+    CGeoPoint RCENTER2BOTTOM_RIGHT = CGeoPoint(PARAM::Field::PITCH_LENGTH/2,PARAM::Field::PENALTY_L /2);
 
-    const double BALL_SHOOT_DIR_BUFFER = Param::Math::PI * 10 / 180;		//朝向判断的余量，只有球射出时使用
-    const double ENEMY_FACE_BUFFER = Param::Math::PI * 25 / 180;		//判断敌人是否面对我方球门的余量
+    const double BALL_SHOOT_DIR_BUFFER = PARAM::Math::PI * 10 / 180;		//朝向判断的余量，只有球射出时使用
+    const double ENEMY_FACE_BUFFER = PARAM::Math::PI * 25 / 180;		//判断敌人是否面对我方球门的余量
     const double ENEMY_BALL_DIST_BUFFER = 20;                           //防守朝向的距离判据
     const double PENALTY_BUFFER = 12;									//禁区缓冲
     const double ENEMY_PASS_SPEED = 300;								//判断敌人传球速度限
@@ -67,55 +67,55 @@ namespace DefendUtils{
     CGeoCirlce RD_CIR_RIGHT = CGeoCirlce(RCENTER2BOTTOM_RIGHT,PEN_RADIUS);
 
     //middle及后卫（椭圆规划线）所在规划线原点
-    CGeoPoint CENTERPOINT = CGeoPoint(Param::Field::PITCH_LENGTH/2,0);
+    CGeoPoint CENTERPOINT = CGeoPoint(PARAM::Field::PITCH_LENGTH/2,0);
 
     //后卫椭圆方式规划线
-    const double AVOIDBUFFER = 2*Param::Vehicle::V2::PLAYER_SIZE;
+    const double AVOIDBUFFER = 2*PARAM::Vehicle::V2::PLAYER_SIZE;
 
   // 1. 普通后卫
-    CGeoEllipse RD_ELLIPSE  = CGeoEllipse(CENTERPOINT, Param::Field::PENALTY_AREA_DEPTH*1.2 + 15 + AVOIDBUFFER, (Param::Field::PENALTY_AREA_WIDTH*1.2 + 55 + AVOIDBUFFER*2)/2);
+    CGeoEllipse RD_ELLIPSE  = CGeoEllipse(CENTERPOINT, PARAM::Field::PENALTY_AREA_DEPTH*1.2 + 15 + AVOIDBUFFER, (PARAM::Field::PENALTY_AREA_WIDTH*1.2 + 55 + AVOIDBUFFER*2)/2);
     //leftback/rightback 站点 added by Wang in 2018/3/22
-    CGeoRectangle RD_RECTANGLE = CGeoRectangle(CGeoPoint(Param::Field::PITCH_LENGTH / 2 - Param::Field::PENALTY_AREA_DEPTH - AVOIDBUFFER, Param::Field::PENALTY_AREA_WIDTH/2+ AVOIDBUFFER), CGeoPoint(Param::Field::PITCH_LENGTH /2 , -Param::Field::PENALTY_AREA_WIDTH / 2 - AVOIDBUFFER));
+    CGeoRectangle RD_RECTANGLE = CGeoRectangle(CGeoPoint(PARAM::Field::PITCH_LENGTH / 2 - PARAM::Field::PENALTY_AREA_DEPTH - AVOIDBUFFER, PARAM::Field::PENALTY_AREA_WIDTH/2+ AVOIDBUFFER), CGeoPoint(PARAM::Field::PITCH_LENGTH /2 , -PARAM::Field::PENALTY_AREA_WIDTH / 2 - AVOIDBUFFER));
   // 2. 球在禁区内时 后卫
-    CGeoEllipse RD_ELLIPSE1 = CGeoEllipse(CENTERPOINT, Param::Field::PENALTY_AREA_DEPTH + 20 + AVOIDBUFFER, (Param::Field::PENALTY_AREA_WIDTH + 60 + AVOIDBUFFER*2)/2);
+    CGeoEllipse RD_ELLIPSE1 = CGeoEllipse(CENTERPOINT, PARAM::Field::PENALTY_AREA_DEPTH + 20 + AVOIDBUFFER, (PARAM::Field::PENALTY_AREA_WIDTH + 60 + AVOIDBUFFER*2)/2);
     //defendMiddle 站点 added by Wang in 2018/3/23
-    CGeoRectangle RD_RECTANGLE1 = CGeoRectangle(CGeoPoint(Param::Field::PITCH_LENGTH / 2 - Param::Field::PENALTY_AREA_DEPTH - AVOIDBUFFER-20, Param::Field::PENALTY_AREA_WIDTH / 2 + AVOIDBUFFER+20), CGeoPoint(Param::Field::PITCH_LENGTH / 2, -Param::Field::PENALTY_AREA_WIDTH / 2 - AVOIDBUFFER-20));
+    CGeoRectangle RD_RECTANGLE1 = CGeoRectangle(CGeoPoint(PARAM::Field::PITCH_LENGTH / 2 - PARAM::Field::PENALTY_AREA_DEPTH - AVOIDBUFFER-20, PARAM::Field::PENALTY_AREA_WIDTH / 2 + AVOIDBUFFER+20), CGeoPoint(PARAM::Field::PITCH_LENGTH / 2, -PARAM::Field::PENALTY_AREA_WIDTH / 2 - AVOIDBUFFER-20));
     // 3. 弃用
-    CGeoEllipse RD_ELLIPSE2 = CGeoEllipse(CENTERPOINT, Param::Field::PENALTY_AREA_DEPTH + 15 + AVOIDBUFFER, (Param::Field::PENALTY_AREA_WIDTH + 30 + AVOIDBUFFER*2)/2);
+    CGeoEllipse RD_ELLIPSE2 = CGeoEllipse(CENTERPOINT, PARAM::Field::PENALTY_AREA_DEPTH + 15 + AVOIDBUFFER, (PARAM::Field::PENALTY_AREA_WIDTH + 30 + AVOIDBUFFER*2)/2);
 
   // 4. 后腰所用椭圆
-    CGeoEllipse RD_ELLIPSE3 = CGeoEllipse(CENTERPOINT, Param::Field::PENALTY_AREA_DEPTH*1.9 + AVOIDBUFFER, (Param::Field::PENALTY_AREA_WIDTH*1.8 + AVOIDBUFFER*2)/2);
+    CGeoEllipse RD_ELLIPSE3 = CGeoEllipse(CENTERPOINT, PARAM::Field::PENALTY_AREA_DEPTH*1.9 + AVOIDBUFFER, (PARAM::Field::PENALTY_AREA_WIDTH*1.8 + AVOIDBUFFER*2)/2);
     //defendHead 站点 added by Wang in 2018/3/23
-    CGeoRectangle RD_RECTANGLE2 = CGeoRectangle(CGeoPoint(Param::Field::PITCH_LENGTH / 2 - Param::Field::PENALTY_AREA_DEPTH - AVOIDBUFFER, Param::Field::PENALTY_AREA_WIDTH / 2 + AVOIDBUFFER), CGeoPoint(Param::Field::PITCH_LENGTH / 2, -Param::Field::PENALTY_AREA_WIDTH / 2 - AVOIDBUFFER));
+    CGeoRectangle RD_RECTANGLE2 = CGeoRectangle(CGeoPoint(PARAM::Field::PITCH_LENGTH / 2 - PARAM::Field::PENALTY_AREA_DEPTH - AVOIDBUFFER, PARAM::Field::PENALTY_AREA_WIDTH / 2 + AVOIDBUFFER), CGeoPoint(PARAM::Field::PITCH_LENGTH / 2, -PARAM::Field::PENALTY_AREA_WIDTH / 2 - AVOIDBUFFER));
   // 5. 球在禁区内时 后腰
-    CGeoEllipse RD_ELLIPSE4 = CGeoEllipse(CENTERPOINT, Param::Field::PENALTY_AREA_DEPTH*2.7 + AVOIDBUFFER, (Param::Field::PENALTY_AREA_WIDTH*1.8 + AVOIDBUFFER*2)/2);
+    CGeoEllipse RD_ELLIPSE4 = CGeoEllipse(CENTERPOINT, PARAM::Field::PENALTY_AREA_DEPTH*2.7 + AVOIDBUFFER, (PARAM::Field::PENALTY_AREA_WIDTH*1.8 + AVOIDBUFFER*2)/2);
     //defendMiddle 站点 added by Wang in 2018/3/23  may not need to change
-    CGeoRectangle RD_RECTANGLE3 = CGeoRectangle(CGeoPoint(Param::Field::PITCH_LENGTH / 2 - Param::Field::PENALTY_AREA_DEPTH*2.5 - AVOIDBUFFER, Param::Field::PENALTY_AREA_WIDTH*2.0 / 2 + AVOIDBUFFER), CGeoPoint(Param::Field::PITCH_LENGTH / 2, -Param::Field::PENALTY_AREA_WIDTH*2.0 / 2 - AVOIDBUFFER));
+    CGeoRectangle RD_RECTANGLE3 = CGeoRectangle(CGeoPoint(PARAM::Field::PITCH_LENGTH / 2 - PARAM::Field::PENALTY_AREA_DEPTH*2.5 - AVOIDBUFFER, PARAM::Field::PENALTY_AREA_WIDTH*2.0 / 2 + AVOIDBUFFER), CGeoPoint(PARAM::Field::PITCH_LENGTH / 2, -PARAM::Field::PENALTY_AREA_WIDTH*2.0 / 2 - AVOIDBUFFER));
     //calcPenaltyLine规划线
-    CGeoPoint DCENTERPOINT = CGeoPoint(-Param::Field::PITCH_LENGTH/2,0);
-    CGeoEllipse D_ELLIPSE = CGeoEllipse(DCENTERPOINT,Param::Field::PENALTY_AREA_DEPTH+5 +AVOIDBUFFER,(Param::Field::PENALTY_AREA_WIDTH+8+AVOIDBUFFER*2)/2);
+    CGeoPoint DCENTERPOINT = CGeoPoint(-PARAM::Field::PITCH_LENGTH/2,0);
+    CGeoEllipse D_ELLIPSE = CGeoEllipse(DCENTERPOINT,PARAM::Field::PENALTY_AREA_DEPTH+5 +AVOIDBUFFER,(PARAM::Field::PENALTY_AREA_WIDTH+8+AVOIDBUFFER*2)/2);
     //判断是否需要进入penaltycleaner
-    CGeoEllipse D_ELLIPSE1 =  CGeoEllipse(DCENTERPOINT,Param::Field::PENALTY_AREA_DEPTH+38 +AVOIDBUFFER,(Param::Field::PENALTY_AREA_WIDTH+68+AVOIDBUFFER*2)/2);
+    CGeoEllipse D_ELLIPSE1 =  CGeoEllipse(DCENTERPOINT,PARAM::Field::PENALTY_AREA_DEPTH+38 +AVOIDBUFFER,(PARAM::Field::PENALTY_AREA_WIDTH+68+AVOIDBUFFER*2)/2);
 
     // 后卫相关临界值
-    CGeoPoint LEFTBACK_CRITICAL_POINT = CGeoPoint(-(Param::Field::PITCH_LENGTH/2 - Param::Field::PENALTY_AREA_DEPTH - Param::Vehicle::V2::PLAYER_SIZE), -(Param::Field::PITCH_WIDTH/2 - Param::Field::MAX_PLAYER_SIZE*2));
-    CGeoPoint RIGHTBACK_CRITICAL_POINT = CGeoPoint(-(Param::Field::PITCH_LENGTH/2 - Param::Field::PENALTY_AREA_DEPTH - Param::Vehicle::V2::PLAYER_SIZE), Param::Field::PITCH_WIDTH/2 - Param::Field::MAX_PLAYER_SIZE*2);
-    const double SIDEBACK_DEFEND_CRITICAL_X = -Param::Field::PITCH_LENGTH / 6;
+    CGeoPoint LEFTBACK_CRITICAL_POINT = CGeoPoint(-(PARAM::Field::PITCH_LENGTH/2 - PARAM::Field::PENALTY_AREA_DEPTH - PARAM::Vehicle::V2::PLAYER_SIZE), -(PARAM::Field::PITCH_WIDTH/2 - PARAM::Field::MAX_PLAYER_SIZE*2));
+    CGeoPoint RIGHTBACK_CRITICAL_POINT = CGeoPoint(-(PARAM::Field::PITCH_LENGTH/2 - PARAM::Field::PENALTY_AREA_DEPTH - PARAM::Vehicle::V2::PLAYER_SIZE), PARAM::Field::PITCH_WIDTH/2 - PARAM::Field::MAX_PLAYER_SIZE*2);
+    const double SIDEBACK_DEFEND_CRITICAL_X = -PARAM::Field::PITCH_LENGTH / 6;
     const double SIDEBACK_DEFEND_BOUNDARY_DIR_MAX = (RIGHTBACK_CRITICAL_POINT - GOAL_CENTRE_POS).dir();
-    const double SIDEBACK_DEFEND_BOUNDARY_DIR_MIN = SIDEBACK_DEFEND_BOUNDARY_DIR_MAX - Param::Math::PI / 5;
-    const double SIDEBACK_DEFEND_BOUNDARY_DIR_BUFFER = Param::Math::PI * 5 / 180;
-    const double SIDEBACK_SIDEFACTOR_BUFFER_DIR = Param::Math::PI * 25 / 180;
+    const double SIDEBACK_DEFEND_BOUNDARY_DIR_MIN = SIDEBACK_DEFEND_BOUNDARY_DIR_MAX - PARAM::Math::PI / 5;
+    const double SIDEBACK_DEFEND_BOUNDARY_DIR_BUFFER = PARAM::Math::PI * 5 / 180;
+    const double SIDEBACK_SIDEFACTOR_BUFFER_DIR = PARAM::Math::PI * 25 / 180;
     const double SIDEBACK_BUFFER_DIST = 120;
-    const double SIDEBACK_MARKING_DIST_THRESHOLD_UPPER = Param::Field::MAX_PLAYER_SIZE*3.5;
-    const double SIDEBACK_MARKING_DIST_THRESHOLD_LOWER = Param::Field::MAX_PLAYER_SIZE*2;
-    const double SIDEBACK_MARKING_DIST_THRESHOLD_BUFFER = Param::Vehicle::V2::PLAYER_SIZE;
+    const double SIDEBACK_MARKING_DIST_THRESHOLD_UPPER = PARAM::Field::MAX_PLAYER_SIZE*3.5;
+    const double SIDEBACK_MARKING_DIST_THRESHOLD_LOWER = PARAM::Field::MAX_PLAYER_SIZE*2;
+    const double SIDEBACK_MARKING_DIST_THRESHOLD_BUFFER = PARAM::Vehicle::V2::PLAYER_SIZE;
 
     bool isPosInOurPenaltyArea(const CGeoPoint& pos){
-        return Utils::InOurPenaltyArea(pos,Param::Vehicle::V2::PLAYER_SIZE/4);
+        return Utils::InOurPenaltyArea(pos,PARAM::Vehicle::V2::PLAYER_SIZE/4);
     }
     int getPenaltyFronter(){
         int num = 0;
-        for (int i=1;i<Param::Field::MAX_PLAYER+1;i++)
+        for (int i=0;i<PARAM::Field::MAX_PLAYER;i++)
         {
             CGeoPoint pos = VisionModule::Instance()->ourPlayer(i).Pos();
             if (Utils::InOurPenaltyArea(pos,60))
@@ -158,10 +158,10 @@ namespace DefendUtils{
         } else {
             const MobileVisionT ball = pVision->ball();
             const double ball_speed_dir = ball.Vel().dir();
-            double min_dist = Param::Field::PITCH_LENGTH, dist, angle_diff;
+            double min_dist = PARAM::Field::PITCH_LENGTH, dist, angle_diff;
             int min_player = 0;
-            const double PassAngleDiff = Param::Math::PI / 6;
-            for (int i = 1; i <= Param::Field::MAX_PLAYER; i ++)
+            const double PassAngleDiff = PARAM::Math::PI / 6;
+            for (int i = 0; i < PARAM::Field::MAX_PLAYER; i ++)
             {
                 if (pVision->theirPlayer(i).Valid() == true)
                 {
@@ -188,8 +188,8 @@ namespace DefendUtils{
     }
 
     CGeoLine getDefenceTargetAndLine(CGeoPoint& RdefenceTarget,double& RdefendDir){
-        const CGeoPoint RGOAL_LEFT_CENTER(Param::Field::PITCH_LENGTH/2, -Param::Field::GOAL_WIDTH/2 + Param::Field::MAX_PLAYER_SIZE);
-        const CGeoPoint RGOAL_RIGHT_CENTER(Param::Field::PITCH_LENGTH/2, Param::Field::GOAL_WIDTH/4 - Param::Field::MAX_PLAYER_SIZE);
+        const CGeoPoint RGOAL_LEFT_CENTER(PARAM::Field::PITCH_LENGTH/2, -PARAM::Field::GOAL_WIDTH/2 + PARAM::Field::MAX_PLAYER_SIZE);
+        const CGeoPoint RGOAL_RIGHT_CENTER(PARAM::Field::PITCH_LENGTH/2, PARAM::Field::GOAL_WIDTH/4 - PARAM::Field::MAX_PLAYER_SIZE);
 
         CVisionModule* pVision = vision;
         CGeoLine RdefenceLine = CGeoLine(CGeoPoint(0,0),0.0);
@@ -201,11 +201,11 @@ namespace DefendUtils{
         CGeoPoint RballPos = DefendUtils::reversePoint(ball.Pos());
 
         // 横传球的预测
-        if (std::fabs(ball.Vel().dir()) > Param::Math::PI/3 && ball.Vel().dir() < Param::Math::PI/3*2)
+        if (std::fabs(ball.Vel().dir()) > PARAM::Math::PI/3 && ball.Vel().dir() < PARAM::Math::PI/3*2)
         RballPos = reversePoint(ball.Pos() + Utils::Polar2Vector(ball.Vel().mod()/20, ball.Vel().dir()));
         //GDebugEngine::Instance()->gui_debug_arc(reversePoint(RballPos), 5, 0, 360, COLOR_WHITE);
 
-        CVector RballVel = Utils::Polar2Vector(ball.Vel().mod(),Utils::Normalize(ball.Vel().dir() + Param::Math::PI));
+        CVector RballVel = Utils::Polar2Vector(ball.Vel().mod(),Utils::Normalize(ball.Vel().dir() + PARAM::Math::PI));
         double RballVelMod = ball.Vel().mod();
         double RballVelDir = RballVel.dir();
         //球门连线
@@ -217,7 +217,7 @@ namespace DefendUtils{
         double Rball2GoalCenterDir = Rball2GoalCenter.dir();
         double left2centreAngle = fabs(Utils::Normalize(Rball2LeftDir - Rball2GoalCenterDir));
         double right2centreAngle = fabs(Utils::Normalize(Rball2RightDir - Rball2GoalCenterDir));
-        double Rball2enemyDir = Utils::Normalize((pVision->ball().Pos() - pVision->theirPlayer(enemyNum).Pos()).dir()+Param::Math::PI);
+        double Rball2enemyDir = Utils::Normalize((pVision->ball().Pos() - pVision->theirPlayer(enemyNum).Pos()).dir()+PARAM::Math::PI);
 
         static bool todefenddirection = false;
         if (true == DefenceInfo::Instance()->getOppPlayerByNum(enemyNum)->isTheRole("RReceiver")){
@@ -241,7 +241,7 @@ namespace DefendUtils{
         {
             const PlayerVisionT& enemy = pVision->theirPlayer(enemyNum);
             CGeoPoint RenemyPos = DefendUtils::reversePoint(enemy.Pos());
-            double RenemyDir = Utils::Normalize(enemy.Dir() + Param::Math::PI);
+            double RenemyDir = Utils::Normalize(enemy.Dir() + PARAM::Math::PI);
 
             ///朝向线：判断2 是否防朝向
             bool defenceEnemy = false;  //防守朝向的判据
@@ -262,7 +262,7 @@ namespace DefendUtils{
             bool Renemy2ballDistAdapt = RballPos.dist(RenemyPos) < ENEMY_BALL_DIST_BUFFER;
             defenceEnemy = enemyHasBall && Renemy2ballDirAdapt && Renemy2ballDistAdapt&& !todefenddirection;
             //判断对手是否传射配合
-            bool enemyPass = RballVelMod > ENEMY_PASS_SPEED && fabs(Utils::Normalize(RballVelDir - Rball2enemy.dir())) < Param::Math::PI / 9.0;
+            bool enemyPass = RballVelMod > ENEMY_PASS_SPEED && fabs(Utils::Normalize(RballVelDir - Rball2enemy.dir())) < PARAM::Math::PI / 9.0;
             //cout<<"defenceEnemy is "<<defenceEnemy<<" "<<ball.Vel().mod()<<endl;
             if (defenceEnemy)//动态调整朝向
             {
@@ -279,7 +279,7 @@ namespace DefendUtils{
                 {
                     double Renemy2rightEdge = fabs(Utils::Normalize(RenemyDir - Rball2RightDir));
                     defendRenemyDir = Rball2GoalCenterDir - right2centreAngle * (Renemy2rightEdge / ENEMY_FACE_BUFFER - 1);
-                    //cout<<"defence 3333333333 "<<defendRenemyDir/Param::Math::PI*180<<endl;
+                    //cout<<"defence 3333333333 "<<defendRenemyDir/PARAM::Math::PI*180<<endl;
                 }else{
                     defendRenemyDir = Rball2GoalCenterDir;
                 }
@@ -331,7 +331,7 @@ namespace DefendUtils{
                     }else{
                         vely = pVision->ball().VelY();
                     }
-                    RBasePoint = RBasePoint + Utils::Polar2Vector((-0.04)*vely,Param::Math::PI/2);
+                    RBasePoint = RBasePoint + Utils::Polar2Vector((-0.04)*vely,PARAM::Math::PI/2);
                     RdefendDir = ( RBasePoint - RballPos).dir();
                     RdefenceTarget = RballPos;
                     RdefenceLine = CGeoLine(RballPos,RBasePoint);
@@ -344,18 +344,18 @@ namespace DefendUtils{
 
                 // 球往一侧走时防守点偏向那一侧
                 const CGeoLine RBallVelLine(RballPos, RballVelDir);
-                const CGeoPoint RLeftCorner = CGeoPoint(Param::Field::PITCH_LENGTH/2, -Param::Field::PITCH_WIDTH/2);
-                const CGeoPoint RRightCorner = CGeoPoint(Param::Field::PITCH_LENGTH/2, Param::Field::PITCH_WIDTH/2);
+                const CGeoPoint RLeftCorner = CGeoPoint(PARAM::Field::PITCH_LENGTH/2, -PARAM::Field::PITCH_WIDTH/2);
+                const CGeoPoint RRightCorner = CGeoPoint(PARAM::Field::PITCH_LENGTH/2, PARAM::Field::PITCH_WIDTH/2);
                 const CGeoLine RBaseLine(RLeftCorner, RRightCorner);
                 const CGeoLineLineIntersection intersection(RBallVelLine, RBaseLine);
                 if (intersection.Intersectant() == true) {
                     const CGeoPoint& point = intersection.IntersectPoint();
-                    if (point.y() < Param::Field::PITCH_WIDTH/2 && point.y() >= 0 && RballVel.x() > 0 && RballVel.y() > 0
-                            || point.y() > -Param::Field::PITCH_WIDTH/2 && point.y() <= 0 && RballVel.x() > 0 && RballVel.y() < 0) {
-                        if (RballPos.y() > -Param::Vehicle::V2::PLAYER_SIZE && RballVel.y() > 0) {
+                    if (point.y() < PARAM::Field::PITCH_WIDTH/2 && point.y() >= 0 && RballVel.x() > 0 && RballVel.y() > 0
+                            || point.y() > -PARAM::Field::PITCH_WIDTH/2 && point.y() <= 0 && RballVel.x() > 0 && RballVel.y() < 0) {
+                        if (RballPos.y() > -PARAM::Vehicle::V2::PLAYER_SIZE && RballVel.y() > 0) {
                             RdefenceLine = CGeoLine(RballPos, RGOAL_RIGHT_CENTER);
                             RdefendDir = (RGOAL_RIGHT_CENTER - RballPos).dir();
-                        } else if (RballPos.y() < Param::Vehicle::V2::PLAYER_SIZE && RballVel.y() < 0) {
+                        } else if (RballPos.y() < PARAM::Vehicle::V2::PLAYER_SIZE && RballVel.y() < 0) {
                             RdefenceLine = CGeoLine(RballPos, RGOAL_LEFT_CENTER);
                             RdefendDir = (RGOAL_LEFT_CENTER - RballPos).dir();
                         }
@@ -377,18 +377,18 @@ namespace DefendUtils{
 
                 // 球往一侧走时防守点偏向那一侧
                 const CGeoLine RBallVelLine(RballPos, RballVelDir);
-                const CGeoPoint RLeftCorner = CGeoPoint(Param::Field::PITCH_LENGTH/2, -Param::Field::PITCH_WIDTH/2);
-                const CGeoPoint RRightCorner = CGeoPoint(Param::Field::PITCH_LENGTH/2, Param::Field::PITCH_WIDTH/2);
+                const CGeoPoint RLeftCorner = CGeoPoint(PARAM::Field::PITCH_LENGTH/2, -PARAM::Field::PITCH_WIDTH/2);
+                const CGeoPoint RRightCorner = CGeoPoint(PARAM::Field::PITCH_LENGTH/2, PARAM::Field::PITCH_WIDTH/2);
                 const CGeoLine RBaseLine(RLeftCorner, RRightCorner);
                 const CGeoLineLineIntersection intersection(RBallVelLine, RBaseLine);
                 if (intersection.Intersectant() == true) {
                     const CGeoPoint& point = intersection.IntersectPoint();
-                    if (point.y() < Param::Field::PITCH_WIDTH/2 && point.y() >= 0 && RballVel.x() > 0 && RballVel.y() > 0
-                            || point.y() > -Param::Field::PITCH_WIDTH/2 && point.y() <= 0 && RballVel.x() > 0 && RballVel.y() < 0) {
-                        if (RballPos.y() > -Param::Vehicle::V2::PLAYER_SIZE && RballVel.y() > 0) {
+                    if (point.y() < PARAM::Field::PITCH_WIDTH/2 && point.y() >= 0 && RballVel.x() > 0 && RballVel.y() > 0
+                            || point.y() > -PARAM::Field::PITCH_WIDTH/2 && point.y() <= 0 && RballVel.x() > 0 && RballVel.y() < 0) {
+                        if (RballPos.y() > -PARAM::Vehicle::V2::PLAYER_SIZE && RballVel.y() > 0) {
                             RdefenceLine = CGeoLine(RballPos, RGOAL_RIGHT_CENTER);
                             RdefendDir = (RGOAL_RIGHT_CENTER - RballPos).dir();
-                        } else if (RballPos.y() < Param::Vehicle::V2::PLAYER_SIZE && RballVel.y() < 0) {
+                        } else if (RballPos.y() < PARAM::Vehicle::V2::PLAYER_SIZE && RballVel.y() < 0) {
                             RdefenceLine = CGeoLine(RballPos, RGOAL_LEFT_CENTER);
                             RdefendDir = (RGOAL_LEFT_CENTER - RballPos).dir();
                         }
@@ -397,20 +397,20 @@ namespace DefendUtils{
             }
         }
         //补球速慢时突然被打一脚的bug
-        double RenemyDir = Utils::Normalize(pVision->theirPlayer(enemyNum).Dir() + Param::Math::PI);
+        double RenemyDir = Utils::Normalize(pVision->theirPlayer(enemyNum).Dir() + PARAM::Math::PI);
         double diffDir = fabs(Utils::Normalize(ball.Vel().dir() - (ball.Pos() - pVision->theirPlayer(enemyNum).Pos()).dir()));
         double enemyToBallDist = ball.Pos().dist(pVision->theirPlayer(enemyNum).Pos());
         if (Utils::InOurPenaltyArea(ball.Pos(), 0) == false
                 && enemyToBallDist < 30
                 && ball.Vel().mod() < 200
                 && Utils::InBetween(RballVelDir, Rball2LeftDir, Rball2RightDir) == false
-                && (diffDir < Param::Math::PI/6 || Utils::InBetween(RenemyDir, Rball2LeftDir, Rball2RightDir))) {
+                && (diffDir < PARAM::Math::PI/6 || Utils::InBetween(RenemyDir, Rball2LeftDir, Rball2RightDir))) {
             RdefenceLine = CGeoLine(RballPos,RGOAL_CENTRE_POS);
             RdefenceTarget = RballPos;
             RdefendDir = CVector(RGOAL_CENTRE_POS - RballPos).dir();
             //cout<<"in here"<<endl;
         }
-        CGeoLineLineIntersection pointA = CGeoLineLineIntersection(RdefenceLine, CGeoLine(CGeoPoint(Param::Field::PITCH_LENGTH / 2.0, -Param::Field::PITCH_WIDTH / 2.0), CGeoPoint(Param::Field::PITCH_LENGTH / 2.0, 0)));
+        CGeoLineLineIntersection pointA = CGeoLineLineIntersection(RdefenceLine, CGeoLine(CGeoPoint(PARAM::Field::PITCH_LENGTH / 2.0, -PARAM::Field::PITCH_WIDTH / 2.0), CGeoPoint(PARAM::Field::PITCH_LENGTH / 2.0, 0)));
         CGeoPoint pointAA = pointA.IntersectPoint();
         GDebugEngine::Instance()->gui_debug_x(reversePoint(RdefenceTarget), COLOR_PURPLE);
         lastShooter = enemyNum;
@@ -428,10 +428,10 @@ namespace DefendUtils{
         double Rball2LeftDir = Rball2LeftGoal.dir();
         double Rball2RightDir = Rball2RightGoal.dir();
         double Rball2GoalCenterDir = Rball2GoalCenter.dir();
-        CVector RballVel = Utils::Polar2Vector(ball.Vel().mod(),Utils::Normalize(ball.Vel().dir() + Param::Math::PI));
+        CVector RballVel = Utils::Polar2Vector(ball.Vel().mod(),Utils::Normalize(ball.Vel().dir() + PARAM::Math::PI));
         double RballVelMod = ball.Vel().mod();
         double RballVelDir = RballVel.dir();
-        double Rball2enemyDir = Utils::Normalize((pVision->ball().Pos() - pVision->theirPlayer(enemyNum).Pos()).dir()+Param::Math::PI);
+        double Rball2enemyDir = Utils::Normalize((pVision->ball().Pos() - pVision->theirPlayer(enemyNum).Pos()).dir()+PARAM::Math::PI);
         ///朝向线：判断球是否已经射出
         bool ballSpeed = RballVelMod >= 30;
         bool outOfShooter = !(DefenceInfo::Instance()->getBallTaken());
@@ -450,7 +450,7 @@ namespace DefendUtils{
         const MobileVisionT& ball = pVision->ball();
         const int enemyNum = DefendUtils::getEnemyShooter();
         CGeoPoint RballPos = DefendUtils::reversePoint(ball.Pos());
-        CVector RballVel = Utils::Polar2Vector(ball.Vel().mod(),Utils::Normalize(ball.Vel().dir() + Param::Math::PI));
+        CVector RballVel = Utils::Polar2Vector(ball.Vel().mod(),Utils::Normalize(ball.Vel().dir() + PARAM::Math::PI));
         double RballVelMod = ball.Vel().mod();
         double RballVelDir = RballVel.dir();
         bool enemyPass = false;
@@ -458,9 +458,9 @@ namespace DefendUtils{
             const PlayerVisionT& enemy = pVision->theirPlayer(enemyNum);
             CGeoPoint RenemyPos = DefendUtils::reversePoint(enemy.Pos());
             CVector Rball2enemy = RenemyPos - RballPos;
-            double Rball2enemyDir = Utils::Normalize((pVision->ball().Pos() - pVision->theirPlayer(enemyNum).Pos()).dir()+Param::Math::PI);
+            double Rball2enemyDir = Utils::Normalize((pVision->ball().Pos() - pVision->theirPlayer(enemyNum).Pos()).dir()+PARAM::Math::PI);
             enemyPass = RballVelMod > ENEMY_PASS_SPEED &&
-            fabs(Utils::Normalize(RballVelDir - Rball2enemy.dir())) < Param::Math::PI / 9.0;
+            fabs(Utils::Normalize(RballVelDir - Rball2enemy.dir())) < PARAM::Math::PI / 9.0;
         }
         return enemyPass;
     }
@@ -476,7 +476,7 @@ namespace DefendUtils{
             sideFactor = 1;
         else if (POS_SIDE_MIDDLE == Rside)
             sideFactor = 0;
-        CVector transVector = Utils::Polar2Vector(PLAYERSIZE,Utils::Normalize(Rdir + sideFactor * Param::Math::PI / 2));
+        CVector transVector = Utils::Polar2Vector(PLAYERSIZE,Utils::Normalize(Rdir + sideFactor * PARAM::Math::PI / 2));
         CGeoPoint RtransPoint = Rtarget + transVector;
         CGeoLine RtargetLine = CGeoLine(RtransPoint,Rdir);  // 用于计算交点的直线，为原传入直线按照要求平移PLAYERSIZE后的直线
 
@@ -511,7 +511,7 @@ namespace DefendUtils{
                 }
                 if (0 == pointCount)
                 {
-                    if (Rdir < -Param::Math::PI/2)
+                    if (Rdir < -PARAM::Math::PI/2)
                     {
                         RdefenderPoint = CGeoPoint(RBOTTOM_RIGHT.x() - PLAYERSIZE,RBOTTOM_RIGHT.y());
                     } else RdefenderPoint = RCENTER_RIGHT;
@@ -533,7 +533,7 @@ namespace DefendUtils{
                     }
                 }
             } else {//没交点
-                if (Rdir < -Param::Math::PI/2)
+                if (Rdir < -PARAM::Math::PI/2)
                 {
                     RdefenderPoint = CGeoPoint(RBOTTOM_RIGHT.x() - PLAYERSIZE,RBOTTOM_RIGHT.y());
                 } else RdefenderPoint = RCENTER_RIGHT;
@@ -557,7 +557,7 @@ namespace DefendUtils{
                 }
                 if (0 == pointCount)
                 {
-                    if (Rdir > Param::Math::PI/2)
+                    if (Rdir > PARAM::Math::PI/2)
                     {
                         RdefenderPoint = CGeoPoint(RBOTTOM_LEFT.x() - PLAYERSIZE,RBOTTOM_LEFT.y());
                     } else RdefenderPoint = RCENTER_LEFT;
@@ -579,7 +579,7 @@ namespace DefendUtils{
                     }
                 }
             } else {//没交点
-                if (Rdir > Param::Math::PI/2)
+                if (Rdir > PARAM::Math::PI/2)
                 {
                     RdefenderPoint = CGeoPoint(RBOTTOM_LEFT.x() - PLAYERSIZE,RBOTTOM_LEFT.y());
                 } else RdefenderPoint = RCENTER_LEFT;
@@ -727,7 +727,7 @@ namespace DefendUtils{
                  Rbasedir = Rdir;
                 if (Utils::InOurPenaltyArea(pVision->ball().Pos(),PENALTY_BUFFER) && mode==0){
                     int oppnum =  ZSkillUtils::instance()->getTheirBestPlayer();
-                    if (/*pVision->TheirPlayer(oppnum).Pos().x()<0 && */oppnum!=0 && vision->theirPlayer(oppnum).Valid()){
+                    if (/*pVision->theirPlayer(oppnum).Pos().x()<0 && */oppnum!=0 && vision->theirPlayer(oppnum).Valid()){
                          if(pVision->theirPlayer(oppnum).Pos().y()>0 && (pVision->theirPlayer(oppnum).Pos()-GOAL_CENTRE_POS).dir()>(RIGHTBACK_CRITICAL_POINT-GOAL_CENTRE_POS).dir()){
                              defendbasepoint = RIGHTBACK_CRITICAL_POINT;
                              Rbasepoint = reversePoint(defendbasepoint);
@@ -755,7 +755,7 @@ namespace DefendUtils{
                              }
                          }
                     }
-                    CVector transVector = Utils::Polar2Vector(PLAYERSIZE,Utils::Normalize(Rbasedir + sideFactor * Param::Math::PI / 2));
+                    CVector transVector = Utils::Polar2Vector(PLAYERSIZE,Utils::Normalize(Rbasedir + sideFactor * PARAM::Math::PI / 2));
                     CGeoPoint transPoint = Rbasepoint + transVector;
                     CGeoLine targetLine = CGeoLine(transPoint,Rbasedir);
                     //GDebugEngine::Instance()->gui_debug_line(reversePoint(transPoint),reversePoint(transPoint+Utils::Polar2Vector(100,Rbasedir)),COLOR_PURPLE);
@@ -771,7 +771,7 @@ namespace DefendUtils{
                         }
                     }
                 }else{
-                    CVector transVector = Utils::Polar2Vector(PLAYERSIZE,Utils::Normalize(Rbasedir + sideFactor * Param::Math::PI / 2));
+                    CVector transVector = Utils::Polar2Vector(PLAYERSIZE,Utils::Normalize(Rbasedir + sideFactor * PARAM::Math::PI / 2));
                     CGeoPoint transPoint = Rbasepoint + transVector;
                     CGeoLine targetLine = CGeoLine(transPoint,Rbasedir);
                     CGeoLineEllipseIntersection intersect = CGeoLineEllipseIntersection(targetLine,RD_ELLIPSE);
@@ -788,7 +788,7 @@ namespace DefendUtils{
                     }else{
                         CGeoLine wrongDefenceLine = CGeoLine(reversePoint(transPoint),reversePoint(transPoint+Utils::Polar2Vector(500,Rbasedir)));
                         //对球速线抖动造成invalid的处理
-                        CGeoLineLineIntersection pointA = CGeoLineLineIntersection(wrongDefenceLine,CGeoLine(CGeoPoint(Param::Field::PITCH_LENGTH / 2.0,-Param::Field::PITCH_WIDTH / 2.0),CGeoPoint(Param::Field::PITCH_LENGTH / 2.0,Param::Field::PITCH_WIDTH / 2.0)));
+                        CGeoLineLineIntersection pointA = CGeoLineLineIntersection(wrongDefenceLine,CGeoLine(CGeoPoint(PARAM::Field::PITCH_LENGTH / 2.0,-PARAM::Field::PITCH_WIDTH / 2.0),CGeoPoint(PARAM::Field::PITCH_LENGTH / 2.0,PARAM::Field::PITCH_WIDTH / 2.0)));
                         if(pointA.Intersectant()){
                             CGeoPoint pointAA = pointA.IntersectPoint();
                             if (pointAA.y()>0){
@@ -810,14 +810,14 @@ namespace DefendUtils{
                     }
                 }
             if (mode == 1){
-                CVector transVector = Utils::Polar2Vector(PLAYERSIZE,Utils::Normalize(Rbasedir + sideFactor * Param::Math::PI / 2));
+                CVector transVector = Utils::Polar2Vector(PLAYERSIZE,Utils::Normalize(Rbasedir + sideFactor * PARAM::Math::PI / 2));
                 CGeoPoint transPoint = Rbasepoint + transVector;
-                if (RdefenderPoint.x()>280*Param::Field::RATIO){
+                if (RdefenderPoint.x()>280*PARAM::Field::RATIO){
                     //have modified by thj
                     if (transPoint.y()<0){
-                        RdefenderPoint = CGeoPoint(300*Param::Field::RATIO,-144*Param::Field::RATIO);
+                        RdefenderPoint = CGeoPoint(300*PARAM::Field::RATIO,-144*PARAM::Field::RATIO);
                     }else{
-                        RdefenderPoint = CGeoPoint(300*Param::Field::RATIO,144*Param::Field::RATIO);
+                        RdefenderPoint = CGeoPoint(300*PARAM::Field::RATIO,144*PARAM::Field::RATIO);
                     }
                 }
             }
@@ -874,8 +874,8 @@ namespace DefendUtils{
                 }
             }
         }else{
-            double x = Param::Field::PENALTY_AREA_DEPTH +AVOIDBUFFER;
-            double y = (Param::Field::PENALTY_AREA_WIDTH +AVOIDBUFFER*2)/2;
+            double x = PARAM::Field::PENALTY_AREA_DEPTH +AVOIDBUFFER;
+            double y = (PARAM::Field::PENALTY_AREA_WIDTH +AVOIDBUFFER*2)/2;
             x = x + ratio*10;
             y = y + ratio*10;
             CGeoEllipse RDEFENDELLIPSE = CGeoEllipse(CENTERPOINT,x,y);
@@ -887,7 +887,7 @@ namespace DefendUtils{
             } else if (POS_SIDE_MIDDLE == Rside){
                 sideFactor = 0;
             }
-            CVector transVector = Utils::Polar2Vector(PLAYERSIZE,Utils::Normalize(Rdir + sideFactor * Param::Math::PI / 2));
+            CVector transVector = Utils::Polar2Vector(PLAYERSIZE,Utils::Normalize(Rdir + sideFactor * PARAM::Math::PI / 2));
             CGeoPoint transPoint = Rtarget + transVector;
             CGeoLine targetLine = CGeoLine(transPoint,Rdir);
             //modified by Wang in 2018.3.28
@@ -938,7 +938,7 @@ namespace DefendUtils{
                  RBasepoint = reversePoint(defendbasepoint);
                  Rbasedir = (RGOAL_CENTRE_POS - RBasepoint).dir();
             }
-            CVector transVector = Utils::Polar2Vector(PLAYERSIZE,Utils::Normalize(Rbasedir + sideFactor * Param::Math::PI / 2));
+            CVector transVector = Utils::Polar2Vector(PLAYERSIZE,Utils::Normalize(Rbasedir + sideFactor * PARAM::Math::PI / 2));
             CGeoPoint transPoint = RBasepoint + transVector;
             CGeoLine targetLine = CGeoLine(transPoint,Rbasedir);
 
@@ -956,7 +956,7 @@ namespace DefendUtils{
         //cout << pVision->Cycle() << " " << pVision->Ball().X() << " " << pVision->Ball().Y() << endl;
             }
         } else if (mode == 0) {
-            CVector transVector = Utils::Polar2Vector(PLAYERSIZE * 1.25, Utils::Normalize(Rbasedir + sideFactor * Param::Math::PI / 2)); ///1.25根据场地与禁区比例计算
+            CVector transVector = Utils::Polar2Vector(PLAYERSIZE * 1.25, Utils::Normalize(Rbasedir + sideFactor * PARAM::Math::PI / 2)); ///1.25根据场地与禁区比例计算
             CGeoPoint transPoint = RBasepoint + transVector;
             CGeoLine targetLine = CGeoLine(transPoint, Rbasedir);
             //will run this
@@ -971,7 +971,7 @@ namespace DefendUtils{
             } else {
                 CGeoLine wrongDefenceLine = CGeoLine(reversePoint(transPoint),reversePoint(transPoint+Utils::Polar2Vector(500,Rbasedir)));
                 //对球速线抖动造成invalid的处理
-                CGeoLineLineIntersection pointA = CGeoLineLineIntersection(wrongDefenceLine,CGeoLine(CGeoPoint(Param::Field::PITCH_LENGTH / 2.0,-Param::Field::PITCH_WIDTH / 2.0),CGeoPoint(Param::Field::PITCH_LENGTH / 2.0,Param::Field::PITCH_WIDTH / 2.0)));
+                CGeoLineLineIntersection pointA = CGeoLineLineIntersection(wrongDefenceLine,CGeoLine(CGeoPoint(PARAM::Field::PITCH_LENGTH / 2.0,-PARAM::Field::PITCH_WIDTH / 2.0),CGeoPoint(PARAM::Field::PITCH_LENGTH / 2.0,PARAM::Field::PITCH_WIDTH / 2.0)));
                 if(pointA.Intersectant()){
                     CGeoPoint pointAA = pointA.IntersectPoint();
                     if (pointAA.y()>0){
@@ -993,7 +993,7 @@ namespace DefendUtils{
                 }
             }
         } else if (mode == 1) {
-            CVector transVector = Utils::Polar2Vector(PLAYERSIZE, Utils::Normalize(Rbasedir + sideFactor * Param::Math::PI / 2));
+            CVector transVector = Utils::Polar2Vector(PLAYERSIZE, Utils::Normalize(Rbasedir + sideFactor * PARAM::Math::PI / 2));
             CGeoPoint transPoint = RBasepoint + transVector;
             CGeoLine targetLine = CGeoLine(transPoint, Rbasedir);
 
@@ -1009,7 +1009,7 @@ namespace DefendUtils{
             } else {
                 CGeoLine wrongDefenceLine = CGeoLine(reversePoint(transPoint),reversePoint(transPoint+Utils::Polar2Vector(500,Rbasedir)));
                 //对球速线抖动造成invalid的处理
-                CGeoLineLineIntersection pointA = CGeoLineLineIntersection(wrongDefenceLine, CGeoLine(CGeoPoint(Param::Field::PITCH_LENGTH / 2.0,-Param::Field::PITCH_WIDTH / 2.0),CGeoPoint(Param::Field::PITCH_LENGTH / 2.0,Param::Field::PITCH_WIDTH / 2.0)));
+                CGeoLineLineIntersection pointA = CGeoLineLineIntersection(wrongDefenceLine, CGeoLine(CGeoPoint(PARAM::Field::PITCH_LENGTH / 2.0,-PARAM::Field::PITCH_WIDTH / 2.0),CGeoPoint(PARAM::Field::PITCH_LENGTH / 2.0,PARAM::Field::PITCH_WIDTH / 2.0)));
                 if(pointA.Intersectant()){
                     CGeoPoint pointAA = pointA.IntersectPoint();
                     if (pointAA.y()>0){
@@ -1037,7 +1037,7 @@ namespace DefendUtils{
             if (SIDEBACK_MARKING_MODE == true) {
                 static bool markingMode = true;
                 bool isQuaterFieldClear = true;
-                for (int i = 1; i <= Param::Field::MAX_PLAYER; ++i) {
+                for (int i = 0; i < PARAM::Field::MAX_PLAYER; ++i) {
                     if (pVision->theirPlayer(i).Valid() == true) {
                         const PlayerPoseT& player = pVision->theirPlayer(i);
                         if (player.X() < -RTarget.x() && RTarget.dist(reversePoint(player.Pos())) > PLAYERSIZE) {
@@ -1061,7 +1061,7 @@ namespace DefendUtils{
                     }
                 }
                 if (markingMode == true) {
-                    RDefenderPoint = (RTarget + Utils::Polar2Vector(Param::Field::MAX_PLAYER_SIZE, RDir + Param::Math::PI));
+                    RDefenderPoint = (RTarget + Utils::Polar2Vector(PARAM::Field::MAX_PLAYER_SIZE, RDir + PARAM::Math::PI));
                 }
             }
         } else if (mode == 3) {
@@ -1116,7 +1116,7 @@ namespace DefendUtils{
             }
         }
         //GDebugEngine::Instance()->gui_debug_x(reversePoint(RDefenderPoint), COLOR_PURPLE);
-        //if (abs(RDefenderPoint.x()) > Param::Field::PITCH_LENGTH) RDefenderPoint = CGeoPoint(0, 0);
+        //if (abs(RDefenderPoint.x()) > PARAM::Field::PITCH_LENGTH) RDefenderPoint = CGeoPoint(0, 0);
         return RDefenderPoint;
     }
 
@@ -1126,21 +1126,21 @@ namespace DefendUtils{
         const double ballVelDir = ball.Vel().dir();
         const double ballVel = ball.Vel().mod();
 
-        if (ball.Pos().x() > -(Param::Field::PITCH_LENGTH/2 + Param::Field::PENALTY_AREA_DEPTH)
-                && ball.Pos().x() < Param::Field::PENALTY_AREA_DEPTH
+        if (ball.Pos().x() > -(PARAM::Field::PITCH_LENGTH/2 + PARAM::Field::PENALTY_AREA_DEPTH)
+                && ball.Pos().x() < PARAM::Field::PENALTY_AREA_DEPTH
                 && ballVel > 50
                 && ball.VelX() < 0) {
-            const double RBallVelDir = Utils::Normalize(ballVelDir + Param::Math::PI);
+            const double RBallVelDir = Utils::Normalize(ballVelDir + PARAM::Math::PI);
             const CGeoPoint RBallPos = reversePoint(ball.Pos());
             const CGeoLine RBallVelLine(RBallPos, RBallVelDir);
-            const CGeoPoint RLeftGoalPost(Param::Field::PITCH_LENGTH/2, -Param::Field::GOAL_WIDTH/2);
-            const CGeoPoint RRightGoalPost(Param::Field::PITCH_LENGTH/2, Param::Field::GOAL_WIDTH/2);
+            const CGeoPoint RLeftGoalPost(PARAM::Field::PITCH_LENGTH/2, -PARAM::Field::GOAL_WIDTH/2);
+            const CGeoPoint RRightGoalPost(PARAM::Field::PITCH_LENGTH/2, PARAM::Field::GOAL_WIDTH/2);
             const CGeoLine RBaseLine(RLeftGoalPost, RRightGoalPost);
             const CGeoLineLineIntersection interseciton(RBaseLine, RBallVelLine);
             if (interseciton.Intersectant() == true) {
                 const CGeoPoint& point = interseciton.IntersectPoint();
-                if (point.y() < RRightGoalPost.y() + Param::Vehicle::V2::PLAYER_SIZE
-                        && point.y() > RLeftGoalPost.y() - Param::Vehicle::V2::PLAYER_SIZE)
+                if (point.y() < RRightGoalPost.y() + PARAM::Vehicle::V2::PLAYER_SIZE
+                        && point.y() > RLeftGoalPost.y() - PARAM::Vehicle::V2::PLAYER_SIZE)
                     return true;
             }
         }
@@ -1175,10 +1175,10 @@ namespace DefendUtils{
 
         //up和down的buffer线
         if (up == true) {
-            if (Rtarget.x()>140*Param::Field::RATIO)
+            if (Rtarget.x()>140*PARAM::Field::RATIO)
                 up = false;
         } else if (up == false) {
-            if (Rtarget.x()<120*Param::Field::RATIO)
+            if (Rtarget.x()<120*PARAM::Field::RATIO)
                 up = true;
         }
         if (isBallShotToTheGoal() && checkfrontparam){
@@ -1191,18 +1191,18 @@ namespace DefendUtils{
             //cout<<"set Down"<<endl;
         }
         //cout<<vision->Cycle()<<" up param is "<<up<<endl;
-        //if (Rtarget.x() <  150*Param::Field::RATIO  || (BallIsInShootingTarget() && checkfrontparam)){
-        //	RoriginX = 270*Param::Field::RATIO;
-        //	m = 40*Param::Field::RATIO;
-        //	n = 80*Param::Field::RATIO;
+        //if (Rtarget.x() <  150*PARAM::Field::RATIO  || (BallIsInShootingTarget() && checkfrontparam)){
+        //	RoriginX = 270*PARAM::Field::RATIO;
+        //	m = 40*PARAM::Field::RATIO;
+        //	n = 80*PARAM::Field::RATIO;
         //	//靠前的参数
         //	GDebugEngine::Instance()->gui_debug_msg(CGeoPoint(50,0),"front");
         //	up =true;
         //	//cout<<"front"<<endl;
         //} else{
-        //	RoriginX = 290*Param::Field::RATIO;
-        //	m = 10*Param::Field::RATIO;
-        //	n = 45*Param::Field::RATIO;
+        //	RoriginX = 290*PARAM::Field::RATIO;
+        //	m = 10*PARAM::Field::RATIO;
+        //	n = 45*PARAM::Field::RATIO;
         //	up = false;
         //	GDebugEngine::Instance()->gui_debug_msg(CGeoPoint(50,0),"back");
         //	//cout<<"back"<<endl;
@@ -1213,22 +1213,22 @@ namespace DefendUtils{
         }
         if (up == true) {
             // 靠前的参数
-            RoriginX = 292*Param::Field::RATIO;
-            m = 40*Param::Field::RATIO;
-            n = 80*Param::Field::RATIO;
+            RoriginX = 292*PARAM::Field::RATIO;
+            m = 40*PARAM::Field::RATIO;
+            n = 80*PARAM::Field::RATIO;
             GDebugEngine::Instance()->gui_debug_msg(CGeoPoint(50, 0),"front");
         } else {
             // 靠后的参数
-            RoriginX = 312*Param::Field::RATIO;
-            m = 10*Param::Field::RATIO;
-            n = 45*Param::Field::RATIO;
+            RoriginX = 312*PARAM::Field::RATIO;
+            m = 10*PARAM::Field::RATIO;
+            n = 45*PARAM::Field::RATIO;
             GDebugEngine::Instance()->gui_debug_msg(CGeoPoint(50, 0),"back");
         }
         if (TaskMediator::Instance()->leftBack() == 0	&& TaskMediator::Instance()->rightBack() == 0	&& TaskMediator::Instance()->singleBack() == 0 ) {
                 // 没有后卫时的参数 靠后
-                RoriginX = 312*Param::Field::RATIO;
-                m = 10*Param::Field::RATIO;
-                n = 45*Param::Field::RATIO;
+                RoriginX = 312*PARAM::Field::RATIO;
+                m = 10*PARAM::Field::RATIO;
+                n = 45*PARAM::Field::RATIO;
                 up = false;
         }
         CGeoEllipse Rdefendellipse = CGeoEllipse(CGeoPoint(RoriginX,0),m,n);
@@ -1236,7 +1236,7 @@ namespace DefendUtils{
         GDebugEngine::Instance()->gui_debug_line(reversePoint(Rtarget),reversePoint(Rtarget + Utils::Polar2Vector(1000,Rdir)),COLOR_WHITE);
         CGeoLineEllipseIntersection intersect = CGeoLineEllipseIntersection(ReverseDefenceLine,Rdefendellipse);
         if (intersect.intersectant()){
-            //cout<<Param::Field::GOAL_WIDTH<<endl;
+            //cout<<PARAM::Field::GOAL_WIDTH<<endl;
             if(intersect.point1().dist(Rtarget)<intersect.point2().dist(Rtarget)){
                 RgoaliePoint = intersect.point1();
             }else{
@@ -1254,7 +1254,7 @@ namespace DefendUtils{
             }else if (POS_SIDE_RIGHT == Rside){
                 RgoaliePoint = CGeoPoint(RoriginX-GoalieFrontBuffer,-n+5);
             }else if (POS_SIDE_MIDDLE == Rside){
-                CGeoLineLineIntersection pointA = CGeoLineLineIntersection(ReverseDefenceLine,CGeoLine(CGeoPoint(Param::Field::PITCH_LENGTH / 2.0,-Param::Field::PITCH_WIDTH / 2.0),CGeoPoint(Param::Field::PITCH_LENGTH / 2.0,Param::Field::PITCH_WIDTH / 2.0)));
+                CGeoLineLineIntersection pointA = CGeoLineLineIntersection(ReverseDefenceLine,CGeoLine(CGeoPoint(PARAM::Field::PITCH_LENGTH / 2.0,-PARAM::Field::PITCH_WIDTH / 2.0),CGeoPoint(PARAM::Field::PITCH_LENGTH / 2.0,PARAM::Field::PITCH_WIDTH / 2.0)));
                 //GDebugEngine::Instance()->gui_debug_line(CGeoPoint(-300,200),CGeoPoint(-300,-200),COLOR_PURPLE);
                 if(pointA.Intersectant()){
                     CGeoPoint pointAA = pointA.IntersectPoint();
@@ -1319,10 +1319,10 @@ namespace DefendUtils{
 
         // up和down的缓冲线
         if (up == true) {
-            if (RTarget.x() > Param::Field::PITCH_LENGTH/4 - Param::Field::MAX_PLAYER_SIZE*2.5)
+            if (RTarget.x() > PARAM::Field::PITCH_LENGTH/4 - PARAM::Field::MAX_PLAYER_SIZE*2.5)
                 up = false;
         } else {
-            if (RTarget.x() < Param::Field::PITCH_LENGTH/4 - Param::Field::MAX_PLAYER_SIZE*4.5)
+            if (RTarget.x() < PARAM::Field::PITCH_LENGTH/4 - PARAM::Field::MAX_PLAYER_SIZE*4.5)
                 up = true;
         }
 
@@ -1364,26 +1364,26 @@ namespace DefendUtils{
             const CGeoPoint& rightBackTarget = DefPos2015::Instance()->getRightPos();
             const CGeoPoint& singleBackTarget = DefPos2015::Instance()->getSinglePos();
             if (backs == 1) {
-                if (singleBackPosition.dist(singleBackTarget) > Param::Field::MAX_PLAYER_SIZE*2)
+                if (singleBackPosition.dist(singleBackTarget) > PARAM::Field::MAX_PLAYER_SIZE*2)
                     up = false;
             } else if (backs == 6) {
-                if (leftBackPosition.dist(leftBackTarget) > Param::Field::MAX_PLAYER_SIZE*2
-                        || rightBackPosition.dist(rightBackTarget) > Param::Field::MAX_PLAYER_SIZE*2)
+                if (leftBackPosition.dist(leftBackTarget) > PARAM::Field::MAX_PLAYER_SIZE*2
+                        || rightBackPosition.dist(rightBackTarget) > PARAM::Field::MAX_PLAYER_SIZE*2)
                     up = false;
             }
         }
 
         if (up == true) {
             // 靠前的椭圆
-            ROriginX = Param::Field::PITCH_LENGTH/2 + Param::Vehicle::V2::PLAYER_SIZE;
-            m = Param::Field::PENALTY_AREA_DEPTH - Param::Vehicle::V2::PLAYER_SIZE*5;
-            n = Param::Field::GOAL_WIDTH + Param::Vehicle::V2::PLAYER_SIZE;
+            ROriginX = PARAM::Field::PITCH_LENGTH/2 + PARAM::Vehicle::V2::PLAYER_SIZE;
+            m = PARAM::Field::PENALTY_AREA_DEPTH - PARAM::Vehicle::V2::PLAYER_SIZE*5;
+            n = PARAM::Field::GOAL_WIDTH + PARAM::Vehicle::V2::PLAYER_SIZE;
         } else {
             // 靠后的椭圆
-            ROriginX = Param::Field::PITCH_LENGTH/2 - Param::Vehicle::V2::PLAYER_SIZE/3;
-            //m = Param::Vehicle::V2::PLAYER_SIZE*1.5;// 紧贴goalline
-            m = Param::Field::PENALTY_AREA_DEPTH - Param::Vehicle::V2::PLAYER_SIZE * 5; //浪逼
-            n = Param::Field::GOAL_WIDTH/2 + Param::Vehicle::V2::PLAYER_SIZE;
+            ROriginX = PARAM::Field::PITCH_LENGTH/2 - PARAM::Vehicle::V2::PLAYER_SIZE/3;
+            //m = PARAM::Vehicle::V2::PLAYER_SIZE*1.5;// 紧贴goalline
+            m = PARAM::Field::PENALTY_AREA_DEPTH - PARAM::Vehicle::V2::PLAYER_SIZE * 5; //浪逼
+            n = PARAM::Field::GOAL_WIDTH/2 + PARAM::Vehicle::V2::PLAYER_SIZE;
         }
 
         CGeoEllipse RDefendEllipse = CGeoEllipse(CGeoPoint(ROriginX, 0), m, n);
@@ -1395,24 +1395,24 @@ namespace DefendUtils{
             else
                 RGoaliePoint = intersect.point2();
             if (POS_SIDE_LEFT == RSide || POS_SIDE_RIGHT == RSide) {
-                if (RGoaliePoint.x() > ROriginX - Param::Vehicle::V2::PLAYER_FRONT_TO_CENTER
-                        || RGoaliePoint.y() > n - Param::Vehicle::V2::PLAYER_FRONT_TO_CENTER
-                        || RGoaliePoint.y() < -(n - Param::Vehicle::V2::PLAYER_FRONT_TO_CENTER))
+                if (RGoaliePoint.x() > ROriginX - PARAM::Vehicle::V2::PLAYER_FRONT_TO_CENTER
+                        || RGoaliePoint.y() > n - PARAM::Vehicle::V2::PLAYER_FRONT_TO_CENTER
+                        || RGoaliePoint.y() < -(n - PARAM::Vehicle::V2::PLAYER_FRONT_TO_CENTER))
                     isTargetValid = false;
             }
         }
         if (intersect.intersectant() == false || isTargetValid == false){
             if (POS_SIDE_LEFT == RSide) {
-                double x = Param::Field::PITCH_LENGTH/2.0 - Param::Vehicle::V2::PLAYER_SIZE - 2;
-                double y = Param::Field::GOAL_WIDTH/2.0 + 1;
+                double x = PARAM::Field::PITCH_LENGTH/2.0 - PARAM::Vehicle::V2::PLAYER_SIZE - 2;
+                double y = PARAM::Field::GOAL_WIDTH/2.0 + 1;
                 RGoaliePoint = CGeoPoint(x, y);
             } else if (POS_SIDE_RIGHT == RSide) {
-                double x = Param::Field::PITCH_LENGTH/2.0 - Param::Vehicle::V2::PLAYER_SIZE - 2;
-                double y = -Param::Field::GOAL_WIDTH/2.0 - 1;
+                double x = PARAM::Field::PITCH_LENGTH/2.0 - PARAM::Vehicle::V2::PLAYER_SIZE - 2;
+                double y = -PARAM::Field::GOAL_WIDTH/2.0 - 1;
                 RGoaliePoint = CGeoPoint(x, y);
             } else if (POS_SIDE_MIDDLE == RSide) {
-                CGeoLine baseLine(CGeoPoint(Param::Field::PITCH_LENGTH/2.0 - GoalieFrontBuffer, -Param::Field::PITCH_WIDTH/2.0),
-                                                    CGeoPoint(Param::Field::PITCH_LENGTH/2.0 - GoalieFrontBuffer, Param::Field::PITCH_WIDTH/2.0));
+                CGeoLine baseLine(CGeoPoint(PARAM::Field::PITCH_LENGTH/2.0 - GoalieFrontBuffer, -PARAM::Field::PITCH_WIDTH/2.0),
+                                                    CGeoPoint(PARAM::Field::PITCH_LENGTH/2.0 - GoalieFrontBuffer, PARAM::Field::PITCH_WIDTH/2.0));
                 CGeoLineLineIntersection intersectionA = CGeoLineLineIntersection(reverseDefenceLine, baseLine);
                 if(intersectionA.Intersectant() == true) {
                     CGeoPoint pointA = intersectionA.IntersectPoint();
@@ -1420,28 +1420,28 @@ namespace DefendUtils{
                         if (up == true) {
                             // 向前的补充
                             reverseDefenceLine = CGeoLine(RGOAL_RIGHT_POS, RTarget);
-                            CGeoLine pointLine = CGeoLine(CGeoPoint(ROriginX - Param::Field::PENALTY_AREA_DEPTH/4, Param::Field::PITCH_WIDTH/2),
-                                                                                        CGeoPoint(ROriginX - Param::Field::PENALTY_AREA_DEPTH/4, -Param::Field::PITCH_WIDTH/2));
+                            CGeoLine pointLine = CGeoLine(CGeoPoint(ROriginX - PARAM::Field::PENALTY_AREA_DEPTH/4, PARAM::Field::PITCH_WIDTH/2),
+                                                                                        CGeoPoint(ROriginX - PARAM::Field::PENALTY_AREA_DEPTH/4, -PARAM::Field::PITCH_WIDTH/2));
                             CGeoLineLineIntersection intersectionB = CGeoLineLineIntersection(reverseDefenceLine, pointLine);
                             if (intersectionB.Intersectant() == true)
                                 RGoaliePoint = intersectionB.IntersectPoint();
                             else
                                 cout << "goalie invalid" << endl;
                         } else {
-                            RGoaliePoint = CGeoPoint(ROriginX - GoalieFrontBuffer, n - Param::Vehicle::V2::PLAYER_SIZE);
+                            RGoaliePoint = CGeoPoint(ROriginX - GoalieFrontBuffer, n - PARAM::Vehicle::V2::PLAYER_SIZE);
                         }
                     } else {
                         if(up == true) {
                             reverseDefenceLine = CGeoLine(RGOAL_LEFT_POS, RTarget);
-                            CGeoLine pointLine = CGeoLine(CGeoPoint(ROriginX - Param::Field::PENALTY_AREA_DEPTH/4, Param::Field::PITCH_WIDTH/2),
-                                                                                        CGeoPoint(ROriginX - Param::Field::PENALTY_AREA_DEPTH/4, -Param::Field::PITCH_WIDTH/2));
+                            CGeoLine pointLine = CGeoLine(CGeoPoint(ROriginX - PARAM::Field::PENALTY_AREA_DEPTH/4, PARAM::Field::PITCH_WIDTH/2),
+                                                                                        CGeoPoint(ROriginX - PARAM::Field::PENALTY_AREA_DEPTH/4, -PARAM::Field::PITCH_WIDTH/2));
                             CGeoLineLineIntersection intersectionB = CGeoLineLineIntersection(reverseDefenceLine, pointLine);
                             if (intersectionB.Intersectant() == true)
                                 RGoaliePoint = intersectionB.IntersectPoint();
                             else
                                 cout << "goalie invalid" << endl;
                         } else {
-                            RGoaliePoint =CGeoPoint(ROriginX - GoalieFrontBuffer, -n + Param::Vehicle::V2::PLAYER_SIZE);
+                            RGoaliePoint =CGeoPoint(ROriginX - GoalieFrontBuffer, -n + PARAM::Vehicle::V2::PLAYER_SIZE);
                         }
                     }
                 } else {
@@ -1456,11 +1456,11 @@ namespace DefendUtils{
         const int goalieNum = TaskMediator::Instance()->goalie();
     //cout << goalieNum << endl;
         const double RBallToGoalDir = (RGOAL_CENTRE_POS - RBallPos).dir();
-        if (isBallShotToTheGoal() && RBallPos.x() > 0 && std::fabs(RBallToGoalDir) < Param::Math::PI*60/180) {
+        if (isBallShotToTheGoal() && RBallPos.x() > 0 && std::fabs(RBallToGoalDir) < PARAM::Math::PI*60/180) {
       const CGeoPoint& RCurrentGoaliePos = reversePoint(pVision->ourPlayer(goalieNum).Pos());
       //GDebugEngine::Instance()->gui_debug_arc(pVision->ourPlayer(goalieNum).RawPos(), 5, 0, 360, COLOR_WHITE);
-            const double RBallVelDir = Utils::Normalize(ball.Vel().dir() + Param::Math::PI);
-            const double RPatrolDir = Utils::Normalize(RBallVelDir + Param::Math::PI/2);
+            const double RBallVelDir = Utils::Normalize(ball.Vel().dir() + PARAM::Math::PI);
+            const double RPatrolDir = Utils::Normalize(RBallVelDir + PARAM::Math::PI/2);
             const CGeoLine RBallVelLine(RBallPos, RBallVelDir);
             const CGeoLine RPatrolLine(RCurrentGoaliePos, RPatrolDir);
             const CGeoLineLineIntersection intersection(RPatrolLine, RBallVelLine);
@@ -1481,8 +1481,8 @@ namespace DefendUtils{
 //            //	GDebugEngine::Instance()->gui_debug_arc(reversePoint(intersect.point1()), 5, 0, 360, COLOR_WHITE);
 //            //	GDebugEngine::Instance()->gui_debug_arc(reversePoint(intersect.point2()), 5, 0, 360, COLOR_WHITE);
 //            //} else {
-//            //	GDebugEngine::Instance()->gui_debug_line(CGeoPoint(-ROriginX + Param::Field::PENALTY_AREA_DEPTH/4, Param::Field::PITCH_WIDTH/2),
-//            //																					CGeoPoint(-ROriginX + Param::Field::PENALTY_AREA_DEPTH/4, -Param::Field::PITCH_WIDTH/2),
+//            //	GDebugEngine::Instance()->gui_debug_line(CGeoPoint(-ROriginX + PARAM::Field::PENALTY_AREA_DEPTH/4, PARAM::Field::PITCH_WIDTH/2),
+//            //																					CGeoPoint(-ROriginX + PARAM::Field::PENALTY_AREA_DEPTH/4, -PARAM::Field::PITCH_WIDTH/2),
 //            //																					COLOR_WHITE);
 //            //}
 
@@ -1503,11 +1503,11 @@ namespace DefendUtils{
         bool result = false;
         double checkDir = (target - GOAL_CENTRE_POS).dir();
         if (sideFactor == 1){
-            if (!Utils::OutOfField(target,-10) && checkDir>dir){
+            if (Utils::IsInField(target,-10) && checkDir>dir){
                 result =true;
             }
         }else if (sideFactor == -1){
-            if (!Utils::OutOfField(target,-10) && checkDir<dir){
+            if (Utils::IsInField(target,-10) && checkDir<dir){
                 result =true;
             }
         }
@@ -1565,7 +1565,7 @@ namespace DefendUtils{
 
         int defendnum = 0;
         double mindist = 1000;
-        for(int i = 1; i <= Param::Field::MAX_PLAYER; i++){
+        for(int i = 0; i < PARAM::Field::MAX_PLAYER; i++){
             const PlayerVisionT& player = pVision->theirPlayer(i);
             if (player.Valid() && player.Pos().x() < SIDEBACK_DEFEND_CRITICAL_X) {
                 double dist = player.Pos().dist(GOAL_CENTRE_POS);
@@ -1587,7 +1587,7 @@ namespace DefendUtils{
         }
 
         if (defendnum == 0) {
-            RSideTarget = CGeoPoint(0, -Param::Field::PITCH_WIDTH / 2 * sideFactor);
+            RSideTarget = CGeoPoint(0, -PARAM::Field::PITCH_WIDTH / 2 * sideFactor);
             RSideDir = (RSideTarget - RGOAL_CENTRE_POS).dir();
         } else {
             const PlayerVisionT& player = pVision->theirPlayer(defendnum);
@@ -1596,24 +1596,24 @@ namespace DefendUtils{
             if (sideFactor == 1) {
                 if (dir > SIDEBACK_DEFEND_BOUNDARY_DIR_MIN && dir < SIDEBACK_DEFEND_BOUNDARY_DIR_MAX) {
                     RSideTarget = reversePoint(player.Pos());
-                    RSideDir = Utils::Normalize(dir + Param::Math::PI);
+                    RSideDir = Utils::Normalize(dir + PARAM::Math::PI);
                 } else if (dir <= SIDEBACK_DEFEND_BOUNDARY_DIR_MIN) {
                     RSideTarget = reversePoint(GOAL_CENTRE_POS + Utils::Polar2Vector(dist, SIDEBACK_DEFEND_BOUNDARY_DIR_MIN));
-                    RSideDir = Utils::Normalize(SIDEBACK_DEFEND_BOUNDARY_DIR_MIN + Param::Math::PI);
+                    RSideDir = Utils::Normalize(SIDEBACK_DEFEND_BOUNDARY_DIR_MIN + PARAM::Math::PI);
         } else {  // dir >= SIDEBACK_DEFEND_BOUNDARY_DIR_MAX
                     RSideTarget = reversePoint(GOAL_CENTRE_POS + Utils::Polar2Vector(dist, SIDEBACK_DEFEND_BOUNDARY_DIR_MAX));
-                    RSideDir = Utils::Normalize(dir + Param::Math::PI);
+                    RSideDir = Utils::Normalize(dir + PARAM::Math::PI);
         }
             } else if (sideFactor == -1) {
                 if (dir > -SIDEBACK_DEFEND_BOUNDARY_DIR_MAX && dir < -SIDEBACK_DEFEND_BOUNDARY_DIR_MIN) {
                     RSideTarget = reversePoint(player.Pos());
-                    RSideDir = Utils::Normalize(dir + Param::Math::PI);
+                    RSideDir = Utils::Normalize(dir + PARAM::Math::PI);
         } else if (dir <= -SIDEBACK_DEFEND_BOUNDARY_DIR_MAX) {
                     RSideTarget = reversePoint(GOAL_CENTRE_POS + Utils::Polar2Vector(dist, -SIDEBACK_DEFEND_BOUNDARY_DIR_MAX));
-                    RSideDir = Utils::Normalize(dir + Param::Math::PI);
+                    RSideDir = Utils::Normalize(dir + PARAM::Math::PI);
         } else {  // dir >= -SIDEBACK_DEFEND_BOUNDARY_DIR_MIN
                     RSideTarget = reversePoint(GOAL_CENTRE_POS + Utils::Polar2Vector(dist, -SIDEBACK_DEFEND_BOUNDARY_DIR_MIN));
-                    RSideDir = Utils::Normalize(-SIDEBACK_DEFEND_BOUNDARY_DIR_MIN + Param::Math::PI);
+                    RSideDir = Utils::Normalize(-SIDEBACK_DEFEND_BOUNDARY_DIR_MIN + PARAM::Math::PI);
         }
             }
         }
@@ -1634,12 +1634,12 @@ namespace DefendUtils{
         } else if (POS_SIDE_MIDDLE == side){
             sideFactor = 0;
         }
-        CVector transVector = Utils::Polar2Vector(PLAYERSIZE,Utils::Normalize(dir - sideFactor * Param::Math::PI / 2));
+        CVector transVector = Utils::Polar2Vector(PLAYERSIZE,Utils::Normalize(dir - sideFactor * PARAM::Math::PI / 2));
         CGeoPoint transPoint = DCENTERPOINT + transVector;
         CGeoLine targetLine = CGeoLine(transPoint,dir);
         /*
-        double x = Param::Field::PENALTY_AREA_DEPTH +3 +AVOIDBUFFER;
-        double y = (Param::Field::PENALTY_AREA_WIDTH + 2 +AVOIDBUFFER*2)/2;
+        double x = PARAM::Field::PENALTY_AREA_DEPTH +3 +AVOIDBUFFER;
+        double y = (PARAM::Field::PENALTY_AREA_WIDTH + 2 +AVOIDBUFFER*2)/2;
         x = x + ratio*5;
         y = y + ratio*5;
         CGeoEllipse penaltyEllipse = CGeoEllipse(DCENTERPOINT,x,y);*/
@@ -1649,7 +1649,7 @@ namespace DefendUtils{
         CGeoEllipse penaltyEllipse = CGeoEllipse(DCENTERPOINT, x, y);
         CGeoLineEllipseIntersection intersect = CGeoLineEllipseIntersection(targetLine, penaltyEllipse);
         if (intersect.intersectant()){
-            if(intersect.point1().x() >= -Param::Field::PITCH_LENGTH/2){
+            if(intersect.point1().x() >= -PARAM::Field::PITCH_LENGTH/2){
                 result = intersect.point1();
             }else{
                 result = intersect.point2();
@@ -1693,10 +1693,10 @@ namespace DefendUtils{
         double y = pVision->ball().Y();
         bool result = false;
         //球在死角区域内返回true
-        if ((!Utils::InOurPenaltyArea(pVision->ball().Pos(),30) && x >-Param::Field::PITCH_LENGTH / 2.0*Param::Field::RATIO && x<-160*Param::Field::RATIO &&
-            (4*y - 5*x - 1500*Param::Field::RATIO)>0 && y >0 && y<Param::Field::PITCH_WIDTH / 2.0*Param::Field::RATIO)||
-            (!Utils::InOurPenaltyArea(pVision->ball().Pos(),30) && x >-Param::Field::PITCH_LENGTH / 2.0*Param::Field::RATIO && x<-160*Param::Field::RATIO &&
-            (4*y + 5*x + 1500*Param::Field::RATIO)<0 && y <0 && y>-Param::Field::PITCH_WIDTH*Param::Field::RATIO)){
+        if ((!Utils::InOurPenaltyArea(pVision->ball().Pos(),30) && x >-PARAM::Field::PITCH_LENGTH / 2.0*PARAM::Field::RATIO && x<-160*PARAM::Field::RATIO &&
+            (4*y - 5*x - 1500*PARAM::Field::RATIO)>0 && y >0 && y<PARAM::Field::PITCH_WIDTH / 2.0*PARAM::Field::RATIO)||
+            (!Utils::InOurPenaltyArea(pVision->ball().Pos(),30) && x >-PARAM::Field::PITCH_LENGTH / 2.0*PARAM::Field::RATIO && x<-160*PARAM::Field::RATIO &&
+            (4*y + 5*x + 1500*PARAM::Field::RATIO)<0 && y <0 && y>-PARAM::Field::PITCH_WIDTH*PARAM::Field::RATIO)){
                 result = true;
         }
         return result;
@@ -1708,7 +1708,7 @@ namespace DefendUtils{
         double defendDir = 0;
         CGeoPoint RenemyPos = reversePoint(enemy.Pos());
         CGeoPoint RballPos = reversePoint(vision->ball().Pos());
-        double RenemyDir = Utils::Normalize(enemy.Dir() + Param::Math::PI);
+        double RenemyDir = Utils::Normalize(enemy.Dir() + PARAM::Math::PI);
         if (Utils::InBetween(RenemyDir,(RLEFT - RenemyPos).dir(),(RRIGHT - RenemyPos).dir()),0){
             defendDir = RenemyDir;
         }else{

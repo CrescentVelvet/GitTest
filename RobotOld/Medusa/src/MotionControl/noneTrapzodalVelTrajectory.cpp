@@ -1,7 +1,7 @@
 #include <iostream>
 #include <math.h>
 #include <utils.h>
-#include <param.h>
+#include "staticparams.h"
 #include <fstream>
 #include <istream>
 #include <sstream>
@@ -535,21 +535,21 @@ void buildPathNone(const vector<vector<double>>& storeData,double& z, double& vz
 	double Duration = data[5]; // 运动控制总时间
 	int stage = 0;
 	z = storeData[0][0];
-	int tfint = Duration*Param::Vision::FRAME_RATE;
+	int tfint = Duration*PARAM::Vision::FRAME_RATE;
 	int	maxStepNumber=(std::min)(tfint, 1);
 	for (int index = 0;index<=maxStepNumber;index++){
-		if (index>=Duration*Param::Vision::FRAME_RATE)
+		if (index>=Duration*PARAM::Vision::FRAME_RATE)
 			continue;
-		while (index>=storeData[stage][5]*Param::Vision::FRAME_RATE)
+		while (index>=storeData[stage][5]*PARAM::Vision::FRAME_RATE)
 			stage = stage + 1;		
 		double t0 = storeData[stage-1][5] ;
 		double vz0 = storeData[stage-1][1];
 		double az  = storeData[stage-1][2];
 		double rev = storeData[stage-1][3];
 		azList = rev*az;	
-		vz = rev*vz0 + rev*az * (index*1.0/Param::Vision::FRAME_RATE-t0);
+		vz = rev*vz0 + rev*az * (index*1.0/PARAM::Vision::FRAME_RATE-t0);
 		if (index!=0)
-			z+=vz0/Param::Vision::FRAME_RATE;	
+			z+=vz0/PARAM::Vision::FRAME_RATE;	
 	}
 	// This is to prevent errors when duration = 0
 	if (tfint == 0){
@@ -559,7 +559,7 @@ void buildPathNone(const vector<vector<double>>& storeData,double& z, double& vz
 		azList = storeData[0][2];
 		//std::cout<<"tfint = 0 "<<z<<" "<<vz<<" "<<azList<<endl;
 	}	
-	//std::cout<<"stage:"<<stage<<" "<<z<<" "<<vz<<" "<<vz/Param::Vision::FRAME_RATE<<endl;
+	//std::cout<<"stage:"<<stage<<" "<<z<<" "<<vz<<" "<<vz/PARAM::Vision::FRAME_RATE<<endl;
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -602,7 +602,7 @@ void buildPathNone(const vector< vector<double> >& storeData,
 	int stage = 0;
 	double z_t, vz_t, azList_t;
 	z_t = storeData[0][0];
-	int tfint = Duration*Param::Vision::FRAME_RATE;
+	int tfint = Duration*PARAM::Vision::FRAME_RATE;
 	int	maxStepNumber = /*(std::max)(tfint, 1) */(std::min)( 1000, (std::max)(tfint, 1));
 	int indexStep = 3;
 	for (int index = -1;index<=maxStepNumber;){
@@ -611,21 +611,21 @@ void buildPathNone(const vector< vector<double> >& storeData,
 		else
 			index += indexStep;
 
-		if (index>=Duration*Param::Vision::FRAME_RATE)
+		if (index>=Duration*PARAM::Vision::FRAME_RATE)
 			continue;
-		while (index>=storeData[stage][5]*Param::Vision::FRAME_RATE)
+		while (index>=storeData[stage][5]*PARAM::Vision::FRAME_RATE)
 			stage = stage + 1;		
 		double t0  = storeData[stage-1][5];
 		double vz0 = storeData[stage-1][1];
 		double az  = storeData[stage-1][2];
 		double rev = storeData[stage-1][3];
 		azList_t = rev*az;	
-		vz_t = rev*vz0 + rev*az * (index*1.0/Param::Vision::FRAME_RATE-t0);
+		vz_t = rev*vz0 + rev*az * (index*1.0/PARAM::Vision::FRAME_RATE-t0);
 		if (index!=0 ){
 			if( index == 1 )
-				z_t+=vz_t/Param::Vision::FRAME_RATE;
+				z_t+=vz_t/PARAM::Vision::FRAME_RATE;
 			else 
-				z_t+=indexStep*vz_t/Param::Vision::FRAME_RATE;
+				z_t+=indexStep*vz_t/PARAM::Vision::FRAME_RATE;
 		}
 
         if ( 1 == index)
@@ -790,10 +790,10 @@ void nonetrapezoidalVelocityPath( const PlayerPoseT& start,
 
 	//finds the shortest "rotational path" between theta0 and thetaf
 	double dtheta=thetaf-theta0;
-	if (dtheta < -Param::Math::PI)
-		dtheta = dtheta + 2*Param::Math::PI;
-	if (dtheta > Param::Math::PI)
-		dtheta = dtheta - 2*Param::Math::PI;
+	if (dtheta < -PARAM::Math::PI)
+		dtheta = dtheta + 2*PARAM::Math::PI;
+	if (dtheta > PARAM::Math::PI)
+		dtheta = dtheta - 2*PARAM::Math::PI;
 	thetaf=theta0 + dtheta;
 
 	//double controlAlpha =
@@ -959,7 +959,7 @@ void nonetrapezoidalVelocityPath( const PlayerPoseT& start,
 			if ( pathStepX > 0)
 			{
 				data[4] = pathListX[pathStepX-1][1];
-				data[1] = pathListX[pathStepX-1][0]+(i-pathStepX+1)*data[4]/Param::Vision::FRAME_RATE;
+				data[1] = pathListX[pathStepX-1][0]+(i-pathStepX+1)*data[4]/PARAM::Vision::FRAME_RATE;
 			} 
 			else
 			{
@@ -977,7 +977,7 @@ void nonetrapezoidalVelocityPath( const PlayerPoseT& start,
 				if ( pathStepY > 0 )
 				{
 					data[5] = pathListY[pathStepY-1][1];
-					data[2] = pathListY[pathStepY-1][0]+(i-pathStepY+1)*data[5]/Param::Vision::FRAME_RATE;
+					data[2] = pathListY[pathStepY-1][0]+(i-pathStepY+1)*data[5]/PARAM::Vision::FRAME_RATE;
 				} 
 				else
 				{
@@ -996,7 +996,7 @@ void nonetrapezoidalVelocityPath( const PlayerPoseT& start,
 				if ( pathStepR > 0)
 				{
 					data[6] = pathListR[pathStepR-1][1];
-					data[3] = pathListR[pathStepR-1][0]+(i-pathStepR+1)*data[6]/Param::Vision::FRAME_RATE;
+					data[3] = pathListR[pathStepR-1][0]+(i-pathStepR+1)*data[6]/PARAM::Vision::FRAME_RATE;
 				} 
 				else
 				{

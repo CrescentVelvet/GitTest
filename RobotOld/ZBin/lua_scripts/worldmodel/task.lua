@@ -19,81 +19,70 @@ module(..., package.seeall)
 -- 	end
 -- end
 
-function markingTouch(p,p1,p2,string)
-	local iflags=0
-	if string=="horizal" then
-		iflags=flag.accurately
-	end
-	if string=="vertical" then
-		iflags=0
-	end
-	local mexe,mpos = MarkingTouch{ areaNum = p, dir = dir.shoot(), leftUpPos = p1, rightDownPos = p2,flag=iflags}
-	return {mexe, mpos, _, dir.shoot(), pre.middle, kp.touch, cp.full, flag.force_kick}
-end
 
 function chaseNew()
 	local mexe, mpos = ChaseKickV2{dir = dir.chase}
-	return {mexe, mpos, _, dir.chase, pre.low, kp.specified(400), cp.full, flag.nothing}
+	return {mexe, mpos, _, dir.chase, pre.low, kp.specified(400*10), cp.full, flag.nothing}
 end
 
 
--- p1是截球目标点 默认为当前位置 p2是射门点或传球角色 p是力度 b是截球的缓冲距离 f是是否挑射
-function InterTouch(p1, p2, p, b, f)
-	local ipos
-	local itarget  --add by Wang in 2018/06/18
-	local idir
-	local ipower
-	local ibuffer
-	local ikick = f and kick.chip() or kick.flat()
-	local iTestMode = false
-	if type(p1) == "function" then
-		ipos = p1()
-	elseif p1 ~= nil then
-		ipos = p1
-	else
-		ipos = nil
-	end
+-- -- p1是截球目标点 默认为当前位置 p2是射门点或传球角色 p是力度 b是截球的缓冲距离 f是是否挑射 
+-- function InterTouch(p1, p2, p, b, f)
+-- 	local ipos
+-- 	local itarget  --add by Wang in 2018/06/18
+-- 	local idir
+-- 	local ipower
+-- 	local ibuffer
+-- 	local ikick = f and kick.chip() or kick.flat()
+-- 	local iTestMode = false
+-- 	if type(p1) == "function" then
+-- 		ipos = p1()
+-- 	elseif p1 ~= nil then
+-- 		ipos = p1
+-- 		ipos = nil
+-- 	else
+-- 	end
 
-	if p2 ~= nil then
-		if type(p2) == "userdata" then
-			idir = dir.compensate(p2)
-			itarget = p2
-		elseif type(p2) == "function" then
-			idir = dir.compensate(p2)
-			itarget = p2
-		elseif p2 == false then -- false时为了测试补偿数据
-			iTestMode = true
-			p2 = CGeoPoint:new_local(param.pitchLength / 2,0)
-			idir = dir.nocompensation(CGeoPoint:new_local(param.pitchLength / 2,0))
-			itarget = CGeoPoint:new_local(param.pitchLength / 2,0)
-		elseif p2 == true then
-			idir = dir.shoot()
-			itarget = CGeoPoint:new_local(param.pitchLength / 2,0)
-		end
-	else
-		idir = dir.shoot()
-		itarget = CGeoPoint:new_local(param.pitchLength/2,param.goalWidth/2 - 10*10)
-	end
+-- 	if p2 ~= nil then
+-- 		if type(p2) == "userdata" then
+-- 			idir = dir.compensate(p2)
+-- 			itarget = p2
+-- 		elseif type(p2) == "function" then
+-- 			idir = dir.compensate(p2)
+-- 			itarget = p2
+-- 		elseif p2 == false then -- false时为了测试补偿数据
+-- 			iTestMode = true
+-- 			p2 = CGeoPoint:new_local(param.pitchLength / 2,0)
+-- 			idir = dir.nocompensation(CGeoPoint:new_local(param.pitchLength / 2,0))
+-- 			itarget = CGeoPoint:new_local(param.pitchLength / 2,0)
+-- 		elseif p2 == true then
+-- 			idir = dir.shoot()
+-- 			itarget = CGeoPoint:new_local(param.pitchLength / 2,0)
+-- 		end
+-- 	else
+-- 		idir = dir.shoot()
+-- 		itarget = CGeoPoint:new_local(param.pitchLength/2,param.goalWidth/2 - 10*10)
+-- 	end
 
-	if p ~= nil then
-		ipower = kp.specified(p)
-	else
-		if p2 ~= nil then
-			ipower = kp.toTarget(p2)
-		else
-			ipower = kp.full()
-		end
-	end
+-- 	if p ~= nil then
+-- 		ipower = kp.specified(p)
+-- 	else
+-- 		if p2 ~= nil then
+-- 			ipower = kp.toTarget(p2)
+-- 		else
+-- 			ipower = kp.full()
+-- 		end
+-- 	end
 
-	if b ~= nil then
-		ibuffer = b
-	else
-		ibuffer = 9.2*10  -- 接球时默认后退距离
-	end
+-- 	if b ~= nil then
+-- 		ibuffer = b
+-- 	else
+-- 		ibuffer = 9.2*10  -- 接球时默认后退距离
+-- 	end
 
-	local mexe, mpos = InterceptTouch{pos = ipos, target = itarget, dir = idir, power = ipower, buffer = ibuffer, kick = ikick,testMode = iTestMode}
-	return {mexe, mpos}
-end
+-- 	local mexe, mpos = InterceptTouch{pos = ipos, target = itarget, dir = idir, power = ipower, buffer = ibuffer, kick = ikick,testMode = iTestMode}
+-- 	return {mexe, mpos}
+-- end
 
 function shoot()
 	local ipos = CGeoPoint:new_local(9999*10,9999*10)
@@ -638,7 +627,7 @@ end
 function leftBack(p)
 	local ipower
 	if p == nil then
-		ipower = 270
+		ipower = 2700
 	else
 		ipower = p
 	end
@@ -649,7 +638,7 @@ end
 function rightBack(p)
 	local ipower
 	if p == nil then
-		ipower = 270
+		ipower = 2700
 	else
 		ipower = p
 	end
@@ -657,8 +646,31 @@ function rightBack(p)
 	return {mexe, mpos, kick.chip, dir.defendBackClear(), pre.fieldDefender(), kp.specified(ipower),cp.specified(ipower), bit:_or(flag.not_avoid_our_vehicle,flag.not_avoid_their_vehicle)}
 end
 
+function multiBack(guardNum, index, p)
+	local ipower
+	if p == nil then
+		ipower = 2700
+	else
+		ipower = p
+	end
+	local mexe, mpos = GotoMatchPos{ method = 4, acc = 450, pos = pos.multiBackPos(guardNum, index), dir = dir.backSmartGotoDir, flag = bit:_or(flag.not_avoid_our_vehicle,flag.not_avoid_their_vehicle)}
+	return {mexe, mpos, kick.chip, dir.defendBackClear(), pre.fieldDefender(), kp.specified(ipower),cp.specified(ipower), bit:_or(flag.not_avoid_our_vehicle,flag.not_avoid_their_vehicle)}
+end
+
+function zback(guardNum, index, p, f)
+	local ipower
+	local iflag = f or (flag.kick + flag.chip + flag.not_avoid_our_vehicle + flag.not_avoid_their_vehicle)
+	if p == nil then
+		ipower = 2700
+	else
+		ipower = p
+	end
+	local mexe, mpos = ZBack{ guardNum = guardNum, index = index, power = ipower, flag = iflag }
+	return {mexe, mpos}
+end
+
 function leftBack4Stop()
-	local STOP_FLAG = bit:_or(flag.slowly, flag.dodge_ball)
+	local STOP_FLAG = flag.dodge_ball
 	local STOP_NO_DODGE_SELF = bit:_or(STOP_FLAG, flag.not_avoid_our_vehicle)
 	local STOP_DSS = bit:_or(STOP_NO_DODGE_SELF, flag.allow_dss)
 	local mexe, mpos = GotoMatchPos{ pos = pos.leftBackPos, dir = dir.backSmartGotoDir, flag = STOP_DSS}
@@ -666,7 +678,7 @@ function leftBack4Stop()
 end
 
 function rightBack4Stop()
-	local STOP_FLAG = bit:_or(flag.slowly, flag.dodge_ball)
+	local STOP_FLAG = flag.dodge_ball
 	local STOP_NO_DODGE_SELF = bit:_or(STOP_FLAG, flag.not_avoid_our_vehicle)
 	local STOP_DSS = bit:_or(STOP_NO_DODGE_SELF, flag.allow_dss)
 	local mexe, mpos = GotoMatchPos{ pos = pos.rightBackPos, dir = dir.backSmartGotoDir, flag = STOP_DSS}
@@ -674,7 +686,7 @@ function rightBack4Stop()
 end
 
 function singleBack4Stop()
-	local STOP_FLAG = bit:_or(flag.slowly, flag.dodge_ball)
+	local STOP_FLAG = flag.dodge_ball
 	local STOP_DSS = bit:_or(STOP_FLAG, flag.allow_dss)
 	local mexe, mpos = GotoMatchPos{ pos = pos.singleBackPos, dir = dir.backSmartGotoDir, flag = STOP_DSS}
 	return {mexe, mpos, kick.chip, dir.defendBackClear(), pre.fieldDefender(), kp.specified(9999),cp.specified(400), STOP_DSS}
@@ -684,9 +696,9 @@ end
 function defendMiddle(role, f)
 	local mflag = f or 0
 	if role == nil then
-		mflag = mflag--flag.not_avoid_our_vehicle
+		mflag = 0--flag.not_avoid_our_vehicle
 	else
-		mflag = bit:_or(mflag, flag.avoid_shoot_line)--bit:_or(flag.avoid_shoot_line, flag.not_avoid_our_vehicle)
+		mflag = mflag--bit:_or(flag.avoid_shoot_line, flag.not_avoid_our_vehicle)
 	end
 	mflag=bit:_or(flag.allow_dss,mflag)
 	local mexe, mpos = GotoMatchPos{ pos = pos.defendMiddlePos,dir = dir.backSmartGotoDir , srole = "defendMiddle", flag = mflag, sender = role}
@@ -698,9 +710,9 @@ function defendMiddle4Stop(role)
 	if role == nil then
 		mflag = 0--flag.not_avoid_our_vehicle
 	else
-		mflag = flag.avoid_shoot_line--bit:_or(flag.avoid_shoot_line, flag.not_avoid_our_vehicle)
+		mflag = mflag--bit:_or(flag.avoid_shoot_line, flag.not_avoid_our_vehicle)
 	end
-	local STOP_FLAG = bit:_or(flag.slowly, flag.dodge_ball)
+	local STOP_FLAG = bit:_or(flag.dodge_ball)
 	local STOP_DSS = bit:_or(STOP_FLAG, flag.allow_dss)
 	mflag=bit:_or(STOP_DSS,mflag)
 	local mexe, mpos = GotoMatchPos{ pos = pos.defendMiddlePos,dir = dir.backSmartGotoDir , srole = "defendMiddle", flag = mflag, sender = role}
@@ -723,7 +735,7 @@ function sideBack()
 end
 
 function sideBack4Stop()
-	local STOP_FLAG = bit:_or(flag.slowly, flag.dodge_ball)
+	local STOP_FLAG = flag.dodge_ball
 	local STOP_DSS = bit:_or(STOP_FLAG, flag.allow_dss)
 	local mexe, mpos = GotoMatchPos{ pos = pos.sideBackPos, dir = dir.sideBackDir, srole = "sideBack",flag = STOP_DSS}
 	return {mexe, mpos, kick.chip, dir.defendBackClear(), pre.fieldDefender(), kp.specified(9999),cp.specified(400), STOP_DSS}

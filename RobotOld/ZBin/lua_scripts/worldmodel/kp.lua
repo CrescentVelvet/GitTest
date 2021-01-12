@@ -7,11 +7,11 @@ function specified(p)
 end
 
 function full()
-	return 650
+	return 6500
 end
 
 function touch()
-	return 650
+	return 6500
 end
 
 function forReflect()
@@ -22,7 +22,7 @@ end
 function toTarget(p)
 	return function(role)
 		local target
-		local inSpeed = 450 -- 需要的入嘴速度
+		local inSpeed = 4500 -- 需要的入嘴速度
 		if type(p) == "function" then
 			target = p()
 		elseif type(p) == "userdata" then
@@ -32,9 +32,9 @@ function toTarget(p)
 		end
 		local pw
 		if IS_SIMULATION then
-			pw = player.toPointDist(role, target)*1 + 200
+			pw =  player.toPointDist(role, target)*1 + 1000
 		else
-			pw = player.toPointDist(role, target)*1 + 200
+			pw = player.toPointDist(role, target)*1 + 1000
 		end
 		if pw < 2000 then    --50 --> 250 Modified by Soap, 2015/4/11
 			pw = 2000 					--50 --> 250 Modified by Soap, 2015/4/11

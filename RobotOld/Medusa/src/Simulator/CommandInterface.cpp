@@ -7,7 +7,7 @@
 #include "staticparams.h"
 #include "game_state.h"
 #include "parammanager.h"
-#include "param.h"
+#include "staticparams.h"
 #include <cmath>
 #include <QUdpSocket>
 #include "RobotSensor.h"
@@ -44,8 +44,8 @@ CCommandInterface::~CCommandInterface(void) {
 }
 
 void CCommandInterface::setSpeed(int num, double dribble, double vx, double vy, double vr) {
-    int number = num - 1;//找到+1处后可以把此处去掉，车号变回0-11
-    if (number < 0 || number > Param::Field::MAX_PLAYER - 1) {
+    int number = num;
+    if (number < 0 || number > PARAM::Field::MAX_PLAYER - 1) {
         //std::cout << "Robot Number Error in Simulator setSpeed" << number<< std::endl;
         return;
     }
@@ -56,8 +56,8 @@ void CCommandInterface::setSpeed(int num, double dribble, double vx, double vy, 
 
 }
 void CCommandInterface::setKick(int num, double kp, double cp) {
-    int number = num - 1;//找到+1处后可以把此处去掉，车号变回0-11
-    if (number < 0 || number > Param::Field::MAX_PLAYER - 1) {
+    int number = num;
+    if (number < 0 || number > PARAM::Field::MAX_PLAYER - 1) {
         //std::cout << "Robot Number Error in Simulator setKick" << std::endl;
         return;
     }
@@ -67,9 +67,9 @@ void CCommandInterface::setKick(int num, double kp, double cp) {
 
 void CCommandInterface::sendCommands() {
 //    GDebugEngine::Instance()->gui_debug_msg(CGeoPoint(-400,-200),"COMMAND_VALID : ",COLOR_GRAY);
-    for (int i = 0; i < Param::Field::MAX_PLAYER; i++) {
-//        GDebugEngine::Instance()->gui_debug_msg(CGeoPoint(-216+i*13,-200),VisionModule::Instance()->ourPlayer(i+1).Valid()?"1":"0",COLOR_GRAY);
-        if(!VisionModule::Instance()->ourPlayer(i+1).Valid()){
+    for (int i = 0; i < PARAM::Field::MAX_PLAYER; i++) {
+//        GDebugEngine::Instance()->gui_debug_msg(CGeoPoint(-216+i*13,-200),VisionModule::Instance()->ourPlayer(i).Valid()?"1":"0",COLOR_GRAY);
+        if(!VisionModule::Instance()->ourPlayer(i).Valid()){
             continue;
         }
         auto robot_command = robots_command.add_command();
@@ -79,7 +79,7 @@ void CCommandInterface::sendCommands() {
         robot_command->set_velocity_r(commands[i].velocity_r);
         robot_command->set_dribbler_spin(commands[i].dribble_spin);
         if(commands[i].dribble_spin >=1){
-            GDebugEngine::Instance()->gui_debug_arc(VisionModule::Instance()->ourPlayer(i+1).RawPos(),5,0,360,COLOR_BLACK);
+            GDebugEngine::Instance()->gui_debug_arc(VisionModule::Instance()->ourPlayer(i).RawPos(),5,0,360,COLOR_BLACK);
         }
         if(commands[i].chip_kick < 0.001) { //flat kick
             robot_command->set_kick(false);
@@ -94,7 +94,7 @@ void CCommandInterface::sendCommands() {
     ::robots_command.SerializeToArray(data.data(), size);
     command_socket->writeDatagram(data.data(), size, QHostAddress(ZSS::LOCAL_ADDRESS), ZSS::Athena::CONTROL_SEND[TEAM]);
     ::robots_command.Clear();
-    memset(commands,0,sizeof(RobotCommand)*Param::Field::MAX_PLAYER_NUM);
+    memset(commands,0,sizeof(RobotCommand)*PARAM::Field::MAX_PLAYER);
 }
 
 void CCommandInterface::receiveInformation() {
@@ -109,7 +109,7 @@ void CCommandInterface::receiveInformation() {
             receiveSocket->readDatagram(datagram.data(), datagram.size(), &address, &udp_port);
             robot_status.ParseFromArray(datagram, datagram.size());
             auto&& id = robot_status.robot_id();
-            if(!(id >= 0 && id < Param::Field::MAX_PLAYER)) {
+            if(!(id >= 0 && id < PARAM::Field::MAX_PLAYER)) {
                 qDebug() << "ERROR received error robot id in command interface." << id;
                 continue;
             }

@@ -5,7 +5,7 @@
 #include <string>
 
 #include "geometry.h"
-#include "param.h"
+#include "staticparams.h"
 #include "utils.h"
 
 #include "DribbleStatus.h"
@@ -16,7 +16,7 @@
 #include "KickDirection.h"
 #include "parammanager.h"
 using namespace std;
-using namespace Param;
+using namespace PARAM;
 
 namespace {
 
@@ -216,7 +216,7 @@ void CInterceptTouch::plan(const CVisionModule* pVision) {
     } break;
 	case SAVE: {
         msg = "SAVE";
-        CGeoPoint target = CGeoPoint(Param::Field::PITCH_LENGTH/2,0);
+        CGeoPoint target = CGeoPoint(PARAM::Field::PITCH_LENGTH/2,0);
         setSubTask(PlayerRole::makeItGetBallV4(runner, PlayerStatus::KICK, target, CGeoPoint(-9999,-9999), 600));
 	}
   }

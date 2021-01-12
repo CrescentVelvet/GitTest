@@ -1,6 +1,6 @@
 ﻿#include "zdrag.h"
 #include <skill/Factory.h>
-#include "param.h"
+#include "staticparams.h"
 #include "WorldModel.h"
 #include "TaskMediator.h"
 #include "parammanager.h"
@@ -19,17 +19,17 @@ bool DEBUG = true;
 
 const double MIN_SPEED_FOR_ENEMY  = 1500;
 
-const double CHECK_MARK_TIME        = Param::Vision::FRAME_RATE;
+const double CHECK_MARK_TIME        = PARAM::Vision::FRAME_RATE;
 const double CHECK_FREE_DIST        = 300;
 const double CHECK_FREE_REDRAG_TIME = 20;
-const double MAX_WAIT_TIME          = Param::Vision::FRAME_RATE * 5;
+const double MAX_WAIT_TIME          = PARAM::Vision::FRAME_RATE * 5;
 
-const CGeoSegment PENALTY_BORDER[6] = {CGeoSegment(CGeoPoint(Param::Field::PITCH_LENGTH / 2 - Param::Field::PENALTY_AREA_DEPTH, Param::Field::PENALTY_AREA_WIDTH / 2), CGeoPoint(Param::Field::PITCH_LENGTH / 2 - Param::Field::PENALTY_AREA_DEPTH, - Param::Field::PENALTY_AREA_WIDTH / 2)),
-                                       CGeoSegment(CGeoPoint(Param::Field::PITCH_LENGTH / 2 - Param::Field::PENALTY_AREA_DEPTH, Param::Field::PENALTY_AREA_WIDTH / 2), CGeoPoint(Param::Field::PITCH_LENGTH / 2, Param::Field::PENALTY_AREA_WIDTH / 2)),
-                                       CGeoSegment(CGeoPoint(Param::Field::PITCH_LENGTH / 2 - Param::Field::PENALTY_AREA_DEPTH, - Param::Field::PENALTY_AREA_WIDTH / 2), CGeoPoint(Param::Field::PITCH_LENGTH / 2, - Param::Field::PENALTY_AREA_WIDTH / 2)),
-                                       CGeoSegment(CGeoPoint(-(Param::Field::PITCH_LENGTH / 2 - Param::Field::PENALTY_AREA_DEPTH), Param::Field::PENALTY_AREA_WIDTH / 2), CGeoPoint(-(Param::Field::PITCH_LENGTH / 2 - Param::Field::PENALTY_AREA_DEPTH), - Param::Field::PENALTY_AREA_WIDTH / 2)),
-                                       CGeoSegment(CGeoPoint(-(Param::Field::PITCH_LENGTH / 2 - Param::Field::PENALTY_AREA_DEPTH), Param::Field::PENALTY_AREA_WIDTH / 2), CGeoPoint(-Param::Field::PITCH_LENGTH / 2, Param::Field::PENALTY_AREA_WIDTH / 2)),
-                                       CGeoSegment(CGeoPoint(-(Param::Field::PITCH_LENGTH / 2 - Param::Field::PENALTY_AREA_DEPTH), - Param::Field::PENALTY_AREA_WIDTH / 2), CGeoPoint(-Param::Field::PITCH_LENGTH / 2, - Param::Field::PENALTY_AREA_WIDTH / 2))};
+const CGeoSegment PENALTY_BORDER[6] = {CGeoSegment(CGeoPoint(PARAM::Field::PITCH_LENGTH / 2 - PARAM::Field::PENALTY_AREA_DEPTH, PARAM::Field::PENALTY_AREA_WIDTH / 2), CGeoPoint(PARAM::Field::PITCH_LENGTH / 2 - PARAM::Field::PENALTY_AREA_DEPTH, - PARAM::Field::PENALTY_AREA_WIDTH / 2)),
+                                       CGeoSegment(CGeoPoint(PARAM::Field::PITCH_LENGTH / 2 - PARAM::Field::PENALTY_AREA_DEPTH, PARAM::Field::PENALTY_AREA_WIDTH / 2), CGeoPoint(PARAM::Field::PITCH_LENGTH / 2, PARAM::Field::PENALTY_AREA_WIDTH / 2)),
+                                       CGeoSegment(CGeoPoint(PARAM::Field::PITCH_LENGTH / 2 - PARAM::Field::PENALTY_AREA_DEPTH, - PARAM::Field::PENALTY_AREA_WIDTH / 2), CGeoPoint(PARAM::Field::PITCH_LENGTH / 2, - PARAM::Field::PENALTY_AREA_WIDTH / 2)),
+                                       CGeoSegment(CGeoPoint(-(PARAM::Field::PITCH_LENGTH / 2 - PARAM::Field::PENALTY_AREA_DEPTH), PARAM::Field::PENALTY_AREA_WIDTH / 2), CGeoPoint(-(PARAM::Field::PITCH_LENGTH / 2 - PARAM::Field::PENALTY_AREA_DEPTH), - PARAM::Field::PENALTY_AREA_WIDTH / 2)),
+                                       CGeoSegment(CGeoPoint(-(PARAM::Field::PITCH_LENGTH / 2 - PARAM::Field::PENALTY_AREA_DEPTH), PARAM::Field::PENALTY_AREA_WIDTH / 2), CGeoPoint(-PARAM::Field::PITCH_LENGTH / 2, PARAM::Field::PENALTY_AREA_WIDTH / 2)),
+                                       CGeoSegment(CGeoPoint(-(PARAM::Field::PITCH_LENGTH / 2 - PARAM::Field::PENALTY_AREA_DEPTH), - PARAM::Field::PENALTY_AREA_WIDTH / 2), CGeoPoint(-PARAM::Field::PITCH_LENGTH / 2, - PARAM::Field::PENALTY_AREA_WIDTH / 2))};
 }
 
 CZDrag::CZDrag() : _lastCycle(0), _lastState(GOTO), _lastConfirmCycle(0), _state(GOTO)
@@ -38,7 +38,7 @@ CZDrag::CZDrag() : _lastCycle(0), _lastState(GOTO), _lastConfirmCycle(0), _state
 }
 
 void CZDrag::plan(const CVisionModule* pVision) {
-    if (pVision->getCycle() - _lastCycle > Param::Vision::FRAME_RATE * 0.1) {
+    if (pVision->getCycle() - _lastCycle > PARAM::Vision::FRAME_RATE * 0.1) {
         setState(BEGINNING);
         enemyNum = -999;
         markDist = 999999;
@@ -70,7 +70,7 @@ void CZDrag::plan(const CVisionModule* pVision) {
     const CGeoPoint interPoint = ZSkillUtils::instance()->predictedTheirInterPoint(me.RawPos(), pVision->ball().RawPos());
     const double me2InterPoint = me.RawPos().dist(interPoint);
 
-    if (ZSkillUtils::instance()->IsInField(purposeTarget) && purposeTarget.dist(target) > 1000) {
+    if (Utils::IsInField(purposeTarget) && purposeTarget.dist(target) > 1000) {
         purposeMode = true;
     } else {
         purposeMode = false;
@@ -78,7 +78,7 @@ void CZDrag::plan(const CVisionModule* pVision) {
     }
     if (_state == GOTO || _state == FREE/*|| enemyNum < 0*/) {
 //        qDebug() << "JUDGE MARKED IN CYCLE " << pVision->Cycle() << "MARK DIST IS" << markDist;
-        if (target.dist(me.RawPos()) < Param::Vehicle::V2::PLAYER_SIZE * 2) {
+        if (target.dist(me.RawPos()) < PARAM::Vehicle::V2::PLAYER_SIZE * 2) {
             int enemyMarkCar = -999;
             std::vector<int> enemyNumVec;
             int num = WorldModel::Instance()->getEnemyAmountInArea(interPoint, me2InterPoint, enemyNumVec, 200);
@@ -132,7 +132,7 @@ void CZDrag::plan(const CVisionModule* pVision) {
     if (_state == MARKED) {
         if (me.Vel().mod() < 100) {
             v1.setVector(3 * (enemy2meDist > 500 ? enemy2meDist : 500), 0);
-            v1 = v1.rotate(me2BallAngle + (judgeNum > 0 ? 1 : -1) * 90 * Param::Math::PI / 180);
+            v1 = v1.rotate(me2BallAngle + (judgeNum > 0 ? 1 : -1) * 90 * PARAM::Math::PI / 180);
             antiTarget = me.RawPos() + v1;
             if (purposeMode && pVision->theirPlayer(enemyNum).Pos().dist(purposeTarget) - 200 > me.RawPos().dist(purposeTarget)) {
                 _state = ESCAPE;
@@ -149,7 +149,7 @@ void CZDrag::plan(const CVisionModule* pVision) {
     }
     if (_state == ANTIDRAG) {
         antiCnt = pVision->theirPlayer(enemyNum).Vel().mod() < 300 ? antiCnt + 1 : 0;
-//        qDebug() << "THEIR VEL IS " <<pVision->TheirPlayer(enemyNum).Vel().mod() << "THEIR NUM IS " << enemyNum;
+//        qDebug() << "THEIR VEL IS " <<pVision->theirPlayer(enemyNum).Vel().mod() << "THEIR NUM IS " << enemyNum;
         if (antiCnt > CHECK_MARK_TIME) {
             antiCnt = 0;
             _state = ESCAPE;
@@ -158,7 +158,7 @@ void CZDrag::plan(const CVisionModule* pVision) {
         if (pVision->theirPlayer(enemyNum).Vel().mod() > MIN_SPEED_FOR_ENEMY) {
             _state = REALDRAG;
             v2.setVector(3 * (enemy2meDist > 1000 ? enemy2meDist : 1000), 0);
-            v2 = v2.rotate(v1.dir() + Param::Math::PI);
+            v2 = v2.rotate(v1.dir() + PARAM::Math::PI);
             realTarget = me.RawPos() + v2;
         }
         antiVelCount = me.RawPos().dist(antiTarget) < 500 ? antiVelCount + 1 : 0;
@@ -174,24 +174,24 @@ void CZDrag::plan(const CVisionModule* pVision) {
 //        if (purposeMode) {
 //            //nothing
 //        } else {
-//            auto& enemy = pVision->TheirPlayer(enemyNum);
+//            auto& enemy = pVision->theirPlayer(enemyNum);
 //            double enemy2BallSpeedDir = Utils::Normalize(-(ball - enemy.Pos()).dir() - enemy.Vel().dir());
 //            double enemy2BallSpeed = enemy.Vel().mod() * std::cos(enemy2BallSpeedDir);
 //            double enemyRotSpeedAroundBall = enemy2BallSpeed * std::tan(enemy2BallSpeedDir) * (-judgeNum / std::fabs(judgeNum));
 //            finalSpeedDir = std::atan2(enemyRotSpeedAroundBall, enemy2BallSpeed * 2);
 //            if (enemy2BallSpeed < 0 && enemyRotSpeedAroundBall < 0) {
-//                finalSpeedDir = 45 * Param::Math::PI / 180;
+//                finalSpeedDir = 45 * PARAM::Math::PI / 180;
 //            } else if(enemy2BallDist < 0) {
 //                finalSpeedDir = 0;
 //            } else if(enemyRotSpeedAroundBall < 0) {
-//                finalSpeedDir = 90 * Param::Math::PI / 180 * (-judgeNum / std::fabs(judgeNum));
+//                finalSpeedDir = 90 * PARAM::Math::PI / 180 * (-judgeNum / std::fabs(judgeNum));
 //            }
 //            finalSpeedDir = (ball - me.RawPos()).dir() + finalSpeedDir;
 //            finalVelVec = Utils::Polar2Vector(finalSpeed, finalSpeedDir);
 //            v2 = Utils::Polar2Vector(3 * (enemy2meDist > 100 ? enemy2meDist : 100), finalSpeedDir);
 //            realTarget = me.RawPos() + v2;
 //            if (DEBUG) {
-//                GDebugEngine::Instance()->gui_debug_line(enemy.Pos(), enemy.Pos() + CVector(enemyRotSpeedAroundBall, 0).rotate(Utils::Normalize((ball - enemy.Pos()).dir()) + Param::Math::PI / 2));
+//                GDebugEngine::Instance()->gui_debug_line(enemy.Pos(), enemy.Pos() + CVector(enemyRotSpeedAroundBall, 0).rotate(Utils::Normalize((ball - enemy.Pos()).dir()) + PARAM::Math::PI / 2));
 //                GDebugEngine::Instance()->gui_debug_line(enemy.Pos(), enemy.Pos() + Utils::Polar2Vector(enemy2BallSpeed, enemy2BallSpeedDir), COLOR_PURPLE);
 //            }
 //            if (enemy.Vel().mod() < 20) _state = ANTIDRAG;
@@ -202,8 +202,8 @@ void CZDrag::plan(const CVisionModule* pVision) {
             CGeoSegment purposeSegment(me.RawPos(), purposeTarget);
             CGeoPoint purposeProjection = purposeLine.projection(pVision->theirPlayer(enemyNum).Pos());
 //            qDebug() << "condition1 : " <<purposeSegment.IsPointOnLineOnSegment(purposeProjection)
-//                     << "condition2 : " <<(me.RawPos().dist(purposeProjection) < pVision->TheirPlayer(enemyNum).Pos().dist(purposeProjection))
-//                     << "condition3 : " <<( pVision->TheirPlayer(enemyNum).Pos().dist(purposeProjection) > 70);
+//                     << "condition2 : " <<(me.RawPos().dist(purposeProjection) < pVision->theirPlayer(enemyNum).Pos().dist(purposeProjection))
+//                     << "condition3 : " <<( pVision->theirPlayer(enemyNum).Pos().dist(purposeProjection) > 70);
             if (purposeSegment.IsPointOnLineOnSegment(purposeProjection) && me.RawPos().dist(purposeProjection) < pVision->theirPlayer(enemyNum).Pos().dist(purposeProjection) && pVision->theirPlayer(enemyNum).Pos().dist(purposeProjection) > 70) {
                 _state = ESCAPE;
             }
@@ -221,7 +221,7 @@ void CZDrag::plan(const CVisionModule* pVision) {
 //        qDebug() << "I ESCAPE BUT NOTHING HAPPERN WHEN YOU SEE THIS CONTINUS TWICE" << freeBallDist;
 //        GDebugEngine::Instance()->gui_debug_arc(ball, freeBallDist ,0 , 360.0, COLOR_PURPLE);
         if (purposeMode) {
-            escapeCnt = (me.RawPos().dist(purposeTarget) < Param::Vehicle::V2::PLAYER_SIZE * 2) ? escapeCnt + 1 : 0;
+            escapeCnt = (me.RawPos().dist(purposeTarget) < PARAM::Vehicle::V2::PLAYER_SIZE * 2) ? escapeCnt + 1 : 0;
             if (escapeCnt > MAX_WAIT_TIME) {
                 _state = GOTO;
                 markDist = 99999;
@@ -267,8 +267,8 @@ void CZDrag::plan(const CVisionModule* pVision) {
 //        qDebug() << "state1" << (enemy2BallDist - me2BallDist < 20) << "state2" << (me2BallDist < ((2.0 * freeBallDist / 3.0) > 100 ? 100 : (2.0 * freeBallDist / 3.0)));
     }
 
-    freeCount = me.RawPos().dist(task().player.pos) < Param::Vehicle::V2::PLAYER_SIZE * 2 ? ++freeCount : 0;
-//    qDebug() << "freeCount is" << freeCount << (me.RawPos().dist(task().player.pos) < Param::Vehicle::V2::PLAYER_SIZE * 2) << vecNumber;
+    freeCount = me.RawPos().dist(task().player.pos) < PARAM::Vehicle::V2::PLAYER_SIZE * 2 ? ++freeCount : 0;
+//    qDebug() << "freeCount is" << freeCount << (me.RawPos().dist(task().player.pos) < PARAM::Vehicle::V2::PLAYER_SIZE * 2) << vecNumber;
     if (freeCount > MAX_WAIT_TIME) {
 //        qDebug() << "FUCK BUG BECAUSE ME";
         _state = ESCAPE;
@@ -276,19 +276,19 @@ void CZDrag::plan(const CVisionModule* pVision) {
     }
 
     //防止车出场
-    if (Utils::OutOfField(antiTarget, Param::Vehicle::V2::PLAYER_SIZE * 2))
-        antiTarget = Utils::MakeInField(antiTarget, Param::Vehicle::V2::PLAYER_SIZE * 2);
-    if (Utils::OutOfField(realTarget, Param::Vehicle::V2::PLAYER_SIZE * 2))
-        realTarget = Utils::MakeInField(realTarget, Param::Vehicle::V2::PLAYER_SIZE * 2);
+    if (!Utils::IsInField(antiTarget, PARAM::Vehicle::V2::PLAYER_SIZE * 2))
+        antiTarget = Utils::MakeInField(antiTarget, PARAM::Vehicle::V2::PLAYER_SIZE * 2);
+    if (!Utils::IsInField(realTarget, PARAM::Vehicle::V2::PLAYER_SIZE * 2))
+        realTarget = Utils::MakeInField(realTarget, PARAM::Vehicle::V2::PLAYER_SIZE * 2);
     //防止车进入禁区
-    if (Utils::InTheirPenaltyArea(antiTarget, Param::Vehicle::V2::PLAYER_SIZE * 2))
-        antiTarget = Utils::MakeOutOfTheirPenaltyArea(antiTarget,Param::Vehicle::V2::PLAYER_SIZE * 2);
-    if (Utils::InOurPenaltyArea(antiTarget, Param::Vehicle::V2::PLAYER_SIZE * 2))
-        antiTarget = Utils::MakeOutOfOurPenaltyArea(antiTarget,Param::Vehicle::V2::PLAYER_SIZE * 2);
-    if (Utils::InTheirPenaltyArea(realTarget, Param::Vehicle::V2::PLAYER_SIZE * 2))
-        realTarget = Utils::MakeOutOfTheirPenaltyArea(realTarget,Param::Vehicle::V2::PLAYER_SIZE * 2);
-    if (Utils::InOurPenaltyArea(realTarget, Param::Vehicle::V2::PLAYER_SIZE * 2))
-        realTarget = Utils::MakeOutOfOurPenaltyArea(realTarget,Param::Vehicle::V2::PLAYER_SIZE * 2);
+    if (Utils::InTheirPenaltyArea(antiTarget, PARAM::Vehicle::V2::PLAYER_SIZE * 2))
+        antiTarget = Utils::MakeOutOfTheirPenaltyArea(antiTarget,PARAM::Vehicle::V2::PLAYER_SIZE * 2);
+    if (Utils::InOurPenaltyArea(antiTarget, PARAM::Vehicle::V2::PLAYER_SIZE * 2))
+        antiTarget = Utils::MakeOutOfOurPenaltyArea(antiTarget,PARAM::Vehicle::V2::PLAYER_SIZE * 2);
+    if (Utils::InTheirPenaltyArea(realTarget, PARAM::Vehicle::V2::PLAYER_SIZE * 2))
+        realTarget = Utils::MakeOutOfTheirPenaltyArea(realTarget,PARAM::Vehicle::V2::PLAYER_SIZE * 2);
+    if (Utils::InOurPenaltyArea(realTarget, PARAM::Vehicle::V2::PLAYER_SIZE * 2))
+        realTarget = Utils::MakeOutOfOurPenaltyArea(realTarget,PARAM::Vehicle::V2::PLAYER_SIZE * 2);
 
     if((_state == MARKED || _state == ANTIDRAG || _state == REALDRAG) && DEBUG) {
         GDebugEngine::Instance()->gui_debug_msg(pVision->theirPlayer(enemyNum).Pos(), QString("W").toLatin1(), COLOR_PURPLE);

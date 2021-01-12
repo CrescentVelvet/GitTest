@@ -17,8 +17,8 @@ const int CWorldModel::enemyDefaultNum = 0;
 
 // 自己到球的矢量
 const CVector CWorldModel::self2ball(int current_cycle,  int myNum) {
-	static int last_cycle[Param::Field::MAX_PLAYER] = {-1,-1,-1,-1,-1,-1};
-	static CVector _self2ball[Param::Field::MAX_PLAYER];
+	static int last_cycle[PARAM::Field::MAX_PLAYER] = {-1,-1,-1,-1,-1,-1};
+	static CVector _self2ball[PARAM::Field::MAX_PLAYER];
 
 	if (last_cycle[myNum-1] < current_cycle) {
 		_self2ball[myNum-1] = _pVision->ball().Pos() - _pVision->ourPlayer(myNum).Pos();

@@ -5,7 +5,7 @@
 #include <parammanager.h>
 
 namespace {
-    const double FRAME_PERIOD = 1.0 / Param::Vision::FRAME_RATE;
+    const double FRAME_PERIOD = 1.0 / PARAM::Vision::FRAME_RATE;
     const double zeroVel = 0;
     const double PI = 3.14159265359;
     const double lowerBoundSpeedLimitRotate = 30;
@@ -16,7 +16,7 @@ namespace {
     const double minMaxAngleAcc = 5.0;
     const double minMaxAngleSpeed = 2.0;
     const double rotateScaleFactor = 1.0;
-    const double minAngleLimitRotateSpeed = 15.0 / 180.0 * Param::Math::PI;
+    const double minAngleLimitRotateSpeed = 15.0 / 180.0 * PARAM::Math::PI;
     bool DISPLAY_ROTATION_LIMIT = ZSS::ZParamManager::instance()->value("Debug/RotationLimit",QVariant(false)).toBool();//true;
 }
 

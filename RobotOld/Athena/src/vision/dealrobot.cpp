@@ -59,7 +59,7 @@ double CDealRobot::calculateWeight(int camID, CGeoPoint roboPos) {
 
 void CDealRobot::init() {
     result.init();
-    for (int roboId = 0; roboId < PARAM::ROBOTMAXID; roboId++) {
+    for (int roboId = 0; roboId < PARAM::ROBOTNUM; roboId++) {
         for (int color = 0; color < PARAM::TEAMS; color++) {
             for (int camId = 0; camId < PARAM::CAMERA; camId++) {
                 robotSeqence[color][roboId][camId].init();
@@ -81,7 +81,7 @@ void CDealRobot::init() {
         }
     }
 //    for (int color = 0; color < PARAM::TEAMS; color++) {
-//        for (int i = 0; i < PARAM::ROBOTMAXID; i++) {
+//        for (int i = 0; i < PARAM::ROBOTNUM; i++) {
 //            sortTemp[color][i].init();
 //        }
 //    }
@@ -89,7 +89,7 @@ void CDealRobot::init() {
 
 void CDealRobot::mergeRobot() {
     for (int color = 0; color < PARAM::TEAMS; color++) {
-        for (int roboId = 0; roboId < PARAM::ROBOTMAXID; roboId++) {
+        for (int roboId = 0; roboId < PARAM::ROBOTNUM; roboId++) {
             bool isFound = false;
             double teamWeight = 0;
             CGeoPoint teamAverage(0, 0);
@@ -117,7 +117,7 @@ void CDealRobot::mergeRobot() {
 
 void CDealRobot::setPossibility() {
     for (int color = 0; color < PARAM::TEAMS; color ++) {
-        for (int id = 0; id < PARAM::ROBOTMAXID; id++) {
+        for (int id = 0; id < PARAM::ROBOTNUM; id++) {
             bool found = false;
             lastRobot[color][id].valid = false;
             if ((isOnField(result.robot[color][id].pos))

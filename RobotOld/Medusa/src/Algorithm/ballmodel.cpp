@@ -1,12 +1,12 @@
 #include "ballmodel.h"
 #include "CMmotion.h"
-#include <param.h>
+#include "staticparams.h"
 #include <iostream>
 using namespace std;
 namespace {
 ///chip param
-const double CHIP_FIRST_ANGLE = 54.29 / 180.0 * Param::Math::PI;
-const double CHIP_SECOND_ANGLE = 45.59 / 180.0 * Param::Math::PI;
+const double CHIP_FIRST_ANGLE = 54.29 / 180.0 * PARAM::Math::PI;
+const double CHIP_SECOND_ANGLE = 45.59 / 180.0 * PARAM::Math::PI;
 const double CHIP_LENGTH_RATIO = 1.266;
 const double CHIP_VEL_RATIO = 0.6372;
 const double G = 9.8;
@@ -148,10 +148,10 @@ double CBallModel::flatPassVel(const CVisionModule *pVision, CGeoPoint passPos, 
     CGeoPoint ballPos = pVision->ball().Pos();
     CVector passLine = passPos - ballPos;
     double distance = ballPos.dist(passPos);
-    CGeoPoint abnormalPos1 = ballPos + Utils::Polar2Vector(distance, passLine.dir() + angleError*Param::Math::PI/180);
-    CGeoPoint abnormalPos2 = ballPos + Utils::Polar2Vector(distance, passLine.dir() - angleError*Param::Math::PI/180);
-    double abnormalTime = std::max(predictedTime(pVision->ourPlayer(receiver+1), abnormalPos1), predictedTime(pVision->ourPlayer(receiver+1), abnormalPos2));
-    double predictTime = std::max(predictedTime(pVision->ourPlayer(receiver+1), passPos), abnormalTime);
+    CGeoPoint abnormalPos1 = ballPos + Utils::Polar2Vector(distance, passLine.dir() + angleError*PARAM::Math::PI/180);
+    CGeoPoint abnormalPos2 = ballPos + Utils::Polar2Vector(distance, passLine.dir() - angleError*PARAM::Math::PI/180);
+    double abnormalTime = std::max(predictedTime(pVision->ourPlayer(receiver), abnormalPos1), predictedTime(pVision->ourPlayer(receiver), abnormalPos2));
+    double predictTime = std::max(predictedTime(pVision->ourPlayer(receiver), passPos), abnormalTime);
     double arriveTime = predictTime + bufferTime;
     arriveTime = std::max(arriveTime, 0.4);
     double minPassVel = sqrt(ROLL_FRICTION*distance);
