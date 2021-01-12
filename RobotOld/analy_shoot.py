@@ -12,6 +12,7 @@ warnings.filterwarnings("ignore", category=FutureWarning, module="sklearn", line
 
 targetX = 0
 targetY = 0
+IS_SIMULATION = 1
 
 # 读取数据
 f = open("shoot_data.txt", "r")
@@ -48,47 +49,43 @@ ball_posY = list(map(float,ball_posY))
 # 角速度取绝对值
 # for i in range(len(car_rotVel)):
 #     car_rotVel[i] = abs(car_rotVel[i])
-# 转换距离
+# 坐标转换距离
 for i in range(len(car_posX)):
     car_dis.append(np.sqrt((targetX-car_posX[i])*(targetX-car_posX[i]) + (targetY-car_posY[i])*(targetY-car_posY[i])))
     ball_dis.append(np.sqrt((targetX-ball_posX[i])*(targetX-ball_posX[i]) + (targetY-ball_posY[i])*(targetY-ball_posY[i])))
-shoot_input = np.zeros((len(car_dis),2))
-
+# 求偏差角度(绝对值)(弧度制)
 shoot_xita = np.zeros(len(ball_posX))
-shoot_output = np.zeros(len(ball_posX))
-# 求偏差角度(绝对值)
 for i in range(len(ball_posX)):
     shoot_xita[i] = math.acos(((targetX-car_posX[i])*(ball_posX[i]-car_posX[i]) + (targetY-car_posY[i])*(ball_posY[i]-car_posY[i]))
         / math.sqrt(((targetX-car_posX[i])*(targetX-car_posX[i])+(targetY-car_posY[i])*(targetY-car_posY[i]))*((ball_posX[i]-car_posX[i])*(ball_posX[i]-car_posX[i])+(ball_posY[i]-car_posY[i])*(ball_posY[i]-car_posY[i]))))
-shoot_output = shoot_xita
+# 弧度转换正切值tan
+shoot_tan = np.zeros(len(shoot_xita))
+for i in range(len(shoot_xita)):
+    shoot_tan[i] = math.tan(shoot_xita[i])
+# 距离转换出手速度
+shoot_vel = np.zeros(len(car_dis))
 for i in range(len(car_dis)):
-    shoot_input[i] = [car_rotVel[i], car_dis[i]]
-# print("X:",shoot_input)
-# print("Y:",shoot_output)
-# print("xita:",shoot_xita)
-
-# 绘制二维图像
-# fig = plt.figure()
-# fig_size = np.zeros(len(shoot_output))
-# for i in range(len(shoot_output)):
-#     fig_size[i] = abs(shoot_output[i])
-# plt.scatter(car_rotVel,car_dis,s=fig_size,c='g',alpha=0.6)
-# plt.xlabel('rotVel')
-# plt.ylabel('dis')
-# plt.show()
-
-# 绘制三维图像
-fig = plt.figure()
-ax = fig.add_subplot(111,projection='3d')
-ax.scatter(car_rotVel,car_dis,shoot_output,s=10,c='g',marker='^')
-plt.xlabel('rotVel')
-plt.ylabel('dis')
-plt.show()
+    if IS_SIMULATION == 1:
+        shoot_vel[i] = car_dis[i] * 1.7 + 100
+    else:
+        shoot_vel[i] = car_dis[i] * 0.8 + 100
+# 设置输入输出值
+# 输入为rotvel与vel的二维向量
+# shoot_input = np.zeros((len(shoot_vel),2))
+# for i in range(len(shoot_vel)):
+#     shoot_input[i] = [car_rotVel[i], shoot_vel[i]]
+# 输入为rotvel与vel的tan的一维向量
+shoot_input = np.zeros(len(shoot_vel))
+for i in range(len(shoot_vel)):
+    shoot_input[i] = math.tan(car_rotVel[i] / shoot_vel[i])
+# 输出
+shoot_output = np.zeros(len(ball_posX))
+shoot_output = shoot_tan
 
 # 建立回归模型
-poly_reg = PolynomialFeatures(degree=4)
-shoot_input_poly = poly_reg.fit_transform(shoot_input)
-# linear_reg = linear_model.ARDRegression()
+# poly_reg = PolynomialFeatures(degree=4)# 线性转换非线性回归
+# shoot_input_poly = poly_reg.fit_transform(shoot_input)
+# linear_reg = linear_model.ARDRegression()# 各种模型
 # linear_reg = linear_model.BayesianRidge()
 # linear_reg = linear_model.ElasticNet()
 # linear_reg = linear_model.ElasticNetCV()
@@ -100,10 +97,26 @@ shoot_input_poly = poly_reg.fit_transform(shoot_input)
 # linear_reg = linear_model.LassoLarsCV()
 # linear_reg = linear_model.LassoLarsIC()
 linear_reg = linear_model.LinearRegression()
-# linear_reg.fit(shoot_input,shoot_output)
-linear_reg.fit(shoot_input_poly,shoot_output)
+linear_reg.fit(shoot_input.reshape(-1,1),shoot_output)
+# linear_reg.fit(shoot_input_poly,shoot_output)
 # print("coefficients:",linear_reg.coef_)
 # print("intercept:",linear_reg.intercept_)
+
+# 绘制图像
+fig = plt.figure()
+# 绘制二维图像
+ax = fig.add_subplot(121)
+ax.scatter(shoot_input,shoot_output,s=5,c='b',marker='.')
+ax.scatter(shoot_input,linear_reg.predict(shoot_input.reshape(-1,1)),s=5,c='r')
+plt.xlabel('Input')
+plt.ylabel('Output')
+# 绘制三维图像
+ax = fig.add_subplot(122,projection='3d')
+ax.scatter(car_rotVel,shoot_vel,shoot_output,s=10,c='g',marker='^')
+plt.xlabel('rotVel')
+plt.ylabel('Vel')
+# 绘制图像
+plt.show()
 
 # 测试数据
 f = open("shoot_data_test.txt", "r")
@@ -140,39 +153,58 @@ ball_posY_test = list(map(float, ball_posY_test))
 # 角速度取绝对值
 # for i in range(len(car_rotVel_test)):
 #     car_rotVel_test[i] = abs(car_rotVel_test[i])
-# 转换距离
+# 坐标转换距离
 for i in range(len(car_posX_test)):
     car_dis_test.append(np.sqrt((targetX-car_posX_test[i])*(targetX-car_posX_test[i]) + (targetY-car_posY_test[i])*(targetY-car_posY_test[i])))
     ball_dis_test.append(np.sqrt((targetX-ball_posX_test[i])*(targetX-ball_posX_test[i]) + (targetY-ball_posY_test[i])*(targetY-ball_posY_test[i])))
-shoot_input_test = np.zeros((len(car_dis_test),2))
-
+# 求偏差角度(绝对值)(弧度制)
 shoot_xita_test = np.zeros(len(ball_posY_test))
-shoot_output_test = np.zeros(len(ball_posY_test))
-# 求偏差角度(绝对值)
 for i in range(len(ball_posY_test)):
     shoot_xita_test[i] = math.acos(((targetX-car_posX_test[i])*(ball_posX_test[i]-car_posX_test[i]) + (targetY-car_posY_test[i])*(ball_posY_test[i]-car_posY_test[i]))
         / math.sqrt(((targetX-car_posX_test[i])*(targetX-car_posX_test[i])+(targetY-car_posY_test[i])*(targetY-car_posY_test[i]))*((ball_posX_test[i]-car_posX_test[i])*(ball_posX_test[i]-car_posX_test[i])+(ball_posY_test[i]-car_posY_test[i])*(ball_posY_test[i]-car_posY_test[i]))))
-shoot_output_test = shoot_xita_test
+# 弧度转换正切值tan
+shoot_tan_test = np.zeros(len(shoot_xita_test))
+for i in range(len(shoot_xita_test)):
+    shoot_tan_test[i] = math.tan(shoot_xita_test[i])
+# 距离转换出手速度
+shoot_vel_test = np.zeros(len(car_dis_test))
 for i in range(len(car_dis_test)):
-    shoot_input_test[i] = [car_rotVel_test[i], car_dis_test[i]]
-# print("X_test:",shoot_input_test)
-# print("Y_test:",shoot_output_test)
-# print("xita_test:",shoot_xita_test)
+    if IS_SIMULATION == 1:
+        shoot_vel_test[i] = car_dis_test[i] * 1.7 + 100
+    else:
+        shoot_vel_test[i] = car_dis_test[i] * 0.8 + 100
+# 设置输入输出值
+# 输入为rotvel与vel的二维向量
+# shoot_input_test = np.zeros((len(shoot_vel_test),2))
+# for i in range(len(shoot_vel_test)):
+#     shoot_input_test[i] = [car_rotVel_test[i], shoot_vel_test[i]]
+# 输入为rotvel与vel的tan的一维向量
+shoot_input_test = np.zeros(len(shoot_vel_test))
+for i in range(len(shoot_vel_test)):
+    shoot_input_test[i] = math.tan(car_rotVel_test[i] / shoot_vel_test[i])
+# 输出
+shoot_output_test = np.zeros(len(ball_posX_test))
+shoot_output_test = shoot_tan_test
 
+# 预测结果
 x_pred = shoot_input_test
 y_pred = np.zeros(len(x_pred))
 ero_pred = np.zeros(len(x_pred))
-for i in range(len(x_pred)):
-    # y_pred[i] = linear_reg.predict([x_pred[i]])
-    y_pred[i] = linear_reg.predict(poly_reg.fit_transform([x_pred[i]]))
+y_pred = linear_reg.predict(x_pred.reshape(-1,1))
+# y_pred = linear_reg.predict(poly_reg.fit_transform([x_pred]))
+for i in range(len(y_pred)):
     ero_pred[i] = y_pred[i] - shoot_output_test[i]
-# print("y_test:",shoot_output_test)
-# print("y_pred:",y_pred)
-# print("ero_pred:",ero_pred)
-xita_mean = 0
-for i in range(len(shoot_xita)):
-    xita_mean+=abs(shoot_xita[i])
-print('xita_mean: %.3f' % (xita_mean/len(shoot_xita)))
+# 拟合数据均值
+data_mean = 0
+for i in range(len(shoot_tan)):
+    data_mean+=abs(shoot_tan[i])
+print('data_mean: %.3f' % (data_mean/len(shoot_tan)))
+# 测试数据均值
+test_mean = 0
+for i in range(len(shoot_tan_test)):
+    test_mean+=abs(shoot_tan_test[i])
+print('test_mean: %.3f' % (test_mean/len(shoot_tan_test)))
+# 拟合误差均值
 ero_sum = 0
 for i in range(len(ero_pred)):
     ero_sum+=abs(ero_pred[i])

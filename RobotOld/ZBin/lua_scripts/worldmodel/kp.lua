@@ -60,7 +60,7 @@ function toTargetNormalPlay(p)
 		if IS_SIMULATION then
 			pw =  player.toPointDist(role, target)*1.7 + 100
 		else
-			pw = player.toPointDist(role, target)*0.8+100
+			pw = player.toPointDist(role, target)*0.8 + 100
 		end
 		if pw < 2000 then    --50 --> 250 Modified by Soap, 2015/4/11
 			pw = 2000 					--50 --> 250 Modified by Soap, 2015/4/11
