@@ -86,12 +86,14 @@ void RecPlayer::sendMessage(const QByteArray& packet) {
     for(int color = PARAM::BLUE; color <= PARAM::YELLOW; color++) {
 //        processMsg = recMsg->mutable_maintainvision()->add_processmsg();
 //        processMsg->set_size(robot_vision.robotSize[color]);
-        for(int j = 0; j < recMsg.maintainvision().processmsg(color).size(); j++) {
-            result.addRobot(color,
-                            recMsg.maintainvision().processmsg(color).robot(j).id(),
-                            recMsg.maintainvision().processmsg(color).robot(j).posx(),
-                            recMsg.maintainvision().processmsg(color).robot(j).posy(),
-                            recMsg.maintainvision().processmsg(color).robot(j).angle());
+        for(int j = 0; j < PARAM::ROBOTNUM; j++) {
+            auto& robot = recMsg.maintainvision().processmsg(color).robot(j);
+            result.setRobot(color,
+                            j,
+                            robot.posx(),
+                            robot.posy(),
+                            robot.angle(),
+                            robot.valid());
         }
     }
     GlobalData::instance()->processRobot.push(result);
@@ -101,40 +103,21 @@ void RecPlayer::sendMessage(const QByteArray& packet) {
     for(int color = PARAM::BLUE; color <= PARAM::YELLOW; color++) {
 //        maintain = recMsg->mutable_maintainvision()->add_maintain();
 //        maintain->set_size(maintainMsg.robotSize[color]);
-        for(int j = 0; j < recMsg.maintainvision().maintain(color).size(); j++) {
-//            maintainResult.addRobot(color,
-//                                    recMsg.maintainvision().maintain(color).robot(j).id(),
-//                                    recMsg.maintainvision().maintain(color).robot(j).posx(),
-//                                    recMsg.maintainvision().maintain(color).robot(j).posy(),
-//                                    recMsg.maintainvision().maintain(color).robot(j).angle());
-//                }
-            int id = 0;
-            if(!recMsg.maintainvision().maintain(color).robot(j).has_id()){
-                //老版本log，maintain没存id
-                maintainResult.addRobot(color,
-                                        id,
-                                        recMsg.maintainvision().maintain(color).robot(j).posx(),
-                                        recMsg.maintainvision().maintain(color).robot(j).posy(),
-                                        recMsg.maintainvision().maintain(color).robot(j).angle());
+        for(int j = 0; j < PARAM::ROBOTNUM; j++) {
+            auto& robot = recMsg.maintainvision().maintain(color).robot(j);
+            maintainResult.setRobot(color,
+                                    j,
+                                    robot.posx(),
+                                    robot.posy(),
+                                    robot.angle(),
+                                    robot.valid());
             }
-            else {
-                    id = recMsg.maintainvision().maintain(color).robot(j).id(); //新版本
-                    maintainResult.robot[color][id].fill(
-                    recMsg.maintainvision().maintain(color).robot(j).id(),
-                    recMsg.maintainvision().maintain(color).robot(j).posx(),
-                    recMsg.maintainvision().maintain(color).robot(j).posy(),
-                    recMsg.maintainvision().maintain(color).robot(j).angle(),
-                    CVector(0, 0),
-                    recMsg.maintainvision().maintain(color).robot(j).valid());//新版本
-                    maintainResult.robotSize[color]++;
-            }
-          } //change by lzx  兼容新老两版本log
-        }
+    }
 //    recMsg->mutable_maintainvision()->mutable_balls()->set_size(maintainMsg.ballSize);
     for(int j = 0; j < recMsg.maintainvision().balls().size(); j++) {
-        maintainResult.addBall(recMsg.maintainvision().balls().ball(j).posx(),
-                               recMsg.maintainvision().balls().ball(j).posy());
-        maintainResult.ball[j].valid = recMsg.maintainvision().balls().ball(j).valid();
+        maintainResult.addBall(recMsg.maintainvision().balls().ball(j).x(),
+                               recMsg.maintainvision().balls().ball(j).y());
+        maintainResult.isBallValid = recMsg.maintainvision().balls().valid();
     }
     GlobalData::instance()->maintain.push(maintainResult);
 

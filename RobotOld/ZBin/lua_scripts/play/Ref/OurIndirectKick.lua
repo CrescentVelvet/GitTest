@@ -16,4 +16,4 @@ end
 
 gCurrentPlay = "TestFreeKick"
 
-gOurIndirectTable.lastRefCycle = vision:Cycle()
+gOurIndirectTable.lastRefCycle = vision:getCycle()

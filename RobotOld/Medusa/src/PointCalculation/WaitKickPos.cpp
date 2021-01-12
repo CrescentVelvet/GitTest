@@ -31,7 +31,7 @@ void CWaitKickPos::GenerateWaitKickPos(const CGeoPoint pointT, const double angl
 {
 	///> 2.图像信息
 	CVisionModule* pVision = vision;
-	const MobileVisionT &ball	= pVision->Ball();
+	const MobileVisionT &ball	= pVision->ball();
 	double ballVelDir = ball.Vel().dir();									// 球速方向
 	double kickDirReverse = Utils::Normalize(kickdir+Param::Math::PI);		// 目标方向反向
 	CGeoLine pointLine = CGeoLine(pointT,pointT+Utils::Polar2Vector(500,angle));
@@ -56,17 +56,17 @@ void CWaitKickPos::GenerateWaitKickPos(const CGeoPoint pointT, const double angl
 
 void CWaitKickPos::GenerateWaitKickPos(const CGeoPoint pointA,const CGeoPoint pointB,const int player,const double kickdir)
 {
-	if(vision->Cycle() - last_cycle[player] > 6){
-		cout<<"reset!!"<<vision->Cycle()<<" "<<last_cycle[player]<<endl;
+	if(vision->getCycle() - last_cycle[player] > 6){
+		cout<<"reset!!"<<vision->getCycle()<<" "<<last_cycle[player]<<endl;
 		need_reset[player] = true;
 		move_ball.clear();
 	}
 	if(need_reset[player]){
 		last_point[player] = CGeoPoint((pointA.x()+pointB.x())/2.0,(pointA.y()+pointB.y())/2.0);
 	}
-	last_cycle[player] = vision->Cycle();
+	last_cycle[player] = vision->getCycle();
 	CVisionModule* pVision = vision;
-	const MobileVisionT &ball	= pVision->Ball();
+	const MobileVisionT &ball	= pVision->ball();
 	double ballVelDir = ball.Vel().dir();									// 球速方向
 	double kickDirReverse = Utils::Normalize(kickdir+Param::Math::PI);		// 目标方向反向
 	CGeoLine pointLine = CGeoLine(pointA,pointB);
@@ -75,9 +75,9 @@ void CWaitKickPos::GenerateWaitKickPos(const CGeoPoint pointA,const CGeoPoint po
 	CGeoLineLineIntersection intersect = CGeoLineLineIntersection(pointLine,ballLine);
 
 	
-//	double ball2playerdir = (pVision->OurPlayer(player).Pos() - ball.Pos()).dir();
+//	double ball2playerdir = (pVision->ourPlayer(player).Pos() - ball.Pos()).dir();
 //	double diff_ball2playerdir_ballveldir = fabs(Utils::Normalize(ballVelDir - ball2playerdir));
-	double ball2playerdist = (pVision->OurPlayer(player).Pos() - ball.Pos()).mod();
+	double ball2playerdist = (pVision->ourPlayer(player).Pos() - ball.Pos()).mod();
 	
 	if(ball2playerdist < 250){	
 		if(intersect.Intersectant()){

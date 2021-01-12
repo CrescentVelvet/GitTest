@@ -1,8 +1,7 @@
 #include <cuda.h>
 #include "cuda_runtime.h"
 #include "device_launch_parameters.h"
-#include "device_functions.h"
-#include <math_functions.h>
+#include "cuda_runtime.h"
 #include <math.h>
 #include <stdio.h>
 
@@ -19,8 +18,8 @@
 #define THREAD_NUM_PASS (128)
 #define BLOCK_X_PASS (16)
 #define BLOCK_Y_PASS (MAX_PLAYER_NUM * 2)
-#define MAX_BALL_SPEED (650)
-#define MIN_BALL_SPEED (100)
+#define MAX_BALL_SPEED (6500)
+#define MIN_BALL_SPEED (1000)
 #define BALL_SPEED_UNIT ((MAX_BALL_SPEED - MIN_BALL_SPEED) / BLOCK_X_PASS)
 
 //#define MAX_CHIP_SPEED (400)
@@ -33,19 +32,19 @@
 #define CAN_NOT_GET_STOP_BALL (true)
 
 //场地参数
-#define PITCH_LENGTH (1200)
-#define PITCH_WIDTH (900)
-#define PENALTY_LENGTH (120)
-#define PENALTY_WIDTH (240)
+#define PITCH_LENGTH (12000)
+#define PITCH_WIDTH (9000)
+#define PENALTY_LENGTH (1200)
+#define PENALTY_WIDTH (2400)
 
 //时间预测的运动学参数
-#define OUR_MAX_SPEED (300)
-#define OUR_MAX_ACC (450)
-#define OUR_MAX_DEC (450)
+#define OUR_MAX_SPEED (3000)
+#define OUR_MAX_ACC (4500)
+#define OUR_MAX_DEC (4500)
 
-#define THEIR_MAX_SPEED (300)
-#define THEIR_MAX_ACC (450)
-#define THEIR_MAX_DEC (450)
+#define THEIR_MAX_SPEED (3000)
+#define THEIR_MAX_ACC (4500)
+#define THEIR_MAX_DEC (4500)
 
 //#define CHIP_ENERGY_LEFT_1 (0.34) //挑球后与地面碰撞后的能量剩余比例
 //#define CHIP_ENERGY_LEFT_2 (0.97)
@@ -55,7 +54,7 @@
 //#define BLOCK_Y_FOR_POS_SCORE (4)
 //#define THREAD_X_FOR_POS_SCORE (32)
 //#define THREAD_Y_FOR_POS_SCORE (32)
-#define INITIAL_VALUE (9999)
+#define INITIAL_VALUE (99999)
 
 // 评估函数各项的阈值
 //__constant__ float maxDistToGoal =  900000;//sqrt(pow(PITCH_LENGTH, 2) + pow(PITCH_WIDTH, 2))
@@ -136,12 +135,12 @@ __device__ bool if_finite(float a) {
     return fabs(a) < INITIAL_VALUE;
 }
 
-__device__ bool IsInField(Point p, float buffer=10) {
+__device__ bool IsInField(Point p, float buffer=1000) {
     return (p.x > -PITCH_LENGTH / 2 + buffer && p.x < PITCH_LENGTH / 2 - buffer
             && p.y < PITCH_WIDTH / 2 - buffer && p.y > -PITCH_WIDTH / 2 + buffer);
 }
 
-__device__ bool IsInPenalty(Point p, float buffer=20) {
+__device__ bool IsInPenalty(Point p, float buffer=2000) {
     return (p.x < -PITCH_LENGTH/2 + PENALTY_LENGTH + buffer && p.x > -PITCH_LENGTH/2 && p.y > -PENALTY_WIDTH/2 - buffer && p.y < PENALTY_WIDTH/2 + buffer)
             || (p.x > PITCH_LENGTH/2 - PENALTY_LENGTH - buffer && p.x < PITCH_LENGTH/2 && p.y > -PENALTY_WIDTH/2 - buffer && p.y < PENALTY_WIDTH/2 + buffer);
 }
@@ -255,8 +254,8 @@ __device__ bool CUDA_predictedInterTime(Point mePoint, Point ballPoint, Vector m
     float ballRollAcc = (*rollingFraction) / 2;
     static const float stepTime = 0.02;
     static const float PASS_VEL_DECAY = 5.0 / 7.0;
-    static const float FIELD_BUFFER = 30.0;
-    static const float PENALTY_BUFFER = 20.0;
+    static const float FIELD_BUFFER = 300.0;
+    static const float PENALTY_BUFFER = 200.0;
     static const float AVOID_DIST = 4 * PLAYER_SIZE;
     // 初始化球速、加速度、球移动的距离、球初始位置
     const float originVel = sqrt(ballVel.x * ballVel.x + ballVel.y * ballVel.y);
@@ -368,16 +367,16 @@ __device__ bool CUDA_predictedChipInterTime(Point mePoint, Point ballPoint, Vect
     Point testPoint = ballPoint;
 
     // 挑球第一段的时间, 单位s
-    float time_1 = 2.0 * chipVel * sin(CHIP_FIRST_ANGLE) / 100.0 / G;
+    float time_1 = 2.0 * chipVel * sin(CHIP_FIRST_ANGLE) / 1000.0 / G;
     // 挑球第一段的距离, 单位m
     float length_1 = 1.0 / 2 * G * time_1 * time_1 / tan(CHIP_FIRST_ANGLE);
     // 挑球第二段的距离, 单位m
     float length_2 = (CHIP_LENGTH_RATIO - 1.0) * length_1;
     // 挑球第二段的时间, 单位s
     float time_2 = sqrt(2 * length_2 * tan(CHIP_SECOND_ANGLE) / G); // 单位s
-    // 挑球第一二段的距离, 单位cm
-    length_1 *= 100;
-    length_2 *= 100;
+    // 挑球第一二段的距离, 单位mm
+    length_1 *= 1000;
+    length_2 *= 1000;
 
 
 
@@ -452,7 +451,7 @@ __device__ bool CUDA_predictedChipInterTime(Point mePoint, Point ballPoint, Vect
 
         if(meArriveTime < 0.10) meArriveTime = 0;
 
-        if(IsInPenalty(testPoint, 20)) {
+        if(IsInPenalty(testPoint, 200)) {
             afterArrivedTime += stepTime;
             continue;
         }

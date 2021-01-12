@@ -6,11 +6,11 @@ module(..., package.seeall)
 --~ -----------------------------------------------
 
 function ourBallPlace()
-	return vision:GetCurrentRefereeMsg() == "OurBallPlacement"
+	return vision:getCurrentRefereeMsg() == "OurBallPlacement"
 end
 
 function theirBallPlace()
-	return vision:GetCurrentRefereeMsg() == "TheirBallPlacement"
+	return vision:getCurrentRefereeMsg() == "TheirBallPlacement"
 end
 
 -- condition for def script exit
@@ -49,15 +49,15 @@ function bestPlayerChanged()
 end
 
 function canShootOnBallPos(role)
-	return world:canShootOnBallPos(vision:Cycle(),gRoleNum[role])
+	return world:canShootOnBallPos(vision:getCycle(),gRoleNum[role])
 end
 
 function canPassOnBallPos(role,passPos,guisePos)
-	return world:canPassOnBallPos(vision:Cycle(),passPos,guisePos,gRoleNum[role])
+	return world:canPassOnBallPos(vision:getCycle(),passPos,guisePos,gRoleNum[role])
 end
 
 function canKickAtEnemy(role,kickDir)
-	return world:canKickAtEnemy(vision:Cycle(),kickDir,gRoleNum[role])
+	return world:canKickAtEnemy(vision:getCycle(),kickDir,gRoleNum[role])
 end
 
 function validNum()
@@ -69,15 +69,15 @@ function canDefenceExit()
 end
 
 function timeRemain()
-	return vision:TimeRemain()
+	return vision:timeRemain()
 end
 
 function ourGoal()
-	return vision:OurGoal()
+	return vision:ourGoal()
 end
 
 function theirGoal()
-	return vision:TheirGoal()
+	return vision:theirGoal()
 end
 
 function needExitAttackDef(p1,p2,str)
@@ -198,10 +198,10 @@ function  checkBallPassed(p1,p2)
 		mp2 = p2
 	end
 	--reset
-	if vision:Cycle() - lastCycle > 6 then
+	if vision:getCycle() - lastCycle > 6 then
 		flag = false
 	end
-	lastCycle =vision:Cycle()
+	lastCycle =vision:getCycle()
 
 	if ball.velMod()> 50 and ball.toBestEnemyDist()> 15 and flag == false then
 		check = enemy.bestDir()

@@ -7,16 +7,16 @@
 
 
 namespace {
-const double MAX_PROB_VEL = 500;
-const double MAX_DEC = 650;
-const double ZERO_VEL = 20;
+const double MAX_PROB_VEL = 500*10;
+const double MAX_DEC = 650*10;
+const double ZERO_VEL = 20*10;
 const double ROBOT_RADIUS = Param::Vehicle::V2::PLAYER_SIZE / 2;
 const double FRAME_PERIOD = 1.0 / Param::Vision::FRAME_RATE;
-const double MIN_AVOID_DIST = Param::Vehicle::V2::PLAYER_SIZE + 2.0;
-const double LOWER_BOUND_AVOID_SPEED = 50;
-const double UPPER_BOUND_AVOID_SPEED = 250;
+const double MIN_AVOID_DIST = Param::Vehicle::V2::PLAYER_SIZE + 2.0*10;
+const double LOWER_BOUND_AVOID_SPEED = 50*10;
+const double UPPER_BOUND_AVOID_SPEED = 250*10;
 
-double stopBallAvoidDist = 50;
+double stopBallAvoidDist = 50*10;
 
 inline float minObs(float a, float b) {
     if(a < b) return a;
@@ -145,7 +145,7 @@ inline void lineRectangleInter(float lineA, float lineB, float lineC,
 
 
 bool testFunction(void) {
-    CGeoPoint p1(150, 0), p2(-150, 0), p3(20, 0), p4(10, 0);
+    CGeoPoint p1(150*10, 0), p2(-150*10, 0), p3(20*10, 0), p4(10*10, 0);
     CGeoSegment seg1(p1, p2), seg2(p3, p4);
     float a, b, c;
     getABC(p1.x(), p1.y(), p2.x(), p2.y(), a, b, c);
@@ -360,16 +360,16 @@ void ObstaclesNew::addObs(const CVisionModule * pVision, const TaskT & task, boo
     int rolenum = task.executor;
     int flags = task.player.flag;
     int shootCar = task.ball.Sender;
-    CGeoPoint myPos = pVision->OurPlayer(rolenum).Pos();
-    const bool isBack = (rolenum == PlayInterface::Instance()->getNumbByRealIndex(TaskMediator::Instance()->leftBack())) ||
-                         (rolenum == PlayInterface::Instance()->getNumbByRealIndex(TaskMediator::Instance()->rightBack())) ||
-                        (rolenum == PlayInterface::Instance()->getNumbByRealIndex(TaskMediator::Instance()->singleBack())) ||
-                        (rolenum == PlayInterface::Instance()->getNumbByRealIndex(TaskMediator::Instance()->sideBack())) ||
-                        (rolenum == PlayInterface::Instance()->getNumbByRealIndex(TaskMediator::Instance()->defendMiddle()));
-    bool notAvoidOurBack = (isBack && Utils::InOurPenaltyArea(myPos, 40));
+    CGeoPoint myPos = pVision->ourPlayer(rolenum).Pos();
+    const bool isBack = (rolenum == TaskMediator::Instance()->leftBack()) ||
+                         (rolenum == TaskMediator::Instance()->rightBack()) ||
+                        (rolenum == TaskMediator::Instance()->singleBack()) ||
+                        (rolenum == TaskMediator::Instance()->sideBack()) ||
+                        (rolenum == TaskMediator::Instance()->defendMiddle());
+    bool notAvoidOurBack = (isBack && Utils::InOurPenaltyArea(myPos, 400));
     //后卫只有在禁区边界才允许撞车
     if(isBack) {
-        if(!Utils::InOurPenaltyArea(myPos, 40)) {
+        if(!Utils::InOurPenaltyArea(myPos, 40*10)) {
             flags &= (~PlayerStatus::NOT_AVOID_THEIR_VEHICLE);
         } else {
             flags |= PlayerStatus::NOT_AVOID_THEIR_VEHICLE;
@@ -377,10 +377,11 @@ void ObstaclesNew::addObs(const CVisionModule * pVision, const TaskT & task, boo
         flags &= (~PlayerStatus::NOT_AVOID_OUR_VEHICLE);
     }
 
+//    GDebugEngine::Instance()->gui_debug_msg(myPos, QString("%1").arg(flags & PlayerStatus::NOT_AVOID_PENALTY).toLatin1(), COLOR_BLUE);
     // opp defence area
     if(flags & PlayerStatus::FREE_KICK) {
-        addRectangle(CGeoPoint(Param::Field::PITCH_LENGTH / 2, -Param::Field::PENALTY_AREA_WIDTH / 2 + robotRadius - Param::Vehicle::V2::PLAYER_SIZE - 20.0),
-                    CGeoPoint(Param::Field::PITCH_LENGTH / 2 - Param::Field::PENALTY_AREA_DEPTH + robotRadius - Param::Vehicle::V2::PLAYER_SIZE - 20.0, Param::Field::PENALTY_AREA_WIDTH / 2 - robotRadius + Param::Vehicle::V2::PLAYER_SIZE + 20.0),
+        addRectangle(CGeoPoint(Param::Field::PITCH_LENGTH / 2, -Param::Field::PENALTY_AREA_WIDTH / 2 + robotRadius - Param::Vehicle::V2::PLAYER_SIZE - 20.0*10),
+                    CGeoPoint(Param::Field::PITCH_LENGTH / 2 - Param::Field::PENALTY_AREA_DEPTH + robotRadius - Param::Vehicle::V2::PLAYER_SIZE - 20.0*10, Param::Field::PENALTY_AREA_WIDTH / 2 - robotRadius + Param::Vehicle::V2::PLAYER_SIZE + 20.0*10),
                     0);
     }
     else if(!(flags & PlayerStatus::NOT_AVOID_PENALTY)) {
@@ -389,37 +390,44 @@ void ObstaclesNew::addObs(const CVisionModule * pVision, const TaskT & task, boo
                         CGeoPoint(Param::Field::PITCH_LENGTH / 2 - Param::Field::PENALTY_AREA_DEPTH + robotRadius - Param::Vehicle::V2::PLAYER_SIZE , Param::Field::PENALTY_AREA_WIDTH / 2 - robotRadius + Param::Vehicle::V2::PLAYER_SIZE),
                         0);
         } else {
+
             addRectangle(CGeoPoint(Param::Field::PITCH_LENGTH / 2, -Param::Field::PENALTY_AREA_WIDTH / 2 - Param::Vehicle::V2::PLAYER_SIZE),
                         CGeoPoint(Param::Field::PITCH_LENGTH / 2 - Param::Field::PENALTY_AREA_DEPTH - Param::Vehicle::V2::PLAYER_SIZE, Param::Field::PENALTY_AREA_WIDTH / 2 + Param::Vehicle::V2::PLAYER_SIZE),
                         0);
         }
     }
-    CGeoPoint p11(620, 57), p12(600, 60), p21(620, -60), p22(600, -57), p31(621, 61), p32(617, -60);
+    CGeoPoint p11((Param::Field::PITCH_LENGTH / 2 - Param::Field::GOAL_POST_THICKNESS + Param::Field::GOAL_DEPTH), Param::Field::GOAL_WIDTH / 2);
+    CGeoPoint p12(Param::Field::PITCH_LENGTH / 2, Param::Field::GOAL_WIDTH / 2 - Param::Field::GOAL_POST_THICKNESS);
+    CGeoPoint p21((Param::Field::PITCH_LENGTH / 2 - Param::Field::GOAL_POST_THICKNESS + Param::Field::GOAL_DEPTH), -(Param::Field::GOAL_WIDTH / 2 - Param::Field::GOAL_POST_THICKNESS));
+    CGeoPoint p22(Param::Field::PITCH_LENGTH / 2, -Param::Field::GOAL_WIDTH / 2);
+    CGeoPoint p31((Param::Field::PITCH_LENGTH / 2 - Param::Field::GOAL_POST_THICKNESS + Param::Field::GOAL_DEPTH + 10), Param::Field::GOAL_WIDTH / 2 - Param::Field::GOAL_POST_THICKNESS + 10);
+    CGeoPoint p32((Param::Field::PITCH_LENGTH / 2 + Param::Field::GOAL_DEPTH), -(Param::Field::GOAL_WIDTH / 2 - Param::Field::GOAL_POST_THICKNESS));
+// TODO
     addRectangle(p11, p12, 0.0);
     addRectangle(p21, p22, 0.0);
     addRectangle(p31, p32, 0.0);
 
     // avoid shooting line
     if (flags & PlayerStatus::AVOID_SHOOTLINE) {
-        const PlayerVisionT& shooter = pVision->OurPlayer(shootCar);
+        const PlayerVisionT& shooter = pVision->ourPlayer(shootCar);
         // center of the gate
-        addLongCircle(shooter.RawPos(), CGeoPoint(Param::Field::PITCH_LENGTH / 2, 0.0f), CVector(0.0f, 0.0f), 3.0f, OBS_LONG_CIRCLE_NEW);
+        addLongCircle(shooter.RawPos(), CGeoPoint(Param::Field::PITCH_LENGTH / 2, 0.0f), CVector(0.0f, 0.0f), 3.0f*10, OBS_LONG_CIRCLE_NEW);
         // left gate post
-        addLongCircle(shooter.RawPos(), CGeoPoint(Param::Field::PITCH_LENGTH / 2, Param::Field::GOAL_WIDTH / 2.0), CVector(0.0f, 0.0f), 3.0f, OBS_LONG_CIRCLE_NEW);
+        addLongCircle(shooter.RawPos(), CGeoPoint(Param::Field::PITCH_LENGTH / 2, Param::Field::GOAL_WIDTH / 2.0), CVector(0.0f, 0.0f), 3.0f*10, OBS_LONG_CIRCLE_NEW);
         // right gate post
-        addLongCircle(shooter.RawPos(), CGeoPoint(Param::Field::PITCH_LENGTH / 2, -Param::Field::GOAL_WIDTH / 2.0), CVector(0.0f, 0.0f), 3.0f, OBS_LONG_CIRCLE_NEW);
+        addLongCircle(shooter.RawPos(), CGeoPoint(Param::Field::PITCH_LENGTH / 2, -Param::Field::GOAL_WIDTH / 2.0), CVector(0.0f, 0.0f), 3.0f*10, OBS_LONG_CIRCLE_NEW);
     }
 
     // set up teammates as obstacles
     if (!(flags & PlayerStatus::NOT_AVOID_OUR_VEHICLE)) {
         for (int i = 1; i <= Param::Field::MAX_PLAYER; ++i) {
-            const PlayerVisionT& teammate = pVision->OurPlayer(i);
+            const PlayerVisionT& teammate = pVision->ourPlayer(i);
             if ((i != rolenum) && teammate.Valid()) {
-                if(i == PlayInterface::Instance()->getNumbByRealIndex(TaskMediator::Instance()->rightBack()) ||
-                        i == PlayInterface::Instance()->getNumbByRealIndex(TaskMediator::Instance()->leftBack()) ||
-                        i == PlayInterface::Instance()->getNumbByRealIndex(TaskMediator::Instance()->singleBack()) ||
-                        i == PlayInterface::Instance()->getNumbByRealIndex(TaskMediator::Instance()->sideBack()) ||
-                        i == PlayInterface::Instance()->getNumbByRealIndex(TaskMediator::Instance()->defendMiddle()) ||
+                if(i == TaskMediator::Instance()->rightBack() ||
+                        i == TaskMediator::Instance()->leftBack() ||
+                        i == TaskMediator::Instance()->singleBack() ||
+                        i == TaskMediator::Instance()->sideBack() ||
+                        i == TaskMediator::Instance()->defendMiddle() ||
                         WorldModel::Instance()->CurrentRefereeMsg() == "OurTimeout") {
                     if(!notAvoidOurBack ||  WorldModel::Instance()->CurrentRefereeMsg() == "OurTimeout") {
                         addCircle(teammate.RawPos(), teammate.Vel(), Param::Vehicle::V2::PLAYER_SIZE, OBS_CIRCLE_NEW);
@@ -444,7 +452,7 @@ void ObstaclesNew::addObs(const CVisionModule * pVision, const TaskT & task, boo
     // set up opponents as obstacles
     if (!(flags & PlayerStatus::NOT_AVOID_THEIR_VEHICLE)) {
         for (int i = 1; i <= Param::Field::MAX_PLAYER; ++i) {
-            const PlayerVisionT& opp = pVision->TheirPlayer(i);
+            const PlayerVisionT& opp = pVision->theirPlayer(i);
             if (opp.Valid()) {
                 double factor;
                 if(opp.Vel().mod() < LOWER_BOUND_AVOID_SPEED) factor = 0.0;
@@ -460,12 +468,17 @@ void ObstaclesNew::addObs(const CVisionModule * pVision, const TaskT & task, boo
         }
     }
 
-    if (task.executor != PlayInterface::Instance()->getNumbByRealIndex(TaskMediator::Instance()->goalie())) {
+    if (task.executor != TaskMediator::Instance()->goalie()) {
         if(!(flags & PlayerStatus::NOT_AVOID_PENALTY))
             addRectangle(CGeoPoint(-Param::Field::PITCH_LENGTH / 2, -Param::Field::PENALTY_AREA_WIDTH / 2 + robotRadius - Param::Vehicle::V2::PLAYER_SIZE),
                         CGeoPoint(-Param::Field::PITCH_LENGTH / 2 + Param::Field::PENALTY_AREA_DEPTH - robotRadius + Param::Vehicle::V2::PLAYER_SIZE, Param::Field::PENALTY_AREA_WIDTH / 2 - robotRadius + Param::Vehicle::V2::PLAYER_SIZE),
                         0);
-        CGeoPoint p11(-620, 57), p12(-600, 60), p21(-620, -60), p22(-600, -57), p31(-621, -61), p32(-617, 60);
+        CGeoPoint p11(-(Param::Field::PITCH_LENGTH / 2 - Param::Field::GOAL_POST_THICKNESS + Param::Field::GOAL_DEPTH), Param::Field::GOAL_WIDTH / 2);
+        CGeoPoint p12(-Param::Field::PITCH_LENGTH / 2, Param::Field::GOAL_WIDTH / 2 - Param::Field::GOAL_POST_THICKNESS);
+        CGeoPoint p21(-(Param::Field::PITCH_LENGTH / 2 - Param::Field::GOAL_POST_THICKNESS + Param::Field::GOAL_DEPTH), -(Param::Field::GOAL_WIDTH / 2 - Param::Field::GOAL_POST_THICKNESS));
+        CGeoPoint p22(-Param::Field::PITCH_LENGTH / 2, -Param::Field::GOAL_WIDTH / 2);
+        CGeoPoint p31(-(Param::Field::PITCH_LENGTH / 2 - Param::Field::GOAL_POST_THICKNESS + Param::Field::GOAL_DEPTH + 10), Param::Field::GOAL_WIDTH / 2 - Param::Field::GOAL_POST_THICKNESS + 10);
+        CGeoPoint p32(-(Param::Field::PITCH_LENGTH / 2 + Param::Field::GOAL_DEPTH), -(Param::Field::GOAL_WIDTH / 2 - Param::Field::GOAL_POST_THICKNESS));
         addRectangle(p11, p12, 0.0);
         addRectangle(p21, p22, 0.0);
         addRectangle(p31, p32, 0.0);
@@ -473,13 +486,13 @@ void ObstaclesNew::addObs(const CVisionModule * pVision, const TaskT & task, boo
 
     // ball
     if (flags & PlayerStatus::DODGE_BALL) {
-        const MobileVisionT& ball = pVision->Ball();
+        const MobileVisionT& ball = pVision->ball();
         addCircle(ball.RawPos(), ball.Vel(), ballAvoidDist, OBS_CIRCLE_NEW);
     }
 
     if (WorldModel::Instance()->CurrentRefereeMsg() == "GameStop" ||
             (flags & PlayerStatus::AVOID_STOP_BALL_CIRCLE)) {
-        const MobileVisionT& ball = pVision->Ball();
+        const MobileVisionT& ball = pVision->ball();
         addCircle(ball.RawPos(), CVector(0.0f, 0.0f), stopBallAvoidDist, OBS_CIRCLE_NEW);
     }
 
@@ -597,7 +610,8 @@ void ObstaclesNew::changeWorld(const stateNew &curState, double dMax) {
     double scale = 5;
     double obstacalMove, obstacleLength;
     CGeoPoint segStartNew, segEndNew;
-    double uncertainDist = 2.0;
+    double uncertainDist = 2.0*10;
+
     for(int i = 0; i < numOfObs; i++) {
         CVector obstacleVel = obs[i].getVel();
         double obstacleSpeed = obs[i].getVel().mod();

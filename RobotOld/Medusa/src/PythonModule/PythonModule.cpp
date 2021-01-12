@@ -37,16 +37,16 @@ CPythonModule::CPythonModule(){
                 .def("x", &MobileVisionT::X)
                 .def("y", &MobileVisionT::Y)
                 ;
-        const PlayerVisionT& (CVisionModule::*pOurPlayer)(int) const = &CVisionModule::OurPlayer;
-        const PlayerVisionT& (CVisionModule::*pTheirPlayer)(int) const = &CVisionModule::TheirPlayer;
-        const MobileVisionT& (CVisionModule::*pBall)(void) const = &CVisionModule::Ball;
+        const PlayerVisionT& (CVisionModule::*pOurPlayer)(int) const = &CVisionModule::ourPlayer;
+        const PlayerVisionT& (CVisionModule::*pTheirPlayer)(int) const = &CVisionModule::theirPlayer;
+        const MobileVisionT& (CVisionModule::*pBall)(void) const = &CVisionModule::ball;
         class_<CVisionModule>("VisionModule")
                 .def("our",pOurPlayer,return_value_policy<reference_existing_object>())
                 .def("their",pTheirPlayer,return_value_policy<reference_existing_object>())
                 .def("getValidNumber",&CVisionModule::getValidNum)
                 .def("getTheirValidNumber",&CVisionModule::getTheirValidNum)
                 .def("ball", pBall,return_value_policy<reference_existing_object>())
-                .def("cycle", &CVisionModule::Cycle)
+                .def("cycle", &CVisionModule::getCycle)
                 ;
         main_namespace["vision"] = ptr(VisionModule::Instance());
 

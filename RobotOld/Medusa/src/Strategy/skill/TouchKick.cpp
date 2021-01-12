@@ -22,16 +22,16 @@ void CTouchKick::plan(const CVisionModule* pVision)
 {
 	///> 1.任务参数及图像信息
 	int runner = task().executor;
-	bool runner_visible = pVision->OurPlayer(runner).Valid();
-	const PlayerVisionT& me = pVision->OurPlayer(runner);
-	const MobileVisionT& ball = pVision->Ball();
+	bool runner_visible = pVision->ourPlayer(runner).Valid();
+	const PlayerVisionT& me = pVision->ourPlayer(runner);
+	const MobileVisionT& ball = pVision->ball();
 	CGeoPoint myHead = me.Pos() + Utils::Polar2Vector(11, me.Dir());
 	const CVector me2ball = ball.Pos() - me.Pos();
 	const CVector ball2myHead = myHead - ball.Pos();
 	const double antiBallVelDir = Utils::Normalize(ball.Vel().dir() + Param::Math::PI);
 	double kick_dir;
 
-	if ( pVision->Cycle() - _lastCycle > Param::Vision::FRAME_RATE * 0.1 
+	if ( pVision->getCycle() - _lastCycle > Param::Vision::FRAME_RATE * 0.1 
 		|| BallStatus::Instance()->IsBallKickedOut(runner)){
 		_reach_pre_flag = false;
 		PreFrame = MaxPreFrame;
@@ -52,7 +52,7 @@ void CTouchKick::plan(const CVisionModule* pVision)
 
 	prePos = prePos + Utils::Polar2Vector( Param::Vehicle::V2::TOUCH_SHIFT_DIST,Utils::Normalize(kick_dir + Param::Math::PI));
 	double me2prePosDist = me.Pos().dist(prePos);
-	double diffAngle = fabs(Utils::Normalize((ball2myHead.dir() - pVision->Ball().Vel().dir())));
+	double diffAngle = fabs(Utils::Normalize((ball2myHead.dir() - pVision->ball().Vel().dir())));
 
 	///> 4.任务赋值:
 	// 进行跑位
@@ -86,7 +86,7 @@ void CTouchKick::plan(const CVisionModule* pVision)
 	
 	setSubTask(TaskFactoryV2::Instance()->GotoPosition(wait_kick_task));
 
-    _lastCycle = pVision->Cycle();
+    _lastCycle = pVision->getCycle();
 	CStatedTask::plan(pVision);
 }
 

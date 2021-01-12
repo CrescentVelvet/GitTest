@@ -15,8 +15,8 @@ namespace {
     const int verbose = true;
     double SHOOT_ACCURACY = 1; //1度，不允许调大
     double CAN_SHHOT_ANGLE = 3; //控制射门是否保守
-    double MAX_ACC = 250;
-    double MOVE_SPEED = 200;  //最大移动速度
+    double MAX_ACC = 250*10;
+    double MOVE_SPEED = 200*10;  //最大移动速度
     double MAX_ROT_ACC = 50;
     double MAX_ROT_SPEED = 15;
     double MAX_TURN_DIR = 150 * Param::Math::PI / 180;
@@ -38,10 +38,10 @@ namespace {
     bool isTurning[Param::Field::MAX_PLAYER + 1];
     int turnWay = 2;
 //    bool returnPoint = false;
-    const double DEBUG_TEXT_HIGH = 30;
+    const double DEBUG_TEXT_HIGH = 30*10;
 //    const double DIR_NUM = 60;
     const int MOD_NUM = 1;
-    CGeoPoint move_point = CGeoPoint(-9999, -9999);
+    CGeoPoint move_point = CGeoPoint(-9999*10, -9999*10);
     bool test_canShoot = false;
     int turnCnt = 0;
     double TEST_DIR[6] = {/*-2*Param::Math::PI/3,*/ -7*Param::Math::PI/12, -Param::Math::PI/2, -5*Param::Math::PI/12, /*-Param::Math::PI/3,*/
@@ -52,15 +52,15 @@ CGeoPoint calc_point(const CVisionModule* pVision, const int vecNumber, double &
 
 CZPass::CZPass(){
     ZSS::ZParamManager::instance()->loadParam(FraredBuffer, "GetBall/FraredBuffer", 30);
-    ZSS::ZParamManager::instance()->loadParam(MAX_ACC, "ZPass/MAX_ACC", 250);
-    ZSS::ZParamManager::instance()->loadParam(MOVE_SPEED, "ZPass/MOVE_SPEED", 200);
+    ZSS::ZParamManager::instance()->loadParam(MAX_ACC, "ZPass/MAX_ACC", 250*10);
+    ZSS::ZParamManager::instance()->loadParam(MOVE_SPEED, "ZPass/MOVE_SPEED", 200*10);
     ZSS::ZParamManager::instance()->loadParam(MAX_ROT_ACC, "ZPass/MAX_ROT_ACC", 50);
     ZSS::ZParamManager::instance()->loadParam(MAX_ROT_SPEED, "ZPass/MAX_ROT_SPEED", 15);
     ZSS::ZParamManager::instance()->loadParam(MAX_TURN_CNT, "ZPass/MAX_TURN_CNT", 180);
 }
 
 void CZPass::plan(const CVisionModule* pVision) {
-    if (pVision->Cycle() - _lastCycle > Param::Vision::FRAME_RATE * 0.1) {
+    if (pVision->getCycle() - _lastCycle > Param::Vision::FRAME_RATE * 0.1) {
         setState(BEGINNING);
         grabMode = DRIBBLE;
         last_mode = DRIBBLE;
@@ -69,12 +69,12 @@ void CZPass::plan(const CVisionModule* pVision) {
         fraredOff = 0;
         turnCnt = 0;
     }
-    const MobileVisionT& ball = pVision->Ball();
+    const MobileVisionT& ball = pVision->ball();
     const CGeoPoint passTarget = task().player.pos;
     int vecNumber = task().executor;
-    const PlayerVisionT& me = pVision->OurPlayer(vecNumber);
+    const PlayerVisionT& me = pVision->ourPlayer(vecNumber);
     oppNum = ZSkillUtils::instance()->getTheirBestPlayer();
-    const PlayerVisionT& enemy = pVision->TheirPlayer(oppNum);
+    const PlayerVisionT& enemy = pVision->theirPlayer(oppNum);
     double power = task().player.kickpower;
     const bool isChip = (task().player.kick_flag & PlayerStatus::CHIP);
     // 传球精度控制
@@ -145,37 +145,37 @@ void CZPass::plan(const CVisionModule* pVision) {
     /*********************** set subTask ********************/
     if(grabMode == TURN) {
         turnCnt++;
-        move_point = CGeoPoint(-9999, -9999);
+        move_point = CGeoPoint(-9999*10, -9999*10);
         if (verbose) GDebugEngine::Instance()->gui_debug_msg(me.Pos()+ Utils::Polar2Vector(DEBUG_TEXT_HIGH, -Param::Math::PI/1.5), "Turn", COLOR_CYAN);
         if(isTurning[vecNumber] == false) {
             turnWay = me2target.dir() > 0 ? 4 : 2;
             isTurning[vecNumber] = true;
         }
-        setSubTask(PlayerRole::makeItOpenSpeedCircle(vecNumber, 15, turnWay, Param::Math::PI, 1, /*Param::Math::PI / 2*/0));
+        setSubTask(PlayerRole::makeItOpenSpeedCircle(vecNumber, 15*10, turnWay, Param::Math::PI, 1, /*Param::Math::PI / 2*/0));
     }
 
     if(grabMode == SIDEMOVE) {
         turnCnt = 0;
         if (verbose) GDebugEngine::Instance()->gui_debug_msg(me.Pos()+ Utils::Polar2Vector(DEBUG_TEXT_HIGH, -Param::Math::PI/1.5), "Side Move", COLOR_CYAN);
         double test_finalDir=0;
-        if(Utils::OutOfField(move_point,9)) move_point = calc_point(pVision, vecNumber, test_finalDir, test_canShoot);
+        if(Utils::OutOfField(move_point,9*10)) move_point = calc_point(pVision, vecNumber, test_finalDir, test_canShoot);
         CVector me2move_point = move_point - me.RawPos();
-        if(me2move_point.mod() < 10){
+        if(me2move_point.mod() < 10*10){
             auto last_move_point = move_point;
             move_point = calc_point(pVision, vecNumber, test_finalDir, test_canShoot);
             CVector last2now = last_move_point - move_point;
-            if(last2now.mod() < 20) move_point = dribblePoint;
-            if (verbose) GDebugEngine::Instance()->gui_debug_arc(move_point, 8, 0.0, 360.0, COLOR_GREEN);
+            if(last2now.mod() < 20*10) move_point = dribblePoint;
+            if (verbose) GDebugEngine::Instance()->gui_debug_arc(move_point, 8*10, 0.0, 360.0, COLOR_GREEN);
             test_canShoot = true;
         }
         if(!test_canShoot){// no where to go
             if (verbose) GDebugEngine::Instance()->gui_debug_msg(me.Pos()+ Utils::Polar2Vector(DEBUG_TEXT_HIGH, Param::Math::PI/2), "NO WHERE TO GO", COLOR_RED);
             double movingWay = ball.RawPos().y() > 0 ? -1.0:1.0;
-            move_point = dribblePoint + Utils::Polar2Vector(100, Utils::Normalize(me2target.dir() + movingWay*Param::Math::PI/2));
+            move_point = dribblePoint + Utils::Polar2Vector(100*10, Utils::Normalize(me2target.dir() + movingWay*Param::Math::PI/2));
 //            if(Utils::OutOfField(move_point, 9)) move_point = Utils::MakeInField(move_point,9);
-            if(Utils::OutOfField(move_point,9)) move_point = dribblePoint + Utils::Polar2Vector(100, Utils::Normalize(me2target.dir() - movingWay*Param::Math::PI/2));
+            if(Utils::OutOfField(move_point,9*10)) move_point = dribblePoint + Utils::Polar2Vector(100*10, Utils::Normalize(me2target.dir() - movingWay*Param::Math::PI/2));
             if(Utils::InTheirPenaltyArea(move_point, AVOID_PENALTY)) move_point = Utils::MakeOutOfTheirPenaltyArea(move_point,AVOID_PENALTY);
-            if (verbose) GDebugEngine::Instance()->gui_debug_arc(move_point, 8, 0.0, 360.0, COLOR_YELLOW);
+            if (verbose) GDebugEngine::Instance()->gui_debug_arc(move_point, 8*10, 0.0, 360.0, COLOR_YELLOW);
         }
         if(verbose) GDebugEngine::Instance()->gui_debug_line(dribblePoint, move_point, COLOR_ORANGE);
 
@@ -195,16 +195,16 @@ void CZPass::plan(const CVisionModule* pVision) {
 
     if(grabMode == DRIBBLE) {
         turnCnt = 0;
-        move_point = CGeoPoint(-9999, -9999);
+        move_point = CGeoPoint(-9999*10, -9999*10);
         if (verbose) GDebugEngine::Instance()->gui_debug_msg(me.Pos()+ Utils::Polar2Vector(DEBUG_TEXT_HIGH, -Param::Math::PI/1.5), "Dribble", COLOR_CYAN);
         CGeoPoint target;
         double dir;
         if(ball.Valid()) target = ball.RawPos();// + Utils::Polar2Vector(5, enemy.Dir());
-        else target = enemy.Pos() + Utils::Polar2Vector(5, enemy.Dir());
+        else target = enemy.Pos() + Utils::Polar2Vector(5*10, enemy.Dir());
         if(ball.Valid()) dir = me2Ball.dir();
         else dir = me2enemy.dir();
-        if(me2Ball.mod() > 50 || ball.Vel().mod() > 50 || canShoot)
-            setSubTask(PlayerRole::makeItGetBallV4(vecNumber, PlayerStatus::KICK+PlayerStatus::SAFE +PlayerStatus::DRIBBLE, task().player.pos, CGeoPoint(999, 999), 0));
+        if(me2Ball.mod() > 50*10 || ball.Vel().mod() > 50*10 || canShoot)
+            setSubTask(PlayerRole::makeItGetBallV4(vecNumber, PlayerStatus::KICK+PlayerStatus::SAFE +PlayerStatus::DRIBBLE, task().player.pos, CGeoPoint(999*10, 999*10), 0));
         else{
             if(Utils::OutOfField(target,Param::Vehicle::V2::PLAYER_SIZE+Param::Field::BALL_SIZE*2))
                 target = Utils::MakeInField(target,Param::Vehicle::V2::PLAYER_SIZE+Param::Field::BALL_SIZE*2);
@@ -214,18 +214,18 @@ void CZPass::plan(const CVisionModule* pVision) {
         }
     }
     /****************** other ***************/
-    if (me2Ball.mod() < 50) {
+    if (me2Ball.mod() < 50*10) {
         DribbleStatus::Instance()->setDribbleCommand(vecNumber, 3);
     }
     /******************************/
 //    qDebug() << fabs(Utils::Normalize(me.Dir() - finalDir))/Param::Math::PI *180 <<"\t"<< width/Param::Math::PI *180 <<"\t"<< canShoot;
-    if (verbose) GDebugEngine::Instance()->gui_debug_line(me.Pos(), me.Pos() + Utils::Polar2Vector(1000, finalDir), COLOR_RED);
+    if (verbose) GDebugEngine::Instance()->gui_debug_line(me.Pos(), me.Pos() + Utils::Polar2Vector(1000*10, finalDir), COLOR_RED);
     if (canShoot && fabs(Utils::Normalize(me.RawDir() - finalDir)) < SHOOT_ACCURACY*Param::Math::PI/180.0) {
 //        qDebug() << "Shoot !";
         if(!isChip) KickStatus::Instance()->setKick(vecNumber, power);
         else KickStatus::Instance()->setChipKick(vecNumber, power);
     }
-    _lastCycle = pVision->Cycle();
+    _lastCycle = pVision->getCycle();
     return CStatedTask::plan(pVision);
 }
 
@@ -237,19 +237,19 @@ CPlayerCommand* CZPass::execute(const CVisionModule* pVision) {
 }
 
 CGeoPoint calc_point(const CVisionModule* pVision, const int vecNumber, double &finalDir, bool &canShoot){
-    const PlayerVisionT& me = pVision->OurPlayer(vecNumber);
-    double maxRange = -9999;
+    const PlayerVisionT& me = pVision->ourPlayer(vecNumber);
+    double maxRange = -9999*10;
     auto move_point = me.RawPos();
     std::vector<CGeoCirlce> enemy_circles;
     CGeoPoint theirGoal = CGeoPoint(Param::Field::PITCH_LENGTH/2, 0);
     CVector me2theirGoal = theirGoal - me.RawPos();
     for(int i = 1; i <= Param::Field::MAX_PLAYER; i++){
-        auto test_enemy = pVision->TheirPlayer(i);
+        auto test_enemy = pVision->theirPlayer(i);
         if(test_enemy.Valid()) enemy_circles.push_back(CGeoCirlce(test_enemy.Pos(), Param::Vehicle::V2::PLAYER_SIZE*1.5));
     }
     for(int i = 1; i <= Param::Field::MAX_PLAYER; i++){
         if(i==vecNumber) continue;
-        auto test_enemy = pVision->OurPlayer(i);
+        auto test_enemy = pVision->ourPlayer(i);
         if(test_enemy.Valid()) enemy_circles.push_back(CGeoCirlce(test_enemy.Pos(), Param::Vehicle::V2::PLAYER_SIZE*1.5));
     }
     for(int i=0; i<6; i++){
@@ -259,7 +259,7 @@ CGeoPoint calc_point(const CVisionModule* pVision, const int vecNumber, double &
             bool intersectant = false;
             CVector vec = Utils::Polar2Vector(double(j*90.0/MOD_NUM), Utils::Normalize(me2theirGoal.dir() + TEST_DIR[i]));
             CGeoPoint test_point = dribblePoint + vec;
-            if(Utils::OutOfField(test_point, 8)) test_point = Utils::MakeInField(test_point,8);
+            if(Utils::OutOfField(test_point, 8*10)) test_point = Utils::MakeInField(test_point,8*10);
             if(Utils::InTheirPenaltyArea(test_point, AVOID_PENALTY)) test_point = Utils::MakeOutOfTheirPenaltyArea(test_point,AVOID_PENALTY);
             if (verbose) GDebugEngine::Instance()->gui_debug_line(dribblePoint, test_point, COLOR_PURPLE);
             auto test_seg = CGeoSegment(dribblePoint, test_point);

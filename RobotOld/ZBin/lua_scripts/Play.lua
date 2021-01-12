@@ -71,13 +71,13 @@ function IsRoleActive(rolename)
 	return false
 end
 
-function SetRoleAndNumToCPlusPlus()
-	for rolename, task in pairs(curPlay[gRealState]) do
-		if(type(task) == "table" and IsRoleActive[rolename]) then
-			CSetRoleAndNum(rolename, gRoleNum[rolename])
-		end
-	end
-end
+-- function SetRoleAndNumToCPlusPlus()
+-- 	for rolename, task in pairs(curPlay[gRealState]) do
+-- 		if(type(task) == "table" and IsRoleActive[rolename]) then
+-- 			CSetRoleAndNum(rolename, gRoleNum[rolename])
+-- 		end
+-- 	end
+-- end
 
 -- 注意，此处只是针对间接和直接定位球的防守
 -- 此时，Leader和Goalie不参与第二次防碰撞检测
@@ -136,9 +136,9 @@ function DoRolePosMatch(curPlay, isPlaySwitched, isStateSwitched)
 	UpdateRole(curPlay[gRealState].match, isPlaySwitched, isStateSwitched)
 	-- SetRoleAndNumToCPlusPlus()
 	-- add by zhyaic for test 2013.5.24
-	-- if vision:GetCurrentRefereeMsg() == "TheirIndirectKick" or
-	--    vision:GetCurrentRefereeMsg() == "TheirDirectKick" or
-	--    vision:GetCurrentRefereeMsg() == "GameStop" then
+	-- if vision:getCurrentRefereeMsg() == "TheirIndirectKick" or
+	--    vision:getCurrentRefereeMsg() == "TheirDirectKick" or
+	--    vision:getCurrentRefereeMsg() == "GameStop" then
 	-- 	UsePenaltyCleaner(curPlay)
 	-- end
 end
@@ -205,7 +205,7 @@ function RunPlay(name)
 			world:SPlayFSMSwitchClearAll(true)
 		end
 
---		debugEngine:gui_debug_msg(vision:OurPlayer(gRoleNum[rolename]):Pos(), rolename)
+--		debugEngine:gui_debug_msg(vision:ourPlayer(gRoleNum[rolename]):Pos(), rolename)
 
 		DoRolePosMatch(curPlay, false, isStateSwitched)
 		gExceptionNum={}
@@ -245,7 +245,7 @@ function RunPlay(name)
 						local mkp  = task[6](roleNum)
 						local mcp  = task[7](roleNum)
 						local mflag = task[8]
-						local isDirOk = world:KickDirArrived(vision:Cycle(), mdir, mpre, roleNum)
+						local isDirOk = world:KickDirArrived(vision:getCycle(), mdir, mpre, roleNum)
 						--print("is DIR ",isDirOk)
 						-- if rolename == "Breaker" then
 						-- 	print(player.dir("Breaker"), mdir, isDirOk, ball.toPlayerDist("Breaker"))
@@ -260,7 +260,7 @@ function RunPlay(name)
 					end
 					
 					if(type(rolename)=="string") then
-						debugEngine:gui_debug_msg(vision:OurPlayer(roleNum):Pos(), string.sub(rolename, 1, 1))
+						debugEngine:gui_debug_msg(vision:ourPlayer(roleNum):Pos(), string.sub(rolename, 1, 1))
 					end
 					task[1](roleNum) --Very Important !!!!
 				end
@@ -268,7 +268,7 @@ function RunPlay(name)
 		end
 		gTimeCounter = gTimeCounter + 1
 	end
-	gLastCycle = vision:Cycle()
+	gLastCycle = vision:getCycle()
 end
 
 function NeedExit(name)
@@ -282,8 +282,9 @@ function NeedExit(name)
 		if gCurrentState == "finish" or
 		    gCurrentState == "exit" or
 		    gTimeCounter > curPlay.timeout or
-			vision:Cycle() - gLastCycle > param.frameRate*0.1 then
+			vision:getCycle() - gLastCycle > param.frameRate*0.1 then
 			gTimeCounter = 0
+			-- print("wzdebug:", vision:getCycle(), gLastCycle, "fuck")
 			return true
 		end
 	end

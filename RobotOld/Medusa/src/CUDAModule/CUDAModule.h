@@ -67,13 +67,13 @@ class CUDAModule {
     float getBestFlatPassVel() { return bestFlatPassVel; }
     float getBestFlatShootVel(){ return bestFlatShootVel;}
     float getBestChipPassVel() {
-        float time = 2 * bestChipPassVel * sin(54.29 / 180 * Param::Math::PI)/100/9.8;
+        float time = 2 * bestChipPassVel * sin(54.29 / 180 * Param::Math::PI)/1000/9.8;
         float length = 1.0 / 2 * 9.8 * time *time / tan(54.29 / 180 * Param::Math::PI);
-        return length*100;}
+        return length*1000;}
     float getBestChipShootVel(){
-        float time = 2 * bestChipShootVel * sin(54.29 / 180 * Param::Math::PI)/100/9.8;
+        float time = 2 * bestChipShootVel * sin(54.29 / 180 * Param::Math::PI)/1000/9.8;
         float length = 1.0 / 2 * 9.8 * time *time / tan(54.29 / 180 * Param::Math::PI);
-        return length*100;}
+        return length*1000;}
     void calculateBestPass();
 //    void calculateBestPosition();
     void setLeader(int _leader) { leader = _leader; }

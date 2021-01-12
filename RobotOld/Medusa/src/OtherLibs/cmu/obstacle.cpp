@@ -389,7 +389,7 @@ void obstacles::addObs(const CVisionModule *pVision, const TaskT &task, bool dra
 
     // 如果是躲避射门
     if (flags & PlayerStatus::AVOID_SHOOTLINE) {
-        const PlayerVisionT& shooter = pVision->OurPlayer(shootCar);
+        const PlayerVisionT& shooter = pVision->ourPlayer(shootCar);
         // 球门中心
         add_long_circle(vector2f(shooter.Pos().x(), shooter.Pos().y()), vector2f(Param::Field::PITCH_LENGTH/2, 0.0f), vector2f(0.0f, 0.0f), 3.0f, 1, drawObs);
         // 球门左门柱
@@ -401,10 +401,10 @@ void obstacles::addObs(const CVisionModule *pVision, const TaskT &task, bool dra
     // set up teammates as obstacles
     if (!(flags & PlayerStatus::NOT_AVOID_OUR_VEHICLE)) {
         for(int i = 1; i <= Param::Field::MAX_PLAYER; ++i) {
-            const PlayerVisionT& teammate = pVision->OurPlayer(i);
+            const PlayerVisionT& teammate = pVision->ourPlayer(i);
             if((i != player) && teammate.Valid()) {
-                if(i == PlayInterface::Instance()->getNumbByRealIndex(TaskMediator::Instance()->rightBack()) ||
-                        i == PlayInterface::Instance()->getNumbByRealIndex(TaskMediator::Instance()->leftBack()) ||
+                if(i == TaskMediator::Instance()->rightBack() ||
+                        i == TaskMediator::Instance()->leftBack() ||
                         WorldModel::Instance()->CurrentRefereeMsg() == "GameStop" ||
                         WorldModel::Instance()->CurrentRefereeMsg() == "OurTimeout")
                     add_circle(vector2f(teammate.Pos().x(), teammate.Pos().y()), vector2f(teammate.Vel().x(), teammate.Vel().y()), Param::Vehicle::V2::PLAYER_SIZE, 1, drawObs);
@@ -417,7 +417,7 @@ void obstacles::addObs(const CVisionModule *pVision, const TaskT &task, bool dra
     // set up opponents as obstacles
     if (!(flags & PlayerStatus::NOT_AVOID_THEIR_VEHICLE)) {
         for(int i=1; i<=Param::Field::MAX_PLAYER; ++i) {
-            const PlayerVisionT& opp = pVision->TheirPlayer(i);
+            const PlayerVisionT& opp = pVision->theirPlayer(i);
             if(opp.Valid()) {
                 if((target.dist(opp.Pos()) < Param::Field::MAX_PLAYER_SIZE / 2) ) {
                     continue;
@@ -430,7 +430,7 @@ void obstacles::addObs(const CVisionModule *pVision, const TaskT &task, bool dra
     }
 
     // 禁区 和 门柱
-    if(player != PlayInterface::Instance()->getNumbByRealIndex(TaskMediator::Instance()->goalie())) {
+    if(player != TaskMediator::Instance()->goalie()) {
         // 我方禁区
         if(flags & PlayerStatus::FREE_KICK)
             add_rectangle(vector2f(-Param::Field::PITCH_LENGTH / 2, -Param::Field::PENALTY_AREA_WIDTH/2 + robot_radius - Param::Vehicle::V2::PLAYER_SIZE - 20.0),
@@ -442,12 +442,12 @@ void obstacles::addObs(const CVisionModule *pVision, const TaskT &task, bool dra
 
     // ball
     if(flags & PlayerStatus::DODGE_BALL) {
-        const MobileVisionT& ball = pVision->Ball();
+        const MobileVisionT& ball = pVision->ball();
         add_circle(vector2f(ball.Pos().x(), ball.Pos().y()), vector2f(ball.Vel().x(), ball.Vel().y()), ballAvoidDist, 1, drawObs);
     }
 
     if(WorldModel::Instance()->CurrentRefereeMsg() == "GameStop") {
-        const MobileVisionT& ball = pVision->Ball();
+        const MobileVisionT& ball = pVision->ball();
         add_circle(vector2f(ball.Pos().x(), ball.Pos().y()), vector2f(0.0f, 0.0f), 50.0f, 1, drawObs);
     }
 

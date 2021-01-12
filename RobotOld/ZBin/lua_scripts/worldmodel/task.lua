@@ -72,7 +72,7 @@ function InterTouch(p1, p2, p, b, f)
 		end
 	else
 		idir = dir.shoot()
-		itarget = CGeoPoint:new_local(param.pitchLength/2,param.goalWidth/2 - 10)
+		itarget = CGeoPoint:new_local(param.pitchLength/2,param.goalWidth/2 - 10*10)
 	end
 
 	if p ~= nil then
@@ -88,7 +88,7 @@ function InterTouch(p1, p2, p, b, f)
 	if b ~= nil then
 		ibuffer = b
 	else
-		ibuffer = 9.2  -- 接球时默认后退距离
+		ibuffer = 9.2*10  -- 接球时默认后退距离
 	end
 
 	local mexe, mpos = InterceptTouch{pos = ipos, target = itarget, dir = idir, power = ipower, buffer = ibuffer, kick = ikick,testMode = iTestMode}
@@ -96,7 +96,7 @@ function InterTouch(p1, p2, p, b, f)
 end
 
 function shoot()
-	local ipos = CGeoPoint:new_local(9999,9999)
+	local ipos = CGeoPoint:new_local(9999*10,9999*10)
 	local ipower = kp.full()
 	local itarget = CGeoPoint:new_local(param.pitchLength/2.0,0)
     local iflag = flag.kick + flag.safe
@@ -120,7 +120,7 @@ function penaltyTurn(d, k)
 	else
 		k = kick.none
 	end
-	local mexe, mpos = SpeedInRobot{speedW = -11, speedX = 120} -- 点球甩飞改 speedW
+	local mexe, mpos = SpeedInRobot{speedW = -11, speedX = 120*10} -- 点球甩飞改 speedW
 	return {mexe, mpos, k, d, pre.specified(10), kp.full, cp.full, flag.nothing}
 end
 
@@ -249,7 +249,7 @@ function zattack(target, waitpos, p, flag, precision)
 			return player.pos(waitpos)
 		end
 	else
-		iwaitpos = CGeoPoint:new_local(9999,9999)
+		iwaitpos = CGeoPoint:new_local(9999*10,9999*10)
 	end
 
 	if precision ~= nil then
@@ -463,7 +463,7 @@ function goAndTurnKickV4(p, pow, d, f)
 	local mpower
 	--朝向点和方向
 	if p == nil then--不发点则射对方门
-		mpos = CGeoPoint:new_local(600,0)
+		mpos = CGeoPoint:new_local(600*10,0)
 	else
 		if type(p) == "string" then
 			mpos = player.pos(p)
@@ -614,24 +614,24 @@ end
 ------------------------------------ 防守相关的skill ---------------------------------------
 
 function defendDefault(p)
-	local mexe, mpos = GotoMatchPos{ pos = pos.defaultDefPos(p), dir = player.toBallDir, acc = 1200,flag = flag.avoid_stop_ball_circle}
+	local mexe, mpos = GotoMatchPos{ pos = pos.defaultDefPos(p), dir = player.toBallDir, acc = 1200*10,flag = flag.avoid_stop_ball_circle}
 	return {mexe, mpos}
 end
 
 function defendHead(f)
 	local mflag = f or 0
-	local mexe, mpos = GotoMatchPos{ pos = pos.defendHeadPos, dir = player.toBallDir, acc = 800,flag = mflag}
+	local mexe, mpos = GotoMatchPos{ pos = pos.defendHeadPos, dir = player.toBallDir, acc = 800*10,flag = mflag}
 	return {mexe, mpos}
 end
 
 function defendKick(p1,p2,p3,p4,f)
 	local mflag = f or 0
-	local mexe, mpos = SmartGoto{ acc = 800, pos = pos.defendKickPos(p1,p2,p3,p4), dir = player.toBallDir, flag = mflag}
+	local mexe, mpos = SmartGoto{ acc = 800*10, pos = pos.defendKickPos(p1,p2,p3,p4), dir = player.toBallDir, flag = mflag}
 	return {mexe, mpos}
 end
 
 function defendKickDir(p1,p2,p3,p4)
-	local mexe, mpos = SmartGoto{ acc = 800, pos = pos.defendKickPos(p1,p2,p3,p4), dir = player.toTheirGoal}
+	local mexe, mpos = SmartGoto{ acc = 800*10, pos = pos.defendKickPos(p1,p2,p3,p4), dir = player.toTheirGoal}
 	return {mexe, mpos}
 end
 
@@ -642,7 +642,7 @@ function leftBack(p)
 	else
 		ipower = p
 	end
-	local mexe, mpos = GotoMatchPos{ method = 4, acc = 500, pos = pos.leftBackPos, dir = dir.backSmartGotoDir, srole = "leftBack", flag = bit:_or(flag.not_avoid_our_vehicle,flag.not_avoid_their_vehicle, flag.allow_dss)}
+	local mexe, mpos = GotoMatchPos{ method = 4, acc = 500*10, pos = pos.leftBackPos, dir = dir.backSmartGotoDir, srole = "leftBack", flag = bit:_or(flag.not_avoid_our_vehicle,flag.not_avoid_their_vehicle, flag.allow_dss)}
 	return {mexe, mpos, kick.chip, dir.defendBackClear(), pre.fieldDefender(), kp.specified(ipower),cp.specified(ipower), bit:_or(flag.not_avoid_our_vehicle,flag.not_avoid_their_vehicle)}
 end
 
@@ -653,7 +653,7 @@ function rightBack(p)
 	else
 		ipower = p
 	end
-	local mexe, mpos = GotoMatchPos{ method = 4, acc = 500, pos = pos.rightBackPos, dir = dir.backSmartGotoDir, srole = "rightBack", flag = bit:_or(flag.not_avoid_our_vehicle,flag.not_avoid_their_vehicle, flag.allow_dss)}
+	local mexe, mpos = GotoMatchPos{ method = 4, acc = 500*10, pos = pos.rightBackPos, dir = dir.backSmartGotoDir, srole = "rightBack", flag = bit:_or(flag.not_avoid_our_vehicle,flag.not_avoid_their_vehicle, flag.allow_dss)}
 	return {mexe, mpos, kick.chip, dir.defendBackClear(), pre.fieldDefender(), kp.specified(ipower),cp.specified(ipower), bit:_or(flag.not_avoid_our_vehicle,flag.not_avoid_their_vehicle)}
 end
 
@@ -713,7 +713,7 @@ end
 -- end
 
 function singleBack()
-		local mexe, mpos = GotoMatchPos{ method = 1, acc = 1000, pos = pos.singleBackPos, dir = dir.backSmartGotoDir, srole = "singleBack",bit:_or(flag.not_avoid_our_vehicle,flag.not_avoid_their_vehicle, flag.allow_dss)}
+		local mexe, mpos = GotoMatchPos{ method = 1, acc = 1000*10, pos = pos.singleBackPos, dir = dir.backSmartGotoDir, srole = "singleBack",bit:_or(flag.not_avoid_our_vehicle,flag.not_avoid_their_vehicle, flag.allow_dss)}
 		return {mexe, mpos, kick.chip, dir.defendBackClear(), pre.fieldDefender(), kp.specified(300),cp.specified(300), bit:_or(flag.not_avoid_our_vehicle,flag.not_avoid_their_vehicle, flag.allow_dss)}
 	end
 
@@ -739,7 +739,7 @@ function zgoalie(target,p,f)
     elseif target ~= nil then
         ipower = isChip == 0 and kp.toTarget(itarget) or cp.toTarget(itarget)
     else
-        ipower = isChip == 0 and 300 or 80
+        ipower = isChip == 0 and 300*10 or 80*10
     end
     local mexe, mpos = ZGoalie{pos = itarget, power = ipower, flag = iflag}
     return {mexe, mpos}
@@ -781,7 +781,7 @@ function zdrag(p, targetPos)
 			return player.pos(p)
 		end
 	else
-		ipos = CGeoPoint:new_local(9999,9999)
+		ipos = CGeoPoint:new_local(9999*10,9999*10)
 	end
 
 	if type(targetPos) == "function" or type(targetPos) == "userdata" then
@@ -791,7 +791,7 @@ function zdrag(p, targetPos)
 			return player.pos(targetPos)
 		end
 	else
-		itarget = CGeoPoint:new_local(9999,9999)
+		itarget = CGeoPoint:new_local(9999*10,9999*10)
 	end
 	local mexe, mpos = ZDrag{pos = p, target = itarget}
 	return {mexe, mpos}
@@ -830,7 +830,7 @@ function getBallV4(p, waitpos, pow, f)
 	--朝向点和方向
 	if p == nil then--不发点则射对方门
 		--mdir = dir.chase
-		ipos1 = CGeoPoint:new_local(600,0)
+		ipos1 = CGeoPoint:new_local(600*10,0)
 		mdir = dir.compensate(ipos1)
 	else
 		if type(p) == "string" then
@@ -849,7 +849,7 @@ function getBallV4(p, waitpos, pow, f)
 	end
 	--等待点
 	if waitpos == nil then
-		ipos2 = CGeoPoint:new_local(9999,9999)--发一个不在场的点则认为无效
+		ipos2 = CGeoPoint:new_local(9999*10,9999*10)--发一个不在场的点则认为无效
 	elseif type(waitpos) == "string" then
 		ipos2 = player.pos(waitpos)
 	elseif type(waitpos) == "function" then
@@ -943,7 +943,7 @@ function zget(target, waitpos, p, f,freekickflag, precision)
 			return player.pos(waitpos)
 		end
 	else
-		ipos = CGeoPoint:new_local(9999,9999)
+		ipos = CGeoPoint:new_local(9999*10,9999*10)
 	end
 
 	if target ~= nil then
@@ -982,7 +982,7 @@ function staticGetBall(p, anti, f)
 	local ipos
 	local idir
 	if p == nil then
-		ipos = pos.specified(CGeoPoint:new_local(600,0))
+		ipos = pos.specified(CGeoPoint:new_local(600*10,0))
 	elseif type(p) == "string" then
 		ipos = player.pos(p)
 	elseif type(p) == "userdata" then
@@ -1136,15 +1136,15 @@ function  zgetPass(t, w, p, f)
 				infraredCnt = 0
 			end 
 
-			if (Utils.InTheirPenaltyArea(target, 10) and player.toPointDist(runner, CGeoPoint:new_local(param.pitchLength/2.0,0)) < 250) or zpassBuf > 0 then
-				-- print("zgetPass", world:canShootOnBallPos(vision:Cycle(),runner), (infraredCnt <= 3))
-				-- if world:canShootOnBallPos(vision:Cycle(),runner) and infraredCnt <= 3 then
+			if (Utils.InTheirPenaltyArea(target, 10*10) and player.toPointDist(runner, CGeoPoint:new_local(param.pitchLength/2.0,0)) < 250*10) or zpassBuf > 0 then
+				-- print("zgetPass", world:canShootOnBallPos(vision:getCycle(),runner), (infraredCnt <= 3))
+				-- if world:canShootOnBallPos(vision:getCycle(),runner) and infraredCnt <= 3 then
 				-- 	return shoot()
 				-- else
 					if zpassBuf == 0 then
-						zpassBuf = 120
+						zpassBuf = 120*10
 					else
-						zpassBuf = zpassBuf - 1
+						zpassBuf = zpassBuf - 1*10
 					end
 					return zpass()	
 				-- end
@@ -1172,7 +1172,7 @@ function dirrble4ballplace(p)
 		if not player.infraredOn("Special") then
 			return goCmuRush(DRIBBLE_BALL_POS,player.toBallDir,50,flag.our_ball_placement+flag.dribbling+flag.allow_dss)
 		--无红外，吸球
-		elseif player.posX("Special")>-575 and player.posX("Special")<575 and player.posY("Special")>-425 and player.posY("Special")<425 then
+		elseif player.posX("Special")>-575*10 and player.posX("Special")<575*10 and player.posY("Special")>-425*10 and player.posY("Special")<425*10 then
 		--球入场
 			if not player.faceball2target("Special",TargetPos()) then
 				return task.goCmuRush(player.pos("Special"),player.toPointDir(TargetPos),50,flag.our_ball_placement+flag.dribbling)

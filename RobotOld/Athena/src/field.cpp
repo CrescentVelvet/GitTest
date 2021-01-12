@@ -137,7 +137,6 @@ std::thread* score_thread = nullptr;
 
 //multi-car selected
 bool selectRobots;
-int robotAmount;
 int robotID[PARAM::ROBOTNUM];
 int robotTeam;
 auto originRobot = GlobalData::instance()->processRobot[0];
@@ -186,6 +185,9 @@ Field::Field(QQuickItem *parent)
     //setAcceptHoverEvents(true);
     connect(GS, SIGNAL(needRepaint()), this, SLOT(repaint()));
     resetAfterMouseEvent();
+
+    //multi-car selected
+    std::fill_n(robotID, PARAM::ROBOTNUM, -1);
 
     // draw Score
     score_thread = new std::thread([ = ] {receiveScore();});
@@ -263,12 +265,11 @@ void Field::checkClosestRobot(double x, double y) {
     double limit = carDiameter * carDiameter / 4;
     auto& vision = GlobalData::instance()->processRobot[0];
     for(int color = PARAM::BLUE; color <= PARAM::YELLOW; color++) {
-        for(int j = 0; j < vision.robotSize[color]; j++) {
+        for(int j = 0; j < PARAM::ROBOTNUM; j++) {
             auto& robot = vision.robot[color][j];
             if(distance2(robot.pos.x() - x, robot.pos.y() - y) < limit) {
                 if (!selectRobots) {
-                    robotAmount = 1;
-                    robotID[0] = robot.id;
+                    robotID[0] = j;
                     robotTeam = color;
                 }
                 pressedRobot = true;
@@ -282,10 +283,14 @@ void Field::leftMoveEvent(QMouseEvent *e) {
     switch(mouse_modifiers) {
     case Qt::NoModifier :
         if(pressedRobot) {
-            for (int i = 0; i < robotAmount; i++) {
-                //auto dir = GlobalData::instance()->processRobot[0].robot[robotTeam][Maintain::instance()->robotIndex[robotTeam][robotID[i]]].angle;
-                auto dir = GlobalData::instance()->processRobot[0].robot[robotTeam][Maintain::instance()->robotIndex[robotTeam][robotID[i]]].angle;
-                Simulator::instance()->setRobot((rx(e->x()) - rx(LeftEvent::start.x())) / 1000.0 + originRobot.robot[robotTeam][Maintain::instance()->robotIndex[robotTeam][robotID[i]]].pos.x() /1000, ry(e->y())/1000 - ry(LeftEvent::start.y()) / 1000.0 + originRobot.robot[robotTeam][Maintain::instance()->robotIndex[robotTeam][robotID[i]]].pos.y() /1000, robotID[i], robotTeam == PARAM::YELLOW, dir * 180 / M_PI);
+            for (auto& i : robotID) {
+                if (i == -1) continue;
+                auto& robot = originRobot.robot[robotTeam][i];
+                auto dir = robot.angle;
+                Simulator::instance()->setRobot((rx(e->x()) - rx(LeftEvent::start.x())) / 1000.0 + robot.pos.x() /1000, ry(e->y())/1000 - ry(LeftEvent::start.y()) / 1000.0 + robot.pos.y() /1000, i, robotTeam == PARAM::YELLOW, dir * 180 / M_PI);
+//                if (i == 0) qDebug() << "wzdebug: " << (rx(e->x()) - rx(LeftEvent::start.x())) / 1000.0 + robot.pos.x() /1000 << ry(e->y())/1000 - ry(LeftEvent::start.y()) / 1000.0 + robot.pos.y() /1000
+//                                     << rx(LeftEvent::start.y()) / 1000 << robot.pos.y() /1000;
+                //auto dir = GlobalData::instance()->processRobot[0].robot[robotTeam][GlobalData::instance()->maintain[0].robotIndex[robotTeam][robotID[i]]].angle;
             }
         } else {
             Simulator::instance()->setBall(rx(e->x()) / 1000.0, ry(e->y()) / 1000.0);
@@ -330,7 +335,6 @@ void Field::leftCtrlModifierMoveEvent(QMouseEvent *e) {
     auto maxY = std::max(y1, y2);
     if(maxX - minX < MIN_LENGTH * zoomRatio || maxY - minY < MIN_LENGTH * zoomRatio) {
         GlobalSettings::instance()->resetSelectCarArea();
-        robotAmount = 0;
         std::fill_n(robotID, PARAM::ROBOTNUM, -1);
     }
     else {
@@ -343,16 +347,15 @@ void Field::leftCtrlModifierPressEvent(QMouseEvent *e) {
 }
 void Field::leftCtrlModifierReleaseEvent(QMouseEvent *e) {
     leftCtrlModifierMoveEvent(e);
-    robotAmount = 0;
+    selectRobots = false;
     auto& vision = GlobalData::instance()->processRobot[0];
-    for(int j = 0; j < vision.robotSize[robotTeam]; j++) {
+    for(int j = 0; j < PARAM::ROBOTNUM ; j++) {
         auto& robot = vision.robot[robotTeam][j];
         if(robot.pos.x() < GS->selectCarMaxX && robot.pos.x() > GS->selectCarMinX && robot.pos.y() < GS->selectCarMaxY && robot.pos.y() > GS->selectCarMinY) {
-            robotAmount++;
-            robotID[robotAmount-1] = robot.id;
+            robotID[j] = j;
+            selectRobots = true;
         }
     }
-    selectRobots = robotAmount > 0 ? true : false;
     GlobalSettings::instance()->resetSelectCarArea();
 }
 void Field::leftAltModifierMoveEvent(QMouseEvent *e) {
@@ -366,7 +369,6 @@ void Field::leftAltModifierMoveEvent(QMouseEvent *e) {
     auto maxY = std::max(y1, y2);
     if(maxX - minX < MIN_LENGTH * zoomRatio || maxY - minY < MIN_LENGTH * zoomRatio) {
         GlobalSettings::instance()->resetSelectCarArea();
-        robotAmount = 0;
         std::fill_n(robotID, PARAM::ROBOTNUM, -1);
     }
     else {
@@ -379,16 +381,15 @@ void Field::leftAltModifierPressEvent(QMouseEvent *e) {
 }
 void Field::leftAltModifierReleaseEvent(QMouseEvent *e) {
     leftAltModifierMoveEvent(e);
-    robotAmount = 0;
+    selectRobots = false;
     auto& vision = GlobalData::instance()->processRobot[0];
-    for(int j = 0; j < vision.robotSize[robotTeam]; j++) {
+    for(int j = 0; j < PARAM::ROBOTNUM ; j++) {
         auto& robot = vision.robot[robotTeam][j];
         if(robot.pos.x() < GS->selectCarMaxX && robot.pos.x() > GS->selectCarMinX && robot.pos.y() < GS->selectCarMaxY && robot.pos.y() > GS->selectCarMinY) {
-            robotAmount++;
-            robotID[robotAmount-1] = robot.id;
+            robotID[j] = j;
+            selectRobots = true;
         }
     }
-    selectRobots = robotAmount > 0 ? true : false;
     GlobalSettings::instance()->resetSelectCarArea();
 }
 void Field::rightMoveEvent(QMouseEvent *e) {
@@ -396,9 +397,10 @@ void Field::rightMoveEvent(QMouseEvent *e) {
     if(pressedRobot) {
         displayData = -line.angle();
         if(displayData < -180) displayData += 360;
-        for (int i = 0; i < robotAmount; i ++) {
-            auto& robot = GlobalData::instance()->processRobot[0].robot[robotTeam][Maintain::instance()->robotIndex[robotTeam][robotID[i]]];
-            Simulator::instance()->setRobot(robot.pos.x() /1000, robot.pos.y() /1000, robotID[i], robotTeam == PARAM::YELLOW, displayData);
+        for (auto& i : robotID) {
+            if (i == -1) continue;
+            auto& robot = GlobalData::instance()->processRobot[0].robot[robotTeam][i];
+            Simulator::instance()->setRobot(robot.pos.x() /1000, robot.pos.y() /1000, i, robotTeam == PARAM::YELLOW, displayData);
         }
     } else {
         displayData = ballRatio * line.length() / 1000.0;
@@ -689,9 +691,10 @@ void Field::drawMaintainVision(int index) {
     auto last_touch_team = GlobalData::instance()->lastTouch < PARAM::ROBOTMAXID ? PARAM::BLUE : PARAM::YELLOW;
     if (last_touch < PARAM::ROBOTMAXID)
         for(int color = PARAM::BLUE; color <= PARAM::YELLOW; color++) {
-            for(int j = 0; j < robot_vision.robotSize[color]; j++) {
+            for(int j = 0; j < PARAM::ROBOTNUM; j++) {
                 auto& robot = robot_vision.robot[color][j];
-                paintCar(CAR_COLOR[color], robot.id, robot.pos.x(), robot.pos.y(), robot.angle, true, FONT_COLOR[color], robot.id == last_touch && color == last_touch_team);
+                if (!robot.valid) continue;
+                paintCar(CAR_COLOR[color], j, robot.pos.x(), robot.pos.y(), robot.angle, true, FONT_COLOR[color], j == last_touch && color == last_touch_team);
 //            paintCarShadow(robot.pos.x(), robot.pos.y(), robot.angle);
             }
         }
@@ -701,15 +704,15 @@ void Field::drawMaintainVision(int index) {
     for(int color = PARAM::BLUE; color <= PARAM::YELLOW; color++) {
       //  for(int j = 0; j < maintain.robotSize[color]; j++) {
         for(int j = 0; j < PARAM::ROBOTNUM; j++) {
-            if(!maintain.robot[color][j].valid) continue;
             auto& robot = maintain.robot[color][j];//change by lzx
+            if(!robot.valid) continue;
             paintCarShadow(CAR_SHADOW[color],robot.pos.x(), robot.pos.y(), robot.angle);
         }
     }
     for(int j = 0; j < maintain.ballSize; j++) {
         auto& ball = maintain.ball[j];
-        paintBall(ball.valid ? COLOR_ORANGE : COLOR_ORANGE_SHADOW, ball.pos.x(), ball.pos.y());
-        paintFocus(ball.valid ? COLOR_RED : COLOR_RED_SHADOW, ball.pos.x(), ball.pos.y(), 500, ballFocusCount++);
+        paintBall(maintain.isBallValid ? COLOR_ORANGE : COLOR_ORANGE_SHADOW, ball.pos.x(), ball.pos.y());
+        paintFocus(maintain.isBallValid ? COLOR_RED : COLOR_RED_SHADOW, ball.pos.x(), ball.pos.y(), 500, ballFocusCount++);
     }
 }
 void Field::paintCar(const QColor& color, quint8 num, qreal x, qreal y, qreal radian, bool ifDrawNum, const QColor& textColor, bool needCircle) {
@@ -738,8 +741,9 @@ void Field::paintCar(const QColor& color, quint8 num, qreal x, qreal y, qreal ra
 void Field::paintSelectedCar() {
     static qreal radius = carDiameter / 2.0;
     static qreal chordAngel = qRadiansToDegrees(qAcos(1.0 * carFaceWidth / carDiameter));
-    for (int i = 0; i < robotAmount; i++) {
-        auto robot = GlobalData::instance()->processRobot[0].robot[robotTeam][Maintain::instance()->robotIndex[robotTeam][robotID[i]]];
+    for (auto& i : robotID) {
+        if (i == -1) continue;
+        auto& robot = GlobalData::instance()->processRobot[0].robot[robotTeam][i];
         pixmapPainter.setBrush(Qt::NoBrush);
         pixmapPainter.setPen(QPen(COLOR_GREEN, ::w(50)));
         pixmapPainter.drawChord(QRectF(::x(robot.pos.x() - radius), ::y(robot.pos.y() - radius), ::w(2 * radius), ::h(2 * radius)), ::a(90.0 - chordAngel + 180 / M_PI * robot.angle), ::r(180.0 + 2 * chordAngel));
@@ -780,10 +784,11 @@ void Field::paintFocus(const QColor& color, qreal x, qreal y, qreal radian, qrea
 }
 void Field::drawVision(const OriginMessage &vision, bool shadow) {
     for(int color = PARAM::BLUE; color <= PARAM::YELLOW; color++) {
-        for(int j = 0; j < vision.robotSize[color]; j++) {
+        for(int j = 0; j < PARAM::ROBOTNUM; j++) {
             auto& robot = vision.robot[color][j];
+            if (!robot.valid) continue;
             if(!shadow) {
-                paintCar(CAR_COLOR[color], robot.id, robot.pos.x(), robot.pos.y(), robot.angle, true, FONT_COLOR[color]);
+                paintCar(CAR_COLOR[color], j, robot.pos.x(), robot.pos.y(), robot.angle, true, FONT_COLOR[color]);
             } else {
                 paintShadow(CAR_SHADOW[color], robot.pos.x(), robot.pos.y());
             }
@@ -819,7 +824,7 @@ void Field::drawSelectedArea() {
     pixmapPainter.drawRect(QRectF(::x(GS->selectCarMinX), ::y(GS->selectCarMinY), ::w(GS->selectCarMaxX - GS->selectCarMinX), ::h(GS->selectCarMaxY - GS->selectCarMinY)));
 }
 void Field::drawDebugMessages(int team) {
-    int oldFlag = GlobalSettings::instance()->oldLogFlag;
+//    int oldFlag = GlobalSettings::instance()->oldLogFlag;
     static qreal chordAngel = qRadiansToDegrees(qAcos(1.0 * carFaceWidth / carDiameter));
     static ZSS::Protocol::Debug_Msgs msgs;
     GlobalData::instance()->debugMutex.lock();
@@ -862,31 +867,31 @@ void Field::drawDebugMessages(int team) {
             miny = std::min(y1,y2);
             maxx = std::max(x1,x2);
             maxy = std::max(y1,y2);
-            pixmapPainter.drawArc(QRectF( ::x(double(minx) * 10),
-                                          ::y(double(miny * oldFlag) * 10),
-                                          ::w((maxx - minx) * 10),
-                                          ::h((maxy - miny) * oldFlag * 10)),
+            pixmapPainter.drawArc(QRectF( ::x(double(minx)),
+                                          ::y(double(miny)),
+                                          ::w((maxx - minx)),
+                                          ::h((maxy - miny))),
                                   msg.arc().start() * 16,
                                   msg.arc().end() * 16);
 
             break;
         case ZSS::Protocol::Debug_Msg_Debug_Type_LINE:
-            pixmapPainter.drawLine(::x(msg.line().start().x() * 10), ::y(msg.line().start().y() * 10 * oldFlag), ::x(msg.line().end().x() * 10), ::y(msg.line().end().y() * 10 * oldFlag));
+            pixmapPainter.drawLine(::x(msg.line().start().x()), ::y(msg.line().start().y()), ::x(msg.line().end().x()), ::y(msg.line().end().y()));
             break;
         case ZSS::Protocol::Debug_Msg_Debug_Type_Points: {
             QVector<QLine> lines;
             for(int i = 0; i < msg.points().point_size(); i++) {
-                lines.push_back(QLine(::x((msg.points().point(i).x() + debugPointSize) * 10), ::y((msg.points().point(i).y() + debugPointSize) * oldFlag * 10), ::x((msg.points().point(i).x() - debugPointSize) * 10), ::y((msg.points().point(i).y() - debugPointSize) * 10)));
-                lines.push_back(QLine(::x((msg.points().point(i).x() - debugPointSize) * 10), ::y((msg.points().point(i).y() + debugPointSize) * oldFlag * 10), ::x((msg.points().point(i).x() + debugPointSize) * 10), ::y((msg.points().point(i).y() - debugPointSize) * 10)));
+                lines.push_back(QLine(::x((msg.points().point(i).x() + debugPointSize)), ::y((msg.points().point(i).y() + debugPointSize)), ::x((msg.points().point(i).x() - debugPointSize)), ::y((msg.points().point(i).y() - debugPointSize))));
+                lines.push_back(QLine(::x((msg.points().point(i).x() - debugPointSize)), ::y((msg.points().point(i).y() + debugPointSize)), ::x((msg.points().point(i).x() + debugPointSize)), ::y((msg.points().point(i).y() - debugPointSize))));
             }
             pixmapPainter.drawLines(lines);
             break;
         }
         case ZSS::Protocol::Debug_Msg_Debug_Type_TEXT:
-            pixmapPainter.drawText(QPointF(::x(msg.text().pos().x() * 10), ::y(msg.text().pos().y() * oldFlag * 10)), QString::fromStdString(msg.text().text()));
+            pixmapPainter.drawText(QPointF(::x(msg.text().pos().x()), ::y(msg.text().pos().y())), QString::fromStdString(msg.text().text()));
             break;
         case ZSS::Protocol::Debug_Msg_Debug_Type_ROBOT:
-            pixmapPainter.drawChord(QRectF(::x((msg.robot().pos().x() * 10) - 1.2*carDiameter / 2.0), ::y((msg.robot().pos().y() * oldFlag * 10) + 1.2*carDiameter / 2.0), ::w((1.2*carDiameter)), ::h(-(1.2*carDiameter))),::a(90.0 - chordAngel - msg.robot().dir()), ::r(180.0 + 2 * chordAngel));
+            pixmapPainter.drawChord(QRectF(::x((msg.robot().pos().x()) - 1.2*carDiameter / 2.0), ::y((msg.robot().pos().y()) + 1.2*carDiameter / 2.0), ::w((1.2*carDiameter)), ::h(-(1.2*carDiameter))),::a(90.0 - chordAngel - msg.robot().dir()), ::r(180.0 + 2 * chordAngel));
             break;
         //case Debug_Msg_Debug_Type_CURVE:
         //case Debug_Msg_Debug_Type_POLYGON:
@@ -981,7 +986,7 @@ void Field::parseScores(QUdpSocket* const socket) {
             for(int k = 0; k < size; k++) {
                 auto p = score.p(k);
                 score_mutex.lock();
-                scorePainter.drawRect(QRectF(::x(p.x() * 10), ::y(-p.y() * 10), ::w(RECT_SIZE), ::h(-RECT_SIZE)));
+                scorePainter.drawRect(QRectF(::x(p.x()), ::y(p.y()), ::w(RECT_SIZE), ::h(-RECT_SIZE)));
                 score_mutex.unlock();
             }
         }

@@ -1,20 +1,20 @@
 local USE_ZPASS = gOppoConfig.USE_ZPASS
 
-local WAIT_POS = ball.refSyntYPos(CGeoPoint:new_local(485, -135))
+local WAIT_POS = ball.refSyntYPos(CGeoPoint:new_local(4850, -1350))
 
-local FAKE_POS1 = ball.refSyntYPos(CGeoPoint:new_local(40, -120))
-local FAKE_POS2 = ball.refSyntYPos(CGeoPoint:new_local(320, -280))
-local FAKE_POS3 = ball.refSyntYPos(CGeoPoint:new_local(595, -170))
+local FAKE_POS1 = ball.refSyntYPos(CGeoPoint:new_local(400, -1200))
+local FAKE_POS2 = ball.refSyntYPos(CGeoPoint:new_local(3200, -2800))
+local FAKE_POS3 = ball.refSyntYPos(CGeoPoint:new_local(5950, -1700))
 
-local PULLING_POS1 = ball.refSyntYPos(CGeoPoint:new_local(320, -330))
-local PULLING_POS2 = ball.refSyntYPos(CGeoPoint:new_local(580, -300))
+local PULLING_POS1 = ball.refSyntYPos(CGeoPoint:new_local(3200, -3300))
+local PULLING_POS2 = ball.refSyntYPos(CGeoPoint:new_local(5800, -3000))
 
-local STATIC_POS1 = ball.refSyntYPos(CGeoPoint:new_local(400, 165))
-local STATIC_POS2 = ball.refSyntYPos(CGeoPoint:new_local(345, 300))
-local STATIC_POS3 = ball.refSyntYPos(CGeoPoint:new_local(345, 0))
-local STATIC_POS4 = ball.refSyntYPos(CGeoPoint:new_local(300, -170))
+local STATIC_POS1 = ball.refSyntYPos(CGeoPoint:new_local(4000, 1650))
+local STATIC_POS2 = ball.refSyntYPos(CGeoPoint:new_local(3450, 3000))
+local STATIC_POS3 = ball.refSyntYPos(CGeoPoint:new_local(3450, 0))
+local STATIC_POS4 = ball.refSyntYPos(CGeoPoint:new_local(3000, -1700))
 
-local WAIT_POS3 = ball.refSyntYPos(CGeoPoint:new_local(350, 300))
+local WAIT_POS3 = ball.refSyntYPos(CGeoPoint:new_local(3500, 3000))
 
 local DSS_FLAG = bit:_or(flag.allow_dss, flag.dodge_ball) + flag.free_kick
 local PASS_POS = pos.passForTouch(WAIT_POS)
@@ -22,20 +22,20 @@ local PASS_POS = pos.passForTouch(WAIT_POS)
 local CHIP_BUF
 
 local HALF_POS = {
-  ball.refSyntYPos(CGeoPoint:new_local(40, 90)),
-  ball.refSyntYPos(CGeoPoint:new_local(40, 60)),
-  ball.refSyntYPos(CGeoPoint:new_local(40, 30)),
-  ball.refSyntYPos(CGeoPoint:new_local(40, 0)),
-  ball.refSyntYPos(CGeoPoint:new_local(40, -30)),
-  ball.refSyntYPos(CGeoPoint:new_local(40, -60)),
-  ball.refSyntYPos(CGeoPoint:new_local(40, -90))
+  ball.refSyntYPos(CGeoPoint:new_local(400, 900)),
+  ball.refSyntYPos(CGeoPoint:new_local(400, 600)),
+  ball.refSyntYPos(CGeoPoint:new_local(400, 300)),
+  ball.refSyntYPos(CGeoPoint:new_local(400, 00)),
+  ball.refSyntYPos(CGeoPoint:new_local(400, -300)),
+  ball.refSyntYPos(CGeoPoint:new_local(400, -600)),
+  ball.refSyntYPos(CGeoPoint:new_local(400, -900))
 }
 local HALF_TEST = gOppoConfig.IfHalfField
 gPlayTable.CreatePlay{
   firstState = "start",
   ["start"] = {
   switch = function()
-    if  bufcnt(player.toTargetDist("Leader") < 20, 20) then
+    if  bufcnt(player.toTargetDist("Leader") < 200, 20) then
       return "fakeAction1"
     end
   end,
@@ -52,7 +52,7 @@ gPlayTable.CreatePlay{
 
   ["fakeAction1"] = {
   switch = function()
-    if  bufcnt(player.toTargetDist("Leader") < 20, 30) then
+    if  bufcnt(player.toTargetDist("Leader") < 200, 30) then
       return "fakeAction2"
     end
   end,
@@ -69,7 +69,7 @@ gPlayTable.CreatePlay{
 
   ["fakeAction2"] = {
   switch = function()
-    if  bufcnt(player.toTargetDist("Leader") < 30, 10) then
+    if  bufcnt(player.toTargetDist("Leader") < 300, 10) then
       CHIP_BUF = cp.getFixBuf(WAIT_POS)
       return "waitchip"
     end

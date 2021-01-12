@@ -33,11 +33,11 @@ bool isPointOutField(CGeoPoint pos)
 }
 void ContactChecker::OutFieldJudge(const CVisionModule* pVision)
 {
-	MobileVisionT last_ball=pVision->Ball(pVision->Cycle()-4);
-	if (pVision->Ball().Valid()&&isPointOutField(pVision->Ball().Pos())){
+	MobileVisionT last_ball=pVision->ball(pVision->getCycle()-4);
+	if (pVision->ball().Valid()&&isPointOutField(pVision->ball().Pos())){
 		_isBallOutField=true;
 	}
-	if (!pVision->Ball().Valid()&&last_ball.Valid()&&!isPointOutField(last_ball.Pos()))
+	if (!pVision->ball().Valid()&&last_ball.Valid()&&!isPointOutField(last_ball.Pos()))
 	{
 		CGeoPoint out_pos=last_ball.Pos()+last_ball.Vel()/15.0;
 		if (isPointOutField(out_pos))
@@ -47,7 +47,7 @@ void ContactChecker::OutFieldJudge(const CVisionModule* pVision)
 	}
 	if (_outFieldCycle==0&&_isBallOutField)
 	{
-		_outFieldCycle=pVision->Cycle();
+		_outFieldCycle=pVision->getCycle();
 	}
 	/*{
 		int counter=0;
@@ -67,26 +67,26 @@ void ContactChecker::OutFieldJudge(const CVisionModule* pVision)
 }
 void ContactChecker::prepareJudge(const CVisionModule* pVision)
 {
-	cycle=pVision->Cycle();
-    _ball=pVision->Ball();
-    _lastball=pVision->Ball(cycle-5);
+	cycle=pVision->getCycle();
+    _ball=pVision->ball();
+    _lastball=pVision->ball(cycle-5);
 	AllPlayer.clear();
 	for (int i=1;i<=6;i++) {
-		AllPlayer.push_back(pVision->OurPlayer(i));
+		AllPlayer.push_back(pVision->ourPlayer(i));
 	}
 	for (int i=1;i<=6;i++) {
-		AllPlayer.push_back(pVision->TheirPlayer(i));
+		AllPlayer.push_back(pVision->theirPlayer(i));
 	}
 	_last_contact.frame=0;
 	_last_contact.robotnum=0;
 	_last_contact.type=0;
 
-	ball_direction_before=pVision->Ball(cycle-3).Vel();
-	ball_direction_after=pVision->Ball().Vel();
+	ball_direction_before=pVision->ball(cycle-3).Vel();
+	ball_direction_after=pVision->ball().Vel();
 	speed_before = ball_direction_before.mod();
 	speed_after = ball_direction_after.mod();
-	speed_diff_percept = (pVision->Ball().Vel()-pVision->Ball(cycle-3).Vel()).mod();
-	angle_to = (pVision->Ball().Vel().dir()-pVision->Ball(cycle-3).Vel().dir())/Param::Math::PI*180;
+	speed_diff_percept = (pVision->ball().Vel()-pVision->ball(cycle-3).Vel()).mod();
+	angle_to = (pVision->ball().Vel().dir()-pVision->ball(cycle-3).Vel().dir())/Param::Math::PI*180;
 
 	_isJudged=false;
 }
@@ -255,7 +255,7 @@ void ContactChecker::ballMovingJudge(const CVisionModule* pVision)
 		int couter=0;
 		for(int i=0;i<=5;i++)
 		{
-			if (pVision->Ball(pVision->Cycle()-i).Valid()&&pVision->Ball(pVision->Cycle()-i).Vel().mod()>10)
+			if (pVision->ball(pVision->getCycle()-i).Valid()&&pVision->ball(pVision->getCycle()-i).Vel().mod()>10)
 			{
 				couter++;
 			}
@@ -353,7 +353,7 @@ void ContactChecker::refereeJudge(const CVisionModule* pVision)
 {
 	prepareJudge(pVision);
 	OutFieldJudge(pVision);
-	if (pVision->GetCurrentRefereeMsg()!="GameStop"&&pVision->GetCurrentRefereeMsg()!="GameHalt"&&pVision->RawBall().Valid()){
+    if (pVision->getCurrentRefereeMsg()!="GameStop"&&pVision->getCurrentRefereeMsg()!="GameHalt"&&pVision->rawBall().Valid()){
 		ContactCheck(pVision);	
 	}			
 	//if ( pVision->_refereeMsg <2&&pVision->_lastRefereeMsg>=2) {
@@ -363,8 +363,8 @@ void ContactChecker::refereeJudge(const CVisionModule* pVision)
 	//		//_lastContactReliable=false;
 	//	}
 	//}
-	if ((pVision->GetCurrentRefereeMsg()!="GameStop"||pVision->GetCurrentRefereeMsg()!="GameHalt")
-		&&(pVision->GetLastRefereeMsg()=="GameStop"||pVision->GetLastRefereeMsg()=="GameHalt"))
+    if ((pVision->getCurrentRefereeMsg()!="GameStop"||pVision->getCurrentRefereeMsg()!="GameHalt")
+        &&(pVision->getLastRefereeMsg()=="GameStop"||pVision->getLastRefereeMsg()=="GameHalt"))
 	{
 		_outFieldCycle=0;
 		_isBallOutField=false;

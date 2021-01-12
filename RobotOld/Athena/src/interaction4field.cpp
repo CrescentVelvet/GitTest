@@ -15,9 +15,9 @@ void Interaction4Field::resetArea(){
 void Interaction4Field::setSize(int width,int height){
     Field::setSize(width,height);
 }
-void Interaction4Field::setOldLogFlag(bool old) {
-    GlobalSettings::instance()->setOldLogFlag(old);
-}
+//void Interaction4Field::setOldLogFlag(bool old) {
+//    GlobalSettings::instance()->setOldLogFlag(old);
+//}
 //void Interaction4Field::setPlacementPoint(int x,int y){
 //    GlobalSettings::instance()->setBallPlacementPos(x,y);
 //}
@@ -26,11 +26,11 @@ void Interaction4Field::setCtrlC(){
     GlobalData::instance()->ctrlC = !GlobalData::instance()->ctrlC;
     GlobalData::instance()->ctrlCMutex.unlock();
 }
-int Interaction4Field::getRealX(int x){// cm
-    return (int)Field::fieldXFromCoordinate(x)/10;
+int Interaction4Field::getRealX(int x){// mm
+    return (int)Field::fieldXFromCoordinate(x);
 }
-int Interaction4Field::getRealY(int y){// cm
-    return (int)Field::fieldYFromCoordinate(y)/10;
+int Interaction4Field::getRealY(int y){// mm
+    return (int)Field::fieldYFromCoordinate(y);
 }
 void Interaction4Field::setRecorder(bool isRecording) {
     if (isRecording) {

@@ -6,7 +6,7 @@ namespace {
 
 	double getPotential(const CVisionModule* pVision, int vecNum, MunkresTacticPosition mtp) {
 		// TODO 暂时只考虑 车到点 的距离
-		CVector player2pos = pVision->OurPlayer(vecNum).Pos() - mtp._pos;
+		CVector player2pos = pVision->ourPlayer(vecNum).Pos() - mtp._pos;
 		return player2pos.mod2()/4.0;
 	}
 

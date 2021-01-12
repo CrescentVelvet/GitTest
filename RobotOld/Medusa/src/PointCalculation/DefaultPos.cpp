@@ -139,9 +139,9 @@ CGeoPoint CDefaultPos::generatePos(const CVisionModule* pVision){
 	const string refMsg = WorldModel::Instance()->CurrentRefereeMsg();
 	if ("TheirIndirectKick" == refMsg || "TheirDirectKick" == refMsg || "TheirKickOff" == refMsg || "GameStop" == refMsg)
 	{
-		if (_default[2].dist(vision->Ball().Pos()) < 60)
+		if (_default[2].dist(vision->ball().Pos()) < 60)
 		{
-			CGeoCirlce ballCircle = CGeoCirlce(vision->Ball().Pos(),80);
+			CGeoCirlce ballCircle = CGeoCirlce(vision->ball().Pos(),80);
 			CGeoLine baseLine = CGeoLine(_default[0],_default[1]);
 			CGeoLineCircleIntersection baseIntersect = CGeoLineCircleIntersection(baseLine,ballCircle);
 			if (baseIntersect.intersectant())
@@ -164,15 +164,15 @@ CGeoPoint CDefaultPos::generatePos(const CVisionModule* pVision){
 bool CDefaultPos::inCourt(int side, int enemyNum){
 	bool result = false;
 	if (side == -1){
-		if (vision->TheirPlayer(enemyNum).Y() < -Param::Field::PITCH_WIDTH/4){
+		if (vision->theirPlayer(enemyNum).Y() < -Param::Field::PITCH_WIDTH/4){
 			result = true;
 		}
 	}else if (side == 0){
-		if (vision->TheirPlayer(enemyNum).Y()>= - Param::Field::PITCH_WIDTH/4 && vision->TheirPlayer(enemyNum).Y()<= Param::Field::PITCH_WIDTH/4){
+		if (vision->theirPlayer(enemyNum).Y()>= - Param::Field::PITCH_WIDTH/4 && vision->theirPlayer(enemyNum).Y()<= Param::Field::PITCH_WIDTH/4){
 			result = true;
 		}
 	}else if (side == 1){
-		if (vision->TheirPlayer(enemyNum).Y()>Param::Field::PITCH_WIDTH/4){
+		if (vision->theirPlayer(enemyNum).Y()>Param::Field::PITCH_WIDTH/4){
 			result = true;
 		}
 	}
@@ -189,7 +189,7 @@ void CDefaultPos::updateDefInfo(){
 		if (DefenceInfo::Instance()->getOppPlayerByNum(i)->isTheRole("RDefender")){
 			Defender tmpDef;
 			tmpDef.defender = DefenceInfo::Instance()->getOppPlayerByNum(i)->getNum();
-			tmpDef.pos = vision->TheirPlayer(tmpDef.defender).Pos();
+			tmpDef.pos = vision->theirPlayer(tmpDef.defender).Pos();
 			if (inCourt(-1,tmpDef.defender)){
 				tmpDef.side = -1;
 				_leftDefList.push_back(tmpDef.defender);
@@ -206,10 +206,10 @@ void CDefaultPos::updateDefInfo(){
 }
 
 CGeoPoint CDefaultPos::getDefaultPosbyIndex(int index){
-	if (vision->Cycle() == _lastCycle){
+	if (vision->getCycle() == _lastCycle){
 		return _default[index];
 	} else{
-		_lastCycle = vision->Cycle();
+		_lastCycle = vision->getCycle();
 	}
 	generatePos(vision);
 	return _default[index];

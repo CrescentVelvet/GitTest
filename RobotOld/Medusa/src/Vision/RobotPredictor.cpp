@@ -34,7 +34,7 @@ CRobotPredictor::CRobotPredictor(bool isHasRotation) : _robotLostTime(0), _isHas
 //        _robotFilter.initialize(Param::File::RobotPosFilterDir + "slowMatrices.txt", Param::File::RobotPosFilterDir + "fastMatrices.txt");
 //    }
 }
-void CRobotPredictor::updateVision(int cycle, const VehicleInfoT& player, const MobileVisionT& ball, bool invert, int realNum) {
+void CRobotPredictor::updateVision(int cycle, const VehicleInfoT& player, const MobileVisionT& ball, bool invert) {
     // !!!!这里好像有问题:
     // 如果是对手车也能识别朝向,就会调用updateOurVision, 但因为在该函数里取不到cmd(只有我方车才有cmd存下来), 结果就不对.
     // 这里需要一个辨别我方车与对方车的方式!!
@@ -67,7 +67,6 @@ void CRobotPredictor::updateVision(int cycle, const VehicleInfoT& player, const 
     _collisionSimulator.reset(ball.RawPos(), ball.Vel()); // 初始化球的信息(对手没有朝向信息)
 
     predictedVision.cycle = cycle;
-    predictedVision.realNum = realNum;
     predictedVision.SetRawPos(raw_x, raw_y);
     predictedVision.SetPos(x, y);
     predictedVision.SetDir(dir);
@@ -451,7 +450,6 @@ void CRobotPredictor::predictLost(int cycle, const MobileVisionT & ball) {
         //cout<<"x: "<<lastCycle.Pos().x()<<"     "<<"y: "<<lastCycle.Pos().y()<<endl;
         thisCycle.SetDir(lastCycle.Dir());
         //cout<<"dir: "<<lastCycle.Dir()<<endl;
-        thisCycle.realNum = lastCycle.realNum;
         // 我方用命令代替速度
         if (_isHasRotation) {
             if( _commandLogger.commandValid(cycle - 1) ) {

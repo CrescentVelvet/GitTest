@@ -21,7 +21,7 @@ const CVector CWorldModel::self2ball(int current_cycle,  int myNum) {
 	static CVector _self2ball[Param::Field::MAX_PLAYER];
 
 	if (last_cycle[myNum-1] < current_cycle) {
-		_self2ball[myNum-1] = _pVision->Ball().Pos() - _pVision->OurPlayer(myNum).Pos();
+		_self2ball[myNum-1] = _pVision->ball().Pos() - _pVision->ourPlayer(myNum).Pos();
 		last_cycle[myNum-1] = current_cycle;
 	}
 
@@ -40,5 +40,5 @@ double CWorldModel::self2ballDir(int current_cycle,  int myNum,  int enemyNum) {
 
 const string CWorldModel::CurrentRefereeMsg()
 {
-	return vision()->GetCurrentRefereeMsg();
+	return vision()->getCurrentRefereeMsg();
 }

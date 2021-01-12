@@ -4,7 +4,7 @@
 -- 其区别是gOurIndirectTable中的元素为状态保持量，而local变量为时时控制量
 
 -- 在进入每一个定位球时，需要在第一次进时进行保持
-if vision:Cycle() - gOurIndirectTable.lastRefCycle > 6 then
+if vision:getCycle() - gOurIndirectTable.lastRefCycle > 6 then
     if type(gOppoConfig.CornerKick) == "function" then
     	gCurrentPlay = cond.getOpponentScript("Ref_CornerKickV",gOppoConfig.CornerKick(),20)
     else

@@ -18,17 +18,17 @@ module(..., package.seeall)
 
 
 maxPlayer   = 16
-pitchLength = 1200
-pitchWidth  = 900
-goalWidth = 120
-goalDepth = 20
-freeKickAvoidBallDist = 50
-playerRadius	= 9
-penaltyWidth    = 240
-penaltyDepth	= 120
-penaltyRadius	= 100
-penaltySegment	= 50
-playerFrontToCenter = 7.6
+pitchLength = 12000
+pitchWidth  = 9000
+goalWidth = 1200
+goalDepth = 200
+freeKickAvoidBallDist = 500
+playerRadius	= 90
+penaltyWidth    = 2400
+penaltyDepth	= 1200
+penaltyRadius	= 1000
+penaltySegment	= 500
+playerFrontToCenter = 76
 lengthRatio	= 1.5
 widthRatio	= 1.5
 stopRatio = 1.1

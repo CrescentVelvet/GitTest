@@ -51,7 +51,7 @@ public:
 	///
 	/// <returns>	true if it succeeds, false if it fails. </returns>
 
-	bool sendAction(unsigned char robotIndex[]);
+    bool sendAction();
 
 	/// <summary>	停止小车运动下发接口，Stop action command send interface， Wireless off,TODO. </summary>
 	///
@@ -61,7 +61,7 @@ public:
 	///
 	/// <returns>	true if it succeeds, false if it fails. </returns>
 
-	bool sendNoAction(unsigned char robotIndex[]);
+    bool sendNoAction();
 
 	/// <summary>	停止小车运动下发接口，Stop all command send interface, Error Stop, TODO. </summary>
 	///

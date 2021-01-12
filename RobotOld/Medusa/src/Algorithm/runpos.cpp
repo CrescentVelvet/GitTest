@@ -55,7 +55,7 @@ void RunPos::generateRunPos(const CVisionModule* pVision, const CGeoPoint& avoid
 }
 
 void RunPos::generateBroad() {
-    const MobileVisionT& ball = _pVision->Ball();
+    const MobileVisionT& ball = _pVision->ball();
     float bx = ball.X(), by = ball.Y();
     if (ball.X() > 0) {
         MIDDLE_LEFT_AREA = CGeoRectangle((bx > Param::Field::PITCH_LENGTH / 4 ? bx - Param::Field::PITCH_LENGTH / 4 : 0), (by > 0 ? - Param::Field::PITCH_WIDTH / 2 + by / 2 : - Param::Field::PITCH_WIDTH / 2), (bx > Param::Field::PITCH_LENGTH / 4 ? Param::Field::PITCH_LENGTH / 8 + bx / 2 : Param::Field::PITCH_LENGTH / 4), by / 2);
@@ -79,14 +79,14 @@ void RunPos::generateBroad() {
 void RunPos::selectAreaBestPoint(int areaNum) {
     CGeoPoint bestCandidate(9999,9999);
     float bestScore = -9999;
-    for (float bx = ATTACK_AREA[areaNum]._point[0].x() + 1; bx < ATTACK_AREA[areaNum]._point[2].x(); bx += 20) {
-        for (float by = ATTACK_AREA[areaNum]._point[0].y() + 1; by < ATTACK_AREA[areaNum]._point[2].y(); by += 20) {
+    for (float bx = ATTACK_AREA[areaNum]._point[0].x() + 1; bx < ATTACK_AREA[areaNum]._point[2].x(); bx += 200) {
+        for (float by = ATTACK_AREA[areaNum]._point[0].y() + 1; by < ATTACK_AREA[areaNum]._point[2].y(); by += 200) {
             CGeoPoint candidate(bx, by);
             // 排除禁區
-            if(Utils::InTheirPenaltyArea(candidate, 18))
+            if(Utils::InTheirPenaltyArea(candidate, 180))
                 continue;
             //排除过于边界的点
-            if(Utils::OutOfField(candidate, 28))
+            if(Utils::OutOfField(candidate, 280))
                 continue;
 
             std::vector<float> posScores = evaluateFunc(_pVision,candidate);
@@ -114,13 +114,13 @@ std::vector<float> RunPos::evaluateFunc(const CVisionModule* pVision, const CGeo
     const CValueRangeList& shootRange = shootRangeList.getShootRange();
     if (shootRange.size() > 0) {
         auto bestRange = shootRange.getMaxRangeWidth();
-        if (bestRange && bestRange->getWidth() > Param::Field::BALL_SIZE + 5) {	// 要求射门空档足够大
+        if (bestRange && bestRange->getWidth() > Param::Field::BALL_SIZE + 50) {	// 要求射门空档足够大
             shootAngle = bestRange->getWidth() > RUNPOS_PARAM::maxShootAngle ? RUNPOS_PARAM::maxShootAngle : bestRange->getWidth();
         }
     }
 
     // 3.与球的距离
-    const MobileVisionT& ball = pVision->Ball();
+    const MobileVisionT& ball = pVision->ball();
     float distToBall = (candidate - ball.Pos()).mod() > RUNPOS_PARAM::maxDistToBall ? RUNPOS_PARAM::maxDistToBall : (candidate - ball.Pos()).mod();
 
     // 4.Angle to Goal
@@ -139,8 +139,8 @@ std::vector<float> RunPos::evaluateFunc(const CVisionModule* pVision, const CGeo
     int num = WorldModel::Instance()->getEnemyAmountInArea(candidate, RUNPOS_PARAM::maxDist2Enemy, enemyNumVec);
     for (int i = 0; i < num; i++) {
 //        dist2Enemy += (RUNPOS_PARAM::maxDist2Enemy - candidate.dist(pVision->TheirPlayer(enemyNumVec.at(i)).Pos()));
-        if (dist2Enemy > candidate.dist(pVision->TheirPlayer(enemyNumVec.at(i)).Pos())) {
-            dist2Enemy = candidate.dist(pVision->TheirPlayer(enemyNumVec.at(i)).Pos());
+        if (dist2Enemy > candidate.dist(pVision->theirPlayer(enemyNumVec.at(i)).Pos())) {
+            dist2Enemy = candidate.dist(pVision->theirPlayer(enemyNumVec.at(i)).Pos());
         }
     }
 //    qDebug() << "FUCK DIST IS" << dist2Enemy;
@@ -154,7 +154,7 @@ std::vector<float> RunPos::evaluateFunc(const CVisionModule* pVision, const CGeo
     WorldModel::Instance()->normalizeCoordinate(p);
     WorldModel::Instance()->normalizeCoordinate(q);
     for(int i = 1; i < Param::Field::MAX_PLAYER; i++) {
-        const PlayerVisionT& enemy = pVision->TheirPlayer(i);
+        const PlayerVisionT& enemy = pVision->theirPlayer(i);
         if (!Utils::InTheirPenaltyArea(enemy.Pos(), 0) && Utils::InTheirPenaltyArea(enemy.Pos(), 50)) {
             float pTime = WorldModel::Instance()->preditTheirGuard(enemy, p);
             float qTime = WorldModel::Instance()->preditTheirGuard(enemy, q);
@@ -175,8 +175,8 @@ std::vector<float> RunPos::evaluateFunc(const CVisionModule* pVision, const CGeo
 //    float candiDir = (candidate - ball.Pos()).dir();
 //    float candiDist = candidate.dist(ball.Pos());
     for (int i = 1; i <= Param::Field::MAX_PLAYER; i++) {
-        if(pVision->TheirPlayer(i).Valid()) {
-            const PlayerVisionT& enemy = pVision->TheirPlayer(i);
+        if(pVision->theirPlayer(i).Valid()) {
+            const PlayerVisionT& enemy = pVision->theirPlayer(i);
             float baseDir = (enemy.Pos() - ball.Pos()).dir();
             float baseDist = enemy.Pos().dist(ball.Pos());
 //            if (fabs(Utils::Normalize(candiDir - baseDir)) < RUNPOS_PARAM::maxSectorDir && candiDist > baseDist) {
@@ -237,9 +237,9 @@ void RunPos::judgeRunPosValid() {
         }
     }
     if (_runPos[0].areaNum == _runPos[1].areaNum) {
-        if (_pVision->Cycle() - runPosCycle[0] > WRONG_RUNPOS_CHANGE_BUFFER) {
+        if (_pVision->getCycle() - runPosCycle[0] > WRONG_RUNPOS_CHANGE_BUFFER) {
             _runPos[0].isValid = false;
-            runPosCycle[0] = _pVision->Cycle();
+            runPosCycle[0] = _pVision->getCycle();
         }
     }
     for (int m = 0; m < 2; m++) {

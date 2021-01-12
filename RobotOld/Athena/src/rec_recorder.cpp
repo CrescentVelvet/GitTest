@@ -44,7 +44,7 @@ void RecRecorder::store() {
         ZSS::Protocol::TeamRobotMsg* processMsg;
         ZSS::Protocol::TeamRobotMsg* maintain;
         ZSS::Protocol::Robot4Rec* robot4Rec;
-        ZSS::Protocol::Ball4Rec* ball4Rec;
+        ZSS::Protocol::Point* ball;
         ZSS::Protocol::Debug_Msgs* debugMsgs;
         //ctrlc
         GlobalData::instance()->ctrlCMutex.lock();
@@ -61,10 +61,8 @@ void RecRecorder::store() {
         recMsg.mutable_maintainvision()->set_lasttouchteam(GlobalData::instance()->lastTouch < PARAM::ROBOTMAXID ? PARAM::BLUE : PARAM::YELLOW);
         for(int color = PARAM::BLUE; color <= PARAM::YELLOW; color++) {
             processMsg = recMsg.mutable_maintainvision()->add_processmsg();
-            processMsg->set_size(robot_vision.robotSize[color]);
-            for(int j = 0; j < robot_vision.robotSize[color]; j++) {
+            for(int j = 0; j < PARAM::ROBOTNUM; j++) {
                 robot4Rec = processMsg->add_robot();
-                robot4Rec->set_id(robot_vision.robot[color][j].id);
                 robot4Rec->set_posx(robot_vision.robot[color][j].pos.x());
                 robot4Rec->set_posy(robot_vision.robot[color][j].pos.y());
                 robot4Rec->set_angle(robot_vision.robot[color][j].angle);
@@ -74,14 +72,9 @@ void RecRecorder::store() {
         auto& maintainMsg = GlobalData::instance()->maintain[0];
         for(int color = PARAM::BLUE; color <= PARAM::YELLOW; color++) {
             maintain = recMsg.mutable_maintainvision()->add_maintain();
-            maintain->set_size(maintainMsg.robotSize[color]);
            // for(int j = 0; j < maintainMsg.robotSize[color]; j++) {
-            for(int j = 0; j < PARAM::ROBOTNUM; j++) {//change by lzx
-                if(!maintainMsg.robot[color][j].valid) continue;
-                if(maintainMsg.robot[color][j].id!=j)
-                        qDebug()<<"a fatal bug or maintain";
+            for(int j = 0; j < PARAM::ROBOTNUM; j++) {
                 robot4Rec = maintain->add_robot();
-                robot4Rec->set_id(maintainMsg.robot[color][j].id);//add by lzx
                 robot4Rec->set_posx(maintainMsg.robot[color][j].pos.x());
                 robot4Rec->set_posy(maintainMsg.robot[color][j].pos.y());
                 robot4Rec->set_angle(maintainMsg.robot[color][j].angle);
@@ -89,11 +82,11 @@ void RecRecorder::store() {
             }
         }
         recMsg.mutable_maintainvision()->mutable_balls()->set_size(maintainMsg.ballSize);
+        recMsg.mutable_maintainvision()->mutable_balls()->set_valid(maintainMsg.isBallValid);
         for(int j = 0; j < maintainMsg.ballSize; j++) {
-            ball4Rec = recMsg.mutable_maintainvision()->mutable_balls()->add_ball();
-            ball4Rec->set_posx(maintainMsg.ball[j].pos.x());
-            ball4Rec->set_posy(maintainMsg.ball[j].pos.y());
-            ball4Rec->set_valid(maintainMsg.ball[j].valid);
+            ball = recMsg.mutable_maintainvision()->mutable_balls()->add_ball();
+            ball->set_x(maintainMsg.ball[j].pos.x());
+            ball->set_y(maintainMsg.ball[j].pos.y());
         }
         //debugMsgs
         GlobalData::instance()->debugMutex.lock();

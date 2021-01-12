@@ -3,10 +3,10 @@ module(..., package.seeall)
 function instance(role)
 	local realIns
 	if type(role) == "string" then
-		realIns = vision:OurPlayer(gRoleNum[role])
+		realIns = vision:ourPlayer(gRoleNum[role])
 	elseif type(role) == "number" then
 --	and	role >= 1 and role <= param.maxPlayer then
-		realIns = vision:OurPlayer(role)
+		realIns = vision:ourPlayer(role)
 	else
 		print("Invalid role in player.instance!!!2222222")
 		return nil
@@ -462,12 +462,12 @@ function antiYDir(p)
 	end
 end
 
-function realNumExist(n)
-	if player.valid(CGetStrategyNum(n)) then
-		return true
-	end
-	return false
-end
+-- function realNumExist(n)
+-- 	if player.valid(CGetStrategyNum(n)) then
+-- 		return true
+-- 	end
+-- 	return false
+-- end
 
 function faceball2target(role,t,diff)
   local target

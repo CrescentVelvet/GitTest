@@ -12,7 +12,7 @@ COpenSpeedCircle::COpenSpeedCircle()
 }
 
 CPlayerCommand* COpenSpeedCircle::execute(const CVisionModule* pVision) {
-    const PlayerVisionT& start = pVision->OurPlayer(task().executor);
+    const PlayerVisionT& start = pVision->ourPlayer(task().executor);
     const double dist2Circle = task().player.speed_x;
     const int rotateMethod = task().player.rotdir;
     const double dirDiff = task().player.speed_y;

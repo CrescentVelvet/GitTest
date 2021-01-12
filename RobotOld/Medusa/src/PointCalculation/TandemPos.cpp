@@ -24,7 +24,7 @@ CTandemPos::~CTandemPos(){
 
 void CTandemPos::generatePos(){
 	CVisionModule* pVision = vision;
-	const MobileVisionT& ball = pVision->Ball();
+	const MobileVisionT& ball = pVision->ball();
 	const CVector ball2ourgoal = ourgoal - ball.Pos();
 	CGeoPoint defaultTandemPos = ball.Pos()  + Utils::Polar2Vector(70.0*Param::Field::RATIO,ball2ourgoal.dir());
 	int teamnum = TaskMediator::Instance()->advancer();
@@ -67,9 +67,9 @@ void CTandemPos::generatePos(){
 void CTandemPos::analyzeSituation(int teamnum,int oppnum){
 	// 在球后方60度区域内搜索一个好的接应位置
 	CVisionModule* pVision = vision;
-	const MobileVisionT& ball = pVision->Ball();
-	const PlayerVisionT& ourAggressor = pVision->OurPlayer(teamnum);
-	const PlayerVisionT& theirAggressor = pVision->TheirPlayer(oppnum);
+	const MobileVisionT& ball = pVision->ball();
+	const PlayerVisionT& ourAggressor = pVision->ourPlayer(teamnum);
+	const PlayerVisionT& theirAggressor = pVision->theirPlayer(oppnum);
 
 	const CVector ball2teammate = ourAggressor.Pos() - ball.Pos();
 	const CVector ball2teammateUnit = ball2teammate/ball2teammate.mod();
@@ -117,7 +117,7 @@ void CTandemPos::analyzeSituation(int teamnum,int oppnum){
 
 void CTandemPos::planAssistAttack(int teamnum,int oppnum){
 	CVisionModule* pVision = vision;
-	CGeoPoint teamPos = pVision->OurPlayer(teamnum).Pos();
+	CGeoPoint teamPos = pVision->ourPlayer(teamnum).Pos();
 	double tandemDir = (theirgoal - teamPos).dir();
 	if (teamPos.y()>0){
 		tandemDir = tandemDir + DefendUtils::calcBlockAngle(ourgoal,teamPos);
@@ -129,9 +129,9 @@ void CTandemPos::planAssistAttack(int teamnum,int oppnum){
 
 void CTandemPos::planAssistGetBall(int teamnum,int oppnum){
 	CVisionModule* pVision = vision;
-	const PlayerVisionT& opp = pVision->TheirPlayer(oppnum);
-	const PlayerVisionT& teammate = pVision->OurPlayer(teamnum);
-	const MobileVisionT& ball =pVision->Ball();
+	const PlayerVisionT& opp = pVision->theirPlayer(oppnum);
+	const PlayerVisionT& teammate = pVision->ourPlayer(teamnum);
+	const MobileVisionT& ball =pVision->ball();
 	CVector teammate2ball = ball.Pos() - teammate.Pos();
 	CVector ball2opp = opp.Pos() - ball.Pos();
 	bool block_opp = false;
@@ -162,8 +162,8 @@ void CTandemPos::planAssistGetBall(int teamnum,int oppnum){
 void CTandemPos::planBlock(int teamnum,int oppnum){
 	CVisionModule* pVision = vision;
 //	const PlayerVisionT& opp = pVision->TheirPlayer(oppnum);
-	const PlayerVisionT& teammate = pVision->OurPlayer(teamnum);
-	const MobileVisionT& ball =pVision->Ball();
+	const PlayerVisionT& teammate = pVision->ourPlayer(teamnum);
+	const MobileVisionT& ball =pVision->ball();
 	const CVector opp2ball = ball.Pos() - teammate.Pos();
 	const CVector ball2ourgoal = ourgoal - ball.Pos();
 	const CVector ball2LeftPost = ourLeftPost - ball.Pos();
@@ -188,7 +188,7 @@ void CTandemPos::planBlock(int teamnum,int oppnum){
 	if ( Utils::InOurPenaltyArea(blockPos, 5) )
 		blockPos = Utils::MakeOutOfOurPenaltyArea(blockPos, 5);
 
-	const PlayerVisionT& leader = pVision->OurPlayer(teamnum);
+	const PlayerVisionT& leader = pVision->ourPlayer(teamnum);
 	const CVector ball2leader = leader.Pos() - ball.Pos();
 //	double teammate2ballDir = Utils::Normalize(ball2leader.dir() + Param::Math::PI);
 	double blockAngle;

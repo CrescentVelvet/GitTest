@@ -56,10 +56,10 @@ void CInterceptBallV3::plan(const CVisionModule* pVision)
 	const int flag = task().player.flag;
 	const double finalDir = task().player.angle;
 	
-	const PlayerVisionT& me = pVision->OurPlayer(vecNumber);
+	const PlayerVisionT& me = pVision->ourPlayer(vecNumber);
 	CGeoPoint myHeadPos = me.Pos() + Utils::Polar2Vector(Param::Vehicle::V2::PLAYER_FRONT_TO_CENTER,me.Dir());
-	const MobileVisionT& ball = pVision->Ball();
-	const CGeoPoint rawBallPos = pVision->RawBall().Pos();
+	const MobileVisionT& ball = pVision->ball();
+	const CGeoPoint rawBallPos = pVision->rawBall().Pos();
 	CVector self2ball = rawBallPos - me.Pos();
 	double diff_with_ball = Utils::Normalize(self2ball.dir() - me.Dir());
 	const CGeoPoint& ballTarget = rawBallPos + Utils::Polar2Vector(20,finalDir);
@@ -77,7 +77,7 @@ void CInterceptBallV3::plan(const CVisionModule* pVision)
 		return;
 	}
 
-	if ( pVision->Cycle() - _lastCycle > 6 ){
+	if ( pVision->getCycle() - _lastCycle > 6 ){
 		setState(BEGINNING);
 		/*jamming = false;
 		pushing_opp = false;*/
@@ -105,7 +105,7 @@ void CInterceptBallV3::plan(const CVisionModule* pVision)
 		meHasBall = 0;
 		meLoseBall = meLoseBall >=maxMeHasBall? maxMeHasBall:meLoseBall +1;
 	}
-	const PlayerVisionT& threatonOpp = pVision->TheirPlayer(opp_num);
+	const PlayerVisionT& threatonOpp = pVision->theirPlayer(opp_num);
 	CVector opp2ball = rawBallPos - threatonOpp.Pos(); //威胁队员指向球的向量
 
 	bool ballDetected = RobotSensor::Instance()->IsInfraredOn(vecNumber); //红外
@@ -202,16 +202,16 @@ void CInterceptBallV3::plan(const CVisionModule* pVision)
 		break;
 	}
 
-	_lastCycle = pVision->Cycle();
+	_lastCycle = pVision->getCycle();
 	CPlayerTask::plan(pVision);
 }
 void CInterceptBallV3::planApproachOpp(const CVisionModule* pVision, const int myID, const int oppID,const double finaldir,double subDist)
 {
 	//cout<<"planApproachOpp"<<endl;
 	// 永远堵在对手到我方球门的位置
-	const MobileVisionT& ball = pVision->Ball();
-	const CGeoPoint rawBallPos = pVision->RawBall().Pos();
-	const PlayerVisionT& me = pVision->OurPlayer(myID);
+	const MobileVisionT& ball = pVision->ball();
+	const CGeoPoint rawBallPos = pVision->rawBall().Pos();
+	const PlayerVisionT& me = pVision->ourPlayer(myID);
 	const CGeoLine& ballVelLine = CGeoLine(rawBallPos,ball.Vel().dir());
 	const CGeoSegment ballVelSeg = CGeoSegment(rawBallPos,rawBallPos+Utils::Polar2Vector(800,ball.Vel().dir()));
 	const CGeoPoint ProjPoint = ballVelLine.projection(me.Pos());
@@ -294,12 +294,12 @@ int CInterceptBallV3::checkOpp(const CVisionModule* pVision)
 }
 bool CInterceptBallV3::checkOppProccession(const CVisionModule* pVision, const int oppID)
 {
-	const PlayerVisionT& opp = pVision->TheirPlayer(oppID);
+	const PlayerVisionT& opp = pVision->theirPlayer(oppID);
 	if ( !opp.Valid() )
 		return false;
 
-	const MobileVisionT& ball = pVision->Ball();
-	const ObjectPoseT& raw_ball = pVision->RawBall();
+	const MobileVisionT& ball = pVision->ball();
+	const ObjectPoseT& raw_ball = pVision->rawBall();
 
 	CGeoPoint ballPos;
 	if ( raw_ball.Valid() )
@@ -327,8 +327,8 @@ bool CInterceptBallV3::checkOppProccession(const CVisionModule* pVision, const i
 bool CInterceptBallV3::isVisionHasBall(const CVisionModule* pVision,const int vecNumber)
 {
 
-	const PlayerVisionT& me = pVision->OurPlayer(vecNumber);
-	const MobileVisionT& ball =pVision->Ball();
+	const PlayerVisionT& me = pVision->ourPlayer(vecNumber);
+	const MobileVisionT& ball =pVision->ball();
 	double visionJudgDist= Param::Vehicle::V2::PLAYER_FRONT_TO_CENTER + Param::Field::BALL_SIZE / 2 +6;
 	bool distVisionHasBall = CVector(me.Pos() - ball.Pos()).mod() < visionJudgDist;
 	bool dirVisionHasBall ;

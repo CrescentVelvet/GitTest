@@ -5,15 +5,15 @@
 #include "matrix2d.h"
 #include <iostream>
 
-#define MAX_BALL_PER_FRAME 200
-#define MIN_FILT_DIST 150
-
 namespace {
 auto zpm = ZSS::ZParamManager::instance();
 long long min(long long a, long long b ) {
     if (a < b) return a;
     else return b;
 }
+
+const int MAX_BALL_PER_FRAME = 200;
+const int MIN_FILT_DIST = 150;
 }
 /**
  * @brief CDealball
@@ -25,26 +25,20 @@ CDealBall::CDealBall() {
     lastBall.pos.setX(0);
     lastBall.pos.setY(0);
 }
-/**
- * @brief CDealball::posDist
- * @param pos1
- * @param pos2
- * @return
- */
-double CDealBall::posDist(CGeoPoint pos1, CGeoPoint pos2) {
-    return std::sqrt((pos1.x() - pos2.x()) * (pos1.x() - pos2.x()) + (pos1.y() - pos2.y()) * ((pos1.y() - pos2.y())));
-}
 
-bool CDealBall::ballNearVechile(Ball curentBall, double dist) {
-    bool answer = false;
-    ReceiveVisionMessage result = GlobalData::instance()->maintain[-1];
-    for (int i = 0; i < result.robotSize[PARAM::BLUE]; i++) {
-        if (result.robot[PARAM::BLUE][i].pos.dist(curentBall.pos) <= dist ) answer = true;
-    }
-    for (int i = 0; i < result.robotSize[PARAM::YELLOW]; i++)
-        if (result.robot[PARAM::YELLOW][i].pos.dist(curentBall.pos) < dist) answer = true;
-    return answer;
-}
+//bool CDealBall::ballNearVechile(Ball curentBall, double dist) {
+//    bool answer = false;
+//    ReceiveVisionMessage result = GlobalData::instance()->maintain[-1];
+//    for (int color = 0; color < PARAM::TEAMS; color++) {
+//        for (int i = 0; i < PARAM::ROBOTNUM; i++) {
+//            if (result.robot[color][i].pos.dist(curentBall.pos) <= dist) {
+//                answer = true;
+//                break;
+//            }
+//        }
+//    }
+//    return answer;
+//}
 
 double CDealBall::calculateWeight(int camID, CGeoPoint ballPos) {
     SingleCamera camera = GlobalData::instance()->cameraMatrix[camID];
@@ -66,68 +60,67 @@ double CDealBall::calculateWeight(int camID, CGeoPoint ballPos) {
 void CDealBall::mergeBall() {
     int i, j;
     actualBallNum = 0;
-    for ( i = 0; i < result.ballSize; i++) {
+    for ( i = 0; i < origin.ballSize; i++) {
         bool found = false;
         for (j = 0; j < actualBallNum; j++) {
             for (int id = 0; id < PARAM::CAMERA; id++)
-                if (posDist(result.ball[i].pos, ballSequence[j][id].pos) < PARAM::BALLMERGEDISTANCE) {
+                if (origin.ball[i].pos.dist(ballSequence[j][id].pos) < PARAM::BALLMERGEDISTANCE) {
                     found = true;
                     break;
                 }
             if (found) break;
         }
-        if (found) ballSequence[j][result.ball[i].cameraID].fill(result.ball[i]);
-        else ballSequence[actualBallNum++][result.ball[i].cameraID].fill(result.ball[i]);
+        if (found) ballSequence[j][origin.ball[i].cameraID].fill(origin.ball[i]);
+        else ballSequence[actualBallNum++][origin.ball[i].cameraID].fill(origin.ball[i]);
     }
     if (PARAM::DEBUG) std::cout << "Actually have " << actualBallNum << " balls.\n";
 
     result.init();
-    if (!validBall && GlobalData::instance()->maintain[-1].ball[0].ball_state_machine.ballState == _struggle)
+    if (!origin.isBallValid && GlobalData::instance()->maintain[-1].ball[0].ball_state_machine.ballState == _struggle)
         result.addBall(GlobalData::instance()->maintain[-1].ball[0]);
     else {
         for (i = 0; i < actualBallNum; i++) {
             double weight = 0;
             CGeoPoint average(0, 0);
             for(j = 0; j < PARAM::CAMERA; j++) {
-                if (ballSequence[i][j].pos.x() > -30000 && ballSequence[i][j].pos.y() > -30000) {
+                if (ballSequence[i][j].pos.x() < 88888 && ballSequence[i][j].pos.y() < 88888) {
                     SingleCamera camera = GlobalData::instance()->cameraMatrix[j];
                     double _weight;
                     _weight = calculateWeight(j, ballSequence[i][j].pos);
-                    _weight = std::pow(posDist(ballSequence[i][j].pos, GlobalData::instance()->cameraMatrix[camera.id].campos) / 1000.0, -2.0);
-                    if (PARAM::DEBUG)std::cout << "camera: " << j << ballSequence[i][j].pos << GlobalData::instance()->cameraMatrix[camera.id].campos << "weight:" << posDist(ballSequence[i][j].pos, GlobalData::instance()->cameraMatrix[camera.id].campos) << std::endl;
+                    _weight = std::pow(ballSequence[i][j].pos.dist(GlobalData::instance()->cameraMatrix[camera.id].campos) / 1000.0, -2.0);
                     weight += _weight;
                     average.setX(average.x() + ballSequence[i][j].pos.x() * _weight);
                     average.setY(average.y() + ballSequence[i][j].pos.y() * _weight);
                 }
             }
-            if (weight != 0)result.addBall(average.x() / weight, average.y() / weight);
+            if (weight > 1e-4) result.addBall(average.x() / weight, average.y() / weight);
             if (PARAM::DEBUG) std::cout << "have merged NO. " << i << " ball with" << average << " " << weight << "\n";
         }
     }
 }
 
 void CDealBall::init() {
+    origin.init();
+    for(int i = 0; i < PARAM::BALLNUM; i++)
+        for(int j = 0; j < PARAM::CAMERA; j++)
+            ballSequence[i][j].fill(99999,99999);
     _cycle = GlobalData::instance()->processBall.cycle() + 1;
     for (int i = 0; i < PARAM::CAMERA; i++) {
         if (GlobalData::instance()->cameraUpdate[i]) {
             for(int j = 0; j < GlobalData::instance()->camera[i][0].ballSize; j++) {
                 Ball currentball = GlobalData::instance()->camera[i][0].ball[j];
-                result.addBall(GlobalData::instance()->camera[i][0].ball[j].pos.x(),
+                origin.addBall(GlobalData::instance()->camera[i][0].ball[j].pos.x(),
                                GlobalData::instance()->camera[i][0].ball[j].pos.y(), 0, i);
             }
         }
     }
-
-    if (result.ballSize == 0) {
-        validBall = false;
-    } else validBall = true;
-
-    if (PARAM::DEBUG) std::cout << "Origin vision has " << result.ballSize << " balls.\n";
+    if (origin.ballSize > 0) origin.isBallValid = true;
+    if (PARAM::DEBUG) std::cout << "Origin vision has " << origin.ballSize << " balls.\n";
 }
 
 
 void CDealBall::choseBall() {
-    float dis = 32767;
+    double dis = 99999;
     int id = -1;
     for (int i = 0; i < result.ballSize; i++) {
         if (result.ball[i].pos.dist(lastBall.pos) < dis) {
@@ -167,14 +160,8 @@ void CDealBall::choseBall() {
 }
 
 void CDealBall::run() {
-    result.init();
-    // TODO fill_n
-    for(int i = 0; i < PARAM::BALLNUM; i++)
-        for(int j = 0; j < PARAM::CAMERA; j++)
-            ballSequence[i][j].fill(-32767, -32767);
-
     init();
-    if (validBall) {
+    if (origin.isBallValid) {
         mergeBall();
         choseBall();
     } else {
@@ -191,6 +178,7 @@ void CDealBall::run() {
         lastBall = GlobalData::instance()->maintain[0].ball[0];
         lastPossible = 1;
     }
+    result.isBallValid = origin.isBallValid;
 
     GlobalData::instance()->processBall.push(result);
 }
@@ -201,7 +189,6 @@ void CDealBall::updateVel(const Matrix2d& tempMatrix, ReceiveVisionMessage& resu
     CGeoPoint filtPoint (tempMatrix(0, 0), tempMatrix(1, 0));
     CVector ballVel(tempMatrix(2, 0)* ZSS::Athena::FRAME_RATE, tempMatrix(3, 0)*ZSS::Athena::FRAME_RATE);
     ballVel = ballVel / lostFrame;
-    result.ball[0].fill(filtPoint.x(), filtPoint.y(), 0, ballVel);
     if (ballVel.mod()>7500) ballVel= ballVel.unit()*7500;
     // 2.延时补偿，根据延时帧率将位置和速度进行修正
     for( int i = 0; i < ZSS::Athena::TOTAL_LATED_FRAME; ++i ) {
@@ -229,8 +216,8 @@ void CDealBall::updateVel(const Matrix2d& tempMatrix, ReceiveVisionMessage& resu
         }
         ballVel.setVector(velMod * std::cos(predictDir), velMod * std::sin(predictDir));
     }
-    result.ball[0].fill(result.ball[0].pos.x(), result.ball[0].pos.y(), 0, ballVel);
+    result.ball[0].velocity = ballVel;
 
-    if(validBall) lostFrame = 1;
+    if(origin.isBallValid) lostFrame = 1;
     else lostFrame ++;
 }

@@ -35,12 +35,13 @@ public:
 
 	// 守门员
     int goalie(){
-        return PlayInterface::Instance()->getRealIndexByNum(_goalie.num);
+        return _goalie.num;
+//        return PlayInterface::Instance()->getRealIndexByNum(_goalie.num);
 	}
 
 	// 左后卫
 	int leftBack(){
-		if(vision->Cycle() - _leftBack.lastCycle > 5){
+		if(vision->getCycle() - _leftBack.lastCycle > 5){
 			_leftBack.num = 0;
 		}
 		return _leftBack.num;
@@ -48,7 +49,7 @@ public:
 
 	// 右后卫
 	int rightBack(){
-		if(vision->Cycle() - _rightBack.lastCycle > 5){
+		if(vision->getCycle() - _rightBack.lastCycle > 5){
 			_rightBack.num = 0;
 		}
 		return _rightBack.num;
@@ -56,7 +57,7 @@ public:
 
 	// 单后卫
 	int singleBack(){
-		if(vision->Cycle() - _singleBack.lastCycle > 5){
+		if(vision->getCycle() - _singleBack.lastCycle > 5){
 			_singleBack.num = 0;
 		}
 		return _singleBack.num;
@@ -64,7 +65,7 @@ public:
 
 	// 防守后腰
 	int defendMiddle(){
-		if(vision->Cycle() - _defendMiddle.lastCycle > 5){
+		if(vision->getCycle() - _defendMiddle.lastCycle > 5){
 			_defendMiddle.num = 0;
 		}
 		return _defendMiddle.num;
@@ -72,14 +73,14 @@ public:
 
 	//边后卫
 	int sideBack(){
-		if(vision->Cycle() - _sideBack.lastCycle > 5){
+		if(vision->getCycle() - _sideBack.lastCycle > 5){
 			_sideBack.num = 0;
 		}
 		return _sideBack.num;
 	}
 
 	int advancer(){
-		if (vision->Cycle() - _advancer.lastCycle> 5){
+		if (vision->getCycle() - _advancer.lastCycle> 5){
 			_advancer.num = 0;
 		}
 		return _advancer.num;
@@ -123,25 +124,25 @@ public:
 	{
 		if("goalie" == role){
 			_goalie.num = num;
-			_goalie.lastCycle = vision->Cycle();
+			_goalie.lastCycle = vision->getCycle();
 		} else if ("leftBack" == role){
 			_leftBack.num = num;
-			_leftBack.lastCycle = vision->Cycle();
+			_leftBack.lastCycle = vision->getCycle();
 		} else if ("rightBack" == role){
 			_rightBack.num = num;
-			_rightBack.lastCycle = vision->Cycle();
+			_rightBack.lastCycle = vision->getCycle();
 		} else if ("singleBack" == role){
 			_singleBack.num = num;
-			_singleBack.lastCycle = vision->Cycle();
+			_singleBack.lastCycle = vision->getCycle();
 		} else if ("defendMiddle" == role){
 			_defendMiddle.num = num;
-			_defendMiddle.lastCycle = vision->Cycle();
+			_defendMiddle.lastCycle = vision->getCycle();
 		} else if ("sideBack" == role){
 			_sideBack.num = num;
-			_sideBack.lastCycle = vision->Cycle();
+			_sideBack.lastCycle = vision->getCycle();
 		}else if ("advancer" == role){
 			_advancer.num = num;
-			_advancer.lastCycle = vision->Cycle();
+			_advancer.lastCycle = vision->getCycle();
 		}else{
 			cout<<"Error In setRoleInLua!!!  "<<role<<endl;
 		}

@@ -1,43 +1,43 @@
 module(..., package.seeall)
 
 function pos()
-    return vision:Ball():Pos()
+    return vision:ball():Pos()
 end
 
 function posX()
-    return vision:Ball():X()
+    return vision:ball():X()
 end
 
 function posY()
-    return vision:Ball():Y()
+    return vision:ball():Y()
 end
 
 function rawPos()
-    return vision:RawBall():Pos()
+    return vision:rawBall():Pos()
 end
 
 function vel()
-    return vision:Ball():Vel()
+    return vision:ball():Vel()
 end
 
 function velX()
-    return vision:Ball():VelX()
+    return vision:ball():VelX()
 end
 
 function velY()
-    return vision:Ball():VelY()
+    return vision:ball():VelY()
 end
 
 function velDir()
-    return vision:Ball():Vel():dir()
+    return vision:ball():Vel():dir()
 end
 
 function velMod()
-    return vision:Ball():Vel():mod()
+    return vision:ball():Vel():mod()
 end
 
 function valid()
-    return vision:Ball():Valid()
+    return vision:ball():Valid()
 end
 
 function placementPos()
@@ -336,7 +336,7 @@ function updateRefMsg()
 	gRefMsg.ballY = posY()
 	gRefMsg.antiY = antiY()
 	gRefMsg.isOurBall = world:IsOurBallByAutoReferee()
-    gRefMsg.lastCycle = vision:Cycle()
+    gRefMsg.lastCycle = vision:getCycle()
 end
 function updateRef2PlacePos()
     local dist = (placementPos()-pos()):mod()

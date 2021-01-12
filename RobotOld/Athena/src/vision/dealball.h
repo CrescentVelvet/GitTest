@@ -23,15 +23,14 @@ class CDealBall {
     }
     void updateVel(const Matrix2d& tempMatrix, ReceiveVisionMessage& result);
   private:
-    double posDist(CGeoPoint, CGeoPoint);
-    bool ballNearVechile(Ball, double);
+//    bool ballNearVechile(Ball, double);
     void init();
     void mergeBall();
     double calculateWeight(int camID, CGeoPoint);
     Ball ballSequence[PARAM::BALLNUM][PARAM::CAMERA];
     Ball lastBall, currentBall;
     double lastPossible, currentPossible;
-    ReceiveVisionMessage result;
+    ReceiveVisionMessage origin, result;
     int actualBallNum = 0;
     int minBelieveFrame;
     int lostFrame;

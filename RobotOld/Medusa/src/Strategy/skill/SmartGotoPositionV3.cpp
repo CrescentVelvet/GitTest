@@ -22,14 +22,14 @@ namespace{
     const double SlowFactor = 0.5;
     const double FastFactor = 1.2;
     /// 底层运动控制参数 ： 默认增大平动的控制性能
-    double MAX_TRANSLATION_SPEED = 400;
-    double MAX_TRANSLATION_ACC = 600;
+    double MAX_TRANSLATION_SPEED = 400*10;
+    double MAX_TRANSLATION_ACC = 600*10;
     double MAX_ROTATION_SPEED = 5;
     double MAX_ROTATION_ACC = 15;
-    double MAX_TRANSLATION_DEC = 450;
+    double MAX_TRANSLATION_DEC = 450*10;
 
-    const double TRANSLATION_ACC_LIMIT = 500;
-    double TRANSLATION_SPEED_LIMIT = 350;
+    const double TRANSLATION_ACC_LIMIT = 500*10;
+    double TRANSLATION_SPEED_LIMIT = 350*10;
     const double TRANSLATION_ROTATE_ACC_LIMIT = 15;
 
     /// 守门员专用
@@ -51,38 +51,38 @@ namespace{
     const double safeVelFactorBack = 1.0;
     bool DRAW_OBSTACLES = false;
 
-    double stopBallAvoidDist = 50;
-    double ballPlacementDist = 60;
+    double stopBallAvoidDist = 50*10;
+    double ballPlacementDist = 60*10;
 
     /// related to rrt
-    double startToRotateToTargetDirDist = 20;
+    double startToRotateToTargetDirDist = 20*10;
     pair < vector < pair < stateNew, size_t > >, vector < pair < stateNew, size_t > > > tree[Param::Field::MAX_PLAYER + 1];
     CRRTPathPlannerNew planner[Param::Field::MAX_PLAYER * 2 + 1];
     vector < stateNew > viaPoint[Param::Field::MAX_PLAYER + 1];
 
     CGeoPoint lastPoint[Param::Field::MAX_PLAYER + 1];
     CGeoPoint lastFinalPoint[Param::Field::MAX_PLAYER + 1];
-    const double TEAMMATE_AVOID_DIST = Param::Vehicle::V2::PLAYER_SIZE + 4.0f; // 2014/03/13 修改，为了减少stop的时候卡住的概率 yys
-    const double OPP_AVOID_DIST = Param::Vehicle::V2::PLAYER_SIZE + 5.5f;
-    const double BALL_AVOID_DIST = Param::Field::BALL_SIZE + 5.0f;
+    const double TEAMMATE_AVOID_DIST = Param::Vehicle::V2::PLAYER_SIZE + 40.0f; // 2014/03/13 修改，为了减少stop的时候卡住的概率 yys
+    const double OPP_AVOID_DIST = Param::Vehicle::V2::PLAYER_SIZE + 55.0f;
+    const double BALL_AVOID_DIST = Param::Field::BALL_SIZE + 50.0f;
 }
 using namespace Param::Vehicle::V2;
 
 CSmartGotoPositionV3::CSmartGotoPositionV3()
 {
-    ZSS::ZParamManager::instance()->loadParam(MAX_TRANSLATION_SPEED,"CGotoPositionV2/MNormalSpeed",335);
-    ZSS::ZParamManager::instance()->loadParam(MAX_TRANSLATION_ACC,"CGotoPositionV2/MNormalAcc",475);
-    ZSS::ZParamManager::instance()->loadParam(MAX_TRANSLATION_DEC,"CGotoPositionV2/MNormalDec",475);
-    ZSS::ZParamManager::instance()->loadParam(MAX_TRANSLATION_SPEED_BACK,"CGotoPositionV2/MBackSpeed",300);
-    ZSS::ZParamManager::instance()->loadParam(MAX_TRANSLATION_ACC_BACK,"CGotoPositionV2/MBackAcc",450);
-    ZSS::ZParamManager::instance()->loadParam(MAX_TRANSLATION_DEC_BACK,"CGotoPositionV2/MBackDec",450);
+    ZSS::ZParamManager::instance()->loadParam(MAX_TRANSLATION_SPEED,"CGotoPositionV2/MNormalSpeed",335*10);
+    ZSS::ZParamManager::instance()->loadParam(MAX_TRANSLATION_ACC,"CGotoPositionV2/MNormalAcc",475*10);
+    ZSS::ZParamManager::instance()->loadParam(MAX_TRANSLATION_DEC,"CGotoPositionV2/MNormalDec",475*10);
+    ZSS::ZParamManager::instance()->loadParam(MAX_TRANSLATION_SPEED_BACK,"CGotoPositionV2/MBackSpeed",300*10);
+    ZSS::ZParamManager::instance()->loadParam(MAX_TRANSLATION_ACC_BACK,"CGotoPositionV2/MBackAcc",450*10);
+    ZSS::ZParamManager::instance()->loadParam(MAX_TRANSLATION_DEC_BACK,"CGotoPositionV2/MBackDec",450*10);
 
     ZSS::ZParamManager::instance()->loadParam(MAX_ROTATION_ACC_BACK,"CGotoPositionV2/MBackRotateAcc",15);
     ZSS::ZParamManager::instance()->loadParam(MAX_ROTATION_SPEED_BACK,"CGotoPositionV2/MBackRotateSpeed",15);
 
-    ZSS::ZParamManager::instance()->loadParam(MAX_TRANSLATION_SPEED_GOALIE,"CGotoPositionV2/MGoalieSpeed",300);
-    ZSS::ZParamManager::instance()->loadParam(MAX_TRANSLATION_ACC_GOALIE,"CGotoPositionV2/MGoalieAcc",450);
-    ZSS::ZParamManager::instance()->loadParam(MAX_TRANSLATION_DEC_GOALIE,"CGotoPositionV2/MGoalieDec",450);
+    ZSS::ZParamManager::instance()->loadParam(MAX_TRANSLATION_SPEED_GOALIE,"CGotoPositionV2/MGoalieSpeed",300*10);
+    ZSS::ZParamManager::instance()->loadParam(MAX_TRANSLATION_ACC_GOALIE,"CGotoPositionV2/MGoalieAcc",450*10);
+    ZSS::ZParamManager::instance()->loadParam(MAX_TRANSLATION_DEC_GOALIE,"CGotoPositionV2/MGoalieDec",450*10);
 
     ZSS::ZParamManager::instance()->loadParam(MAX_ROTATION_ACC_GOALIE,"CGotoPositionV2/MGoalieRotateAcc",15);
     ZSS::ZParamManager::instance()->loadParam(MAX_ROTATION_SPEED_GOALIE,"CGotoPositionV2/MGoalieRotateSpeed",15);
@@ -92,7 +92,7 @@ CSmartGotoPositionV3::CSmartGotoPositionV3()
     ZSS::ZParamManager::instance()->loadParam(DRAW_OBSTACLES, "Debug/DrawObst", false);
     ZSS::ZParamManager::instance()->loadParam(DRAW_RRT_TREE,"CGotoPositionV2/drawRrtTree",false);
 
-    ZSS::ZParamManager::instance()->loadParam(TRANSLATION_SPEED_LIMIT,"CGotoPositionV2/NormalSpeedLimit",400); //下发速度最大限制，守门员、后卫除外
+    ZSS::ZParamManager::instance()->loadParam(TRANSLATION_SPEED_LIMIT,"CGotoPositionV2/NormalSpeedLimit",400*10); //下发速度最大限制，守门员、后卫除外
 }
 
 /// 输出流 ： 调试显示
@@ -105,7 +105,7 @@ void CSmartGotoPositionV3::toStream(std::ostream& os) const
 void CSmartGotoPositionV3::plan(const CVisionModule* pVision)
 {
 
-    if ((lastFinalPoint[task().executor] - task().player.pos).mod() > 5) {
+    if ((lastFinalPoint[task().executor] - task().player.pos).mod() > 5*10) {
         lastPoint[task().executor] = task().player.pos;
         lastFinalPoint[task().executor] = task().player.pos;
     }
@@ -115,26 +115,26 @@ void CSmartGotoPositionV3::plan(const CVisionModule* pVision)
     playerFlag = task().player.flag;
     const bool rec = task().player.needdribble;
     const int vecNumber = task().executor;
-    const PlayerVisionT& self = pVision->OurPlayer(vecNumber);
+    const PlayerVisionT& self = pVision->ourPlayer(vecNumber);
     CGeoPoint myPos = self.Pos();
-    CGeoPoint ballPos = pVision->Ball().Pos();
+    CGeoPoint ballPos = pVision->ball().Pos();
     double ballplacementCanDirect = true;
 
 //    GDebugEngine::Instance()->gui_debug_msg(CGeoPoint(0, 0), QString("SmartGoto!!!").toLatin1());
 
-    const bool isGoalie = vecNumber == PlayInterface::Instance()->getNumbByRealIndex(TaskMediator::Instance()->goalie());
+    const bool isGoalie = vecNumber == TaskMediator::Instance()->goalie();
 
-    const bool isBack = (vecNumber == PlayInterface::Instance()->getNumbByRealIndex(TaskMediator::Instance()->leftBack())) ||
-                         (vecNumber == PlayInterface::Instance()->getNumbByRealIndex(TaskMediator::Instance()->rightBack())) ||
-                        (vecNumber == PlayInterface::Instance()->getNumbByRealIndex(TaskMediator::Instance()->singleBack())) ||
-                        (vecNumber == PlayInterface::Instance()->getNumbByRealIndex(TaskMediator::Instance()->sideBack())) ||
-                        (vecNumber == PlayInterface::Instance()->getNumbByRealIndex(TaskMediator::Instance()->defendMiddle()));
+    const bool isBack = (vecNumber == TaskMediator::Instance()->leftBack()) ||
+                         (vecNumber == TaskMediator::Instance()->rightBack()) ||
+                        (vecNumber == TaskMediator::Instance()->singleBack()) ||
+                        (vecNumber == TaskMediator::Instance()->sideBack()) ||
+                        (vecNumber == TaskMediator::Instance()->defendMiddle());
     //需要躲避球周围半径为50cm的圆
     bool avoidBallCircle = (WorldModel::Instance()->CurrentRefereeMsg() == "GameStop") || (playerFlag & PlayerStatus::AVOID_STOP_BALL_CIRCLE);
     //需要躲避对方放球的椭圆区域
     bool avoidTheirBallPlacementArea = (WorldModel::Instance()->CurrentRefereeMsg() == "TheirBallPlacement") || (playerFlag & PlayerStatus::AVOID_THEIR_BALLPLACEMENT_AREA);
     CGeoPoint finalTargetPos = task().player.pos;
-    const bool shrinkTheirPenalty = Utils::InTheirPenaltyArea(finalTargetPos, 40) || Utils::InTheirPenaltyArea(myPos, 40);
+    const bool shrinkTheirPenalty = Utils::InTheirPenaltyArea(finalTargetPos, 40*10) || Utils::InTheirPenaltyArea(myPos, 40*10);
     //设置运行参数
     _capability = setCapability(pVision);
     //zbreak仅在圈内规划
@@ -145,7 +145,7 @@ void CSmartGotoPositionV3::plan(const CVisionModule* pVision)
     //仅在自己半场规划
     bool avoidHalfField = (playerFlag & PlayerStatus::AVOID_HALF_FIELD);
 
-    if(onlyPlanInCircle && Utils::OutOfField(planCircleCenter, -40)) {
+    if(onlyPlanInCircle && Utils::OutOfField(planCircleCenter, -40*10)) {
         cout << "Oh shit!!! PathPlan circle center not initialized!!! ---SmartGotoPosition.cpp" << endl;
         onlyPlanInCircle = false;
     }  else if(onlyPlanInCircle && planCircleRadius < 1e-8) {
@@ -158,27 +158,29 @@ void CSmartGotoPositionV3::plan(const CVisionModule* pVision)
     /************************************************************************/
 
     //自身的避障范围： 车半径 + buffer
-    double buffer = 1.5;
-    if (self.Vel().mod() < 200) {
-        buffer = 1.5;
+    double buffer = 15;
+    if (self.Vel().mod() < 2000) {
+        buffer = 15;
     }
-    else if (self.Vel().mod() < 300) {
-        buffer = 1.5 + (self.Vel().mod() - 200) / 100;
+    else if (self.Vel().mod() < 3000) {
+        buffer = 15 + (self.Vel().mod() - 2000) / 100;
     }
     else {
-        buffer = 2.5;
+        buffer = 25;
     }
-    if ((self.Pos() - finalTargetPos).mod() < 100) {
+    if ((self.Pos() - finalTargetPos).mod() < 1000) {
         buffer /= 2;
     }
+
     if (isGoalie ||
-            (isBack && Utils::InOurPenaltyArea(myPos, 40)) ||
+            (isBack && Utils::InOurPenaltyArea(myPos, 400)) ||
             WorldModel::Instance()->CurrentRefereeMsg() == "OurTimeout") {
         buffer = 0;
     }
     if(playerFlag & PlayerStatus::BREAK_THROUGH) {
-        buffer = 5.5;
+        buffer = 55;
     }
+
     double avoidLength = Param::Vehicle::V2::PLAYER_SIZE + buffer;
     ObstaclesNew obsNew(avoidLength);
     //如果是zbreak，就让躲避距离小一点
@@ -186,11 +188,11 @@ void CSmartGotoPositionV3::plan(const CVisionModule* pVision)
         obsNew.addObs(pVision, task(), DRAW_OBSTACLES, OPP_AVOID_DIST, TEAMMATE_AVOID_DIST, BALL_AVOID_DIST, shrinkTheirPenalty);
     }
     else {
-        obsNew.addObs(pVision, task(), DRAW_OBSTACLES, Param::Vehicle::V2::PLAYER_SIZE + Param::Field::BALL_SIZE + 5.0, Param::Vehicle::V2::PLAYER_SIZE + Param::Field::BALL_SIZE + 5.0, Param::Field::BALL_SIZE, shrinkTheirPenalty);
+        obsNew.addObs(pVision, task(), DRAW_OBSTACLES, Param::Vehicle::V2::PLAYER_SIZE + Param::Field::BALL_SIZE + 5.0*10, Param::Vehicle::V2::PLAYER_SIZE + Param::Field::BALL_SIZE + 5.0*10, Param::Field::BALL_SIZE, shrinkTheirPenalty);
     }
     //对方放球需要避开球到放球点之间半径为50cm的圈
     if(avoidTheirBallPlacementArea) {
-        CGeoPoint segP1 = pVision->Ball().Pos(), segP2(RefereeBoxInterface::Instance()->getBallPlacementPosX(), RefereeBoxInterface::Instance()->getBallPlacementPosY());
+        CGeoPoint segP1 = pVision->ball().Pos(), segP2(RefereeBoxInterface::Instance()->getBallPlacementPosX(), RefereeBoxInterface::Instance()->getBallPlacementPosY());
         bool addObs;
         finalTargetPos = finalPointBallPlacement(myPos, finalTargetPos, segP1, segP2, avoidLength, obsNew, addObs);
 //        if(addObs) {
@@ -201,7 +203,7 @@ void CSmartGotoPositionV3::plan(const CVisionModule* pVision)
     //我方的ballplacement且为非放球车， 需要避开放球点
     if(WorldModel::Instance()->CurrentRefereeMsg() == "OurBallPlacement" &&
             !(playerFlag & PlayerStatus::NOT_AVOID_PENALTY)) {
-        const double avoidRadius = 30.0;
+        const double avoidRadius = 30.0*10;
         CGeoPoint ballPlacePoint(RefereeBoxInterface::Instance()->getBallPlacementPosX(), RefereeBoxInterface::Instance()->getBallPlacementPosY());
         if(ballPlacePoint.dist(self.Pos()) < avoidRadius)
             finalTargetPos = Utils::MakeOutOfCircle(ballPlacePoint, avoidRadius, self.Pos(), avoidLength);
@@ -213,7 +215,7 @@ void CSmartGotoPositionV3::plan(const CVisionModule* pVision)
 
     //躲避stop状态中的球圈
     if(avoidBallCircle) {
-        CGeoPoint ballPos = pVision->Ball().Pos();
+        CGeoPoint ballPos = pVision->ball().Pos();
         finalTargetPos = Utils::MakeOutOfCircle(ballPos, stopBallAvoidDist, finalTargetPos, avoidLength);
     }
 
@@ -243,7 +245,7 @@ void CSmartGotoPositionV3::plan(const CVisionModule* pVision)
     if(self.Pos().dist(finalTargetPos) < startToRotateToTargetDirDist && needBreakRotate)
         newTask.player.flag &= (~PlayerStatus::BREAK_THROUGH);
 
-    double arrivedDist = self.Vel().mod() * 0.1 + 5; //判断是否到达中间点，让整条路径更加连贯
+    double arrivedDist = self.Vel().mod() * 0.1 *10 + 5*10; //判断是否到达中间点，让整条路径更加连贯
 
     /************************************************************************/
     /* 开始规划路径点                                                        */
@@ -265,7 +267,7 @@ void CSmartGotoPositionV3::plan(const CVisionModule* pVision)
     else {
         //需要只在自己半场规划，防止kick off的时候犯规
         if(avoidHalfField && myPos.x() < -Param::Vehicle::V2::PLAYER_SIZE) {
-            planner[vecNumber].initPlanner(250, 15, 20, 0.05, 0.55, 9.0, avoidHalfField);
+            planner[vecNumber].initPlanner(250, 15, 20, 0.05, 0.55, 9.0*10, avoidHalfField);
             planner[vecNumber].planPath(&obsNew, startNew, targetNew);
             viaPoint[vecNumber] = planner[vecNumber].getPathPoints();
         }
@@ -277,7 +279,7 @@ void CSmartGotoPositionV3::plan(const CVisionModule* pVision)
         }
         //一般情况下的rrt规划
         else {
-            planner[vecNumber].initPlanner(250, 15, 20, 0.05, 0.55, 9.0);
+            planner[vecNumber].initPlanner(250, 15, 20, 0.05, 0.55, 9.0*10);
             planner[vecNumber].planPath(&obsNew, startNew, targetNew);
             viaPoint[vecNumber] = planner[vecNumber].getPathPoints();
         }
@@ -322,27 +324,29 @@ void CSmartGotoPositionV3::plan(const CVisionModule* pVision)
         newTask.player.vel = CVector(0.0, 0.0);
     }
 
+//    GDebugEngine::Instance()->gui_debug_msg(self.Pos(), QString("%1").arg(newTask.player.max_acceleration).toLatin1(),COLOR_BLUE);
+
     setSubTask(TaskFactoryV2::Instance()->GotoPosition(newTask));
 
-    _lastCycle = pVision->Cycle();
+    _lastCycle = pVision->getCycle();
     CPlayerTask::plan(pVision);
     return ;
 }
 
 PlayerCapabilityT CSmartGotoPositionV3::setCapability(const CVisionModule* pVision) {
     const int vecNumber = task().executor;
-    const bool isGoalie = (vecNumber == PlayInterface::Instance()->getNumbByRealIndex(TaskMediator::Instance()->goalie()));
-    const bool isBack = (vecNumber == PlayInterface::Instance()->getNumbByRealIndex(TaskMediator::Instance()->leftBack())) ||
-                         (vecNumber == PlayInterface::Instance()->getNumbByRealIndex(TaskMediator::Instance()->rightBack())) ||
-                        (vecNumber == PlayInterface::Instance()->getNumbByRealIndex(TaskMediator::Instance()->singleBack())) ||
-                        (vecNumber == PlayInterface::Instance()->getNumbByRealIndex(TaskMediator::Instance()->sideBack())) ||
-                        (vecNumber == PlayInterface::Instance()->getNumbByRealIndex(TaskMediator::Instance()->defendMiddle()));
-    const CGeoPoint mePos = pVision->OurPlayer(vecNumber).Pos();
+    const bool isGoalie = (vecNumber == TaskMediator::Instance()->goalie());
+    const bool isBack = (vecNumber == TaskMediator::Instance()->leftBack()) ||
+                         (vecNumber == TaskMediator::Instance()->rightBack()) ||
+                        (vecNumber == TaskMediator::Instance()->singleBack()) ||
+                        (vecNumber == TaskMediator::Instance()->sideBack()) ||
+                        (vecNumber == TaskMediator::Instance()->defendMiddle());
+    const CGeoPoint mePos = pVision->ourPlayer(vecNumber).Pos();
     const int playerFlag = task().player.flag;
     PlayerCapabilityT capability;
 
     // Traslation 确定平动运动参数
-    if (vecNumber == PlayInterface::Instance()->getNumbByRealIndex(TaskMediator::Instance()->goalie())) {
+    if (vecNumber == TaskMediator::Instance()->goalie()) {
         capability.maxSpeed = MAX_TRANSLATION_SPEED_GOALIE;
         capability.maxAccel = MAX_TRANSLATION_ACC_GOALIE;
         capability.maxDec = MAX_TRANSLATION_DEC_GOALIE;
@@ -374,7 +378,7 @@ PlayerCapabilityT CSmartGotoPositionV3::setCapability(const CVisionModule* pVisi
     }
 
     if (playerFlag & PlayerStatus::SLOWLY) {
-        capability.maxSpeed = 140;
+        capability.maxSpeed = 140*10;
         capability.maxAccel *= SlowFactor;
         capability.maxDec *= SlowFactor;
         capability.maxAngularSpeed *= SlowFactor;
@@ -382,7 +386,7 @@ PlayerCapabilityT CSmartGotoPositionV3::setCapability(const CVisionModule* pVisi
         capability.maxAngularDec *= SlowFactor;
     }
     if (playerFlag & PlayerStatus::QUICKLY
-        || vecNumber == PlayInterface::Instance()->getNumbByRealIndex(TaskMediator::Instance()->goalie())) {
+        || vecNumber == TaskMediator::Instance()->goalie()) {
         capability.maxSpeed *= FastFactor;
         capability.maxAccel *= FastFactor;
         capability.maxDec *= FastFactor;
@@ -392,12 +396,12 @@ PlayerCapabilityT CSmartGotoPositionV3::setCapability(const CVisionModule* pVisi
     }
 
     if (playerFlag & PlayerStatus::QUICKLY
-        || vecNumber == PlayInterface::Instance()->getNumbByRealIndex(TaskMediator::Instance()->goalie())) {
+        || vecNumber == TaskMediator::Instance()->goalie()) {
     }
 
     //指定加速度上限；
     //后卫在离禁区比较远的时候，一律作为普通车处理，不允许指定加速度
-    if (task().player.max_acceleration > 1e-8 && !(isBack && !Utils::InOurPenaltyArea(mePos, 40))) {
+    if (task().player.max_acceleration > 1e-8 && !(isBack && !Utils::InOurPenaltyArea(mePos, 40*10))) {
         capability.maxAccel = task().player.max_acceleration > TRANSLATION_ACC_LIMIT ? TRANSLATION_ACC_LIMIT : task().player.max_acceleration;
         if(isGoalie || isBack) {
             capability.maxAccel = task().player.max_acceleration;
@@ -419,7 +423,7 @@ PlayerCapabilityT CSmartGotoPositionV3::setCapability(const CVisionModule* pVisi
     }
     //GameStop状态不能超速
     if (WorldModel::Instance()->CurrentRefereeMsg() == "GameStop") {
-        capability.maxSpeed = 140;
+        capability.maxSpeed = 140*10;
     }
 
     return capability;
@@ -431,7 +435,7 @@ void CSmartGotoPositionV3::validateFinalTarget(CGeoPoint& finalTarget,  const CV
     //free kick的时候需要多避对方禁区20cm
     double theirPenaltyAvoidLength = avoidLength;
     if(playerFlag & PlayerStatus::FREE_KICK) {
-        theirPenaltyAvoidLength += 20.0;
+        theirPenaltyAvoidLength += 20.0*10;
     }
     else if(!shrinkTheirPenalty) {
         theirPenaltyAvoidLength += Param::Vehicle::V2::PLAYER_SIZE;
@@ -490,7 +494,7 @@ void CSmartGotoPositionV3::validateStartPoint(CGeoPoint &startPoint, double avoi
             }
         }
     }
-    double adjustStep = 9.0;
+    double adjustStep = 9.0*10;
     adjustVec = adjustVec / adjustVec.mod();
     i = 0;
     while(!obs.check(startPoint) && i < 10) {
@@ -524,7 +528,7 @@ CVector CSmartGotoPositionV3::validateFinalVel(const bool isGoalie, const CGeoPo
     velMod = velNew.mod();
     factorFront = safeVelFactorFront;
     factorBack = safeVelFactorBack;
-    adjustStep = 5;
+    adjustStep = 5*10;
 
     if(_capability.maxDec < 1e-8) return CVector(0.0, 0.0);
     distToStop = pow(targetVel.mod(), 2) / (2.0 * _capability.maxDec);
@@ -602,47 +606,47 @@ CGeoPoint CSmartGotoPositionV3::dealPlanFail(CGeoPoint startPoint, CGeoPoint nex
             if(startPoint.x() > Param::Field::PITCH_LENGTH / 2 - Param::Field::PENALTY_AREA_DEPTH) {
                 if(startPoint.y() > Param::Field::PENALTY_AREA_WIDTH / 2) {
                     nextPointNew = candidate11;
-                    if(nextPoint.dist(candidate12) < nextPoint.dist(candidate12) && startPoint.dist(candidate11) < 5)
+                    if(nextPoint.dist(candidate12) < nextPoint.dist(candidate12) && startPoint.dist(candidate11) < 5*10)
                         nextPointNew = candidate12;
                 } else {
                     nextPointNew = candidate21;
-                    if(nextPoint.dist(candidate22) < nextPoint.dist(candidate22) && startPoint.dist(candidate21) < 5)
+                    if(nextPoint.dist(candidate22) < nextPoint.dist(candidate22) && startPoint.dist(candidate21) < 5*10)
                         nextPointNew = candidate22;
                 }
             }
             else if(startPoint.x() < -Param::Field::PITCH_LENGTH / 2 + Param::Field::PENALTY_AREA_DEPTH) {
                 if(startPoint.y() > Param::Field::PENALTY_AREA_WIDTH / 2) {
                     nextPointNew = candidate31;
-                    if(nextPoint.dist(candidate32) < nextPoint.dist(candidate32) && startPoint.dist(candidate31) < 5)
+                    if(nextPoint.dist(candidate32) < nextPoint.dist(candidate32) && startPoint.dist(candidate31) < 5*10)
                         nextPointNew = candidate32;
                 }
                 else {
                     nextPointNew = candidate41;
-                    if(nextPoint.dist(candidate42) < nextPoint.dist(candidate42) && startPoint.dist(candidate41) < 5)
+                    if(nextPoint.dist(candidate42) < nextPoint.dist(candidate42) && startPoint.dist(candidate41) < 5*10)
                         nextPointNew = candidate42;
                 }
             }
             else if(nextPoint.x() > Param::Field::PITCH_LENGTH / 2 - Param::Field::PENALTY_AREA_DEPTH) {
                 if(nextPoint.y() > Param::Field::PENALTY_AREA_WIDTH / 2) {
                     nextPointNew = candidate12;
-                    if(nextPoint.dist(candidate11) < nextPoint.dist(candidate12) && startPoint.dist(candidate12) < 5)
+                    if(nextPoint.dist(candidate11) < nextPoint.dist(candidate12) && startPoint.dist(candidate12) < 5*10)
                         nextPointNew = candidate11;
                 }
                 else {
                     nextPointNew = candidate22;
-                    if(nextPoint.dist(candidate21) < nextPoint.dist(candidate22) && startPoint.dist(candidate22) < 5)
+                    if(nextPoint.dist(candidate21) < nextPoint.dist(candidate22) && startPoint.dist(candidate22) < 5*10)
                         nextPointNew = candidate21;
                 }
             }
             else if(nextPoint.x() < -Param::Field::PITCH_LENGTH / 2 + Param::Field::PENALTY_AREA_DEPTH) {
                 if(nextPoint.y() > Param::Field::PENALTY_AREA_WIDTH / 2) {
                     nextPointNew = candidate32;
-                    if(nextPoint.dist(candidate31) < nextPoint.dist(candidate32) && startPoint.dist(candidate32) < 5)
+                    if(nextPoint.dist(candidate31) < nextPoint.dist(candidate32) && startPoint.dist(candidate32) < 5*10)
                         nextPointNew = candidate31;
                 }
                 else {
                     nextPointNew = candidate42;
-                    if(nextPoint.dist(candidate41) < nextPoint.dist(candidate42) && startPoint.dist(candidate42) < 5)
+                    if(nextPoint.dist(candidate41) < nextPoint.dist(candidate42) && startPoint.dist(candidate42) < 5*10)
                         nextPointNew = candidate41;
                 }
             }
@@ -661,8 +665,8 @@ CGeoPoint CSmartGotoPositionV3::finalPointBallPlacement(const CGeoPoint &startPo
     const double CAN_PASS_ANGLE = Param::Math::PI / 9;
     CVector segVec = segPoint1 - segPoint2;
     CVector adjustDir = segVec.rotate(Param::Math::PI / 2).unit();
-    double adjustStep = 5.0;
-    double avoidBuffer = 60;
+    double adjustStep = 5.0*10;
+    double avoidBuffer = 60*10;
     canDirect = true;
 
     ///情况1：自己和目标都在区域内，把自己移出区域并作为新的目标点；
@@ -685,8 +689,8 @@ CGeoPoint CSmartGotoPositionV3::finalPointBallPlacement(const CGeoPoint &startPo
                 Utils::InOurPenaltyArea(targetNew, avoidLength) ||
                 Utils::InTheirPenaltyArea(targetNew, avoidLength)) {
             targetNew = targetNew + (adjustDir) * (2 * (obsRadius + avoidLength + adjustStep + adjustBuffer));
-            adjustBuffer -= 10;
-            if(adjustBuffer < 10) break;
+            adjustBuffer -= 10*10;
+            if(adjustBuffer < 10*10) break;
         }
 
         adjustDir = -adjustDir;
@@ -696,11 +700,11 @@ CGeoPoint CSmartGotoPositionV3::finalPointBallPlacement(const CGeoPoint &startPo
                 Utils::InOurPenaltyArea(targetNew, avoidLength) ||
                 Utils::InTheirPenaltyArea(targetNew, avoidLength)) {
             targetNew = targetNew + (adjustDir) * (2 * (obsRadius + avoidLength + adjustStep + adjustBuffer));
-            adjustBuffer -= 10;
-            if(adjustBuffer < 10) break;
+            adjustBuffer -= 10*10;
+            if(adjustBuffer < 10*10) break;
         }
 //        targetNew = targetNew + adjustDir * avoidBuffer;
-        if(avoidBuffer < 10)
+        if(avoidBuffer < 10*10)
             targetNew = CGeoPoint(0.0, 0.0);
         canDirect = false;
     }

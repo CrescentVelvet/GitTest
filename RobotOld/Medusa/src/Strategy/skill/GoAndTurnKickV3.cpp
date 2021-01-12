@@ -32,7 +32,7 @@ CGoAndTurnKickV3::CGoAndTurnKickV3() {
 }
 
 void CGoAndTurnKickV3::plan(const CVisionModule* pVision) {
-	if ( pVision->Cycle() - _lastCycle > Param::Vision::FRAME_RATE * 0.1) {
+	if ( pVision->getCycle() - _lastCycle > Param::Vision::FRAME_RATE * 0.1) {
 		setState(BEGINNING);
 		count = 0;
 	}
@@ -48,9 +48,9 @@ void CGoAndTurnKickV3::plan(const CVisionModule* pVision) {
 	double gotoDist = task().player.max_deceleration;
 	double adjustPre = task().player.speed_x;
 
-	const MobileVisionT& ball = pVision->Ball();
+	const MobileVisionT& ball = pVision->ball();
 	const CGeoPoint ballPos = ball.Pos();
-	const PlayerVisionT& me = pVision->OurPlayer(vecNumber);
+	const PlayerVisionT& me = pVision->ourPlayer(vecNumber);
 	const CVector self2ball = ballPos - me.Pos();
 //	const CVector ball2self = me.Pos() - ballPos;
 	double faceDir = Utils::Normalize((ball.Pos() - me.Pos()).dir());
@@ -164,7 +164,7 @@ void CGoAndTurnKickV3::plan(const CVisionModule* pVision) {
 		setSubTask(TaskFactoryV2::Instance()->NoneTrajGetBall(myTask));
 	}
 	//cout << "state : " << state() << endl;
-	_lastCycle = pVision->Cycle();
+	_lastCycle = pVision->getCycle();
 	return CStatedTask::plan(pVision);
 }
 

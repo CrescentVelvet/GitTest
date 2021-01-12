@@ -33,13 +33,13 @@ void CEnemyDefendTacticAnalys::updateCurrentTacticInfo(const CVisionModule* pVis
 {
 	////添加队员判断规则区域
 	
-	if(pVision->Cycle() != _lastCycle){
+	if(pVision->getCycle() != _lastCycle){
 		areaNum = 0;
 		for (int i = 1;i <(Param::Field::MAX_PLAYER+1);i ++ )
 		{
-			if (pVision->OurPlayer(i).Valid())
+			if (pVision->ourPlayer(i).Valid())
 			{
-				CGeoPoint ourPlayerPos = pVision->OurPlayer(i).Pos();
+				CGeoPoint ourPlayerPos = pVision->ourPlayer(i).Pos();
 				addCricle(ourPlayerPos,JudgeDist,CIRCLE,i);
 				GDebugEngine::Instance()->gui_debug_arc(ourPlayerPos,JudgeDist,0,360);
 			}
@@ -107,7 +107,7 @@ void CEnemyDefendTacticAnalys::addLongAnnulus(CGeoPoint & circleCenter,double in
 string CEnemyDefendTacticAnalys::doAnalys(const int enemyCarNum,const CVisionModule * pVision)
 {
 	updateCurrentTacticInfo(pVision);
-	const PlayerVisionT& enemy = pVision->TheirPlayer(enemyCarNum);
+	const PlayerVisionT& enemy = pVision->theirPlayer(enemyCarNum);
 	CGeoPoint enemyPos = enemy.Pos();
 	if (area[goalieAreaNum].isInLongCircle(enemyPos))
 	{
@@ -123,7 +123,7 @@ string CEnemyDefendTacticAnalys::doAnalys(const int enemyCarNum,const CVisionMod
 	{
 		if ((i != goalieAreaNum) && (i!= defenderAreaNum)&& area[i].mask == 1)
 		{
-			double me2oppDist = (pVision->OurPlayer(area[i].ourCarNum).Pos() - pVision->TheirPlayer(enemyCarNum).Pos()).mod();
+			double me2oppDist = (pVision->ourPlayer(area[i].ourCarNum).Pos() - pVision->theirPlayer(enemyCarNum).Pos()).mod();
 			if (me2oppDist < recordDsit)
 			{
 				recordDsit = me2oppDist;

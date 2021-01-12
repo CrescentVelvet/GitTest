@@ -140,9 +140,9 @@ bool CLuaModule::RunScript(const char *pFname)
     {
         double x = (ZSS::ZParamManager::instance()->value("ZAlert/IsRight").toBool()?1:-1)*(Param::Field::PITCH_LENGTH/2-50);
         qDebug() << QString("Lua Error - Script Run\nScript Name:%1\nError Message:%2\n").arg(pFilename).arg(luaL_checkstring(m_pScriptContext, -1));
-        GDebugEngine::Instance()->gui_debug_msg(CGeoPoint(x,20),QString("Lua Error - Script Load").toLatin1());
-        GDebugEngine::Instance()->gui_debug_msg(CGeoPoint(x,40),QString("Name:%1").arg(pFilename).toLatin1());
-        GDebugEngine::Instance()->gui_debug_msg(CGeoPoint(x,60),QString("Error Message:%1").arg(luaL_checkstring(m_pScriptContext, -1)).toLatin1());
+        GDebugEngine::Instance()->gui_debug_msg(CGeoPoint(x,-200),QString("Lua Error - Script Load").toLatin1());
+        GDebugEngine::Instance()->gui_debug_msg(CGeoPoint(x,-400),QString("Name:%1").arg(pFilename).toLatin1());
+        GDebugEngine::Instance()->gui_debug_msg(CGeoPoint(x,-600),QString("Error Message:%1").arg(luaL_checkstring(m_pScriptContext, -1)).toLatin1());
         GDebugEngine::Instance()->send(!ZSS::ZParamManager::instance()->value("ZAlert/IsYellow").toBool());
         if(LUA_DEBUG){
             std::cout << "Press enter to continue ...";
@@ -154,9 +154,9 @@ bool CLuaModule::RunScript(const char *pFname)
     {
         double x = (ZSS::ZParamManager::instance()->value("ZAlert/IsRight").toBool()?1:-1)*(Param::Field::PITCH_LENGTH/2-50);
         qDebug() << QString("Lua Error - Script Run\nScript Name:%1\nError Message:%2\n").arg(pFilename).arg(luaL_checkstring(m_pScriptContext, -1));
-        GDebugEngine::Instance()->gui_debug_msg(CGeoPoint(x,20),QString("Lua Error - Script Load").toLatin1());
-        GDebugEngine::Instance()->gui_debug_msg(CGeoPoint(x,40),QString("Name:%1").arg(pFilename).toLatin1());
-        GDebugEngine::Instance()->gui_debug_msg(CGeoPoint(x,60),QString("Error Message:%1").arg(luaL_checkstring(m_pScriptContext, -1)).toLatin1());
+        GDebugEngine::Instance()->gui_debug_msg(CGeoPoint(x,-200),QString("Lua Error - Script Load").toLatin1());
+        GDebugEngine::Instance()->gui_debug_msg(CGeoPoint(x,-400),QString("Name:%1").arg(pFilename).toLatin1());
+        GDebugEngine::Instance()->gui_debug_msg(CGeoPoint(x,-600),QString("Error Message:%1").arg(luaL_checkstring(m_pScriptContext, -1)).toLatin1());
         GDebugEngine::Instance()->send(!ZSS::ZParamManager::instance()->value("ZAlert/IsYellow").toBool());
         if(LUA_DEBUG){
             std::cout << "Press enter to continue ...";
@@ -738,7 +738,7 @@ extern "C" int FUNC_GetMarkingPos(lua_State *L)
 	static bool kickOffSide = false;
 	bool checkKickOffArea = false;
 	if ("TheirIndirectKick" == refMsg || "TheirDirectKick" == refMsg){
-		if (vision->Ball().Y() >0){
+		if (vision->ball().Y() >0){
 			kickOffSide = false;
 		}else{
 			kickOffSide = true;
@@ -757,9 +757,9 @@ extern "C" int FUNC_GetMarkingPos(lua_State *L)
 			checkKickOffArea = true;
 		}
 	}
-	if (front && vision->TheirPlayer(oppNum).Pos().x()>-190 && false == checkKickOffArea) {
-		double dir = (vision->Ball().Pos() - vision->TheirPlayer(oppNum).Pos()).dir();
-		p = vision->TheirPlayer(oppNum).Pos() + Utils::Polar2Vector(35,dir);
+	if (front && vision->theirPlayer(oppNum).Pos().x()>-190 && false == checkKickOffArea) {
+		double dir = (vision->ball().Pos() - vision->theirPlayer(oppNum).Pos()).dir();
+		p = vision->theirPlayer(oppNum).Pos() + Utils::Polar2Vector(35,dir);
 	} else{
 		p = MarkingPosV2::Instance()->getMarkingPos(vision, pri);
 	}
@@ -805,12 +805,12 @@ extern "C" int FUNC_GetZBlockingPos(lua_State *L){
         }
     }
     int oppNum = DefenceInfo::Instance()->getSteadyAttackOppNumByPri(pri);
-    CGeoPoint enemyPos = vision->TheirPlayer(oppNum).Pos();
-    const MobileVisionT& ball = vision->Ball();
+    CGeoPoint enemyPos = vision->theirPlayer(oppNum).Pos();
+    const MobileVisionT& ball = vision->ball();
 
-    markPos = ZSkillUtils::instance()->getMarkingPoint(enemyPos, vision->TheirPlayer(oppNum).Vel(), 450, 450, 450, 300, CGeoPoint(defPos_x, defPos_y));
+    markPos = ZSkillUtils::instance()->getMarkingPoint(enemyPos, vision->theirPlayer(oppNum).Vel(), 450, 450, 450, 300, CGeoPoint(defPos_x, defPos_y));
 
-    if(!vision->TheirPlayer(oppNum).Valid()){
+    if(!vision->theirPlayer(oppNum).Valid()){
         markPos = CGeoPoint(-250, 0);
     }
     //防止车出场
@@ -854,11 +854,11 @@ extern "C" int FUNC_TimeOut(lua_State* L)
 	int buf = LuaModule::Instance()->GetNumberArgument(2, NULL);
 	int cnt = LuaModule::Instance()->GetNumberArgument(3, 9999);
 
-	if(BufferCounter::Instance()->isClear(vision->Cycle())){
-		BufferCounter::Instance()->startCount(vision->Cycle(), cond, buf, cnt);
+	if(BufferCounter::Instance()->isClear(vision->getCycle())){
+		BufferCounter::Instance()->startCount(vision->getCycle(), cond, buf, cnt);
 	}
 
-	if(BufferCounter::Instance()->timeOut(vision->Cycle(), cond)){
+	if(BufferCounter::Instance()->timeOut(vision->getCycle(), cond)){
 		LuaModule::Instance()->PushNumber(1);
 	} else{
 		LuaModule::Instance()->PushNumber(0);
@@ -866,19 +866,19 @@ extern "C" int FUNC_TimeOut(lua_State* L)
 	return 1;
 }
 
-extern "C" int FUNC_GetRealNum(lua_State* L)
-{
-	int num = LuaModule::Instance()->GetNumberArgument(1, NULL);
-	LuaModule::Instance()->PushNumber(PlayInterface::Instance()->getRealIndexByNum(num));
-	return 1;
-}
+//extern "C" int FUNC_GetRealNum(lua_State* L)
+//{
+//	int num = LuaModule::Instance()->GetNumberArgument(1, NULL);
+//	LuaModule::Instance()->PushNumber(PlayInterface::Instance()->getRealIndexByNum(num));
+//	return 1;
+//}
 
-extern "C" int FUNC_GetStrategyNum(lua_State* L)
-{
-	int num = LuaModule::Instance()->GetNumberArgument(1, NULL);
-	LuaModule::Instance()->PushNumber(PlayInterface::Instance()->getNumbByRealIndex(num));
-	return 1;
-}
+//extern "C" int FUNC_GetStrategyNum(lua_State* L)
+//{
+//	int num = LuaModule::Instance()->GetNumberArgument(1, NULL);
+//	LuaModule::Instance()->PushNumber(num);
+//	return 1;
+//}
 
 extern "C" int FUNC_GetIsSimulation(lua_State* L)
 {
@@ -1026,12 +1026,12 @@ extern "C" int FUNC_EnemyHasReceiver(lua_State* L){
 	return 1;
 }
 
-extern "C" int FUNC_SetRoleAndNum(lua_State* L){
-	string rolename = LuaModule::Instance()->GetStringArgument(1, NULL);
-	int num = LuaModule::Instance()->GetNumberArgument(2, NULL);
-	PlayInterface::Instance()->setRoleNameAndNum(rolename, num);
-	return 0;
-}
+//extern "C" int FUNC_SetRoleAndNum(lua_State* L){
+//	string rolename = LuaModule::Instance()->GetStringArgument(1, NULL);
+//	int num = LuaModule::Instance()->GetNumberArgument(2, NULL);
+//	PlayInterface::Instance()->setRoleNameAndNum(rolename, num);
+//	return 0;
+//}
 
 extern "C" int Skill_SpeedInRobot(lua_State* L){
 	int runner = LuaModule::Instance()->GetNumberArgument(1,NULL);
@@ -1039,7 +1039,7 @@ extern "C" int Skill_SpeedInRobot(lua_State* L){
 	double speedY = LuaModule::Instance()->GetNumberArgument(3,NULL);
 	double rotSpeed = LuaModule::Instance()->GetNumberArgument(4,NULL);
 	CVector localVel(speedX, speedY);
-	CVector globalVel = localVel.rotate(vision->OurPlayer(runner).Dir());
+	CVector globalVel = localVel.rotate(vision->ourPlayer(runner).Dir());
 	DribbleStatus::Instance()->setDribbleCommand(runner,3);
 	CPlayerTask* pTask = PlayerRole::makeItRun(runner, globalVel.x(), globalVel.y(), rotSpeed, 0);
 	TaskMediator::Instance()->setPlayerTask(runner, pTask, 1);
@@ -1078,7 +1078,7 @@ extern "C" int FUNC_MarkingXFirstNum(lua_State* L){
 // 从Lua中注册开球车朝向供Touch使用，防止球看不见时车会上前拿球
 extern "C" int FUNC_SetPassDir(lua_State* L){
 	double dir = LuaModule::Instance()->GetNumberArgument(1,NULL);
-	TouchKickPos::Instance()->setPassDir(vision->Cycle(), dir);
+	TouchKickPos::Instance()->setPassDir(vision->getCycle(), dir);
 
 	return 0;
 }
@@ -1171,7 +1171,7 @@ luaDef GUIGlue[] =
 	{"CZMarking",			Skill_ZMarking},
     {"CZBlocking",           Skill_ZBlocking},
 	{"CTimeOut",			FUNC_TimeOut},
-	{"CGetRealNum",			FUNC_GetRealNum},
+//	{"CGetRealNum",			FUNC_GetRealNum},
 	{"CGetIsSimulation",	FUNC_GetIsSimulation},
     {"CGetSettings",        FUNC_GetSettings},
     {"CPenaltyGoalieV2",    Skill_PenaltyGoalieV2},
@@ -1189,7 +1189,7 @@ luaDef GUIGlue[] =
 	{"CGetPenaltyCleaner",  FUNC_GetPenaltyCleaner},
 	{"CCleanPenalty",       FUNC_CleanPenalty},
 	{"CGetResetMatchStr",	FUNC_GetResetGroup},
-    {"CSetRoleAndNum",		FUNC_SetRoleAndNum},
+//    {"CSetRoleAndNum",		FUNC_SetRoleAndNum},
 	{"CPenaltyKick2017V1",	Skill_PenaltyKick2017V1},
 	{"CPenaltyKick2017V2",	Skill_PenaltyKick2017V2},
 	{"CGoCmuRush",			Skill_GoCmuRush},
@@ -1214,7 +1214,7 @@ luaDef GUIGlue[] =
     {"CHoldBall",           Skill_HoldBall},
     {"CZCirclePass",        Skill_ZCirclePass},
 	{"CDribbleTurnKick",    Skill_DribbleTurnKick},
-    {"CGetStrategyNum",     FUNC_GetStrategyNum},
+//    {"CGetStrategyNum",     FUNC_GetStrategyNum},
     {"CInterceptTouch",     Skill_InterceptTouch},
     {"CPrintString",        FUNC_PrintString},
     {"CGoAndTurnKickV4",    Skill_GoAndTurnKickV4},

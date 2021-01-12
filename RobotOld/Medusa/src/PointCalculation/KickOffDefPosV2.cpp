@@ -24,13 +24,13 @@ CGeoPoint CKickOffDefPosV2::GetKickOffDefPos(const CVisionModule *pVision, const
 	int enemy_min = 0;
 	for (int i = 1; i <= Param::Field::MAX_PLAYER; i ++)
 	{
-		if (pVision->TheirPlayer(i).Valid() == true && pVision->TheirPlayer(i).Pos().x() < 200*Param::Field::RATIO
-			&& this->GetPosNum(pVision, pVision->TheirPlayer(i).Pos()) == pos_num)
+		if (pVision->theirPlayer(i).Valid() == true && pVision->theirPlayer(i).Pos().x() < 200*Param::Field::RATIO
+			&& this->GetPosNum(pVision, pVision->theirPlayer(i).Pos()) == pos_num)
 		{
-			if (pVision->TheirPlayer(i).Pos().dist(goal_center) < dist_min)
+			if (pVision->theirPlayer(i).Pos().dist(goal_center) < dist_min)
 			{
 				enemy_min = i;
-				dist_min = pVision->TheirPlayer(i).Pos().dist(goal_center);
+				dist_min = pVision->theirPlayer(i).Pos().dist(goal_center);
 			}
 		}
 	}
@@ -41,7 +41,7 @@ CGeoPoint CKickOffDefPosV2::GetKickOffDefPos(const CVisionModule *pVision, const
 	}
 	else
 	{
-		CGeoLine enemy_line(pVision->TheirPlayer(enemy_min).Pos(), goal_center);
+		CGeoLine enemy_line(pVision->theirPlayer(enemy_min).Pos(), goal_center);
 		CGeoLineLineIntersection lli(enemy_line, def_line);
 		if (lli.Intersectant() == true)
 		{

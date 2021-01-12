@@ -194,8 +194,8 @@ bool CPenaltyPosCleaner::checkPosImpact(const CVisionModule* pVision,const SIPoi
 	{
 		if (p1._num != 0 && p2._num != 0)
 		{
-			CGeoPoint RealP1 = pVision->OurPlayer(p1._num).Pos();
-			CGeoPoint RealP2 = pVision->OurPlayer(p2._num).Pos();
+			CGeoPoint RealP1 = pVision->ourPlayer(p1._num).Pos();
+			CGeoPoint RealP2 = pVision->ourPlayer(p2._num).Pos();
 			if (RealP1.dist(RealP2) < IMPACT_DIST + REAL_POS_CHECK_LIMIT)
 			{
 				return true;

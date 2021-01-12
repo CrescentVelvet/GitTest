@@ -114,7 +114,7 @@
 //	//cout << supPos.x()<<"   "<< supPos.y() << endl;
 //	//
 //	SupZone = CalZone(supPos);
-//	LeaderZone = CalZone(pVision->OurPlayer(leadNum).Pos());
+//	LeaderZone = CalZone(pVision->ourPlayer(leadNum).Pos());
 
 //	//calculate zone of AssistPoint by using supPos and ZoneEnemy
 	

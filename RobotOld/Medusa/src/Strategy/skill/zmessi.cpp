@@ -14,13 +14,13 @@ void CZMessi::plan(const CVisionModule *pVision){
 //    const MobileVisionT& ball = pVision->Ball();
     const CGeoPoint target = task().player.pos;
     int vecNumber = task().executor;
-//    const PlayerVisionT& me = pVision->OurPlayer(vecNumber);
+//    const PlayerVisionT& me = pVision->ourPlayer(vecNumber);
 //    int oppNumber = ZSkillUtils::instance()->getTheirBestPlayer();
 //    const PlayerVisionT& enemy = pVision->TheirPlayer(oppNumber);
 //    int c = ZGlobalControl::instance()->MessiCommand();
     int c = 0;
     switch(c){
-    case GETBALL: setSubTask(PlayerRole::makeItGetBallV4(vecNumber, PlayerStatus::DRIBBLE, target, CGeoPoint(-9999, -9999), 0));
+    case GETBALL: setSubTask(PlayerRole::makeItGetBallV4(vecNumber, PlayerStatus::DRIBBLE, target, CGeoPoint(-9999*10, -9999*10), 0));
         break;
     case TURNLEFT: setSubTask(PlayerRole::makeItRun(vecNumber,0,0,R));
         break;

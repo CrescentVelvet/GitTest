@@ -113,8 +113,8 @@
 //	}
 	
 
-////	PlayerVisionT ourSupporter = pVision->OurPlayer(ourSupporterNum);
-//	PlayerVisionT ourLeader = pVision->OurPlayer(ourLeaderNum);
+////	PlayerVisionT ourSupporter = pVision->ourPlayer(ourSupporterNum);
+//	PlayerVisionT ourLeader = pVision->ourPlayer(ourLeaderNum);
 //	const MobileVisionT& ball = pVision->Ball();
 ////	const CGeoPoint ballPos = ball.Pos();
 ////	const CGeoPoint ballRawPos = ball.RawPos();
@@ -197,7 +197,7 @@
 
 ////判断球是否在我方的控制下
 //bool CSupportPos::isBallInOurControl(const CVisionModule* pVision){
-//	PlayerVisionT ourLeader = pVision->OurPlayer(ourLeaderNum);
+//	PlayerVisionT ourLeader = pVision->ourPlayer(ourLeaderNum);
 //	const MobileVisionT& ball = pVision->Ball();
 ////	const CGeoPoint ballPos = ball.Pos();
 ////	const CGeoPoint ballRawPos = ball.RawPos();
@@ -215,7 +215,7 @@
 
 ////统计在禁区附近的防守车的总数量
 //int CSupportPos::calcEnemyDefenderAmount(const CVisionModule* pVision){
-//	PlayerVisionT ourLeader = pVision->OurPlayer(ourLeaderNum);
+//	PlayerVisionT ourLeader = pVision->ourPlayer(ourLeaderNum);
 //	int enemyDefenderAmount=0;
 //	int enemyCount = 0;
 //	const MobileVisionT& ball = pVision->Ball();
@@ -248,7 +248,7 @@
 ////无防守队员时，返回0,计算成功返回1，计算失败返回2
 ////计算结果存储在reflectPos与reflectDir中
 //double CSupportPos::calcBallReflectDirAndPos(const CVisionModule* pVision, const int enemyDefenderAmount){
-//	PlayerVisionT ourLeader = pVision->OurPlayer(ourLeaderNum);
+//	PlayerVisionT ourLeader = pVision->ourPlayer(ourLeaderNum);
 //	const MobileVisionT& ball = pVision->Ball();
 //	const CGeoPoint ballPos = ball.Pos();
 //	const CGeoPoint ballRawPos = ball.RawPos();
@@ -278,7 +278,7 @@
 //	}
 
 //	double antiFinalDir = Utils::Normalize(finalDir + PI);
-//	CGeoLine shootLine = CGeoLine(pVision->OurPlayer(ourLeaderNum).Pos(), finalDir);
+//	CGeoLine shootLine = CGeoLine(pVision->ourPlayer(ourLeaderNum).Pos(), finalDir);
 
 	
 //	//只有一名防守队员，默认此防守队员仅为守门员,且守门员横在门前
@@ -412,8 +412,8 @@
 
 ////避开射门路径
 //void CSupportPos::checkAvoidShootLine(const CVisionModule *pVision){
-//	PlayerVisionT ourSupporter = pVision->OurPlayer(ourSupporterNum);
-//	PlayerVisionT ourLeader = pVision->OurPlayer(ourLeaderNum);
+//	PlayerVisionT ourSupporter = pVision->ourPlayer(ourSupporterNum);
+//	PlayerVisionT ourLeader = pVision->ourPlayer(ourLeaderNum);
 //	const MobileVisionT& ball = pVision->Ball();
 //	const CGeoPoint ballPos = ball.Pos();
 //	const CGeoPoint ballRawPos = ball.RawPos();
@@ -472,8 +472,8 @@
 //}
 
 //void CSupportPos::keepLeastDistanceFromLeader(const CVisionModule *pVision,double leastDist){
-//	PlayerVisionT ourSupporter = pVision->OurPlayer(ourSupporterNum);
-//	PlayerVisionT ourLeader = pVision->OurPlayer(ourLeaderNum);
+//	PlayerVisionT ourSupporter = pVision->ourPlayer(ourSupporterNum);
+//	PlayerVisionT ourLeader = pVision->ourPlayer(ourLeaderNum);
 //	const MobileVisionT& ball = pVision->Ball();
 //	const CGeoPoint ballPos = ball.Pos();
 //	const CGeoPoint ballRawPos = ball.RawPos();
@@ -491,8 +491,8 @@
 
 
 //void CSupportPos::checkAvoidCenterLine(const CVisionModule *pVision, double radius,double buffer){
-//	PlayerVisionT ourSupporter = pVision->OurPlayer(ourSupporterNum);
-//	PlayerVisionT ourLeader = pVision->OurPlayer(ourLeaderNum);
+//	PlayerVisionT ourSupporter = pVision->ourPlayer(ourSupporterNum);
+//	PlayerVisionT ourLeader = pVision->ourPlayer(ourLeaderNum);
 //	const MobileVisionT& ball = pVision->Ball();
 //	const CGeoPoint ballPos = ball.Pos();
 //	const CGeoPoint ballRawPos = ball.RawPos();

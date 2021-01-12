@@ -20,13 +20,13 @@ namespace{
 
 CRRTPathPlanner::CRRTPathPlanner(const CVisionModule* pVision, const TaskT& task, obstacles& obs, const CGeoPoint& myPos, bool searchInCircle, CGeoPoint circleCenter, double circleRadius) {
 	int player = task.executor;
-	vector2f playerVel(pVision->OurPlayer(player).VelX(), pVision->OurPlayer(player).VelY());
+	vector2f playerVel(pVision->ourPlayer(player).VelX(), pVision->ourPlayer(player).VelY());
     // set initial state
     state initial;
     state goal;
     vector<state> result;
     if(Utils::OutOfField(myPos, -40))
-        initial.pos = vector2f(pVision->OurPlayer(player).X(), pVision->OurPlayer(player).Y());
+        initial.pos = vector2f(pVision->ourPlayer(player).X(), pVision->ourPlayer(player).Y());
     else
         initial.pos = vector2f(myPos.x(), myPos.y());
     goal.pos = vector2f(task.player.pos.x(), task.player.pos.y());

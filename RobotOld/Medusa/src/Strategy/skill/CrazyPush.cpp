@@ -10,10 +10,10 @@ CCrazyPush::CCrazyPush() {}
 CCrazyPush::~CCrazyPush() {}
 
 void CCrazyPush::plan(const CVisionModule* pVision) {
-	if ( pVision->Cycle() - _lastCycle > Param::Vision::FRAME_RATE * 0.1) { setState(BEGINNING); }
+	if ( pVision->getCycle() - _lastCycle > Param::Vision::FRAME_RATE * 0.1) { setState(BEGINNING); }
 	int _executor  = task().executor;
 	double faceDir = task().player.angle;
-	const PlayerVisionT& me = pVision->OurPlayer(_executor);
+	const PlayerVisionT& me = pVision->ourPlayer(_executor);
 
 	CGeoPoint carzyTarget = me.Pos() + Utils::Polar2Vector(3, faceDir);
 
@@ -33,7 +33,7 @@ void CCrazyPush::plan(const CVisionModule* pVision) {
 	if (CRAZY_PUSH == state()) {
 		setSubTask(PlayerRole::makeItSimpleGoto(_executor, carzyTarget, faceDir, CVector(0, 0), 0, 0));
 	}
-	_lastCycle = pVision->Cycle();	
+	_lastCycle = pVision->getCycle();	
 	return CStatedTask::plan(pVision);
 }
 

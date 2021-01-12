@@ -7,10 +7,10 @@ local FreeKick_ImmortalStart_Pos = function ()
         pos = ball.pos() + Utils.Polar2Vector(posDistance, ball2goal:dir()) --距离
         local tempPos = ball.pos()+ Utils.Polar2Vector(posDistance, ball2goal:dir())
         for i = 1, 6 do
-                if vision:TheirPlayer(i):Valid() then
-                        if vision:TheirPlayer(i):Pos():dist(tempPos) < 20 then
-                                local dir = (CGeoPoint:new_local(450, 30 * ball.antiY()) - vision:TheirPlayer(i):Pos()):dir()
-                                pos = vision:TheirPlayer(i):Pos() + Utils.Polar2Vector(20, dir)
+                if vision:theirPlayer(i):Valid() then
+                        if vision:theirPlayer(i):Pos():dist(tempPos) < 20 then
+                                local dir = (CGeoPoint:new_local(450, 30 * ball.antiY()) - vision:theirPlayer(i):Pos()):dir()
+                                pos = vision:theirPlayer(i):Pos() + Utils.Polar2Vector(20, dir)
                                 break
                         end
                 else
@@ -26,8 +26,8 @@ local Field_RobotFoward_Pos = function (role)
         local UpdatePos = function ()
                 local roleNum = player.num(role)
                 if Utils.PlayerNumValid(roleNum) then
-                        local carPos = vision:OurPlayer(roleNum):Pos()
-                        pos = carPos + Utils.Polar2Vector(2, vision:OurPlayer(roleNum):Dir())
+                        local carPos = vision:ourPlayer(roleNum):Pos()
+                        pos = carPos + Utils.Polar2Vector(2, vision:ourPlayer(roleNum):Dir())
                 end
                 return pos
         end

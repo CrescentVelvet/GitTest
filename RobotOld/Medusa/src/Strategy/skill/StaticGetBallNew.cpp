@@ -22,10 +22,10 @@ CStaticGetBallNew::~CStaticGetBallNew()
 
 void CStaticGetBallNew::plan(const CVisionModule * pVision)
 {
-	const MobileVisionT& ball = pVision->Ball();
+	const MobileVisionT& ball = pVision->ball();
 	const int robotNum = task().executor;
 	const double finalAngel = task().player.angle;
-	const PlayerVisionT& me = pVision->OurPlayer(robotNum);
+	const PlayerVisionT& me = pVision->ourPlayer(robotNum);
 	const int playerFlag = task().player.flag;
 
 	TaskT static_get_task(task());
@@ -158,9 +158,9 @@ CPlayerCommand* CStaticGetBallNew::execute(const CVisionModule* pVision)
 
 int CStaticGetBallNew::getStaticDir(const CVisionModule * pVision, int staticDir)
 {
-	const MobileVisionT& ball = pVision->Ball();
+	const MobileVisionT& ball = pVision->ball();
 	const int robotNum = task().executor;
-	const PlayerVisionT& me = pVision->OurPlayer(robotNum);
+	const PlayerVisionT& me = pVision->ourPlayer(robotNum);
 
 	double ball2MeDir = (me.Pos() - ball.Pos()).dir();
 	double finalDir = task().player.angle;

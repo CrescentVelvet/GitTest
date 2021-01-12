@@ -12,11 +12,11 @@ CZMarking::CZMarking(){
 }
 
 void CZMarking::plan(const CVisionModule* pVision){
-    if ( pVision->Cycle() - _lastCycle > Param::Vision::FRAME_RATE * 0.1 ){
+    if ( pVision->getCycle() - _lastCycle > Param::Vision::FRAME_RATE * 0.1 ){
 		setState(BEGINNING);
     }
 
-	const MobileVisionT& ball = pVision->Ball();
+	const MobileVisionT& ball = pVision->ball();
 	int vecNumber = task().executor;   //我方小车
 	int enemyNum = task().ball.Sender;  //敌方
     int pri = task().ball.receiver;
@@ -24,8 +24,8 @@ void CZMarking::plan(const CVisionModule* pVision){
     bool stop_mode = flag & PlayerStatus::AVOID_STOP_BALL_CIRCLE;
     bool half_field_mode = flag & PlayerStatus::AVOID_HALF_FIELD;
 
-	const PlayerVisionT& me = pVision->OurPlayer(vecNumber);
-	const PlayerVisionT& enemy = pVision->TheirPlayer(enemyNum);
+	const PlayerVisionT& me = pVision->ourPlayer(vecNumber);
+	const PlayerVisionT& enemy = pVision->theirPlayer(enemyNum);
 	CGeoPoint enemyPos = enemy.Pos();
 	CGeoPoint mePos = me.Pos();	
 	double me2ballDir = CVector(ball.Pos() - mePos).dir();
@@ -60,15 +60,15 @@ void CZMarking::plan(const CVisionModule* pVision){
 
     double theta_2 = atan2(meVn, meVt);
     double meVelDir = Utils::Normalize(theta_2 + me2ball.dir());//速度线 = 夹角 + 球线
-    double meVelMod = 300;//sqrt(meVn*meVn + meVt*meVt);
-    if(enemy.Vel().mod() <  50) meVelMod = 0;
+    double meVelMod = 300*10;//sqrt(meVn*meVn + meVt*meVt);
+    if(enemy.Vel().mod() <  50*10) meVelMod = 0;
     if(Utils::InOurPenaltyArea(MarkingTask.player.pos + Utils::Polar2Vector(meVelMod/3, meVelDir), Param::Vehicle::V2::PLAYER_SIZE) || Utils::InTheirPenaltyArea(MarkingTask.player.pos + Utils::Polar2Vector(meVelMod/3, meVelDir), Param::Vehicle::V2::PLAYER_SIZE)) meVelMod = 0;
 //    GDebugEngine::Instance()->gui_debug_line(MarkingTask.player.pos + Utils::Polar2Vector(meVelMod/3, meVelDir), MarkingTask.player.pos, COLOR_ORANGE);
     MarkingTask.player.vel = Utils::Polar2Vector(meVelMod, meVelDir);
 
     setSubTask(TaskFactoryV2::Instance()->SmartGotoPosition(MarkingTask));
 
-	_lastCycle = pVision->Cycle();
+	_lastCycle = pVision->getCycle();
 	CStatedTask::plan(pVision);
 }
 

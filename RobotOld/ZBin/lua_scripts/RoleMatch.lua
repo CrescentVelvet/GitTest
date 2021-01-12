@@ -242,7 +242,8 @@ end
 function DoFixNumMatch(fixNums)
 	for _, fixNum in ipairs(fixNums) do
 		for index, carNum in ipairs(gOurExistNum) do
-			if CGetRealNum(carNum) == fixNum then
+			if carNum == fixNum then  --CGetRealNum(carNum) //test by wz
+				-- print("Wzdebug: rolematch", "carNum", carNum, "C++ num" , CGetRealNum(carNum))
 				table.remove(gOurExistNum, index)
 				return carNum
 			end

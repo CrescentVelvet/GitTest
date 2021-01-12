@@ -74,9 +74,8 @@ private:
 };
 // 记录预测过的视觉信息
 struct RobotVisionData : public PlayerVisionT{
-    RobotVisionData():cycle(0),realNum(0){}
+    RobotVisionData():cycle(0){}
 	int cycle;
-	int realNum;
 };
 class CRobotVisionLogger{
 public:
@@ -88,7 +87,6 @@ public:
 	{
 		_vision[(cycle+MAX_INFORMATIONS) % MAX_INFORMATIONS] = vision;
 		_vision[(cycle+MAX_INFORMATIONS) % MAX_INFORMATIONS].cycle = cycle;
-		_vision[(cycle+MAX_INFORMATIONS) % MAX_INFORMATIONS].realNum = realNum;
 	}
 private:
 	static const int MAX_INFORMATIONS = 16; // 保存n个周期的信息

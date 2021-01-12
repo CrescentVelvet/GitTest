@@ -120,8 +120,8 @@ void CMarkingTouch::plan(const CVisionModule* pVision){
 		markDirection=true;
 	}
 
-	const MobileVisionT& ball = pVision->Ball();
-	const PlayerVisionT& me = pVision->OurPlayer(robotNum);
+	const MobileVisionT& ball = pVision->ball();
+	const PlayerVisionT& me = pVision->ourPlayer(robotNum);
 //	const double dist2Ball=me.Pos().dist(ball.Pos());
 	//重要！！！！！注册车号
 	DefenceInfo::Instance()->setMarkingTouchInfo(pVision,robotNum,leftUpPos,rightDownPos);
@@ -142,7 +142,7 @@ void CMarkingTouch::plan(const CVisionModule* pVision){
 	_lastLeftUpPos=leftUpPos;
 	_lastRightDownPos=rightDownPos;
 
-	if ( pVision->Cycle() - _lastCycle > Param::Vision::FRAME_RATE * 0.1 ){
+	if ( pVision->getCycle() - _lastCycle > Param::Vision::FRAME_RATE * 0.1 ){
 		resetState();
 		_lastCycle=0;
 		if (markDirection)
@@ -166,12 +166,12 @@ void CMarkingTouch::plan(const CVisionModule* pVision){
 	int markEnemyNum=0;
 	for (int i=1;i<=Param::Field::MAX_PLAYER;i++)
 	{
-		if (pVision->TheirPlayer(i).Valid()){
-			if (markField.HasPoint(pVision->TheirPlayer(i).Pos()))
+		if (pVision->theirPlayer(i).Valid()){
+			if (markField.HasPoint(pVision->theirPlayer(i).Pos()))
 			{
 				if (markEnemyNum!=0)
 				{
-					if (pVision->TheirPlayer(i).Pos().dist(ball.Pos())<pVision->TheirPlayer(markEnemyNum).Pos().dist(ball.Pos())-20)
+					if (pVision->theirPlayer(i).Pos().dist(ball.Pos())<pVision->theirPlayer(markEnemyNum).Pos().dist(ball.Pos())-20)
 					{
 						markEnemyNum=i;
 					}
@@ -188,21 +188,21 @@ void CMarkingTouch::plan(const CVisionModule* pVision){
 	if (state()!=Touch){
 		_markEnemyNum=markEnemyNum;
 		int temptNum=NormalPlayUtils::getTheirMostClosetoPos(pVision,ball.Pos());
-		PlayerVisionT temptKickEnemy=pVision->TheirPlayer(temptNum);
+		PlayerVisionT temptKickEnemy=pVision->theirPlayer(temptNum);
 		double hetoBallDir=(ball.Pos()-temptKickEnemy.Pos()).dir();
 		if (fabs(Utils::Normalize(hetoBallDir-temptKickEnemy.Dir()))<Param::Math::PI*20/180)
 		{
 			_kickEnemyNum=temptNum;
 		}
 	}
-	const PlayerVisionT kickEnemy=pVision->TheirPlayer(_kickEnemyNum);
+	const PlayerVisionT kickEnemy=pVision->theirPlayer(_kickEnemyNum);
 
 	//待测试 将ball改成kickenemy
 	CGeoLine passLine=CGeoLine(kickEnemy.Pos(),kickEnemy.Dir());
 	CGeoSegment passSegment=CGeoSegment(ball.Pos(),ball.Pos()+Utils::Polar2Vector(800,kickEnemy.Dir()));
 	GDebugEngine::Instance()->gui_debug_line(ball.Pos(),ball.Pos()+Utils::Polar2Vector(600,kickEnemy.Dir()),COLOR_BLACK);
 	//cout<<_markEnemyNum<<endl;
-	const PlayerVisionT he=pVision->TheirPlayer(_markEnemyNum);
+	const PlayerVisionT he=pVision->theirPlayer(_markEnemyNum);
 	const double metoBallDir=(ball.Pos()-me.Pos()).dir();
 //	const double antiMetoBallDir=Utils::Normalize(metoBallDir+Param::Math::PI);
 	const double hetoBallDir=(ball.Pos()-he.Pos()).dir();
@@ -231,7 +231,7 @@ void CMarkingTouch::plan(const CVisionModule* pVision){
 	bool isEnemyFrontMe=metoBallSeg.IsPointOnLineOnSegment(heProjme)
 		&&Utils::pointToLineDist(he.Pos(),metoBallSeg)<40;
 
-	bool isBallVelOk=fabs(Utils::Normalize(pVision->Ball(_lastCycle-1).Vel().dir()-ball.Vel().dir()))<Param::Math::PI*8/180;
+	bool isBallVelOk=fabs(Utils::Normalize(pVision->ball(_lastCycle-1).Vel().dir()-ball.Vel().dir()))<Param::Math::PI*8/180;
 	isBallVelOk=true;
 	bool isBallPassed=//isBallVelOk&&
 		//&&diffAngleBallVel_HeDir<Param::Math::PI*20/180&&diffAngleBallVel_HetoBall<Param::Math::PI*20/180
@@ -368,19 +368,19 @@ void CMarkingTouch::plan(const CVisionModule* pVision){
 //		CGeoSegment pointSegment = CGeoSegment(_pointA,_pointB);
 		CGeoLineLineIntersection intersect = CGeoLineLineIntersection(pointLine,ballLine);
 
-//		double ball2playerdir = (pVision->OurPlayer(robotNum).Pos() - ball.Pos()).dir();
+//		double ball2playerdir = (pVision->ourPlayer(robotNum).Pos() - ball.Pos()).dir();
 //		double diff_ball2playerdir_ballveldir = fabs(Utils::Normalize(ballVelDir - ball2playerdir));
 
-		double ball2playerdist = (pVision->OurPlayer(robotNum).Pos() - ball.Pos()).mod();
+		double ball2playerdist = (pVision->ourPlayer(robotNum).Pos() - ball.Pos()).mod();
 		if (markDirection)
 		{
-			ball2playerdist=fabs(pVision->OurPlayer(robotNum).Pos().x() - ball.Pos().x());
+			ball2playerdist=fabs(pVision->ourPlayer(robotNum).Pos().x() - ball.Pos().x());
 		}else{
-			ball2playerdist=fabs(pVision->OurPlayer(robotNum).Pos().y() - ball.Pos().y());
+			ball2playerdist=fabs(pVision->ourPlayer(robotNum).Pos().y() - ball.Pos().y());
 		}
 		
 		//判断球速是否直线
-		if (fabs(Utils::Normalize(pVision->Ball().Vel().dir()-pVision->Ball(_lastCycle-2).Vel().dir()))>Param::Math::PI*3.5/180)
+		if (fabs(Utils::Normalize(pVision->ball().Vel().dir()-pVision->ball(_lastCycle-2).Vel().dir()))>Param::Math::PI*3.5/180)
 		{
 			_ballVelChangeCouter++;
 			_ballVelChangeCouter=min(_ballVelChangeCouter,3);
@@ -495,7 +495,7 @@ void CMarkingTouch::plan(const CVisionModule* pVision){
 		break;
 	}
 
-	_lastCycle = pVision->Cycle();
+	_lastCycle = pVision->getCycle();
 	CStatedTask::plan(pVision);
 }
 

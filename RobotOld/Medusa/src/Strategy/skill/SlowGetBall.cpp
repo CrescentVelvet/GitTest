@@ -54,7 +54,7 @@ void CSlowGetBall::plan(const CVisionModule* pVision)
 		}
 	}
 	//动作中断时间过长，状态重置
-	if ( pVision->Cycle() - _lastCycle > Param::Vision::FRAME_RATE * 0.1 ){
+	if ( pVision->getCycle() - _lastCycle > Param::Vision::FRAME_RATE * 0.1 ){
 		//cout << "Clear: get into SLOW_GET_BALL !" << endl;
 		setState(BEGINNING);
 		catchBallCount = 0;
@@ -63,10 +63,10 @@ void CSlowGetBall::plan(const CVisionModule* pVision)
 	}
 	KickStatus::Instance()->clearAll();
 	//视觉初步处理
-	const MobileVisionT& ball = pVision->Ball();
+	const MobileVisionT& ball = pVision->ball();
 	const int robotNum = task().executor;
 	const int flags = task().player.flag;
-	const PlayerVisionT& me = pVision->OurPlayer(robotNum);
+	const PlayerVisionT& me = pVision->ourPlayer(robotNum);
 	const CGeoPoint myhead = me.Pos()+Utils::Polar2Vector(Param::Vehicle::V2::PLAYER_FRONT_TO_CENTER + newVehicleBuffer,me.Dir());
 	const double finalDir = task().player.angle;
 	const CGeoLine myheadLine = CGeoLine(myhead,Utils::Normalize(me.Dir() + Param::Math::PI/2.0));
@@ -238,7 +238,7 @@ void CSlowGetBall::plan(const CVisionModule* pVision)
 		actionCount = 500;
 	}
 
-	_lastCycle = pVision->Cycle();
+	_lastCycle = pVision->getCycle();
 	CStatedTask::plan(pVision);
 }
 

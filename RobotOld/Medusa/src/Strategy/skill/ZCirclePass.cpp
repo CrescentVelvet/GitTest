@@ -42,12 +42,12 @@ namespace {
 }
 
 void CZCirclePass::plan(const CVisionModule* pVision) {
-    const MobileVisionT& ball = pVision->Ball();
+    const MobileVisionT& ball = pVision->ball();
     const CGeoPoint passTarget = task().player.pos;
     int vecNumber = task().executor;
-    const PlayerVisionT& me = pVision->OurPlayer(vecNumber);
+    const PlayerVisionT& me = pVision->ourPlayer(vecNumber);
     oppNum = ZSkillUtils::instance()->getTheirBestPlayer();
-    const PlayerVisionT& enemy = pVision->TheirPlayer(oppNum);
+    const PlayerVisionT& enemy = pVision->theirPlayer(oppNum);
     const double power = task().player.kickpower;
     const bool isChip = (task().player.kick_flag & PlayerStatus::CHIP);
     const bool setKick = (task().player.kick_flag & PlayerStatus::KICK);
@@ -71,7 +71,7 @@ void CZCirclePass::plan(const CVisionModule* pVision) {
     }
 //    cout <<"canShoot: "<<canShoot<< "  "<< 180*fabs(Utils::Normalize(me.Dir() - finalDir))/3.1415926<<endl;
     //?貊??頧砍???斗??
-    if (pVision->Cycle() - _lastCycle > 6) {
+    if (pVision->getCycle() - _lastCycle > 6) {
         isTurning[vecNumber] = false;//餈?6撣折??蝞?
     }
     //sidemove?嗅???斗?剖笆?寞?臬?虫??湔?∟膠
@@ -164,7 +164,7 @@ void CZCirclePass::plan(const CVisionModule* pVision) {
         if(!isChip) KickStatus::Instance()->setKick(vecNumber, power);
         else KickStatus::Instance()->setChipKick(vecNumber, power);
     }
-    _lastCycle = pVision->Cycle();
+    _lastCycle = pVision->getCycle();
     return CStatedTask::plan(pVision);
 }
 

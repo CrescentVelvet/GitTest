@@ -329,8 +329,8 @@
 
 
 ////void CMatchState::drawOurRobotLabel(int robotNum, const char* label, char color) {
-////	if (Utils::PlayerNumValid(robotNum) && _pVision->OurPlayer(robotNum).Valid()) {
-////		GDebugEngine::Instance()->gui_debug_msg(_pVision->OurPlayer(robotNum).Pos(), label, color);
+////	if (Utils::PlayerNumValid(robotNum) && _pVision->ourPlayer(robotNum).Valid()) {
+////		GDebugEngine::Instance()->gui_debug_msg(_pVision->ourPlayer(robotNum).Pos(), label, color);
 ////	}
 ////
 ////	return ;

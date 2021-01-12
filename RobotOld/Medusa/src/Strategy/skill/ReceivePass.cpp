@@ -29,10 +29,10 @@ void CReceivePass::plan(const CVisionModule* pVision)
 {
 	_directCommand = NULL;
 
-	const MobileVisionT& ball = pVision->Ball();
+	const MobileVisionT& ball = pVision->ball();
 	const CGeoPoint ballPos = ball.Pos();
 	const int vecNumber = task().executor;
-	const PlayerVisionT& me = pVision->OurPlayer(vecNumber);
+	const PlayerVisionT& me = pVision->ourPlayer(vecNumber);
 //	const CVector self2ball = ballPos - me.Pos();
 //	const CVector ball2self = me.Pos() - ballPos;
 	const double finalDir = task().player.angle;
@@ -47,7 +47,7 @@ void CReceivePass::plan(const CVisionModule* pVision)
 	bool isBallMovingToMe;
 	isBallMovingToMe = abs(Utils::Normalize((me.Pos() - ball.RawPos()).dir() - ball.Vel().dir())) < Param::Math::PI / 6;
 
-	if ( pVision->Cycle() - _lastCycle > Param::Vision::FRAME_RATE * 0.1
+	if ( pVision->getCycle() - _lastCycle > Param::Vision::FRAME_RATE * 0.1
 		|| _lastRunner != vecNumber){
 		setState(BEGINNING);
 		infrareCnt = 0;
@@ -128,7 +128,7 @@ void CReceivePass::plan(const CVisionModule* pVision)
 	}
 
 
-	_lastCycle = pVision->Cycle();
+	_lastCycle = pVision->getCycle();
 	_lastRunner = vecNumber;
 	CStatedTask::plan(pVision);
 }

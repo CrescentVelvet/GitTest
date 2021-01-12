@@ -1,6 +1,6 @@
 local STATIC_POS = {
-        CGeoPoint:new_local(-270,-350),
-        CGeoPoint:new_local(-270,350)
+        CGeoPoint:new_local(-2700,-3500),
+        CGeoPoint:new_local(-2700,3500)
 }
 gPlayTable.CreatePlay{
 

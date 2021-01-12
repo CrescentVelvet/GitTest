@@ -86,7 +86,7 @@ void CDefenceInfo::initialization(){
 void CDefenceInfo::updateDefenceInfo(const CVisionModule *pVision){
 	for (int i = 1; i <= Param::Field::MAX_PLAYER;i++)
 	{
-		if (pVision->TheirPlayer(i).Valid())
+		if (pVision->theirPlayer(i).Valid())
 		{
 			//cout<<"saaaaa "<<i<<endl;
 			_oplayer[i]->evaluate(pVision);
@@ -103,7 +103,7 @@ void CDefenceInfo::updateDefenceInfo(const CVisionModule *pVision){
 	_triggerOccur = (*_trigger.begin())->handler(pVision);
 	if (_triggerOccur)updateSteadyAttackArray();
 
-	_lastCycle = pVision->Cycle();
+	_lastCycle = pVision->getCycle();
 	if (DEFENCE_DEBUG_MODE)
 	{
 		//cout << "attack array is ";
@@ -116,11 +116,11 @@ void CDefenceInfo::updateDefenceInfo(const CVisionModule *pVision){
         attackSteadyInform.append(QString("%1:").arg(getAttackNum()));
         for(int i=0;i<getAttackNum();i++)
             attackSteadyInform.append(QString(" %1").arg(_attackArray[i]-1));
-        GDebugEngine::Instance()->gui_debug_msg(CGeoPoint(10,400),attackInform.toLatin1(),COLOR_YELLOW);
-        GDebugEngine::Instance()->gui_debug_msg(CGeoPoint(10,430),attackSteadyInform.toLatin1(),COLOR_YELLOW);
+        GDebugEngine::Instance()->gui_debug_msg(CGeoPoint(100,-Param::Field::PITCH_WIDTH * 2 / 3),attackInform.toLatin1(),COLOR_YELLOW);
+        GDebugEngine::Instance()->gui_debug_msg(CGeoPoint(100,-Param::Field::PITCH_WIDTH * 2 / 3 - 300),attackSteadyInform.toLatin1(),COLOR_YELLOW);
 		for(int i = 1;i<=Param::Field::MAX_PLAYER;++i)
 		{
-		    CGeoPoint playerPos = pVision->TheirPlayer(i).Pos();
+		    CGeoPoint playerPos = pVision->theirPlayer(i).Pos();
 		    char oppRoleName[2];
 		    oppRoleName[0] = _oplayer[i]->getRoleName().c_str()[1];
 		    oppRoleName[1] = 0;
@@ -159,18 +159,18 @@ int CDefenceInfo::getOurMarkDenfender(const int enemyNum)
 
 void CDefenceInfo::setMarkList(const CVisionModule* pVision,int myNum,int enemyNum)
 {
-	if (!pVision->OurPlayer(myNum).Valid() || !pVision->TheirPlayer(enemyNum).Valid())
+	if (!pVision->ourPlayer(myNum).Valid() || !pVision->theirPlayer(enemyNum).Valid())
 	{
 		if (0 == enemyNum)//可能会有问题，暂时这样处理 TODO 
 		{
             cout << "enemyNum = 0 in the function 'setMarkList'('DefenceInfo.cpp:166')" << endl;//add 2016.12.18
 			return;
         }
-        if(!pVision->OurPlayer(myNum).Valid()) cout <<"OurPlayer invalid :" <<myNum <<" in CDefenceInfo::setMarkList" <<endl;
-        if(!pVision->TheirPlayer(enemyNum).Valid()) cout <<"TheirPlayer invalid :" <<myNum <<" in CDefenceInfo::setMarkList" <<endl;
+        if(!pVision->ourPlayer(myNum).Valid()) cout <<"OurPlayer invalid :" <<myNum <<" in CDefenceInfo::setMarkList" <<endl;
+        if(!pVision->theirPlayer(enemyNum).Valid()) cout <<"TheirPlayer invalid :" <<myNum <<" in CDefenceInfo::setMarkList" <<endl;
 		return;
 	}
-	_markCycle[enemyNum] = pVision->Cycle();
+	_markCycle[enemyNum] = pVision->getCycle();
 	for (MarkList::iterator it = _markList.begin();it != _markList.end();it++)
 	{
 		if (it->first == enemyNum)
@@ -208,7 +208,7 @@ void CDefenceInfo::updateAttackArray(const CVisionModule* pVision)//更新进攻
 	_attackerNum = 0;
 	for (int i = 1;i <= Param::Field::MAX_PLAYER;++i)
 	{
-		if (!pVision->TheirPlayer(i).Valid())continue;
+		if (!pVision->theirPlayer(i).Valid())continue;
 		if (_oplayer[i]->getThreatenPri() < PRIORITY_DEFENCE)
 		{
 			attackerTempList.push_back(AttackerStruct(i,_oplayer[i]->getThreatenPri(),_oplayer[i]->getThreatenValue()));
@@ -284,11 +284,11 @@ void CDefenceInfo::updateMarkPair(const CVisionModule* pVision)
 {
 	for (int i = 1;i <= Param::Field::MAX_PLAYER;i++)
 	{
-		if (!pVision->TheirPlayer(i).Valid() )				          
+		if (!pVision->theirPlayer(i).Valid() )				          
 		{
 			continue;
 		}
-		if (pVision->Cycle() - _markCycle[i] > 5)  //超过五帧就要清除掉序列？而且没有添加？
+		if (pVision->getCycle() - _markCycle[i] > 5)  //超过五帧就要清除掉序列？而且没有添加？
 		{
 			for (MarkList::iterator it = _markList.begin();it != _markList.end();it++)
 			{
@@ -311,8 +311,8 @@ void CDefenceInfo::updateSteadyAttackArray()
 void CDefenceInfo::updateBallTaken(const CVisionModule* pVision)
 {
 	int keeperNum = ZSkillUtils::instance()->getTheirBestPlayer();	
-	const PlayerVisionT& keeper =pVision->TheirPlayer(keeperNum);
-	const CGeoPoint ballPos = pVision->Ball().Pos();
+	const PlayerVisionT& keeper =pVision->theirPlayer(keeperNum);
+	const CGeoPoint ballPos = pVision->ball().Pos();
 	static int ballTakedCount = 0;
 	static int ballUnTakedCount = 0;
 	if (keeper.Pos().dist(ballPos) < ballTakedDist &&
@@ -340,10 +340,10 @@ bool CDefenceInfo::checkInRecArea(int enemyNum, const CVisionModule* pVision, Ma
 {
 	bool result = false;
 	if (enemyNum!=0){
-		double x = pVision->TheirPlayer(enemyNum).X();
+		double x = pVision->theirPlayer(enemyNum).X();
 		double xmax = markField._upLeft.x();
 		double xmin = markField._downRight.x();
-		double y = pVision->TheirPlayer(enemyNum).Y();
+		double y = pVision->theirPlayer(enemyNum).Y();
 		double ymin = markField._upLeft.y();
 		double ymax = markField._downRight.y();
 		if (x>=xmin && x<=xmax && y>=ymin && y<=ymax){
@@ -357,10 +357,10 @@ bool CDefenceInfo::checkOurInRecArea(int myNum, const CVisionModule* pVision, Ma
 {
 	bool result = false;
 	if (myNum!=0){
-		double x = pVision->OurPlayer(myNum).X();
+		double x = pVision->ourPlayer(myNum).X();
 		double xmax = markField._upLeft.x();
 		double xmin = markField._downRight.x();
-		double y = pVision->OurPlayer(myNum).Y();
+		double y = pVision->ourPlayer(myNum).Y();
 		double ymin = markField._upLeft.y();
 		double ymax = markField._downRight.y();
 		if (x>=xmin && x<=xmax && y>=ymin && y<=ymax){
@@ -383,8 +383,8 @@ int CDefenceInfo::checkFieldAttack(MarkField markField, AttackerList attackerLis
 	int result = 0;
 	if (tmpList.size()!=0){
 		for (ir = tmpList.begin();ir!= tmpList.end();ir++){
-			if (vision->TheirPlayer(*ir).Pos().dist(vision->Ball().Pos())<tm){
-				tm = vision->TheirPlayer(*ir).Pos().dist(vision->Ball().Pos());
+			if (vision->theirPlayer(*ir).Pos().dist(vision->ball().Pos())<tm){
+				tm = vision->theirPlayer(*ir).Pos().dist(vision->ball().Pos());
 				result =*ir;
 			}
 		}

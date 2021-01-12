@@ -60,13 +60,13 @@ CPenaltyKick2017V2::CPenaltyKick2017V2()
 
 void CPenaltyKick2017V2::plan(const CVisionModule* pVision)
 {
-	if (state() == BEGINNING || pVision->Cycle() - _lastCycle > 6) {
+	if (state() == BEGINNING || pVision->getCycle() - _lastCycle > 6) {
 		setState(KICK);
 		_timeCnt = 0;
 		_theirGoalie = 0;
         _circleShootFlag = false;
 		for (int i = 1; i <= Param::Field::MAX_PLAYER; i++) {
-			if (Utils::InTheirPenaltyArea(pVision->TheirPlayer(i).Pos(), 0)) {
+			if (Utils::InTheirPenaltyArea(pVision->theirPlayer(i).Pos(), 0)) {
 				_theirGoalie = i;
 			}
 		}
@@ -85,9 +85,9 @@ void CPenaltyKick2017V2::plan(const CVisionModule* pVision)
 	//updateMsg(pVision);
 
 	int rolenum = task().executor;
-	const MobileVisionT& ball = pVision->Ball();
-	const PlayerVisionT& me = pVision->OurPlayer(rolenum);
-	const PlayerVisionT& enemy = pVision->TheirPlayer(_theirGoalie);
+	const MobileVisionT& ball = pVision->ball();
+	const PlayerVisionT& me = pVision->ourPlayer(rolenum);
+	const PlayerVisionT& enemy = pVision->theirPlayer(_theirGoalie);
 
 	TaskT myTask(task());
 
@@ -186,15 +186,15 @@ void CPenaltyKick2017V2::plan(const CVisionModule* pVision)
 	}
 
 	CStatedTask::plan(pVision);
-	_lastCycle = pVision->Cycle();
+	_lastCycle = pVision->getCycle();
 }
 
 void CPenaltyKick2017V2::updateMsg(const CVisionModule * pVision)
 {
 	int rolenum = task().executor;
 //	const MobileVisionT& ball = pVision->Ball();
-	const PlayerVisionT& me = pVision->OurPlayer(rolenum);
-	const PlayerVisionT& enemy = pVision->TheirPlayer(_theirGoalie);
+	const PlayerVisionT& me = pVision->ourPlayer(rolenum);
+	const PlayerVisionT& enemy = pVision->theirPlayer(_theirGoalie);
 	_enemyPreVel = enemy.Vel();
 	_mePreVel = me.Vel();
 
@@ -217,9 +217,9 @@ void CPenaltyKick2017V2::updateMsg(const CVisionModule * pVision)
 CGeoPoint CPenaltyKick2017V2::getBestPoint(const CVisionModule * pVision)
 {
 	int rolenum = task().executor;
-	const MobileVisionT& ball = pVision->Ball();
-	const PlayerVisionT& me = pVision->OurPlayer(rolenum);
-	const PlayerVisionT& enemy = pVision->TheirPlayer(_theirGoalie);
+	const MobileVisionT& ball = pVision->ball();
+	const PlayerVisionT& me = pVision->ourPlayer(rolenum);
+	const PlayerVisionT& enemy = pVision->theirPlayer(_theirGoalie);
 	CGeoPoint finalPoint;
 
 	CGeoPoint goalPoint;
@@ -274,8 +274,8 @@ CGeoPoint CPenaltyKick2017V2::getBestPoint(const CVisionModule * pVision)
 bool CPenaltyKick2017V2::isVisionHasBall(const CVisionModule * pVision)
 {
 	int rolenum = task().executor;
-	const MobileVisionT& ball = pVision->Ball();
-	const PlayerVisionT& me = pVision->OurPlayer(rolenum);
+	const MobileVisionT& ball = pVision->ball();
+	const PlayerVisionT& me = pVision->ourPlayer(rolenum);
 //	const PlayerVisionT& enemy = pVision->TheirPlayer(_theirGoalie);
 //	int distBuffer = 10;
 

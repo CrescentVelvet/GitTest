@@ -49,9 +49,9 @@ function GotoMatchPos(task)
 		
 		if mrole == "leftBack" or mrole == "rightBack" or mrole == "singleBack" then
 			if player.posX(runner) < -param.pitchLength/4 then
-				macc = 475
+				macc = 475*10
 			else
-				macc = 475
+				macc = 475*10
 			end
 
 			if player.toOurGoalDist(runner) > param.penaltyDepth * 1.5 then
@@ -63,8 +63,8 @@ function GotoMatchPos(task)
 			return SmartGotoPos(runner, mpos:x(), mpos:y(), mdir, mflag, msender, macc)
 		elseif mmethod == 5 then
 			local ballVel = ball.vel()
-			local vel = Utils.Polar2Vector(300, ball.velDir())
-			if ball.velMod() < 50 then
+			local vel = Utils.Polar2Vector(300*10, ball.velDir())
+			if ball.velMod() < 50*10 then
 				vel = CVector:new_local(0, 0)
 			end
 			local velX = vel:x()

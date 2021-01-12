@@ -4,15 +4,15 @@ import QtQuick.Controls.Styles 1.4
 import ZSS 1.0 as Client
 ScrollView {
     Client.RefereeBox { id : refereeBox; }
-    Timer {
-        id:refBoxTimer;
-        interval:16;
-        running:false;
-        repeat:true;
-        onTriggered: {
-            refereeBox.multicastCommand();
-        }
-    }
+//    Timer {
+//        id:refBoxTimer;
+//        interval:16;
+//        running:false;
+//        repeat:true;
+//        onTriggered: {
+//            refereeBox.multicastCommand();
+//        }
+//    }
     id : root;
     property var color : ["#ddd","#79a6ea","#fbeb9c"];
     property int state : Client.GameState.HALTED;
@@ -110,16 +110,17 @@ ScrollView {
                     onClicked: changeState();
                     function changeState(){
                         refBoxSwitch.refereeSwitch = !refBoxSwitch.refereeSwitch;
-                        run();
+                        refereeBox.changeSendMod(refBoxSwitch.refereeSwitch);
+//                        run();
                     }
-                    function run(){
-                        if(refBoxSwitch.refereeSwitch){
-                            refBoxTimer.start();
-                        }else{
-                            refBoxTimer.stop();
-                        }
-                    }
-                    Component.onCompleted: run();
+//                    function run(){
+//                        if(refBoxSwitch.refereeSwitch){
+//                            refBoxTimer.start();
+//                        }else{
+//                            refBoxTimer.stop();
+//                        }
+//                    }
+//                    Component.onCompleted: run();
                 }
             }
         }

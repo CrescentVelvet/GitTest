@@ -35,17 +35,17 @@ CPenaltyDef2017V2::CPenaltyDef2017V2()
 
 void CPenaltyDef2017V2::plan(const CVisionModule* pVision)
 {
-	if (pVision->Cycle() - _lastCycle > Param::Vision::FRAME_RATE * 0.1)
+	if (pVision->getCycle() - _lastCycle > Param::Vision::FRAME_RATE * 0.1)
 	{
 		_rushFlag = 0;
 		_turnFlag = 0;
 	}
 
 	int robotNum = task().executor;
-	const PlayerVisionT& me = pVision->OurPlayer(robotNum);
-	const MobileVisionT& ball = pVision->Ball();
+	const PlayerVisionT& me = pVision->ourPlayer(robotNum);
+	const MobileVisionT& ball = pVision->ball();
 	const int enemyNum = ZSkillUtils::instance()->getTheirBestPlayer();
-	const PlayerVisionT& enemy = pVision->TheirPlayer(enemyNum);
+	const PlayerVisionT& enemy = pVision->theirPlayer(enemyNum);
 	TaskT myTask(task());
 
 	_rushFlag = (ourGate - me.Pos()).mod() > MAX_RUSH_DIST ? 1 : 0;
@@ -88,7 +88,7 @@ void CPenaltyDef2017V2::plan(const CVisionModule* pVision)
 	if (debug) cout << _case << gate2BallInter.IntersectPoint() << myTask.player.pos << endl;
 
 	CStatedTask::plan(pVision);
-	_lastCycle = pVision->Cycle();
+	_lastCycle = pVision->getCycle();
 }
 
 CPlayerCommand* CPenaltyDef2017V2::execute(const CVisionModule* pVision)
@@ -102,10 +102,10 @@ CPlayerCommand* CPenaltyDef2017V2::execute(const CVisionModule* pVision)
 bool CPenaltyDef2017V2::isBallShoot(const CVisionModule * pVision)
 {
 	int robotNum = task().executor;
-	const PlayerVisionT& me = pVision->OurPlayer(robotNum);
-	const MobileVisionT& ball = pVision->Ball();
+	const PlayerVisionT& me = pVision->ourPlayer(robotNum);
+	const MobileVisionT& ball = pVision->ball();
 	const int enemyNum = ZSkillUtils::instance()->getTheirBestPlayer();
-	const PlayerVisionT& enemy = pVision->TheirPlayer(enemyNum);
+	const PlayerVisionT& enemy = pVision->theirPlayer(enemyNum);
 
 	CVector enemy2Ball(ball.Pos().x() - enemy.Pos().x(), ball.Pos().y() - enemy.Pos().y());
 	bool ballDirFrontOpp = (ball.Vel().dir() - enemy2Ball.dir()) < Param::Math::PI; //角度条件

@@ -26,7 +26,7 @@ CDribbleTurn::CDribbleTurn() {
 }
 
 void CDribbleTurn::plan(const CVisionModule* pVision) {
-	if ( pVision->Cycle() - _lastCycle > Param::Vision::FRAME_RATE * 0.1) {
+	if ( pVision->getCycle() - _lastCycle > Param::Vision::FRAME_RATE * 0.1) {
 		setState(BEGINNING);
 		count = 0;
 	}
@@ -35,10 +35,10 @@ void CDribbleTurn::plan(const CVisionModule* pVision) {
 	double adjustPre    = task().player.speed_x;     // 精度
 
 	//视觉初步处理
-	const MobileVisionT& ball = pVision->Ball();
+	const MobileVisionT& ball = pVision->ball();
 	const CGeoPoint ballPos   = ball.Pos();
 	const int robotNum        = task().executor;
-	const PlayerVisionT& me   = pVision->OurPlayer(robotNum);
+	const PlayerVisionT& me   = pVision->ourPlayer(robotNum);
 	double faceDir            = Utils::Normalize((ball.Pos() - me.Pos()).dir());
 
 	//CPlayerTask* pTask = TaskMediator::Instance()->getPlayerTask(vecNumber);
@@ -104,7 +104,7 @@ void CDribbleTurn::plan(const CVisionModule* pVision) {
 		setSubTask(PlayerRole::makeItSlowGetBall(robotNum, finalDir, flag | PlayerStatus::DRIBBLING));
 	}
 	//cout << "state : " << state() << endl;
-	_lastCycle = pVision->Cycle();
+	_lastCycle = pVision->getCycle();
 	return CStatedTask::plan(pVision);
 }
 
@@ -116,8 +116,8 @@ CPlayerCommand* CDribbleTurn::execute(const CVisionModule* pVision) {
 }
 
 bool CDribbleTurn::isVisionHasBall(const CVisionModule* pVision, const int vecNumber) {
-	const PlayerVisionT& me = pVision->OurPlayer(vecNumber);
-	const MobileVisionT& ball = pVision->Ball();
+	const PlayerVisionT& me = pVision->ourPlayer(vecNumber);
+	const MobileVisionT& ball = pVision->ball();
 	double visionJudgDist = 10;
 	bool distVisionHasBall = CVector(me.Pos() - ball.Pos()).mod() <= visionJudgDist;
 	// cout << CVector(me.Pos() - ball.Pos()).mod() << endl;

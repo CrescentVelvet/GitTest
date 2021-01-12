@@ -61,8 +61,8 @@ double CKickDirection::GenerateShootDir(const int player, const CGeoPoint pos)
     ///> 进行重置
     reset();
     CVisionModule* pVision = vision;
-    const MobileVisionT & ball = pVision->Ball();
-    const PlayerVisionT & kicker = pVision->OurPlayer(player);
+    const MobileVisionT & ball = pVision->ball();
+    const PlayerVisionT & kicker = pVision->ourPlayer(player);
     const CGeoPoint & kickerPos = kicker.Valid() ? kicker.RawPos() : kicker.Pos();
 //    static bool kickflag=false;
     double maxRange = -9999;
@@ -117,14 +117,14 @@ double CKickDirection::GenerateShootDir(const int player, const CGeoPoint pos)
 //    static int i = 0;
     double ballspeed = ball.Vel().mod();
 
-    double tempdir = (Utils::Normalize(Utils::Normalize(pVision->Ball().Vel().dir()+Param::Math::PI)-(_kick_target - pVision->OurPlayer(player).Pos()).dir()))*180/Param::Math::PI;
+    double tempdir = (Utils::Normalize(Utils::Normalize(pVision->ball().Vel().dir()+Param::Math::PI)-(_kick_target - pVision->ourPlayer(player).Pos()).dir()))*180/Param::Math::PI;
     int ratio = 0;
     if (tempdir>0){
         ratio = 1;
     }else{
         ratio = -1;
     }
-    rawdir=abs((Utils::Normalize(Utils::Normalize(pVision->Ball().Vel().dir()+Param::Math::PI)-(_kick_target - pVision->OurPlayer(player).Pos()).dir()))*180/Param::Math::PI);
+    rawdir=abs((Utils::Normalize(Utils::Normalize(pVision->ball().Vel().dir()+Param::Math::PI)-(_kick_target - pVision->ourPlayer(player).Pos()).dir()))*180/Param::Math::PI);
     // cout << rawdir << endl;
     if (rawdir > 70 && rawdir < 110){
         rawdir = 80;
@@ -141,14 +141,14 @@ double CKickDirection::GenerateShootDir(const int player, const CGeoPoint pos)
     //YuN暂时去掉compensate，之后一定记得加上
     //_compensate_value = 0;
 
-    if (pVision->Ball().Vel().mod()<50){
+    if (pVision->ball().Vel().mod()<50){
         _compensate_value = 0;
     }
 //    if (IS_SIMULATION){
 //        _compensate_value = 0;
 //    }
     _real_kick_dir= Utils::Normalize(Utils::Normalize(ratio*_compensate_value*Param::Math::PI/180)+_raw_kick_dir);
-    if(pVision->Ball().Vel().mod()<50){
+    if(pVision->ball().Vel().mod()<50){
         _real_kick_dir = _raw_kick_dir;
     }
     //cout<<vision->Cycle()<<" "<<ballspeed<<" "<<rawdir<<" "<<_compensate_value<<endl;

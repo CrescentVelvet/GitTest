@@ -76,7 +76,6 @@ class CMessiDecision {
     CGeoPoint freeKickWaitPos();
     bool canDirectKick();
     void reset();
-    void judge_selfpass();
 private:
     int _leader;
     int _receiver;
@@ -99,7 +98,6 @@ private:
     string _state;
     string _laststate;
     string _leaderState;
-    QString _selfpass;
     CGeoPoint _passPos;
     CGeoPoint _receiverPos;
     CGeoPoint _leaderPos;

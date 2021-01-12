@@ -9,7 +9,7 @@ class CWorldModel{
 	const CVisionModule* vision();
     bool getBPFinish();
 	int OurRobotNum();
-	int GetRealNum(int);
+	//int GetRealNum(int);
 	int GetTacticNum(int);
 	bool KickDirArrived(int, double, double, int );
 	bool IsBallKicked(int);

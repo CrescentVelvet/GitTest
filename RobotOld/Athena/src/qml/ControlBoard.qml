@@ -523,17 +523,17 @@ Page{
                                 recslider.value = recslider.value + recPlaySpinBox.value * recslider.stepSize;
                             }
                         }
-                        ZButton{
-                            property bool oldFlag: false
-                            id: oldRepair
-                            width: 35;
-                            icon.source:"/source/repair.png";
-                            highlighted: oldRepair.oldFlag;
-                            onClicked: {
-                                oldRepair.oldFlag = !oldRepair.oldFlag;
-                                interaction4field.setOldLogFlag(oldRepair.oldFlag);
-                            }
-                        }
+//                        ZButton{
+//                            property bool oldFlag: false
+//                            id: oldRepair
+//                            width: 35;
+//                            icon.source:"/source/repair.png";
+//                            highlighted: oldRepair.oldFlag;
+//                            onClicked: {
+//                                oldRepair.oldFlag = !oldRepair.oldFlag;
+//                                interaction4field.setOldLogFlag(oldRepair.oldFlag);
+//                            }
+//                        }
                         Text{
                             text: "Steps:";
                             color: "white";

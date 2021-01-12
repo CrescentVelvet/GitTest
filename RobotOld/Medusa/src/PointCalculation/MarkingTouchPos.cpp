@@ -99,7 +99,7 @@ void CMarkingTouchPos::resetState(){
 
 CGeoPoint CMarkingTouchPos::caculMarkingTouchPos(int areaNum,CGeoPoint leftUpPos,CGeoPoint rightDownPos,bool markDirection){
 
-	const MobileVisionT& ball = vision->Ball();
+	const MobileVisionT& ball = vision->ball();
 	CGeoPoint initMarkPos;
 	if (markDirection)
 	{
@@ -127,7 +127,7 @@ CGeoPoint CMarkingTouchPos::caculMarkingTouchPos(int areaNum,CGeoPoint leftUpPos
 	_lastLeftUpPos[areaNum]=leftUpPos;
 	_lastRightDownPos[areaNum]=rightDownPos;
 
-	if ( vision->Cycle() - _lastCycle > Param::Vision::FRAME_RATE * 0.1 ){
+	if ( vision->getCycle() - _lastCycle > Param::Vision::FRAME_RATE * 0.1 ){
 		resetState();
 		_markPos[areaNum]=initMarkPos;
 	}
@@ -146,12 +146,12 @@ CGeoPoint CMarkingTouchPos::caculMarkingTouchPos(int areaNum,CGeoPoint leftUpPos
 	int markEnemyNum=0;
 	for (int i=1;i<=Param::Field::MAX_PLAYER;i++)
 	{
-		if (vision->TheirPlayer(i).Valid()){
-			if (markField.HasPoint(vision->TheirPlayer(i).Pos()))
+		if (vision->theirPlayer(i).Valid()){
+			if (markField.HasPoint(vision->theirPlayer(i).Pos()))
 			{
 				if (markEnemyNum!=0)
 				{
-					if (vision->TheirPlayer(i).Pos().dist(ball.Pos())<vision->TheirPlayer(markEnemyNum).Pos().dist(ball.Pos())-20)
+					if (vision->theirPlayer(i).Pos().dist(ball.Pos())<vision->theirPlayer(markEnemyNum).Pos().dist(ball.Pos())-20)
 					{
 						markEnemyNum=i;
 					}
@@ -170,7 +170,7 @@ CGeoPoint CMarkingTouchPos::caculMarkingTouchPos(int areaNum,CGeoPoint leftUpPos
 		_kickEnemyNum=NormalPlayUtils::getTheirMostClosetoPos(vision,ball.Pos());
 		_markEnemyNum[areaNum]=markEnemyNum;
 	}
-	const PlayerVisionT kickEnemy=vision->TheirPlayer(_kickEnemyNum);
+	const PlayerVisionT kickEnemy=vision->theirPlayer(_kickEnemyNum);
 	CGeoLine passLine=CGeoLine(ball.Pos(),kickEnemy.Dir());
 	CGeoSegment passSegment=CGeoSegment(ball.Pos(),ball.Pos()+Utils::Polar2Vector(800,kickEnemy.Dir()));
 	GDebugEngine::Instance()->gui_debug_line(ball.Pos(),ball.Pos()+Utils::Polar2Vector(600,kickEnemy.Dir()),COLOR_BLACK);
@@ -179,7 +179,7 @@ CGeoPoint CMarkingTouchPos::caculMarkingTouchPos(int areaNum,CGeoPoint leftUpPos
 		caculMarkingPos(areaNum,passSegment,markDirection);
 		return _markPos[areaNum];
 	}else{
-		const PlayerVisionT he=vision->TheirPlayer(_markEnemyNum[areaNum]);
+		const PlayerVisionT he=vision->theirPlayer(_markEnemyNum[areaNum]);
 		const double hetoBallDir=(ball.Pos()-he.Pos()).dir();
 //		const double antiHetoBallDir=Utils::Normalize(hetoBallDir+Param::Math::PI);
 //		const CGeoSegment hetoBallSeg = CGeoSegment(he.Pos()+Utils::Polar2Vector(8,hetoBallDir),ball.Pos());
@@ -189,7 +189,7 @@ CGeoPoint CMarkingTouchPos::caculMarkingTouchPos(int areaNum,CGeoPoint leftUpPos
 		double diffAngleHeDir_HetoBall=fabs(Utils::Normalize(kickEnemyToBallDir-kickEnemy.Dir()));
 
 
-		bool isBallVelOk=fabs(Utils::Normalize(vision->Ball(_lastCycle-1).Vel().dir()-ball.Vel().dir()))<Param::Math::PI*8/180;
+		bool isBallVelOk=fabs(Utils::Normalize(vision->ball(_lastCycle-1).Vel().dir()-ball.Vel().dir()))<Param::Math::PI*8/180;
 		isBallVelOk=true;
 		bool isBallPassed=//isBallVelOk&&
 			//&&diffAngleBallVel_HeDir<Param::Math::PI*20/180&&diffAngleBallVel_HetoBall<Param::Math::PI*20/180
@@ -275,7 +275,7 @@ CGeoPoint CMarkingTouchPos::caculMarkingTouchPos(int areaNum,CGeoPoint leftUpPos
 			CGeoLineLineIntersection intersect = CGeoLineLineIntersection(pointLine,ballLine);
 
 
-			if (fabs(Utils::Normalize(vision->Ball().Vel().dir()-vision->Ball(_lastCycle-2).Vel().dir()))>Param::Math::PI*3.5/180)
+			if (fabs(Utils::Normalize(vision->ball().Vel().dir()-vision->ball(_lastCycle-2).Vel().dir()))>Param::Math::PI*3.5/180)
 			{
 				_ballVelChangeCouter[areaNum]++;
 				_ballVelChangeCouter[areaNum]=min(_ballVelChangeCouter[areaNum],4);
@@ -341,5 +341,5 @@ CGeoPoint CMarkingTouchPos::caculMarkingTouchPos(int areaNum,CGeoPoint leftUpPos
 
 		}
 	}
-	_lastCycle = vision->Cycle();
+	_lastCycle = vision->getCycle();
 }

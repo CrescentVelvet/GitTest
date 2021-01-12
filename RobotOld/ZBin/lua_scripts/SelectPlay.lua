@@ -1,15 +1,15 @@
 --
-if gSwitchNum["state"] == "normal" then
-	if not player.realNumExist(gSwitchNum["normal"]) and player.realNumExist(gSwitchNum["backup"]) then
-		print("change to backup")
-		gSwitchNum["state"] = "backup"
-	end
-elseif gSwitchNum["state"] == "backup" then
-	if not player.realNumExist(gSwitchNum["backup"]) and player.realNumExist(gSwitchNum["normal"]) then
-		print("change to normal")
-		gSwitchNum["state"] = "normal"
-	end
-end
+-- if gSwitchNum["state"] == "normal" then
+-- 	if not player.realNumExist(gSwitchNum["normal"]) and player.realNumExist(gSwitchNum["backup"]) then
+-- 		print("change to backup")
+-- 		gSwitchNum["state"] = "backup"
+-- 	end
+-- elseif gSwitchNum["state"] == "backup" then
+-- 	if not player.realNumExist(gSwitchNum["backup"]) and player.realNumExist(gSwitchNum["normal"]) then
+-- 		print("change to normal")
+-- 		gSwitchNum["state"] = "normal"
+-- 	end
+-- end
 gNormalPlay = gOppoConfig.NorPlay
 -- 先注掉，在需要时可以开启使用
 -- if (not IS_TEST_MODE) and USE_SWITCH and gSwitchNum["state"] == "backup" then
@@ -24,7 +24,7 @@ function RunRefScript(name)
 end
 
 function SelectRefPlay()
-	local curRefMsg = vision:GetLuaRefereeMsg()
+	local curRefMsg = vision:getLuaRefereeMsg()
 	if curRefMsg == "" then
 		gLastRefMsg = curRefMsg
 		return false
@@ -35,7 +35,7 @@ function SelectRefPlay()
 	if gLastRefMsg ~= curRefMsg or curRefMsg == "GameStop" then
 		ball.updateRefMsg()
 	end
-	local curRealMsg = vision:GetCurrentRefereeMsg()
+	local curRealMsg = vision:getCurrentRefereeMsg()
 	if curRealMsg == "OurBallPlacement" or curRealMsg == "TheirBallPlacement" then
 		ball.updateRef2PlacePos()
 	end
@@ -74,7 +74,7 @@ if SelectRefPlay() then
 	--print("gLastPlay",gLastPlay)
 	if gCurrentPlay ~= gLastPlay or NeedExit(gCurrentPlay) then
 		ResetPlay(gCurrentPlay)
-		if vision:GetCurrentRefereeMsg() ~= "" then
+		if vision:getCurrentRefereeMsg() ~= "" then
 			gIsRefPlayExit = true
 		end
 		CPrintString("New Play: ".. gCurrentPlay)
@@ -89,7 +89,7 @@ else
 	    	ResetPlayWithLastMatch(gCurrentPlay)
 	    end
 	elseif IS_TEST_MODE then
-		debugEngine:gui_debug_msg(CGeoPoint:new_local(param.pitchLength/2-150,-param.pitchWidth/2-4),"TEST_MODE",0)
+		debugEngine:gui_debug_msg(CGeoPoint:new_local(param.pitchLength/2-1500,param.pitchWidth/2),"TEST_MODE",0)
 	    if gLastPlay == "" or NeedExit(gCurrentPlay) then
 	    	gCurrentPlay = gTestPlay
 	    end
@@ -103,7 +103,7 @@ else
 		if gNormalPlay == "NormalPlayPass" or gNormalPlay == "NormalPlayPP" or gNormalPlay == "NormalPlayMessi"then
 			world:setBallHandler(gRoleNum["Leader"])
 			gLastBallStatus=gCurrentBallStatus
-			gCurrentBallStatus=world:getBallStatus(vision:Cycle())
+			gCurrentBallStatus=world:getBallStatus(vision:getCycle())
 		end
 		--------------------------------------------
 		if gLastPlay == "" or NeedExit(gCurrentPlay) then
@@ -124,7 +124,7 @@ end
 
 gLastPlay = gCurrentPlay
 gNextPlay = ""
-debugEngine:gui_debug_msg(CGeoPoint:new_local(-param.pitchLength*2/5, -param.pitchWidth/2-20),gCurrentPlay)
+debugEngine:gui_debug_msg(CGeoPoint:new_local(-param.pitchLength*2/5, param.pitchWidth/2+200),gCurrentPlay)
 RunPlay(gCurrentPlay)
 gLastTask = gRoleTask
 gRoleTask = {}
@@ -132,7 +132,7 @@ gRoleTask = {}
 -- if not stateFile then
 -- 	print("-------- Can't create LOG FILE !!!!!!!!!!!!! --------")
 -- end
--- stateFile:write(vision:Cycle().." "..gCurrentState.." "..gCurrentPlay.." me:"..skillUtils:getOurBestPlayer()
+-- stateFile:write(vision:getCycle().." "..gCurrentState.." "..gCurrentPlay.." me:"..skillUtils:getOurBestPlayer()
 -- 	.." he:"..skillUtils:getTheirBestPlayer().."\n")
 -- stateFile:close()
 
@@ -140,11 +140,11 @@ gRoleTask = {}
 --print("vel"..enemy.vel(skillUtils:getTheirGoalie()):y()*2)
 --print(skillUtils:getTheirGoalie())
 --print("hello",skillUtils:getOurBestPlayer())
---print(gCurrentState,vision:Cycle())
+--print(gCurrentState,vision:getCycle())
 --print("ball",ball.posX(),ball.valid())
---print("raw",vision:RawBall():X(),vision:RawBall():Valid())
+--print("raw",vision:rawBall():X(),vision:rawBall():Valid())
 --print(vision:getBallVelStable(),vision:ballVelValid())
-debugEngine:gui_debug_msg(CGeoPoint:new_local(-param.pitchLength*2/5, -param.pitchWidth/2),gCurrentState)
+debugEngine:gui_debug_msg(CGeoPoint:new_local(-param.pitchLength*2/5, param.pitchWidth/2),gCurrentState)
 --world:drawReflect(gRoleNum["Tier"])
 --defenceInfo:setNoChangeFlag()
---print(vision:Cycle()..vision:GetCurrentRefereeMsg(),vision:gameState():gameOn())
+--print(vision:getCycle()..vision:getCurrentRefereeMsg(),vision:gameState():gameOn())

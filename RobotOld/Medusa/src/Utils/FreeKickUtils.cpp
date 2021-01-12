@@ -18,8 +18,8 @@ namespace FreeKickUtils {
 			return true;
 		}
 		static bool beingMarked  = false;
-		const PlayerVisionT me   = pVision->OurPlayer(myNum);
-		const MobileVisionT ball = pVision->Ball();
+		const PlayerVisionT me   = pVision->ourPlayer(myNum);
+		const MobileVisionT ball = pVision->ball();
 		if (me.Valid()) {
 			int theirClosestNum = getTheirClosesRobotToOurRobot(pVision, myNum);
 			//cout << "theirClosestNum: " << theirClosestNum << endl;
@@ -45,12 +45,12 @@ namespace FreeKickUtils {
 	int getTheirClosesRobotToOurRobot(const CVisionModule* pVision, int myNum) {
 		double dist  = 1000;
 		int theirNum = 0;
-		const PlayerVisionT me = pVision->OurPlayer(myNum);
+		const PlayerVisionT me = pVision->ourPlayer(myNum);
 		const CGeoPoint myPos  = me.Pos();
 		for (int i = 1; i <= Param::Field::MAX_PLAYER; i++) {
-			if (pVision->TheirPlayer(i).Valid()) {
-				if (pVision->TheirPlayer(i).Pos().dist(myPos) < dist) {
-					dist = pVision->TheirPlayer(i).Pos().dist(myPos);
+			if (pVision->theirPlayer(i).Valid()) {
+				if (pVision->theirPlayer(i).Pos().dist(myPos) < dist) {
+					dist = pVision->theirPlayer(i).Pos().dist(myPos);
 					theirNum = i;
 				}
 			}
@@ -64,13 +64,13 @@ namespace FreeKickUtils {
 		}
 		//判断射门角度有没有被挡住
 		//图像信息
-		const PlayerVisionT& me   = pVision->OurPlayer(myNum);
+		const PlayerVisionT& me   = pVision->ourPlayer(myNum);
 //		const MobileVisionT& ball = pVision->Ball();
-		const PlayerVisionT& opp  = pVision->TheirPlayer(theirNum);
+		const PlayerVisionT& opp  = pVision->theirPlayer(theirNum);
 		//是否挡住的判断
 		bool shootLineBlocked = false;
 
-		KickDirection::Instance()->GenerateShootDir(myNum, pVision->OurPlayer(myNum).Pos());
+		KickDirection::Instance()->GenerateShootDir(myNum, pVision->ourPlayer(myNum).Pos());
 		double kickDir = KickDirection::Instance()->getRealKickDir();
 		
 		CGeoSegment me2theirGoal = CGeoSegment(me.Pos(), me.Pos() + Utils::Polar2Vector(80, kickDir));
@@ -86,9 +86,9 @@ namespace FreeKickUtils {
 			return true;
 		}
 		//判断传球角度有没有被挡住
-		const PlayerVisionT& me   = pVision->OurPlayer(myNum);
-		const MobileVisionT& ball = pVision->Ball();
-		const PlayerVisionT& opp  = pVision->TheirPlayer(theirNum);
+		const PlayerVisionT& me   = pVision->ourPlayer(myNum);
+		const MobileVisionT& ball = pVision->ball();
+		const PlayerVisionT& opp  = pVision->theirPlayer(theirNum);
 
 		bool passLineBlocked = false;
 
@@ -104,8 +104,8 @@ namespace FreeKickUtils {
 		if (!Utils::PlayerNumValid(myNum)) {
 			return true;
 		}
-		const PlayerVisionT& me  = pVision->OurPlayer(myNum);
-		const PlayerVisionT& opp = pVision->TheirPlayer(theirNum);
+		const PlayerVisionT& me  = pVision->ourPlayer(myNum);
+		const PlayerVisionT& opp = pVision->theirPlayer(theirNum);
 
 		bool oppNearMe = false;
 
@@ -122,21 +122,21 @@ namespace FreeKickUtils {
 		if (!Utils::PlayerNumValid(myNum)) {
 			return true;
 		}
-		const PlayerVisionT& me = pVision->OurPlayer(myNum);
+		const PlayerVisionT& me = pVision->ourPlayer(myNum);
 		if (!me.Valid()) {
 			shootLineBlocked = true;
 			return shootLineBlocked;
 		}
 		const CGeoPoint myPos = me.Pos();
-		KickDirection::Instance()->GenerateShootDir(myNum, pVision->OurPlayer(myNum).Pos());
+		KickDirection::Instance()->GenerateShootDir(myNum, pVision->ourPlayer(myNum).Pos());
 		double kickDir = KickDirection::Instance()->getRealKickDir();
 		CGeoSegment segment = CGeoSegment(myPos, myPos + Utils::Polar2Vector(range, kickDir));
 		for (int i = 1; i <= Param::Field::MAX_PLAYER; i++) {
-			if (pVision->TheirPlayer(i).Valid()) {
-				if (Utils::InTheirPenaltyArea(pVision->TheirPlayer(i).Pos(),0))
+			if (pVision->theirPlayer(i).Valid()) {
+				if (Utils::InTheirPenaltyArea(pVision->theirPlayer(i).Pos(),0))
 					continue;
-				CGeoPoint interPoint = segment.projection(pVision->TheirPlayer(i).Pos());
-				if (interPoint.dist(pVision->TheirPlayer(i).Pos()) < Param::Vehicle::V2::PLAYER_SIZE * allowance && segment.IsPointOnLineOnSegment(interPoint)) {
+				CGeoPoint interPoint = segment.projection(pVision->theirPlayer(i).Pos());
+				if (interPoint.dist(pVision->theirPlayer(i).Pos()) < Param::Vehicle::V2::PLAYER_SIZE * allowance && segment.IsPointOnLineOnSegment(interPoint)) {
 					shootLineBlocked = true;
 					break;
 				}
@@ -152,9 +152,9 @@ namespace FreeKickUtils {
 		double dir = pos2goal.dir();
 		CGeoSegment segment = CGeoSegment(pos, pos + Utils::Polar2Vector(range, dir));
 		for (int i = 1; i <= Param::Field::MAX_PLAYER; i++) {
-			if (pVision->TheirPlayer(i).Valid()) {
-				CGeoPoint interPoint = segment.projection(pVision->TheirPlayer(i).Pos());
-				if (interPoint.dist(pVision->TheirPlayer(i).Pos()) < Param::Vehicle::V2::PLAYER_SIZE * 2.5 && segment.IsPointOnLineOnSegment(interPoint)) {
+			if (pVision->theirPlayer(i).Valid()) {
+				CGeoPoint interPoint = segment.projection(pVision->theirPlayer(i).Pos());
+				if (interPoint.dist(pVision->theirPlayer(i).Pos()) < Param::Vehicle::V2::PLAYER_SIZE * 2.5 && segment.IsPointOnLineOnSegment(interPoint)) {
 					shootLineBlocked = true;
 					break;
 				}
@@ -168,19 +168,19 @@ namespace FreeKickUtils {
 			return true;
 		}
 		bool passLineBlocked = false;
-		const PlayerVisionT& me = pVision->OurPlayer(myNum);
+		const PlayerVisionT& me = pVision->ourPlayer(myNum);
 		if (!me.Valid()) {
 			passLineBlocked = true;
 			return passLineBlocked;
 		}
-		const MobileVisionT& ball = pVision->Ball();
+		const MobileVisionT& ball = pVision->ball();
 		const CGeoPoint mePos = me.Pos();
 		const CGeoPoint ballPos = ball.Pos();
 		CGeoSegment segment = CGeoSegment(mePos, ballPos);
 		for (int i = 1; i <= Param::Field::MAX_PLAYER; i++) {
-			if (pVision->TheirPlayer(i).Valid()) {
-				CGeoPoint interPoint = segment.projection(pVision->TheirPlayer(i).Pos());
-				if (interPoint.dist(pVision->TheirPlayer(i).Pos()) < Param::Vehicle::V2::PLAYER_SIZE * allowance && segment.IsPointOnLineOnSegment(interPoint)) {
+			if (pVision->theirPlayer(i).Valid()) {
+				CGeoPoint interPoint = segment.projection(pVision->theirPlayer(i).Pos());
+				if (interPoint.dist(pVision->theirPlayer(i).Pos()) < Param::Vehicle::V2::PLAYER_SIZE * allowance && segment.IsPointOnLineOnSegment(interPoint)) {
 					passLineBlocked = true;
 					break;
 				}
@@ -191,14 +191,14 @@ namespace FreeKickUtils {
 
 	bool isPassLineBlocked(const CVisionModule* pVision, CGeoPoint pos, double allowance) {
 		bool passLineBlocked = false;
-		const MobileVisionT& ball = pVision->Ball();
+		const MobileVisionT& ball = pVision->ball();
 		const CGeoPoint mePos = pos;
 		const CGeoPoint ballPos = ball.Pos();
 		CGeoSegment segment = CGeoSegment(mePos, ballPos);
 		for (int i = 1; i <= Param::Field::MAX_PLAYER; i++) {
-			if (pVision->TheirPlayer(i).Valid()) {
-				CGeoPoint interPoint = segment.projection(pVision->TheirPlayer(i).Pos());
-				if (interPoint.dist(pVision->TheirPlayer(i).Pos()) < Param::Vehicle::V2::PLAYER_SIZE * allowance && segment.IsPointOnLineOnSegment(interPoint)) {
+			if (pVision->theirPlayer(i).Valid()) {
+				CGeoPoint interPoint = segment.projection(pVision->theirPlayer(i).Pos());
+				if (interPoint.dist(pVision->theirPlayer(i).Pos()) < Param::Vehicle::V2::PLAYER_SIZE * allowance && segment.IsPointOnLineOnSegment(interPoint)) {
 					passLineBlocked = true;
 					break;
 				}
@@ -212,17 +212,17 @@ namespace FreeKickUtils {
 			return true;
 		}
 		bool LightKickBlocked = false;
-		const PlayerVisionT& me = pVision->OurPlayer(myNum);
+		const PlayerVisionT& me = pVision->ourPlayer(myNum);
 		if (!me.Valid()) {
 			LightKickBlocked = true;
 			return LightKickBlocked;
 		}
-		const MobileVisionT& ball = pVision->Ball();
+		const MobileVisionT& ball = pVision->ball();
 		const CGeoPoint mePos = me.Pos();
 		const CGeoPoint ballPos = ball.Pos();
 		for (int i = 1; i <= Param::Field::MAX_PLAYER; i++) {
-			if (pVision->TheirPlayer(i).Valid()) {
-				CGeoPoint  PlayerPos = pVision->TheirPlayer(i).Pos();
+			if (pVision->theirPlayer(i).Valid()) {
+				CGeoPoint  PlayerPos = pVision->theirPlayer(i).Pos();
 				CVector ball2PlayerDir = PlayerPos - ball.Pos();
 				double Dist = PlayerPos.dist(ball.Pos());
 				if (Dist < R && fabs(ball2PlayerDir.dir() - dir) * 180 / Param::Math::PI < halfAngle) {
@@ -240,15 +240,15 @@ namespace FreeKickUtils {
 			return 0.0;
 		}
 		if (myNum == 0) { return 0.0; }
-		const PlayerVisionT& me = pVision->OurPlayer(myNum);
+		const PlayerVisionT& me = pVision->ourPlayer(myNum);
 		if (!me.Valid()) {
 			return 0.0;
 		}
-		double myDir = pVision->OurRawPlayer(myNum).dir;
+		double myDir = pVision->ourRawPlayer(myNum).dir;
 		CGeoPoint mePos = me.RawPos();
 		CGeoPoint meLeft = mePos + Utils::Polar2Vector(radius, Utils::Normalize(myDir - reflectBoardDir));
 		CGeoPoint meRight = mePos + Utils::Polar2Vector(radius, Utils::Normalize(myDir + reflectBoardDir));
-		const MobileVisionT& ball = pVision->Ball();
+		const MobileVisionT& ball = pVision->ball();
 		CGeoPoint ballPos = ball.RawPos();
 		CVector me2ball = ball.RawPos() - me.RawPos();
 		double me2ballDir = me2ball.dir();
@@ -278,11 +278,11 @@ namespace FreeKickUtils {
 			return CGeoPoint(0, 0);
 		}
 		if (myNum == 0) { return CGeoPoint(0, 0); }
-		const PlayerVisionT& me = pVision->OurPlayer(myNum);
+		const PlayerVisionT& me = pVision->ourPlayer(myNum);
 		if (!me.Valid()) {
 			return CGeoPoint(0, 0);
 		}
-		double myDir = pVision->OurRawPlayer(myNum).dir;
+		double myDir = pVision->ourRawPlayer(myNum).dir;
 		CGeoPoint mePos = me.RawPos();
 		CGeoPoint meLeft = mePos + Utils::Polar2Vector(radius, Utils::Normalize(myDir - reflectBoardDir));
 		return meLeft;
@@ -293,11 +293,11 @@ namespace FreeKickUtils {
 			return CGeoPoint(0, 0);
 		}
 		if (myNum == 0) { return CGeoPoint(0, 0); }
-		const PlayerVisionT& me = pVision->OurPlayer(myNum);
+		const PlayerVisionT& me = pVision->ourPlayer(myNum);
 		if (!me.Valid()) {
 			return CGeoPoint(0, 0);
 		}
-		double myDir = pVision->OurRawPlayer(myNum).dir;
+		double myDir = pVision->ourRawPlayer(myNum).dir;
 		CGeoPoint mePos = me.RawPos();
 		CGeoPoint meRight = mePos + Utils::Polar2Vector(radius, Utils::Normalize(myDir + reflectBoardDir));
 		return meRight;
@@ -308,13 +308,13 @@ namespace FreeKickUtils {
 			return CGeoPoint(0, 0);
 		}
 		if (myNum == 0) { return CGeoPoint(0, 0); }
-		const PlayerVisionT& me = pVision->OurPlayer(myNum);
+		const PlayerVisionT& me = pVision->ourPlayer(myNum);
 		if (!me.Valid()) {
 			return CGeoPoint(0, 0);
 		}
-		double myDir = pVision->OurRawPlayer(myNum).dir;
+		double myDir = pVision->ourRawPlayer(myNum).dir;
 		CGeoPoint mePos = me.RawPos();
-		const MobileVisionT& ball = pVision->Ball();
+		const MobileVisionT& ball = pVision->ball();
 		CGeoPoint ballPos = ball.RawPos();
 		if ( Utils::Normalize(myDir - (ball.RawPos() - mePos).dir()) > 0) { 
 			return getLeftReflectPos(pVision, myNum);
@@ -329,15 +329,15 @@ namespace FreeKickUtils {
 			return CGeoPoint(0, 0);
 		}
 		if (myNum == 0) { return CGeoPoint(0, 0); }
-		const PlayerVisionT& me = pVision->OurPlayer(myNum);
+		const PlayerVisionT& me = pVision->ourPlayer(myNum);
 		if (!me.Valid()) {
 			return CGeoPoint(0, 0);
 		}
-		double myDir = pVision->OurRawPlayer(myNum).dir;
+		double myDir = pVision->ourRawPlayer(myNum).dir;
 		CGeoPoint mePos = me.RawPos();
 		CGeoPoint meLeft = mePos + Utils::Polar2Vector(radius, Utils::Normalize(myDir - reflectBoardDir));
 		CGeoPoint meRight = mePos + Utils::Polar2Vector(radius, Utils::Normalize(myDir + reflectBoardDir));
-		const MobileVisionT& ball = pVision->Ball();
+		const MobileVisionT& ball = pVision->ball();
 		CGeoPoint ballPos = ball.RawPos();
 		CVector me2ball = ball.RawPos() - me.RawPos();
 		if ( Utils::Normalize(myDir - (ball.RawPos() - mePos).dir()) > 0) { // 打左边反射板

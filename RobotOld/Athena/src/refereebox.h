@@ -4,6 +4,8 @@
 #include <QObject>
 #include <QUdpSocket>
 #include <QMutex>
+#include <thread>
+#include "proto/cpp/ssl_referee.pb.h"
 /*
 //enum SSL_Referee_Command {
 //  SSL_Referee_Command_HALT = 0,
@@ -87,21 +89,38 @@ class RefereeBox : public QObject
 {
     Q_OBJECT
 public:
-    explicit RefereeBox(QObject *parent = 0);
+    explicit RefereeBox(QObject *parent = nullptr);
     ~RefereeBox();
-    Q_INVOKABLE void changeCommand(int command);
-    Q_INVOKABLE void setNextCommand(int command){nextCommand = command;}
-    Q_INVOKABLE void multicastCommand();
+    Q_INVOKABLE void changeCommand(int command){
+        commandMutex.lock();
+        _currentCommand = command;
+        commandCounter++;
+        commandMutex.unlock();
+    }
+    Q_INVOKABLE void setNextCommand(int command){
+        commandMutex.lock();
+        _nextCommand = command;
+        commandMutex.unlock();
+    }
+    Q_INVOKABLE void changeSendMod(bool mod) {_test_mode = mod;}
 signals:
 
 public slots:
 private:
-    int port;
+    bool _test_mode;
+    int _ssl_port;
+    int _zss_port;
     quint32 commandCounter;
-    QUdpSocket sendSocket;
-    int currentCommand;
-    int nextCommand;
+    QUdpSocket receiveSocket, sendSocket;
+    int _currentCommand;
+    int _nextCommand;
     QMutex commandMutex;
+    Referee _ssl_referee;
+
+    void receiveCommands();
+    void manualCommands();
+    void sendCommands();
+    std::thread* _receiveCmdThread;
 };
 
 #endif // REFEREEBOX_H

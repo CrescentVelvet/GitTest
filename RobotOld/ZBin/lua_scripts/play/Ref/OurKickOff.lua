@@ -1,4 +1,4 @@
-if vision:Cycle() - gOurIndirectTable.lastRefCycle > 6 then
+if vision:getCycle() - gOurIndirectTable.lastRefCycle > 6 then
   if cond.validNum() <= 3 then
     gCurrentPlay = "Ref_KickOffV801"
   else
@@ -10,4 +10,4 @@ if vision:Cycle() - gOurIndirectTable.lastRefCycle > 6 then
   end
 end
 
-gOurIndirectTable.lastRefCycle = vision:Cycle()
+gOurIndirectTable.lastRefCycle = vision:getCycle()

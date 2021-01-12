@@ -34,7 +34,7 @@ CPlayerSpeedV2::CPlayerSpeedV2(int number, double xspeed, double yspeed, double 
 
 	// 把输出指令限制在小车的运动能力之内 added by qxz 08.06.07
     if (flag == 0) {
-        if (number == PlayInterface::Instance()->getNumbByRealIndex(TaskMediator::Instance()->goalie())) {
+        if (number == TaskMediator::Instance()->goalie()) {
             if (velocity.mod() > robotCap->maxSpeedGoalie(0))
                 velocity = Utils::Polar2Vector(robotCap->maxSpeedGoalie(0), velocity.dir());
         } else if (TaskMediator::Instance()->leftBack() != 0 && number == TaskMediator::Instance()->leftBack()

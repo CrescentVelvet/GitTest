@@ -21,11 +21,11 @@ int CGoaliePosV1::GetNearestEnemy(const CVisionModule *pVision)
 	int enemy_num = 1;
 	for (int i = 1; i <= Param::Field::MAX_PLAYER; i ++)
 	{
-		if (pVision->TheirPlayer(i).Valid() == true)
+		if (pVision->theirPlayer(i).Valid() == true)
 		{
-			if (pVision->TheirPlayer(i).Pos().dist(goal_center) < nearest_dist)
+			if (pVision->theirPlayer(i).Pos().dist(goal_center) < nearest_dist)
 			{
-				nearest_dist = pVision->TheirPlayer(i).Pos().dist(goal_center);
+				nearest_dist = pVision->theirPlayer(i).Pos().dist(goal_center);
 				enemy_num = i;
 			}
 		}
@@ -34,8 +34,8 @@ int CGoaliePosV1::GetNearestEnemy(const CVisionModule *pVision)
 }
 CGeoPoint CGoaliePosV1::GetPenaltyShootPos(const CVisionModule *pVision)
 {
-	const MobileVisionT ball = pVision->Ball();
-	const PlayerVisionT& enemy = pVision->TheirPlayer(this->GetNearestEnemy(pVision));
+	const MobileVisionT ball = pVision->ball();
+	const PlayerVisionT& enemy = pVision->theirPlayer(this->GetNearestEnemy(pVision));
 	double enemy_dir = enemy.Dir();
 	CGeoLine enemy_sht_line(enemy.Pos(), enemy.Pos() + Utils::Polar2Vector(10, enemy_dir));
 	if (enemy_dir < Param::Math::PI / 2 && enemy_dir > - Param::Math::PI / 2)
@@ -69,8 +69,8 @@ CGeoPoint CGoaliePosV1::GetPenaltyShootPos(const CVisionModule *pVision)
 }
 CGeoPoint CGoaliePosV1::GetPenaltyShootPosV2(const CVisionModule *pVision)
 {
-	const MobileVisionT ball = pVision->Ball();
-	const PlayerVisionT& enemy = pVision->TheirPlayer(this->GetNearestEnemy(pVision));
+	const MobileVisionT ball = pVision->ball();
+	const PlayerVisionT& enemy = pVision->theirPlayer(this->GetNearestEnemy(pVision));
 	//double enemy_dir = enemy.Dir();
 	const CGeoPoint goal_center(- Param::Field::PITCH_LENGTH / 2, 0);
 	double enemy_dir = Utils::Normalize((ball.Pos() - goal_center).dir());

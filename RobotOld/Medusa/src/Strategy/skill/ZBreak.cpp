@@ -24,7 +24,7 @@ namespace {
         DRIBBLE = 2,
     };
     int maxFrared = 210;
-    const double DEBUG_TEXT_HIGH = 23;
+    const double DEBUG_TEXT_HIGH = 23*10;
     const int MOD_NUM = 1;
     const int ANGEL_MOD = 8;
     const int RADIUS = Param::Vehicle::V2::PLAYER_SIZE*1.4;
@@ -34,31 +34,31 @@ namespace {
 CZBreak::CZBreak():grabMode(DRIBBLE),last_mode(DRIBBLE){
     ZSS::ZParamManager::instance()->loadParam(VERBOSE,"Debug/ZBreak",false);
     ZSS::ZParamManager::instance()->loadParam(SHOOT_ACCURACY,"ZBreak/SHOOT_ACCURACY",2);
-    ZSS::ZParamManager::instance()->loadParam(MAX_ACC,"ZBreak/MAX_ACC",350);
-    ZSS::ZParamManager::instance()->loadParam(MAX_VEL,"ZBreak/MAX_VEL",150);
+    ZSS::ZParamManager::instance()->loadParam(MAX_ACC,"ZBreak/MAX_ACC",350*10);
+    ZSS::ZParamManager::instance()->loadParam(MAX_VEL,"ZBreak/MAX_VEL",150*10);
     ZSS::ZParamManager::instance()->loadParam(MAX_ROT_ACC,"ZBreak/MAX_ROT_ACC",20);
     ZSS::ZParamManager::instance()->loadParam(MAX_ROT_SPEED,"ZBreak/MAX_ROT_SPEED",20);
-    ZSS::ZParamManager::instance()->loadParam(CHECK_OBSTCLE_DIST,"ZBreak/CHECK_OBSTCLE_DIST",150);
-    ZSS::ZParamManager::instance()->loadParam(DRIBBLE_DIST,"ZBreak/DRIBBLE_DIST",50);
+    ZSS::ZParamManager::instance()->loadParam(CHECK_OBSTCLE_DIST,"ZBreak/CHECK_OBSTCLE_DIST",150*10);
+    ZSS::ZParamManager::instance()->loadParam(DRIBBLE_DIST,"ZBreak/DRIBBLE_DIST",50*10);
     ZSS::ZParamManager::instance()->loadParam(safeMode,"ZBreak/safeMode",false);
 }
 
 void CZBreak::plan(const CVisionModule* pVision) {
-    if ((pVision->Cycle() - _lastCycle > Param::Vision::FRAME_RATE * 0.1)){
+    if ((pVision->getCycle() - _lastCycle > Param::Vision::FRAME_RATE * 0.1)){
         grabMode = DRIBBLE;
         last_mode = DRIBBLE;
-        move_point = CGeoPoint(-9999, -9999);
-        dribblePoint = CGeoPoint(-9999,-9999);
+        move_point = CGeoPoint(-9999*10, -9999*10);
+        dribblePoint = CGeoPoint(-9999*10,-9999*10);
         isDribble = false;
         fraredOn = 0;
         fraredOff = 0;
     }
-    const MobileVisionT& ball = pVision->Ball();
+    const MobileVisionT& ball = pVision->ball();
     const CGeoPoint passTarget = task().player.pos;
     int vecNumber = task().executor;
-    const PlayerVisionT& me = pVision->OurPlayer(vecNumber);
+    const PlayerVisionT& me = pVision->ourPlayer(vecNumber);
     const int oppNum = ZSkillUtils::instance()->getTheirBestPlayer();
-    const PlayerVisionT& enemy = pVision->TheirPlayer(oppNum);
+    const PlayerVisionT& enemy = pVision->theirPlayer(oppNum);
     double power = task().player.kickpower;
     const bool isChip = (task().player.kick_flag & PlayerStatus::CHIP);
     const bool setKick = (task().player.kick_flag & PlayerStatus::KICK);
@@ -111,9 +111,9 @@ void CZBreak::plan(const CVisionModule* pVision) {
     }
     if(frared && last_mode == SIDEMOVE) grabMode = SIDEMOVE;
     //can see ball but has frared, sucking some robot's ass
-    bool ballInfront = me2Ball.mod() < 20 && fabs(Utils::Normalize(me.Dir() - me2Ball.dir())) < Param::Math::PI/4;
-    if (VERBOSE) GDebugEngine::Instance()->gui_debug_msg(me.Pos()+CVector(0,40),QString("j:%1 %2 %3").arg(frared).arg(!ballInfront).arg(fabs(me.RotVel())).toLatin1());
-    if(frared && me2enemy.mod() < 24 && ball.Valid() && !ballInfront){
+    bool ballInfront = me2Ball.mod() < 20*10 && fabs(Utils::Normalize(me.Dir() - me2Ball.dir())) < Param::Math::PI/4;
+    if (VERBOSE) GDebugEngine::Instance()->gui_debug_msg(me.Pos()+CVector(0,40*10),QString("j:%1 %2 %3").arg(frared).arg(!ballInfront).arg(fabs(me.RotVel())).toLatin1());
+    if(frared && me2enemy.mod() < 24*10 && ball.Valid() && !ballInfront){
         fraredOn  = 0;
         fraredOff = 0;
         frared = false;
@@ -125,7 +125,7 @@ void CZBreak::plan(const CVisionModule* pVision) {
     if(grabMode == SIDEMOVE) {
         if (VERBOSE) GDebugEngine::Instance()->gui_debug_msg(me.Pos()+ Utils::Polar2Vector(DEBUG_TEXT_HIGH, -Param::Math::PI/1.5), "Side Move", COLOR_CYAN);
         move_point = calc_point(pVision, vecNumber, passTarget,dribblePoint,isChip,canShoot,needBreakThrough);
-        if(VERBOSE) GDebugEngine::Instance()->gui_debug_arc(move_point, 8, 0.0, 360.0, COLOR_GREEN);
+        if(VERBOSE) GDebugEngine::Instance()->gui_debug_arc(move_point, 8*10, 0.0, 360.0, COLOR_GREEN);
         if(VERBOSE) GDebugEngine::Instance()->gui_debug_line(dribblePoint, move_point, COLOR_ORANGE);
 
         grabTask.player.pos = move_point;
@@ -134,8 +134,8 @@ void CZBreak::plan(const CVisionModule* pVision) {
             grabTask.player.pos = me.Pos();
             if(needBreakThrough) grabTask.player.angle = ZSkillUtils::instance()->holdBallDir(pVision, vecNumber);
         }
-        if(Utils::InTheirPenaltyArea(grabTask.player.pos, 32) || Utils::InTheirPenaltyArea(me.Pos(), 32)) {
-            grabTask.player.pos = Utils::MakeOutOfTheirPenaltyArea(grabTask.player.pos, 32);
+        if(Utils::InTheirPenaltyArea(grabTask.player.pos, 32*10) || Utils::InTheirPenaltyArea(me.Pos(), 32*10)) {
+            grabTask.player.pos = Utils::MakeOutOfTheirPenaltyArea(grabTask.player.pos, 32*10);
         }
         if((shootGoal && canShootGoal) || !needBreakThrough){
             grabTask.player.flag = PlayerStatus::DRIBBLING;
@@ -149,22 +149,22 @@ void CZBreak::plan(const CVisionModule* pVision) {
         grabTask.player.max_rot_speed = MAX_ROT_SPEED;
         grabTask.player.path_plan_in_circle = true;
         grabTask.player.path_plan_circle_center = dribblePoint;
-        grabTask.player.path_plan_circle_radius = 75;
+        grabTask.player.path_plan_circle_radius = 75*10;
         setSubTask(TaskFactoryV2::Instance()->SmartGotoPosition(grabTask));
-        GDebugEngine::Instance()->gui_debug_arc(dribblePoint,100,0,360,COLOR_BLACK);
+        GDebugEngine::Instance()->gui_debug_arc(dribblePoint,100*10,0,360,COLOR_BLACK);
     }
 
     if(grabMode == DRIBBLE) {
-        move_point = CGeoPoint(-9999, -9999);
+        move_point = CGeoPoint(-9999*10, -9999*10);
         if (VERBOSE) GDebugEngine::Instance()->gui_debug_msg(me.Pos()+ Utils::Polar2Vector(DEBUG_TEXT_HIGH, -Param::Math::PI/1.5), "Dribble", COLOR_CYAN);
         CGeoPoint target;
         double dir;
-        if(ball.Valid()) target = ball.Pos() + Utils::Polar2Vector(5, enemy.Dir());
-        else target = enemy.Pos() + Utils::Polar2Vector(5, enemy.Dir());
+        if(ball.Valid()) target = ball.Pos() + Utils::Polar2Vector(5*10, enemy.Dir());
+        else target = enemy.Pos() + Utils::Polar2Vector(5*10, enemy.Dir());
         if(ball.Valid()) dir = me2Ball.dir();
         else dir = me2enemy.dir();
-        if(me2Ball.mod() > 50 || ball.Vel().mod() > 50)
-            setSubTask(PlayerRole::makeItGetBallV4(vecNumber, PlayerStatus::DRIBBLE|PlayerStatus::SAFE, target, CGeoPoint(999, 999), 0));
+        if(me2Ball.mod() > 50*10 || ball.Vel().mod() > 50*10)
+            setSubTask(PlayerRole::makeItGetBallV4(vecNumber, PlayerStatus::DRIBBLE|PlayerStatus::SAFE, target, CGeoPoint(999*10, 999*10), 0));
         else{
             if(Utils::OutOfField(target,Param::Vehicle::V2::PLAYER_SIZE+Param::Field::BALL_SIZE*2))
                 target = Utils::MakeInField(target,Param::Vehicle::V2::PLAYER_SIZE+Param::Field::BALL_SIZE*2);
@@ -172,23 +172,23 @@ void CZBreak::plan(const CVisionModule* pVision) {
         }
     }
     /******************************/
-    if (VERBOSE) GDebugEngine::Instance()->gui_debug_line(me.Pos(), me.Pos() + Utils::Polar2Vector(1000, finalDir), COLOR_RED);
+    if (VERBOSE) GDebugEngine::Instance()->gui_debug_line(me.Pos(), me.Pos() + Utils::Polar2Vector(1000*10, finalDir), COLOR_RED);
     auto vel_vertical_target = std::sin(me.Vel().dir()-me2target.dir())*me.Vel().mod();
     if(Utils::InOurPenaltyArea(passTarget,0))
         canShoot = false;
     if(Utils::InTheirPenaltyArea(passTarget, 0)){
 //        canShoot = KickDirection::Instance()->getKickValid();
-        power = ZSS::ZParamManager::instance()->value("KickLimit/FlatKickMax",630).toInt();
+        power = ZSS::ZParamManager::instance()->value("KickLimit/FlatKickMax",630*10).toInt();
     }
-    if (VERBOSE) GDebugEngine::Instance()->gui_debug_msg(me.Pos()+CVector(0,50),QString("s:%1 %2 %3 %4 %5").arg(canShoot).arg(180/Param::Math::PI*fabs(Utils::Normalize(me.Dir() - finalDir))).arg(vel_vertical_target).arg(fabs(me.RotVel())).arg(ballInfront).toLatin1(),COLOR_GREEN);
+    if (VERBOSE) GDebugEngine::Instance()->gui_debug_msg(me.Pos()+CVector(0,50*10),QString("s:%1 %2 %3 %4 %5").arg(canShoot).arg(180/Param::Math::PI*fabs(Utils::Normalize(me.Dir() - finalDir))).arg(vel_vertical_target).arg(fabs(me.RotVel())).arg(ballInfront).toLatin1(),COLOR_GREEN);
 
     if (setKick && canShoot && fabs(Utils::Normalize(me.RawDir() - finalDir)) < precision*Param::Math::PI/180.0/* && vel_vertical_target < 50 && fabs(me.RotVel()) < 2*/) {
         if(!isChip) KickStatus::Instance()->setKick(vecNumber, power);
         else if(fraredOn >= 20) KickStatus::Instance()->setChipKick(vecNumber, power);
-        if (VERBOSE) GDebugEngine::Instance()->gui_debug_msg(me.Pos()+CVector(0,70),QString("s! : %1").arg(power).toLatin1(),COLOR_WHITE);
+        if (VERBOSE) GDebugEngine::Instance()->gui_debug_msg(me.Pos()+CVector(0,70*10),QString("s! : %1").arg(power).toLatin1(),COLOR_WHITE);
     }
     DribbleStatus::Instance()->setDribbleCommand(vecNumber,3);
-    _lastCycle = pVision->Cycle();
+    _lastCycle = pVision->getCycle();
     return CStatedTask::plan(pVision);
 }
 
@@ -202,24 +202,24 @@ namespace{
 CGeoPoint calc_point(const CVisionModule* pVision, const int vecNumber,const CGeoPoint& target,const CGeoPoint& dribblePoint,const bool isChip,bool& canShoot,bool& needBreakThrough){
     canShoot = false;
     needBreakThrough = false;
-    const PlayerVisionT& me = pVision->OurPlayer(vecNumber);
-    double max_straight_dist = -9999;
-    double to_target_dist = 9999;
+    const PlayerVisionT& me = pVision->ourPlayer(vecNumber);
+    double max_straight_dist = -9999*10;
+    double to_target_dist = 9999*10;
     auto move_point = me.RawPos();
     std::vector<CGeoPoint> enemy_points;
     CVector me2target = target - dribblePoint;
     for(int i = 1; i <= Param::Field::MAX_PLAYER; i++){
-        auto test_enemy = pVision->TheirPlayer(i);
+        auto test_enemy = pVision->theirPlayer(i);
         if(test_enemy.Valid() && (test_enemy.Pos()-dribblePoint).mod()<CHECK_OBSTCLE_DIST && !Utils::InTheirPenaltyArea(test_enemy.Pos(),0)) enemy_points.push_back(test_enemy.Pos());
     }
 //    for(int i = 1; i <= Param::Field::MAX_PLAYER; i++){
 //        if(i==vecNumber) continue;
-//        auto test_enemy = pVision->OurPlayer(i);
+//        auto test_enemy = pVision->ourPlayer(i);
 //        if(test_enemy.Valid() && (test_enemy.Pos()-dribblePoint).mod()<CHECK_OBSTCLE_DIST) enemy_points.push_back(test_enemy.Pos());//, Param::Vehicle::V2::PLAYER_SIZE*1.5)
 //    }
     for(auto test_enemy : enemy_points){
         auto me2enemy = test_enemy - move_point;
-        if(me2enemy.mod() < 60 && fabs(Utils::Normalize(me.Dir() - me2enemy.dir())) < Param::Math::PI/3){
+        if(me2enemy.mod() < 60*10 && fabs(Utils::Normalize(me.Dir() - me2enemy.dir())) < Param::Math::PI/3){
             needBreakThrough = true;
             break;
         }
@@ -230,11 +230,11 @@ CGeoPoint calc_point(const CVisionModule* pVision, const int vecNumber,const CGe
     for(int i=-ANGEL_MOD; i<ANGEL_MOD; i++){
         for(int j=MOD_NUM; j>0; j--){
             bool temp_canShoot = true;
-            double temp_max_straight_dist = 9999;
+            double temp_max_straight_dist = 9999*10;
             CVector vec = Utils::Polar2Vector(double(j*DRIBBLE_DIST/MOD_NUM), Utils::Normalize(me2target.dir() + i*Param::Math::PI/ANGEL_MOD));
             CGeoPoint test_point = dribblePoint + vec;
-            if(Utils::OutOfField(test_point, 12)) test_point = Utils::MakeInField(test_point,12);
-            if(Utils::InTheirPenaltyArea(test_point, 9)) test_point = Utils::MakeOutOfTheirPenaltyArea(test_point,32);
+            if(Utils::OutOfField(test_point, 12*10)) test_point = Utils::MakeInField(test_point,12*10);
+            if(Utils::InTheirPenaltyArea(test_point, 9*10)) test_point = Utils::MakeOutOfTheirPenaltyArea(test_point,32*10);
             if (VERBOSE) GDebugEngine::Instance()->gui_debug_x(test_point, COLOR_PURPLE);
             auto test_seg = CGeoSegment(test_point, target);
             double temp_to_target_dist = (test_point - target).mod();
@@ -260,22 +260,22 @@ CGeoPoint calc_point(const CVisionModule* pVision, const int vecNumber,const CGe
             }
             if(VERBOSE){
                 if(temp_canShoot)
-                    GDebugEngine::Instance()->gui_debug_arc(test_point,4,0,360,COLOR_BLUE);
+                    GDebugEngine::Instance()->gui_debug_arc(test_point,4*10,0,360,COLOR_BLUE);
 //                GDebugEngine::Instance()->gui_debug_msg(test_point,QString("%1").arg((int)temp_max_straight_dist).toLatin1(),COLOR_WHITE);
             }
 //            GDebugEngine::Instance()->gui_debug_x(test_point,COLOR_PURPLE);
 //            GDebugEngine::Instance()->gui_debug_msg(test_point+vec+CVector(0,0),QString("s:%1").arg(canShoot?1:0).toLatin1(),COLOR_BLUE);
 //            GDebugEngine::Instance()->gui_debug_msg(test_point+vec+CVector(0,20),QString("ttd:%1,msd:%2").arg((int)temp_to_target_dist).arg((int)temp_max_straight_dist).toLatin1(),COLOR_CYAN);
 
-            if(fabs(temp_max_straight_dist-9999)<0.01)temp_max_straight_dist = -9999;
+            if(fabs(temp_max_straight_dist-9999*10)<0.01*10)temp_max_straight_dist = -9999*10;
             // update
             if(canShoot){
                 if(temp_canShoot){
-                    if(max_straight_dist - temp_max_straight_dist < -0.1){
+                    if(max_straight_dist - temp_max_straight_dist < -0.1*10){
                         max_straight_dist = temp_max_straight_dist;
                         move_point = test_point;
                         to_target_dist = temp_to_target_dist;
-                    }else if(fabs(max_straight_dist - temp_max_straight_dist)<0.01 && to_target_dist > temp_to_target_dist){
+                    }else if(fabs(max_straight_dist - temp_max_straight_dist)<0.01*10 && to_target_dist > temp_to_target_dist){
                         max_straight_dist = temp_max_straight_dist;
                         move_point = test_point;
                         to_target_dist = temp_to_target_dist;
@@ -287,12 +287,12 @@ CGeoPoint calc_point(const CVisionModule* pVision, const int vecNumber,const CGe
                     max_straight_dist = temp_max_straight_dist;
                     move_point = test_point;
                     to_target_dist = temp_to_target_dist;
-                }else if(max_straight_dist - temp_max_straight_dist < -0.1){
+                }else if(max_straight_dist - temp_max_straight_dist < -0.1*10){
                     canShoot = false;
                     max_straight_dist = temp_max_straight_dist;
                     move_point = test_point;
                     to_target_dist = temp_to_target_dist;
-                }else if(fabs(max_straight_dist - temp_max_straight_dist)<0.01 && to_target_dist > temp_to_target_dist){
+                }else if(fabs(max_straight_dist - temp_max_straight_dist)<0.01*10 && to_target_dist > temp_to_target_dist){
                     canShoot = false;
                     max_straight_dist = temp_max_straight_dist;
                     move_point = test_point;
@@ -303,7 +303,7 @@ CGeoPoint calc_point(const CVisionModule* pVision, const int vecNumber,const CGe
     }
     canShoot = true;
     if(canShoot){
-        auto ball = pVision->Ball();
+        auto ball = pVision->ball();
         CGeoPoint test_point = ball.Valid() ? ball.RawPos() : ball.Pos();
         auto test_seg = CGeoSegment(test_point, target);
         for(auto test_enemy : enemy_points){

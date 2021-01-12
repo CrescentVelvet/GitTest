@@ -34,7 +34,7 @@ void CDribbleTurnKick::plan(const CVisionModule* pVision)
 
 //	const MobileVisionT& ball = pVision->Ball();
 //	const CGeoPoint ballPos = ball.Pos();
-	const PlayerVisionT& me = pVision->OurPlayer(vecNumber);
+	const PlayerVisionT& me = pVision->ourPlayer(vecNumber);
 //	const CVector self2ball = ballPos - me.Pos();
 //	const CVector ball2self = me.Pos() - ballPos;
 
@@ -49,7 +49,7 @@ void CDribbleTurnKick::plan(const CVisionModule* pVision)
 //	int flags = task().player.flag | PlayerStatus::DODGE_OUR_DEFENSE_BOX;
 
 
-	if ( pVision->Cycle() - _lastCycle > Param::Vision::FRAME_RATE * 0.1
+	if ( pVision->getCycle() - _lastCycle > Param::Vision::FRAME_RATE * 0.1
 		|| _lastRunner != vecNumber){
 		setState(BEGINNING);
 		_turnToKickCouter=0;
@@ -104,7 +104,7 @@ void CDribbleTurnKick::plan(const CVisionModule* pVision)
 	} 
 
 
-	_lastCycle = pVision->Cycle();
+	_lastCycle = pVision->getCycle();
 	_lastRunner = vecNumber;
 	CStatedTask::plan(pVision);
 }

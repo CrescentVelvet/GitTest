@@ -57,10 +57,10 @@ void CBallStatus::UpdateBallStatus(const CVisionModule* pVision)
 
 void CBallStatus::UpdateBallMoving(const CVisionModule* pVision)
 {
-	const MobileVisionT& ball = pVision->Ball(); // 球	
+	const MobileVisionT& ball = pVision->ball(); // 球	
 	isNearPlayer = false;
 	for (int i=1; i<=Param::Field::MAX_PLAYER*2; i++){
-		if (pVision->AllPlayer(i).Valid() && pVision->AllPlayer(i).Pos().dist(ball.Pos())< Param::Field::MAX_PLAYER_SIZE/2+5){
+		if (pVision->allPlayer(i).Valid() && pVision->allPlayer(i).Pos().dist(ball.Pos())< Param::Field::MAX_PLAYER_SIZE/2+5){
 			isNearPlayer = true;
 			break;
 		}
@@ -128,8 +128,8 @@ void CBallStatus::CheckKickOutBall(const CVisionModule* pVision)
             break;
         }
 	}
-	if ((pVision->AllPlayer(_ballToucher).RawPos() - pVision->RawBall().Pos()).mod()<9.8) {
-		_ballChipLine = CGeoLine(pVision->AllPlayer(_ballToucher).RawPos(), pVision->AllPlayer(_ballToucher).Dir());
+	if ((pVision->allPlayer(_ballToucher).RawPos() - pVision->rawBall().Pos()).mod()<9.8) {
+		_ballChipLine = CGeoLine(pVision->allPlayer(_ballToucher).RawPos(), pVision->allPlayer(_ballToucher).Dir());
 	}
 }
 
@@ -153,8 +153,8 @@ void subStateJudge(int i,int* stateCouter,bool* enterCond,int* keepThreshold,int
 }
 
 string CBallStatus::checkBallState(const CVisionModule* pVision,int meNum){
-	const MobileVisionT& ball=pVision->Ball();
-	const CGeoPoint rawBallPos=pVision->RawBall().Pos();
+	const MobileVisionT& ball=pVision->ball();
+	const CGeoPoint rawBallPos=pVision->rawBall().Pos();
 	int ourAdvancerNum=meNum;
 	if (! Utils::PlayerNumValid(ourAdvancerNum)) {
 		ourAdvancerNum = ZSkillUtils::instance()->getOurBestPlayer();
@@ -164,7 +164,7 @@ string CBallStatus::checkBallState(const CVisionModule* pVision,int meNum){
 	}
 	int theirAdvancerNum=ZSkillUtils::instance()->getTheirBestPlayer();
 	if (! Utils::PlayerNumValid(theirAdvancerNum)){
-		theirAdvancerNum=NormalPlayUtils::getTheirMostClosetoPos(pVision,pVision->OurPlayer(meNum).Pos());
+		theirAdvancerNum=NormalPlayUtils::getTheirMostClosetoPos(pVision,pVision->ourPlayer(meNum).Pos());
 	}
 
 
@@ -175,10 +175,10 @@ string CBallStatus::checkBallState(const CVisionModule* pVision,int meNum){
 		theirAdvancerNum=lastTheirBestPlayer;
 	}
 	
-	PlayerVisionT me=pVision->OurPlayer(ourAdvancerNum);
-	PlayerVisionT he=pVision->TheirPlayer(theirAdvancerNum);
-//	double meSpeed=pVision->OurRawPlayerSpeed(ourAdvancerNum).mod();
-	double heSpeed=pVision->TheirRawPlayerSpeed(theirAdvancerNum).mod();
+	PlayerVisionT me=pVision->ourPlayer(ourAdvancerNum);
+	PlayerVisionT he=pVision->theirPlayer(theirAdvancerNum);
+//	double meSpeed=pVision->ourRawPlayerSpeed(ourAdvancerNum).mod();
+    double heSpeed=pVision->getTheirRawPlayerSpeed(theirAdvancerNum).mod();
 	double balltoMeDist=rawBallPos.dist(me.Pos());
 	double balltoHeDist=rawBallPos.dist(he.Pos());
 	double metoHeDist=me.Pos().dist(he.Pos());
@@ -274,7 +274,7 @@ string CBallStatus::checkBallState(const CVisionModule* pVision,int meNum){
 	}
 
 	int closedHeNum=NormalPlayUtils::getTheirMostClosetoPos(pVision,ball.Pos());
-	CGeoPoint theirClosedCar=pVision->TheirPlayer(closedHeNum).Pos();
+	CGeoPoint theirClosedCar=pVision->theirPlayer(closedHeNum).Pos();
 	bool isOurBall=ball.Valid()&&
 		(isBallMovtoMe && notHeGetBallBefore
 			||isBallJustInFront&&!isHeFrontToMe

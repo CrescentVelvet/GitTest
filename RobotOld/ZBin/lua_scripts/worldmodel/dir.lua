@@ -92,11 +92,11 @@ function shoot()
 		else
 			print("Error role in dir.shoot")
 		end
-		if vision:Cycle() - lastCycle[role] > 6 or player.toBallDist(role) > 50 then
+		if vision:getCycle() - lastCycle[role] > 6 or player.toBallDist(role) > 50 then
 			kickDirection:GenerateShootDir(role, player.pos(role))
 			lastDir[role] = kickDirection:getRealKickDir()
 		end
-		lastCycle[role] = vision:Cycle()
+		lastCycle[role] = vision:getCycle()
 		return lastDir[role]
 	end
 end
@@ -118,7 +118,7 @@ function evaluateTouch(p)
 		else
 			print("Error role in dir.shoot")
 		end
-		if vision:Cycle() - lastCycle[role] > 6 or player.toBallDist(role) > 50 then
+		if vision:getCycle() - lastCycle[role] > 6 or player.toBallDist(role) > 50 then
 			local tmpRawDir
 			if p == nil then
 				kickDirection:GenerateShootDir(role, player.pos(role))
@@ -140,7 +140,7 @@ function evaluateTouch(p)
 			end
 
 		end
-		lastCycle[role] = vision:Cycle()
+		lastCycle[role] = vision:getCycle()
 		return lastDir[role]
 	end
 end
@@ -163,10 +163,10 @@ function compensate(p)
 			ipos = p
 		end
 
-		if vision:Cycle() - lastCycle[role] > 6 or player.toBallDist(role) > 50 then
+		if vision:getCycle() - lastCycle[role] > 6 or player.toBallDist(role) > 50 then
 			lastDir[role] = CCalCompensateDir(player.num(role), ipos:x(), ipos:y())
 		end
-		lastCycle[role] = vision:Cycle()
+		lastCycle[role] = vision:getCycle()
 		return lastDir[role]
 	end
 end

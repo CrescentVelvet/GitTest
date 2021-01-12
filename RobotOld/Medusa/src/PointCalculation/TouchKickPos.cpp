@@ -42,8 +42,8 @@ void CTouchKickPos::GenerateTouchKickPos(const CVisionModule *pVision, const int
 	reset();
 
 	///> 2.图像信息
-	const PlayerVisionT &kicker	= pVision->OurPlayer(player);
-	const MobileVisionT &ball	= pVision->Ball();
+	const PlayerVisionT &kicker	= pVision->ourPlayer(player);
+	const MobileVisionT &ball	= pVision->ball();
 
 	CVector self2ball			= ball.Pos() - kicker.Pos();
 	double ballVelDir			= ball.Vel().dir();									// 球速方向
@@ -75,10 +75,10 @@ void CTouchKickPos::GenerateValidTouchKickPos(const CVisionModule *pVision , con
 	/* 1.根据图像模块中的信息准备计算                                         */
 	/************************************************************************/
 
-//	GDebugEngine::Instance()->gui_debug_line(pVision->OurPlayer(player).Pos(), pVision->OurPlayer(player).Pos()+Utils::Polar2Vector(1000,pVision->OurPlayer(player).Dir()));
+//	GDebugEngine::Instance()->gui_debug_line(pVision->ourPlayer(player).Pos(), pVision->ourPlayer(player).Pos()+Utils::Polar2Vector(1000,pVision->ourPlayer(player).Dir()));
 	///> 图像信息
-	const PlayerVisionT &kicker  = pVision->OurPlayer(player);
-	const MobileVisionT &ball = pVision->Ball();
+	const PlayerVisionT &kicker  = pVision->ourPlayer(player);
+	const MobileVisionT &ball = pVision->ball();
 	CGeoPoint kickerHeaderPos = kicker.Pos() + Utils::Polar2Vector(Param::Vehicle::V2::PLAYER_FRONT_TO_CENTER,kicker.Dir());
 
 	CVector self2ball = ball.Pos() - kicker.Pos();
@@ -137,8 +137,8 @@ void CTouchKickPos::GenerateInvalidTouchKickPos(const CVisionModule *pVision , c
 	/************************************************************************/
 
 	///> 图像信息
-	const PlayerVisionT &kicker	= pVision->OurPlayer(player);
-	const MobileVisionT &ball	= pVision->Ball();
+	const PlayerVisionT &kicker	= pVision->ourPlayer(player);
+	const MobileVisionT &ball	= pVision->ball();
 
 	CVector self2ball		= ball.Pos() - kicker.Pos();
 	double ballVelDir		= ball.Vel().dir();									// 球速方向
@@ -182,10 +182,10 @@ void CTouchKickPos::GenerateInvalidTouchKickPos(const CVisionModule *pVision , c
 	// TODO
 	static int ball_just_front_count = 0;
 	static int last_cycle = 0;
-	if(pVision->Cycle() - last_cycle > 0.1*Param::Vision::FRAME_RATE) {
+	if(pVision->getCycle() - last_cycle > 0.1*Param::Vision::FRAME_RATE) {
 		ball_just_front_count = 0;
 	}
-	last_cycle = pVision->Cycle();
+	last_cycle = pVision->getCycle();
 	if (is_ball_just_front) {
 		ball_just_front_count ++;
 	} else {
@@ -268,11 +268,11 @@ void CTouchKickPos::GenerateInvalidTouchKickPos(const CVisionModule *pVision , c
 		}
 		_kick_pos = _kick_pos_pre + (_kick_pos-_kick_pos_pre) * alpha;
 	}
-	if (!ball.Valid() && pVision->Cycle() - _pass_set_cycle < 60) {
+	if (!ball.Valid() && pVision->getCycle() - _pass_set_cycle < 60) {
 		cout<<"Ball InValid In TouchKick"<<endl;
 		CGeoLine ballMovingLine = CGeoLine(ball.Pos(), _ball_invalid_pass_dir);
 		CGeoLine kickDirLine = CGeoLine(kicker.Pos(),kicker.Pos()+Utils::Polar2Vector(50,kickdir));
-		double intersectangle = std::abs(Utils::Normalize(pVision->OurPlayer(player).Dir()+Param::Math::PI/2) - Utils::Normalize(ball.Vel().dir()+Param::Math::PI));
+		double intersectangle = std::abs(Utils::Normalize(pVision->ourPlayer(player).Dir()+Param::Math::PI/2) - Utils::Normalize(ball.Vel().dir()+Param::Math::PI));
 		double intersectangle2 = std::abs(kickdir - Utils::Normalize(ball.Vel().dir()+Param::Math::PI));
 		if (intersectangle > Param::Math::PI/2){
 			intersectangle = Param::Math::PI - intersectangle;
@@ -281,7 +281,7 @@ void CTouchKickPos::GenerateInvalidTouchKickPos(const CVisionModule *pVision , c
 			intersectangle2 = Param::Math::PI - intersectangle2;
 		}
 		if (intersectangle>=intersectangle2){
-			CGeoLineLineIntersection intersect = CGeoLineLineIntersection(ballMovingLine,CGeoLine(pVision->OurPlayer(player).Pos()+Utils::Polar2Vector(Param::Vehicle::V2::PLAYER_FRONT_TO_CENTER+2.25,kickdir),Utils::Normalize(kickdir+Param::Math::PI/2)));
+			CGeoLineLineIntersection intersect = CGeoLineLineIntersection(ballMovingLine,CGeoLine(pVision->ourPlayer(player).Pos()+Utils::Polar2Vector(Param::Vehicle::V2::PLAYER_FRONT_TO_CENTER+2.25,kickdir),Utils::Normalize(kickdir+Param::Math::PI/2)));
 			if(intersect.Intersectant() ){
 				_kick_pos = intersect.IntersectPoint();
 			}else{

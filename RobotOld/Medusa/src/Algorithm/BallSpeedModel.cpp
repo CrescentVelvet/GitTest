@@ -16,9 +16,9 @@ CBallSpeedModel::CBallSpeedModel():_ballVel(0,0),_ballPos(-9999,-9999){
     bool IS_SIMULATION;
     ZSS::ZParamManager::instance()->loadParam(IS_SIMULATION,"Alert/IsSimulation",false);
     if (IS_SIMULATION)
-        ZSS::ZParamManager::instance()->loadParam(FRICTION,"AlertParam/Friction4Sim",80);
+        ZSS::ZParamManager::instance()->loadParam(FRICTION,"AlertParam/Friction4Sim",800);
     else
-        ZSS::ZParamManager::instance()->loadParam(FRICTION,"AlertParam/Friction4Real",152);
+        ZSS::ZParamManager::instance()->loadParam(FRICTION,"AlertParam/Friction4Real",1520);
 }
 CBallSpeedModel::~CBallSpeedModel(){
 }
@@ -111,8 +111,8 @@ CGeoPoint CBallSpeedModel::posForTime_FM(double frame) {
 //}
 void CBallSpeedModel::update( const CVisionModule* pVision ){
 	//lastBallPos = _ballPos;
-    _ballPos = pVision->Ball().Valid() ? pVision->Ball().RawPos() : pVision->Ball().Pos();
-    _ballVel = pVision->Ball().Vel();
+    _ballPos = pVision->ball().Valid() ? pVision->ball().RawPos() : pVision->ball().Pos();
+    _ballVel = pVision->ball().Vel();
 }
 
 //double CBallSpeedModel::getAcc(double speed) const{

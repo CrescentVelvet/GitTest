@@ -10,11 +10,14 @@
 #include"chipsolver.h"
 #include <fstream>
 #include <iostream>
-#define MAX_BALL_PER_FRAME 200
+
 
 using namespace std;
 namespace {
 bool whetherTestRobotSpeed = false;
+
+const int MAX_BALL_PER_FRAME = 200;
+const int CHIP_DIS = 10;
 }
 CMaintain::CMaintain(): file("d:\\test.txt"), out(&file) {
     if (::whetherTestRobotSpeed && !file.open(QIODevice::WriteOnly | QIODevice::Text)) {
@@ -30,27 +33,12 @@ CMaintain::~CMaintain() {
 void CMaintain::init() {
     result.init();
     result.addBall(GlobalData::instance()->processBall[0].ball[0]);
-    result.ball[0].valid = DealBall::instance()->getValid();
-//    for (int i = 0; i < GlobalData::instance()->processRobot[0].robotSize[PARAM::BLUE]; i++) {
-//        result.addRobot(PARAM::BLUE, GlobalData::instance()->processRobot[0].robot[PARAM::BLUE][i]);
-//        robotIndex[PARAM::BLUE][result.robot[PARAM::BLUE][i].id] = i;
-//    }
-//    for (int i = 0; i < GlobalData::instance()->processRobot[0].robotSize[PARAM::YELLOW]; i++) {
-//        result.addRobot(PARAM::YELLOW, GlobalData::instance()->processRobot[0].robot[PARAM::YELLOW][i]);
-//        robotIndex[PARAM::YELLOW][result.robot[PARAM::YELLOW][i].id] = i;
-//    }
-    for (int i = 0; i < GlobalData::instance()->processRobot[0].robotSize[PARAM::BLUE]; i++) {
-        int id = GlobalData::instance()->processRobot[0].robot[PARAM::BLUE][i].id;
-        result.robot[PARAM::BLUE][id].fill(GlobalData::instance()->processRobot[0].robot[PARAM::BLUE][i],true);
-        result.robotSize[PARAM::BLUE]++;
-        robotIndex[PARAM::BLUE][result.robot[PARAM::BLUE][i].id] = i;
+    result.isBallValid = GlobalData::instance()->processBall[0].isBallValid;
+    for (int color = 0; color < PARAM::TEAMS; color++) {
+        for (int i = 0; i < PARAM::ROBOTNUM; i++) {
+            result.robot[color][i].fill(GlobalData::instance()->processRobot[0].robot[color][i]);
+        }
     }
-    for (int i = 0; i < GlobalData::instance()->processRobot[0].robotSize[PARAM::YELLOW]; i++) {
-        int id = GlobalData::instance()->processRobot[0].robot[PARAM::YELLOW][i].id;
-        result.robot[PARAM::YELLOW][id].fill(GlobalData::instance()->processRobot[0].robot[PARAM::YELLOW][i],true);
-        result.robotSize[PARAM::YELLOW]++;
-        robotIndex[PARAM::YELLOW][result.robot[PARAM::YELLOW][i].id] = i;
-    } //change by lzx
 }
 
 
@@ -65,11 +53,9 @@ double CMaintain::getpredict_y() {
 void CMaintain::run() {  //TODO move to visionmodule
     init();
     //必须保证processrobot数组里为真值，否则产生误差累计
-    DealRobot::instance()->updateVel(PARAM::BLUE, result);
-    DealRobot::instance()->updateVel(PARAM::YELLOW, result);
+    DealRobot::instance()->updateVel(result);
     //Ball Statemachine
-    if (CollisionDetect::instance()->ballCloseEnough2Analyze(PARAM::BLUE) ||
-            CollisionDetect::instance()->ballCloseEnough2Analyze(PARAM::YELLOW) ||
+    if (CollisionDetect::instance()->ballCloseEnough2Analyze() ||
             CollisionDetect::instance()->ballIsOnEdge(result.ball[0].pos))
         //离车近
     {
@@ -101,5 +87,4 @@ void CMaintain::run() {  //TODO move to visionmodule
                 result.ball[0].ball_state_machine.ballState = _flat_pass;
     }
     GlobalData::instance()->maintain.push(result);
-
 }

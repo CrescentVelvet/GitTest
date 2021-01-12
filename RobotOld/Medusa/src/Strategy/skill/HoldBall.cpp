@@ -34,12 +34,12 @@ void CHoldBall::plan(const CVisionModule* pVision)
     /***************************************************************/
     /* 第一步：视觉初步处理                                           */
     /**************************************************************/
-    const MobileVisionT& ball = pVision->Ball();
+    const MobileVisionT& ball = pVision->ball();
     const CGeoPoint targetPoint = task().player.pos;//护球的点（圆心）
     const int robotNum = task().executor;
-    const PlayerVisionT& me = pVision->OurPlayer(robotNum);
+    const PlayerVisionT& me = pVision->ourPlayer(robotNum);
     const int oppoNum = ZSkillUtils::instance()->getTheirBestPlayer();
-    const PlayerVisionT& enemy = pVision->TheirPlayer(oppoNum);
+    const PlayerVisionT& enemy = pVision->theirPlayer(oppoNum);
     CVector enemy2me = me.Pos() - enemy.Pos();
     CVector me2enemy = enemy.Pos() - me.Pos();
     CVector me2ball = ball.Pos() - me.Pos();
@@ -65,7 +65,7 @@ void CHoldBall::plan(const CVisionModule* pVision)
     if((frared || me2ball.mod()<10.5) && lastMode==HOLDBALL)
         holdMode = HOLDBALL;
     GDebugEngine::Instance()->gui_debug_msg(CGeoPoint(0,-200), std::to_string(holdMode).c_str(), COLOR_GREEN);
-    if(pVision->Cycle() - _lastCycle > 6){
+    if(pVision->getCycle() - _lastCycle > 6){
         //TODO
     }
     /***************************************************************/
@@ -149,7 +149,7 @@ void CHoldBall::plan(const CVisionModule* pVision)
         double coeff = 0;
         int enemyNum = pVision->getTheirValidNum();
         for(int i=1; i<=enemyNum; i++){
-            const PlayerVisionT c_enemy = pVision->TheirPlayer(i);
+            const PlayerVisionT c_enemy = pVision->theirPlayer(i);
             CVector c_enemy2me = me.Pos() - c_enemy.Pos();
             double targetAngle = c_enemy2me.dir() > 0 ? 2*Param::Math::PI - c_enemy2me.dir() : -1*c_enemy2me.dir();
             finalAngle += targetAngle/c_enemy2me.mod();
@@ -160,7 +160,7 @@ void CHoldBall::plan(const CVisionModule* pVision)
         double anotherAngle = finalAngle < Param::Math::PI ? finalAngle+Param::Math::PI : finalAngle - Param::Math::PI;
         double diff1 = 0, diff2 = 0;
         for(int i=0; i<=enemyNum;i++){
-            const PlayerVisionT c_enemy = pVision->TheirPlayer(i);
+            const PlayerVisionT c_enemy = pVision->theirPlayer(i);
             CVector c_enemy2me = me.Pos() - c_enemy.Pos();
             double targetAngle = c_enemy2me.dir() > 0 ? 2*Param::Math::PI - c_enemy2me.dir() : -1*c_enemy2me.dir();
             double d_angle1 = abs(targetAngle-finalAngle) < Param::Math::PI ? abs(targetAngle-finalAngle) : 2*Param::Math::PI - abs(targetAngle-finalAngle);

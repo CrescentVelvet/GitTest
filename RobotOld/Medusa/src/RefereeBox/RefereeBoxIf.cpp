@@ -29,7 +29,8 @@ CRefereeBoxInterface::~CRefereeBoxInterface() {
 }
 
 CRefereeBoxInterface::CRefereeBoxInterface():_playMode(PMNone) {
-    ZSS::ZParamManager::instance()->loadParam(REFEREE_PORT,"AlertPorts/RefereePort",10003);
+//    ZSS::ZParamManager::instance()->loadParam(REFEREE_PORT,"AlertPorts/RefereePort",10003);
+    ZSS::ZParamManager::instance()->loadParam(REFEREE_PORT,"AlertPorts/ZSS_RefereePort",39991);
     bool isSimulation;
     bool isYellow;
     bool isRight;
@@ -114,9 +115,11 @@ void CRefereeBoxInterface::receivingLoop() {
             // Get Ball Placement Position
             if(command == 16 || command == 17){
             //change ssl_vision_xy to zjunlict_vision_xy
-                ballPlacementX = VECTOR * ssl_referee.designated_position().x()/10.0;
-                ballPlacementY = VECTOR * -ssl_referee.designated_position().y()/10.0;
-                CGeoPoint point(ballPlacementX,ballPlacementY);
+                refereeMutex.lock();
+                _ballPlacementX = VECTOR * ssl_referee.designated_position().x();
+                _ballPlacementY = VECTOR * -ssl_referee.designated_position().y();
+                CGeoPoint point(_ballPlacementX,_ballPlacementY);
+                refereeMutex.unlock();
                 GDebugEngine::Instance()->gui_debug_x(point,COLOR_WHITE);
                 GDebugEngine::Instance()->gui_debug_msg(point,"BP_Point",COLOR_WHITE);
                 GDebugEngine::Instance()->gui_debug_arc(point,15,0,360,COLOR_WHITE);

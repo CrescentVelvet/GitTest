@@ -25,7 +25,7 @@ class CRobotPredictor {
     CRobotPredictor();
     CRobotPredictor (bool isHasRotaion);
     void updateCommand(int cycle, const CPlayerCommand* cmd); // 更新命令
-    void updateVision(int cycle, const VehicleInfoT& player, const MobileVisionT& ball, bool invert, int realNum); // 更新视觉信息
+    void updateVision(int cycle, const VehicleInfoT& player, const MobileVisionT& ball, bool invert); // 更新视觉信息
     void updateOurVision(int cycle, const VehicleInfoT& player, const MobileVisionT& ball, bool invert, int realNum); // 更新视觉信息
     void updateTheirVision(int cycle, const VehicleInfoT& player, const MobileVisionT& ball, bool invert, int realNum); // 更新视觉信息
 

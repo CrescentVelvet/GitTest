@@ -78,11 +78,11 @@ double CCompensate::getKickDir(int playerNum, CGeoPoint kickTarget){
 	cout << (int)ourRobotIndex[5] << endl;
 	*/
 	CVisionModule* pVision = vision;
-	const MobileVisionT & ball = pVision->Ball();
-	const PlayerVisionT & kicker = pVision->OurPlayer(playerNum);
+	const MobileVisionT & ball = pVision->ball();
+	const PlayerVisionT & kicker = pVision->ourPlayer(playerNum);
 	double rawkickdir = (kickTarget - kicker.Pos()).dir();
 	double ballspeed =ball.Vel().mod();
-	double tempdir = (Normalize(Normalize(pVision->Ball().Vel().dir()+Param::Math::PI)-(kickTarget - kicker.Pos()).dir()))*180/Param::Math::PI;
+	double tempdir = (Normalize(Normalize(pVision->ball().Vel().dir()+Param::Math::PI)-(kickTarget - kicker.Pos()).dir()))*180/Param::Math::PI;
 	int ratio = 0;
 	if (tempdir>0){
 		ratio = 1;
@@ -91,7 +91,7 @@ double CCompensate::getKickDir(int playerNum, CGeoPoint kickTarget){
 	}
 	double compensatevalue;
 	double rawdir=
-		fabs((Normalize(Normalize(pVision->Ball().Vel().dir()+Param::Math::PI)-(kickTarget - kicker.Pos()).dir()))
+		fabs((Normalize(Normalize(pVision->ball().Vel().dir()+Param::Math::PI)-(kickTarget - kicker.Pos()).dir()))
 		*180/Param::Math::PI);
 
 
@@ -105,18 +105,18 @@ double CCompensate::getKickDir(int playerNum, CGeoPoint kickTarget){
 		//cout<<"kickdirection rawdir changed to 80"<<endl;
 	}
 	
-	int realPlayerNum = PlayInterface::Instance()->getRealIndexByNum(playerNum);
+//	int realPlayerNum = PlayInterface::Instance()->getRealIndexByNum(playerNum);
 	//int realPlayerNum = ourRobotIndex[playerNum-1];
 
     compensatevalue = checkCompensate(ballspeed, rawdir);
-	if (pVision->Ball().Vel().mod()<10){
+	if (pVision->ball().Vel().mod()<10){
 		//cout<<"Compensate 0 because the ball's velocity is too small (<10)"<<endl;
 		compensatevalue = 0;
 	}
 
     DEBUG {
         cout << "----------Current Compensation---------" << endl;
-        cout << "Car Num:" << realPlayerNum << "\tTable Value:" << compensatevalue << endl;
+//        cout << "Car Num:" << realPlayerNum << "\tTable Value:" << compensatevalue << endl;
         cout << "Ball Speed:" << ballspeed << "\tRaw Dir:" << rawdir << endl;
         cout << "Real Fix Value:" << ratio*compensatevalue << endl;
     }
@@ -245,7 +245,7 @@ void CCompensate::setOurRobotIndex(unsigned char*_ourRobotIndex)
 	
 //	CVisionModule* pVision = vision;
 //	const MobileVisionT & ball = pVision->Ball();
-//	const PlayerVisionT & kicker = pVision->OurPlayer(playerNum);
+//	const PlayerVisionT & kicker = pVision->ourPlayer(playerNum);
 //	double rawkickdir = (kickTarget - kicker.Pos()).dir();
 //	// 算出来的，应该的dir
 

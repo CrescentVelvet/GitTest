@@ -117,7 +117,7 @@ namespace DefendUtils{
         int num = 0;
         for (int i=1;i<Param::Field::MAX_PLAYER+1;i++)
         {
-            CGeoPoint pos = VisionModule::Instance()->OurPlayer(i).Pos();
+            CGeoPoint pos = VisionModule::Instance()->ourPlayer(i).Pos();
             if (Utils::InOurPenaltyArea(pos,60))
             {
                 num ++;
@@ -152,22 +152,22 @@ namespace DefendUtils{
     {
         CVisionModule* pVision = vision;
         int shooter;
-        if (pVision->Ball().Vel().mod() < ENEMY_PASS_SPEED)
+        if (pVision->ball().Vel().mod() < ENEMY_PASS_SPEED)
         {
             shooter =  ZSkillUtils::instance()->getTheirBestPlayer();
         } else {
-            const MobileVisionT ball = pVision->Ball();
+            const MobileVisionT ball = pVision->ball();
             const double ball_speed_dir = ball.Vel().dir();
             double min_dist = Param::Field::PITCH_LENGTH, dist, angle_diff;
             int min_player = 0;
             const double PassAngleDiff = Param::Math::PI / 6;
             for (int i = 1; i <= Param::Field::MAX_PLAYER; i ++)
             {
-                if (pVision->TheirPlayer(i).Valid() == true)
+                if (pVision->theirPlayer(i).Valid() == true)
                 {
-                    angle_diff = fabs(Utils::Normalize(Utils::Normalize(CVector(pVision->TheirPlayer(i).Pos()
+                    angle_diff = fabs(Utils::Normalize(Utils::Normalize(CVector(pVision->theirPlayer(i).Pos()
                         - ball.Pos()).dir()) - ball_speed_dir));
-                    dist = pVision->TheirPlayer(i).Pos().dist(ball.Pos());
+                    dist = pVision->theirPlayer(i).Pos().dist(ball.Pos());
                     if (angle_diff < PassAngleDiff && dist < min_dist)
                     {
                         min_player = i;
@@ -197,7 +197,7 @@ namespace DefendUtils{
         const int enemyNum = DefendUtils::getEnemyShooter();
         static int lastShooter;
         //球
-        const MobileVisionT& ball = pVision->Ball();
+        const MobileVisionT& ball = pVision->ball();
         CGeoPoint RballPos = DefendUtils::reversePoint(ball.Pos());
 
         // 横传球的预测
@@ -217,7 +217,7 @@ namespace DefendUtils{
         double Rball2GoalCenterDir = Rball2GoalCenter.dir();
         double left2centreAngle = fabs(Utils::Normalize(Rball2LeftDir - Rball2GoalCenterDir));
         double right2centreAngle = fabs(Utils::Normalize(Rball2RightDir - Rball2GoalCenterDir));
-        double Rball2enemyDir = Utils::Normalize((pVision->Ball().Pos() - pVision->TheirPlayer(enemyNum).Pos()).dir()+Param::Math::PI);
+        double Rball2enemyDir = Utils::Normalize((pVision->ball().Pos() - pVision->theirPlayer(enemyNum).Pos()).dir()+Param::Math::PI);
 
         static bool todefenddirection = false;
         if (true == DefenceInfo::Instance()->getOppPlayerByNum(enemyNum)->isTheRole("RReceiver")){
@@ -233,13 +233,13 @@ namespace DefendUtils{
         bool ballShot = ballSpeed && outOfShooter && ballDirLimit;
 
         //或者球刚踢出，用位置进行判断
-        bool enemyHasShot = pVision->TheirPlayer(enemyNum).Pos().dist(ball.Pos())<40
+        bool enemyHasShot = pVision->theirPlayer(enemyNum).Pos().dist(ball.Pos())<40
             && Utils::InBetween(Rball2enemyDir,Rball2LeftDir - BALL_SHOOT_DIR_BUFFER,Rball2RightDir + BALL_SHOOT_DIR_BUFFER)
             && ballSpeed && outOfShooter && ball.VelX() <0;
         ballShot = ballShot || enemyHasShot;
-        if (pVision->TheirPlayer(enemyNum).Valid())
+        if (pVision->theirPlayer(enemyNum).Valid())
         {
-            const PlayerVisionT& enemy = pVision->TheirPlayer(enemyNum);
+            const PlayerVisionT& enemy = pVision->theirPlayer(enemyNum);
             CGeoPoint RenemyPos = DefendUtils::reversePoint(enemy.Pos());
             double RenemyDir = Utils::Normalize(enemy.Dir() + Param::Math::PI);
 
@@ -249,7 +249,7 @@ namespace DefendUtils{
 
             //判断是否对方掌握球:暂时用法，以后这段话删去***********!!!!!!!!!!!!!!!!
             const int ourFastPlayer = ZSkillUtils::instance()->getOurBestPlayer();
-            const PlayerVisionT& me = pVision->OurPlayer(ourFastPlayer);
+            const PlayerVisionT& me = pVision->ourPlayer(ourFastPlayer);
             bool enemyHasBall = enemy.Pos().dist(ball.Pos()) < me.Pos().dist(ball.Pos()) ? true : false;
             //TODO 以后开启下面这句话*****************************!!!!!!!!!!!!!!
             //bool enemyHasBall = BestPlayer::Instance()->oppWithBall();
@@ -304,7 +304,7 @@ namespace DefendUtils{
             if (ballShot)//此处不 && ball.Valid()，只要看到一帧就要坚定地走过去
             {
                 RdefenceLine = CGeoLine(RballPos,RballVelDir); //防球速线
-                RdefenceTarget= reversePoint(pVision->Ball().RawPos());
+                RdefenceTarget= reversePoint(pVision->ball().RawPos());
                 RdefendDir = RballVelDir;
                 //cout<<vision->Cycle()<<" ball shooted"<<endl;
             } else if (defenceEnemy)
@@ -324,12 +324,12 @@ namespace DefendUtils{
                 if (enemyPass){
                     CGeoPoint RBasePoint = RGOAL_CENTRE_POS;
                     double vely;
-                    if (pVision->Ball().VelY()>400){
+                    if (pVision->ball().VelY()>400){
                         vely = 400;
-                    }else if (pVision->Ball().VelY()<-400){
+                    }else if (pVision->ball().VelY()<-400){
                         vely = -400;
                     }else{
-                        vely = pVision->Ball().VelY();
+                        vely = pVision->ball().VelY();
                     }
                     RBasePoint = RBasePoint + Utils::Polar2Vector((-0.04)*vely,Param::Math::PI/2);
                     RdefendDir = ( RBasePoint - RballPos).dir();
@@ -366,7 +366,7 @@ namespace DefendUtils{
             if (ballShot)
             {
                 RdefenceLine = CGeoLine(RballPos,RballVelDir);
-                RdefenceTarget = reversePoint(pVision->Ball().RawPos());
+                RdefenceTarget = reversePoint(pVision->ball().RawPos());
                 RdefendDir = RballVelDir;
                 //cout<<"ball is shooting"<<endl;
             } else
@@ -397,9 +397,9 @@ namespace DefendUtils{
             }
         }
         //补球速慢时突然被打一脚的bug
-        double RenemyDir = Utils::Normalize(pVision->TheirPlayer(enemyNum).Dir() + Param::Math::PI);
-        double diffDir = fabs(Utils::Normalize(ball.Vel().dir() - (ball.Pos() - pVision->TheirPlayer(enemyNum).Pos()).dir()));
-        double enemyToBallDist = ball.Pos().dist(pVision->TheirPlayer(enemyNum).Pos());
+        double RenemyDir = Utils::Normalize(pVision->theirPlayer(enemyNum).Dir() + Param::Math::PI);
+        double diffDir = fabs(Utils::Normalize(ball.Vel().dir() - (ball.Pos() - pVision->theirPlayer(enemyNum).Pos()).dir()));
+        double enemyToBallDist = ball.Pos().dist(pVision->theirPlayer(enemyNum).Pos());
         if (Utils::InOurPenaltyArea(ball.Pos(), 0) == false
                 && enemyToBallDist < 30
                 && ball.Vel().mod() < 200
@@ -419,7 +419,7 @@ namespace DefendUtils{
 
     bool getBallShooted(){
         const CVisionModule* pVision = vision;
-        const MobileVisionT& ball = pVision->Ball();
+        const MobileVisionT& ball = pVision->ball();
         const int enemyNum = DefendUtils::getEnemyShooter();
         CGeoPoint RballPos = DefendUtils::reversePoint(ball.Pos());
         CVector Rball2LeftGoal = RGOAL_LEFT_POS - RballPos;
@@ -431,14 +431,14 @@ namespace DefendUtils{
         CVector RballVel = Utils::Polar2Vector(ball.Vel().mod(),Utils::Normalize(ball.Vel().dir() + Param::Math::PI));
         double RballVelMod = ball.Vel().mod();
         double RballVelDir = RballVel.dir();
-        double Rball2enemyDir = Utils::Normalize((pVision->Ball().Pos() - pVision->TheirPlayer(enemyNum).Pos()).dir()+Param::Math::PI);
+        double Rball2enemyDir = Utils::Normalize((pVision->ball().Pos() - pVision->theirPlayer(enemyNum).Pos()).dir()+Param::Math::PI);
         ///朝向线：判断球是否已经射出
         bool ballSpeed = RballVelMod >= 30;
         bool outOfShooter = !(DefenceInfo::Instance()->getBallTaken());
         bool ballDirLimit = Utils::InBetween(RballVelDir,Rball2LeftDir - BALL_SHOOT_DIR_BUFFER,Rball2RightDir + BALL_SHOOT_DIR_BUFFER);
         bool ballShooted = ballSpeed && outOfShooter && ballDirLimit;
         //或者球刚踢出，用位置进行判断
-        bool enemyShooted = pVision->TheirPlayer(enemyNum).Pos().dist(ball.Pos())<40 &&
+        bool enemyShooted = pVision->theirPlayer(enemyNum).Pos().dist(ball.Pos())<40 &&
             Utils::InBetween(Rball2enemyDir,Rball2LeftDir - BALL_SHOOT_DIR_BUFFER,Rball2RightDir + BALL_SHOOT_DIR_BUFFER)
             && ballSpeed && outOfShooter && ball.VelX() <0;
         ballShooted = ballShooted||enemyShooted;
@@ -447,18 +447,18 @@ namespace DefendUtils{
 
     bool getEnemyPass(){
         const CVisionModule* pVision = vision;
-        const MobileVisionT& ball = pVision->Ball();
+        const MobileVisionT& ball = pVision->ball();
         const int enemyNum = DefendUtils::getEnemyShooter();
         CGeoPoint RballPos = DefendUtils::reversePoint(ball.Pos());
         CVector RballVel = Utils::Polar2Vector(ball.Vel().mod(),Utils::Normalize(ball.Vel().dir() + Param::Math::PI));
         double RballVelMod = ball.Vel().mod();
         double RballVelDir = RballVel.dir();
         bool enemyPass = false;
-        if (pVision->TheirPlayer(enemyNum).Valid()){
-            const PlayerVisionT& enemy = pVision->TheirPlayer(enemyNum);
+        if (pVision->theirPlayer(enemyNum).Valid()){
+            const PlayerVisionT& enemy = pVision->theirPlayer(enemyNum);
             CGeoPoint RenemyPos = DefendUtils::reversePoint(enemy.Pos());
             CVector Rball2enemy = RenemyPos - RballPos;
-            double Rball2enemyDir = Utils::Normalize((pVision->Ball().Pos() - pVision->TheirPlayer(enemyNum).Pos()).dir()+Param::Math::PI);
+            double Rball2enemyDir = Utils::Normalize((pVision->ball().Pos() - pVision->theirPlayer(enemyNum).Pos()).dir()+Param::Math::PI);
             enemyPass = RballVelMod > ENEMY_PASS_SPEED &&
             fabs(Utils::Normalize(RballVelDir - Rball2enemy.dir())) < Param::Math::PI / 9.0;
         }
@@ -674,11 +674,11 @@ namespace DefendUtils{
             }
         }
 
-        if (false) {
-            GDebugEngine::Instance()->gui_debug_arc(reversePoint(RCENTER2BOTTOM_LEFT), PEN_RADIUS, 0, 360, COLOR_RED);
-            GDebugEngine::Instance()->gui_debug_arc(reversePoint(RCENTER2BOTTOM_RIGHT), PEN_RADIUS, 0, 360, COLOR_CYAN);
-            GDebugEngine::Instance()->gui_debug_line(reversePoint(RCENTER_LEFT), reversePoint(RCENTER_RIGHT), COLOR_WHITE);
-        }
+//        if (false) {
+//            GDebugEngine::Instance()->gui_debug_arc(reversePoint(RCENTER2BOTTOM_LEFT), PEN_RADIUS, 0, 360, COLOR_RED);
+//            GDebugEngine::Instance()->gui_debug_arc(reversePoint(RCENTER2BOTTOM_RIGHT), PEN_RADIUS, 0, 360, COLOR_CYAN);
+//            GDebugEngine::Instance()->gui_debug_line(reversePoint(RCENTER_LEFT), reversePoint(RCENTER_RIGHT), COLOR_WHITE);
+//        }
 
         return RdefenderPoint;
     }
@@ -725,32 +725,32 @@ namespace DefendUtils{
                  CGeoPoint defendbasepoint;
                  Rbasepoint = Rtarget;
                  Rbasedir = Rdir;
-                if (Utils::InOurPenaltyArea(pVision->Ball().Pos(),PENALTY_BUFFER) && mode==0){
+                if (Utils::InOurPenaltyArea(pVision->ball().Pos(),PENALTY_BUFFER) && mode==0){
                     int oppnum =  ZSkillUtils::instance()->getTheirBestPlayer();
-                    if (/*pVision->TheirPlayer(oppnum).Pos().x()<0 && */oppnum!=0 && vision->TheirPlayer(oppnum).Valid()){
-                         if(pVision->TheirPlayer(oppnum).Pos().y()>0 && (pVision->TheirPlayer(oppnum).Pos()-GOAL_CENTRE_POS).dir()>(RIGHTBACK_CRITICAL_POINT-GOAL_CENTRE_POS).dir()){
+                    if (/*pVision->TheirPlayer(oppnum).Pos().x()<0 && */oppnum!=0 && vision->theirPlayer(oppnum).Valid()){
+                         if(pVision->theirPlayer(oppnum).Pos().y()>0 && (pVision->theirPlayer(oppnum).Pos()-GOAL_CENTRE_POS).dir()>(RIGHTBACK_CRITICAL_POINT-GOAL_CENTRE_POS).dir()){
                              defendbasepoint = RIGHTBACK_CRITICAL_POINT;
                              Rbasepoint = reversePoint(defendbasepoint);
                              Rbasedir = (RGOAL_CENTRE_POS - Rbasepoint).dir();
-                         }else if (pVision->TheirPlayer(oppnum).Pos().y()<0 && (pVision->TheirPlayer(oppnum).Pos()-GOAL_CENTRE_POS).dir()<(LEFTBACK_CRITICAL_POINT-GOAL_CENTRE_POS).dir()){
+                         }else if (pVision->theirPlayer(oppnum).Pos().y()<0 && (pVision->theirPlayer(oppnum).Pos()-GOAL_CENTRE_POS).dir()<(LEFTBACK_CRITICAL_POINT-GOAL_CENTRE_POS).dir()){
                              defendbasepoint = LEFTBACK_CRITICAL_POINT;
                              Rbasepoint = reversePoint(defendbasepoint);
                              Rbasedir = (RGOAL_CENTRE_POS - Rbasepoint).dir();
                          }else{
-                             defendbasepoint = pVision->TheirPlayer(oppnum).Pos();
+                             defendbasepoint = pVision->theirPlayer(oppnum).Pos();
                              Rbasepoint = reversePoint(defendbasepoint);
                              Rbasedir = (RGOAL_CENTRE_POS - Rbasepoint).dir();
                          }
-                         if (!Utils::InOurPenaltyArea(pVision->TheirPlayer(oppnum).Pos(),PENALTY_BUFFER)){
+                         if (!Utils::InOurPenaltyArea(pVision->theirPlayer(oppnum).Pos(),PENALTY_BUFFER)){
                              if (POS_SIDE_LEFT == Rside){
                                 Rbasedir = Rbasedir ;
                              }else if(POS_SIDE_RIGHT == Rside){
                                  Rbasedir = Rbasedir ;
                              }
                          }else{
-                             if (POS_SIDE_LEFT == Rside && defendbasepoint == pVision->TheirPlayer(oppnum).Pos()){
+                             if (POS_SIDE_LEFT == Rside && defendbasepoint == pVision->theirPlayer(oppnum).Pos()){
                                  Rbasedir = Rbasedir -0.1;
-                             }else if(POS_SIDE_RIGHT == Rside && defendbasepoint == pVision->TheirPlayer(oppnum).Pos()){
+                             }else if(POS_SIDE_RIGHT == Rside && defendbasepoint == pVision->theirPlayer(oppnum).Pos()){
                                  Rbasedir = Rbasedir +0.1;
                              }
                          }
@@ -776,7 +776,7 @@ namespace DefendUtils{
                     CGeoLine targetLine = CGeoLine(transPoint,Rbasedir);
                     CGeoLineEllipseIntersection intersect = CGeoLineEllipseIntersection(targetLine,RD_ELLIPSE);
                     //stop模式下车身后移
-                    if (vision->GetCurrentRefereeMsg()=="gameStop" || vision->GetCurrentRefereeMsg() == " theirIndirectKick" || vision->GetCurrentRefereeMsg() =="theirDirectKick"){
+                    if (vision->getCurrentRefereeMsg()=="gameStop" || vision->getCurrentRefereeMsg() == " theirIndirectKick" || vision->getCurrentRefereeMsg() =="theirDirectKick"){
                         intersect = CGeoLineEllipseIntersection(targetLine,RD_ELLIPSE2);
                     }
                     if(intersect.intersectant()){
@@ -822,19 +822,19 @@ namespace DefendUtils{
                 }
             }
             if (mode == 3){
-                if (Utils::InOurPenaltyArea(pVision->Ball().Pos(),PENALTY_BUFFER)){
+                if (Utils::InOurPenaltyArea(pVision->ball().Pos(),PENALTY_BUFFER)){
                     int oppnum =  ZSkillUtils::instance()->getTheirBestPlayer();
-                    if (oppnum!=0 && vision->TheirPlayer(oppnum).Valid()){
-                        if(pVision->TheirPlayer(oppnum).Pos().y()>0 && (pVision->TheirPlayer(oppnum).Pos()-GOAL_CENTRE_POS).dir()>(RIGHTBACK_CRITICAL_POINT-GOAL_CENTRE_POS).dir()){
+                    if (oppnum!=0 && vision->theirPlayer(oppnum).Valid()){
+                        if(pVision->theirPlayer(oppnum).Pos().y()>0 && (pVision->theirPlayer(oppnum).Pos()-GOAL_CENTRE_POS).dir()>(RIGHTBACK_CRITICAL_POINT-GOAL_CENTRE_POS).dir()){
                             defendbasepoint = RIGHTBACK_CRITICAL_POINT;
                             Rbasepoint = reversePoint(defendbasepoint);
                             Rbasedir = (RGOAL_CENTRE_POS - Rbasepoint).dir();
-                        }else if (pVision->TheirPlayer(oppnum).Pos().y()<0 && (pVision->TheirPlayer(oppnum).Pos()-GOAL_CENTRE_POS).dir()<(LEFTBACK_CRITICAL_POINT-GOAL_CENTRE_POS).dir()){
+                        }else if (pVision->theirPlayer(oppnum).Pos().y()<0 && (pVision->theirPlayer(oppnum).Pos()-GOAL_CENTRE_POS).dir()<(LEFTBACK_CRITICAL_POINT-GOAL_CENTRE_POS).dir()){
                             defendbasepoint = LEFTBACK_CRITICAL_POINT;
                             Rbasepoint = reversePoint(defendbasepoint);
                             Rbasedir = (RGOAL_CENTRE_POS - Rbasepoint).dir();
                         }else{
-                            defendbasepoint = pVision->TheirPlayer(oppnum).Pos();
+                            defendbasepoint = pVision->theirPlayer(oppnum).Pos();
                             Rbasepoint = reversePoint(defendbasepoint);
                             Rbasedir = (RGOAL_CENTRE_POS - Rbasepoint).dir();
                         }
@@ -847,7 +847,7 @@ namespace DefendUtils{
                 //CGeoLineRectangleIntersection intersect = CGeoLineRectangleIntersection(targetLine, RD_RECTANGLE);
                 CGeoLineEllipseIntersection intersect1 = CGeoLineEllipseIntersection(targetLine1,RD_ELLIPSE3);
                 //CGeoLineRectangleIntersection intersect1 = CGeoLineRectangleIntersection(targetLine1, RD_RECTANGLE);
-                if (Utils::InOurPenaltyArea(vision->Ball().Pos(),PENALTY_BUFFER)){
+                if (Utils::InOurPenaltyArea(vision->ball().Pos(),PENALTY_BUFFER)){
                     intersect = CGeoLineEllipseIntersection(targetLine,RD_ELLIPSE4);
                     //intersect = CGeoLineRectangleIntersection(targetLine, RD_RECTANGLE3);
                     intersect1 = CGeoLineEllipseIntersection(targetLine1,RD_ELLIPSE4);
@@ -926,15 +926,15 @@ namespace DefendUtils{
                 sideFactor = 0;
                 break;
         }
-        if (Utils::InOurPenaltyArea(pVision->Ball().Pos(), PENALTY_BUFFER) && mode == 0) {
+        if (Utils::InOurPenaltyArea(pVision->ball().Pos(), PENALTY_BUFFER) && mode == 0) {
             int oppnum = ZSkillUtils::instance()->getTheirBestPlayer();
-            if (oppnum != 0 && vision->TheirPlayer(oppnum).Valid()) {
-                 if ((pVision->TheirPlayer(oppnum).Pos()-GOAL_CENTRE_POS).dir()>(RIGHTBACK_CRITICAL_POINT-GOAL_CENTRE_POS).dir())
+            if (oppnum != 0 && vision->theirPlayer(oppnum).Valid()) {
+                 if ((pVision->theirPlayer(oppnum).Pos()-GOAL_CENTRE_POS).dir()>(RIGHTBACK_CRITICAL_POINT-GOAL_CENTRE_POS).dir())
                      defendbasepoint = RIGHTBACK_CRITICAL_POINT;
-                 else if ((pVision->TheirPlayer(oppnum).Pos()-GOAL_CENTRE_POS).dir()<(LEFTBACK_CRITICAL_POINT-GOAL_CENTRE_POS).dir())
+                 else if ((pVision->theirPlayer(oppnum).Pos()-GOAL_CENTRE_POS).dir()<(LEFTBACK_CRITICAL_POINT-GOAL_CENTRE_POS).dir())
                      defendbasepoint = LEFTBACK_CRITICAL_POINT;
                  else
-                     defendbasepoint = pVision->TheirPlayer(oppnum).Pos();
+                     defendbasepoint = pVision->theirPlayer(oppnum).Pos();
                  RBasepoint = reversePoint(defendbasepoint);
                  Rbasedir = (RGOAL_CENTRE_POS - RBasepoint).dir();
             }
@@ -1038,8 +1038,8 @@ namespace DefendUtils{
                 static bool markingMode = true;
                 bool isQuaterFieldClear = true;
                 for (int i = 1; i <= Param::Field::MAX_PLAYER; ++i) {
-                    if (pVision->TheirPlayer(i).Valid() == true) {
-                        const PlayerPoseT& player = pVision->TheirPlayer(i);
+                    if (pVision->theirPlayer(i).Valid() == true) {
+                        const PlayerPoseT& player = pVision->theirPlayer(i);
                         if (player.X() < -RTarget.x() && RTarget.dist(reversePoint(player.Pos())) > PLAYERSIZE) {
                             isQuaterFieldClear = false;
                             break;
@@ -1065,21 +1065,21 @@ namespace DefendUtils{
                 }
             }
         } else if (mode == 3) {
-            if (Utils::InOurPenaltyArea(pVision->Ball().Pos(), PENALTY_BUFFER) == true){
+            if (Utils::InOurPenaltyArea(pVision->ball().Pos(), PENALTY_BUFFER) == true){
                 int oppnum =  ZSkillUtils::instance()->getTheirBestPlayer();
-                if (oppnum != 0 && vision->TheirPlayer(oppnum).Valid() == true){
-                    if(pVision->TheirPlayer(oppnum).Pos().y() > 0
-                        && (pVision->TheirPlayer(oppnum).Pos() - GOAL_CENTRE_POS).dir() > (RIGHTBACK_CRITICAL_POINT-GOAL_CENTRE_POS).dir()) {
+                if (oppnum != 0 && vision->theirPlayer(oppnum).Valid() == true){
+                    if(pVision->theirPlayer(oppnum).Pos().y() > 0
+                        && (pVision->theirPlayer(oppnum).Pos() - GOAL_CENTRE_POS).dir() > (RIGHTBACK_CRITICAL_POINT-GOAL_CENTRE_POS).dir()) {
                         defendbasepoint = RIGHTBACK_CRITICAL_POINT;
                         RBasepoint = reversePoint(defendbasepoint);
                         Rbasedir = (RGOAL_CENTRE_POS - RBasepoint).dir();
-                    } else if (pVision->TheirPlayer(oppnum).Pos().y() < 0
-                        && (pVision->TheirPlayer(oppnum).Pos() - GOAL_CENTRE_POS).dir() < (LEFTBACK_CRITICAL_POINT-GOAL_CENTRE_POS).dir()) {
+                    } else if (pVision->theirPlayer(oppnum).Pos().y() < 0
+                        && (pVision->theirPlayer(oppnum).Pos() - GOAL_CENTRE_POS).dir() < (LEFTBACK_CRITICAL_POINT-GOAL_CENTRE_POS).dir()) {
                         defendbasepoint = LEFTBACK_CRITICAL_POINT;
                         RBasepoint = reversePoint(defendbasepoint);
                         Rbasedir = (RGOAL_CENTRE_POS - RBasepoint).dir();
                     } else {
-                        defendbasepoint = pVision->TheirPlayer(oppnum).Pos();
+                        defendbasepoint = pVision->theirPlayer(oppnum).Pos();
                         RBasepoint = reversePoint(defendbasepoint);
                         Rbasedir = (RGOAL_CENTRE_POS - RBasepoint).dir();
                     }
@@ -1092,7 +1092,7 @@ namespace DefendUtils{
             CGeoLineEllipseIntersection intersect1 = CGeoLineEllipseIntersection(targetLine1,RD_ELLIPSE3);
             //CGeoLineRectangleIntersection intersect = CGeoLineRectangleIntersection(targetLine, RD_RECTANGLE2);
             //CGeoLineRectangleIntersection intersect1 = CGeoLineRectangleIntersection(targetLine1, RD_RECTANGLE2);
-            if (Utils::InOurPenaltyArea(vision->Ball().Pos(), PENALTY_BUFFER) == true){
+            if (Utils::InOurPenaltyArea(vision->ball().Pos(), PENALTY_BUFFER) == true){
                 intersect = CGeoLineEllipseIntersection(targetLine,RD_ELLIPSE4);
                 intersect1 = CGeoLineEllipseIntersection(targetLine1,RD_ELLIPSE4);
                 //intersect = CGeoLineRectangleIntersection(targetLine, RD_RECTANGLE3);
@@ -1122,7 +1122,7 @@ namespace DefendUtils{
 
     bool isBallShotToTheGoal(){
         const CVisionModule* pVision = vision;
-        const MobileVisionT& ball = pVision->Ball();
+        const MobileVisionT& ball = pVision->ball();
         const double ballVelDir = ball.Vel().dir();
         const double ballVel = ball.Vel().mod();
 
@@ -1208,7 +1208,7 @@ namespace DefendUtils{
         //	//cout<<"back"<<endl;
         //}
         //stop站下面
-        if (vision->GetCurrentRefereeMsg()=="gameStop"){
+        if (vision->getCurrentRefereeMsg()=="gameStop"){
             up = false;
         }
         if (up == true) {
@@ -1334,7 +1334,7 @@ namespace DefendUtils{
             up = false;
 
         // stop站下面
-        if (vision->GetCurrentRefereeMsg() == "gameStop")
+        if (vision->getCurrentRefereeMsg() == "gameStop")
             up = false;
 
         // 没有后卫时不要向前
@@ -1357,9 +1357,9 @@ namespace DefendUtils{
 
         // 后卫没到点时不要向前
         if (up == true) {
-            const CGeoPoint& leftBackPosition = pVision->OurPlayer(leftBack).Pos();
-            const CGeoPoint& rightBackPosition = pVision->OurPlayer(rightBack).Pos();
-            const CGeoPoint& singleBackPosition = pVision->OurPlayer(singleBack).Pos();
+            const CGeoPoint& leftBackPosition = pVision->ourPlayer(leftBack).Pos();
+            const CGeoPoint& rightBackPosition = pVision->ourPlayer(rightBack).Pos();
+            const CGeoPoint& singleBackPosition = pVision->ourPlayer(singleBack).Pos();
             const CGeoPoint& leftBackTarget = DefPos2015::Instance()->getLeftPos();
             const CGeoPoint& rightBackTarget = DefPos2015::Instance()->getRightPos();
             const CGeoPoint& singleBackTarget = DefPos2015::Instance()->getSinglePos();
@@ -1451,14 +1451,14 @@ namespace DefendUtils{
         }
 
         // 球射门后守门员去截球
-        const MobileVisionT& ball = pVision->Ball();
+        const MobileVisionT& ball = pVision->ball();
         const CGeoPoint RBallPos = reversePoint(ball.Pos());
-        const int goalieNum = PlayInterface::Instance()->getNumbByRealIndex(TaskMediator::Instance()->goalie());
+        const int goalieNum = TaskMediator::Instance()->goalie();
     //cout << goalieNum << endl;
         const double RBallToGoalDir = (RGOAL_CENTRE_POS - RBallPos).dir();
         if (isBallShotToTheGoal() && RBallPos.x() > 0 && std::fabs(RBallToGoalDir) < Param::Math::PI*60/180) {
-      const CGeoPoint& RCurrentGoaliePos = reversePoint(pVision->OurPlayer(goalieNum).Pos());
-      //GDebugEngine::Instance()->gui_debug_arc(pVision->OurPlayer(goalieNum).RawPos(), 5, 0, 360, COLOR_WHITE);
+      const CGeoPoint& RCurrentGoaliePos = reversePoint(pVision->ourPlayer(goalieNum).Pos());
+      //GDebugEngine::Instance()->gui_debug_arc(pVision->ourPlayer(goalieNum).RawPos(), 5, 0, 360, COLOR_WHITE);
             const double RBallVelDir = Utils::Normalize(ball.Vel().dir() + Param::Math::PI);
             const double RPatrolDir = Utils::Normalize(RBallVelDir + Param::Math::PI/2);
             const CGeoLine RBallVelLine(RBallPos, RBallVelDir);
@@ -1472,30 +1472,30 @@ namespace DefendUtils{
     }
 
         // 输出Debug信息
-        if (false) {
-            GDebugEngine::Instance()->gui_debug_arc(CGeoPoint(-ROriginX + m, 0), 2, 0, 360, COLOR_RED);
-            GDebugEngine::Instance()->gui_debug_arc(CGeoPoint(-ROriginX - m, 0), 2, 0, 360, COLOR_RED);
-            GDebugEngine::Instance()->gui_debug_arc(CGeoPoint(-ROriginX, n), 2, 0, 360, COLOR_RED);
-            GDebugEngine::Instance()->gui_debug_arc(CGeoPoint(-ROriginX, -n), 2, 0, 360, COLOR_RED);
-            //if (intersect.intersectant() == true) {
-            //	GDebugEngine::Instance()->gui_debug_arc(reversePoint(intersect.point1()), 5, 0, 360, COLOR_WHITE);
-            //	GDebugEngine::Instance()->gui_debug_arc(reversePoint(intersect.point2()), 5, 0, 360, COLOR_WHITE);
-            //} else {
-            //	GDebugEngine::Instance()->gui_debug_line(CGeoPoint(-ROriginX + Param::Field::PENALTY_AREA_DEPTH/4, Param::Field::PITCH_WIDTH/2),
-            //																					CGeoPoint(-ROriginX + Param::Field::PENALTY_AREA_DEPTH/4, -Param::Field::PITCH_WIDTH/2),
-            //																					COLOR_WHITE);
-            //}
+//        if (false) {
+//            GDebugEngine::Instance()->gui_debug_arc(CGeoPoint(-ROriginX + m, 0), 2, 0, 360, COLOR_RED);
+//            GDebugEngine::Instance()->gui_debug_arc(CGeoPoint(-ROriginX - m, 0), 2, 0, 360, COLOR_RED);
+//            GDebugEngine::Instance()->gui_debug_arc(CGeoPoint(-ROriginX, n), 2, 0, 360, COLOR_RED);
+//            GDebugEngine::Instance()->gui_debug_arc(CGeoPoint(-ROriginX, -n), 2, 0, 360, COLOR_RED);
+//            //if (intersect.intersectant() == true) {
+//            //	GDebugEngine::Instance()->gui_debug_arc(reversePoint(intersect.point1()), 5, 0, 360, COLOR_WHITE);
+//            //	GDebugEngine::Instance()->gui_debug_arc(reversePoint(intersect.point2()), 5, 0, 360, COLOR_WHITE);
+//            //} else {
+//            //	GDebugEngine::Instance()->gui_debug_line(CGeoPoint(-ROriginX + Param::Field::PENALTY_AREA_DEPTH/4, Param::Field::PITCH_WIDTH/2),
+//            //																					CGeoPoint(-ROriginX + Param::Field::PENALTY_AREA_DEPTH/4, -Param::Field::PITCH_WIDTH/2),
+//            //																					COLOR_WHITE);
+//            //}
 
-            if (up == true)
-                GDebugEngine::Instance()->gui_debug_msg(CGeoPoint(50, 0), "front");
-            else
-                GDebugEngine::Instance()->gui_debug_msg(CGeoPoint(50, 0), "back");
+//            if (up == true)
+//                GDebugEngine::Instance()->gui_debug_msg(CGeoPoint(50, 0), "front");
+//            else
+//                GDebugEngine::Instance()->gui_debug_msg(CGeoPoint(50, 0), "back");
 
-            //GDebugEngine::Instance()->gui_debug_line(reversePoint(RTarget),
-            //																				reversePoint(RTarget + Utils::Polar2Vector(1000, RDir)),
-            //																				COLOR_WHITE);
-            //GDebugEngine::Instance()->gui_debug_arc(reversePoint(RGoaliePoint), 10, 0, 360, COLOR_WHITE);
-        }
+//            //GDebugEngine::Instance()->gui_debug_line(reversePoint(RTarget),
+//            //																				reversePoint(RTarget + Utils::Polar2Vector(1000, RDir)),
+//            //																				COLOR_WHITE);
+//            //GDebugEngine::Instance()->gui_debug_arc(reversePoint(RGoaliePoint), 10, 0, 360, COLOR_WHITE);
+//        }
         return RGoaliePoint;
     }
 
@@ -1516,13 +1516,13 @@ namespace DefendUtils{
 
     CGeoLine getSideBackTargetAndLine(CGeoPoint& RSideTarget, double& RSideDir){
         CVisionModule* pVision = vision;
-        double ourgoal2BallDir = (pVision->Ball().Pos() - GOAL_CENTRE_POS).dir();
+        double ourgoal2BallDir = (pVision->ball().Pos() - GOAL_CENTRE_POS).dir();
 
         //sideFactor = 1代表sideback应该站在右边
         static int sideFactor = 1;
-        if (Utils::InOurPenaltyArea(pVision->Ball().Pos(), PENALTY_BUFFER) == false
-                && pVision->Ball().Valid() == true
-                && pVision->Ball().X() <= 0) {
+        if (Utils::InOurPenaltyArea(pVision->ball().Pos(), PENALTY_BUFFER) == false
+                && pVision->ball().Valid() == true
+                && pVision->ball().X() <= 0) {
             if (sideFactor == 1) {
                 if (ourgoal2BallDir > SIDEBACK_SIDEFACTOR_BUFFER_DIR)
                     sideFactor = -1;
@@ -1530,21 +1530,21 @@ namespace DefendUtils{
                 if (ourgoal2BallDir < -SIDEBACK_SIDEFACTOR_BUFFER_DIR)
                     sideFactor = 1;
             }
-        } else if (Utils::InOurPenaltyArea(pVision->Ball().Pos(), PENALTY_BUFFER) == false
-                            && pVision->Ball().Valid() == true
-                            && pVision->Ball().X() > 0) {
+        } else if (Utils::InOurPenaltyArea(pVision->ball().Pos(), PENALTY_BUFFER) == false
+                            && pVision->ball().Valid() == true
+                            && pVision->ball().X() > 0) {
                 if (sideFactor == 1) {
-                    if (pVision->Ball().Y() > SIDEBACK_BUFFER_DIST)
+                    if (pVision->ball().Y() > SIDEBACK_BUFFER_DIST)
                         sideFactor = -1;
                 } else if (sideFactor == -1) {
-                    if (pVision->Ball().Y() < -SIDEBACK_BUFFER_DIST)
+                    if (pVision->ball().Y() < -SIDEBACK_BUFFER_DIST)
                         sideFactor = 1;
                 }
-        } else if (Utils::InOurPenaltyArea(pVision->Ball().Pos(), PENALTY_BUFFER) == true
-                            || pVision->Ball().Valid() == false) {
+        } else if (Utils::InOurPenaltyArea(pVision->ball().Pos(), PENALTY_BUFFER) == true
+                            || pVision->ball().Valid() == false) {
             int normalDefendNum = ZSkillUtils::instance()->getTheirBestPlayer();
             if (normalDefendNum != 0) {
-                double enemy2OurgoalDir = (pVision->TheirPlayer(normalDefendNum).Pos() - GOAL_CENTRE_POS).dir();
+                double enemy2OurgoalDir = (pVision->theirPlayer(normalDefendNum).Pos() - GOAL_CENTRE_POS).dir();
                 if (sideFactor == 1) {
                     if (enemy2OurgoalDir > SIDEBACK_SIDEFACTOR_BUFFER_DIR)
                         sideFactor = -1;
@@ -1566,7 +1566,7 @@ namespace DefendUtils{
         int defendnum = 0;
         double mindist = 1000;
         for(int i = 1; i <= Param::Field::MAX_PLAYER; i++){
-            const PlayerVisionT& player = pVision->TheirPlayer(i);
+            const PlayerVisionT& player = pVision->theirPlayer(i);
             if (player.Valid() && player.Pos().x() < SIDEBACK_DEFEND_CRITICAL_X) {
                 double dist = player.Pos().dist(GOAL_CENTRE_POS);
                 double dir = (player.Pos() - GOAL_CENTRE_POS).dir();
@@ -1590,7 +1590,7 @@ namespace DefendUtils{
             RSideTarget = CGeoPoint(0, -Param::Field::PITCH_WIDTH / 2 * sideFactor);
             RSideDir = (RSideTarget - RGOAL_CENTRE_POS).dir();
         } else {
-            const PlayerVisionT& player = pVision->TheirPlayer(defendnum);
+            const PlayerVisionT& player = pVision->theirPlayer(defendnum);
             const double dir = (player.Pos() - GOAL_CENTRE_POS).dir();
             const double dist = player.Pos().dist(GOAL_CENTRE_POS);
             if (sideFactor == 1) {
@@ -1618,9 +1618,9 @@ namespace DefendUtils{
             }
         }
 
-        if (false) {
-            GDebugEngine::Instance()->gui_debug_line(reversePoint(RSideTarget), reversePoint(RSideTarget + Utils::Polar2Vector(500, RSideDir)));
-        }
+//        if (false) {
+//            GDebugEngine::Instance()->gui_debug_line(reversePoint(RSideTarget), reversePoint(RSideTarget + Utils::Polar2Vector(500, RSideDir)));
+//        }
         return CGeoLine(RSideTarget, RSideTarget + Utils::Polar2Vector(500, RSideDir));//幻数
     }
 
@@ -1674,7 +1674,7 @@ namespace DefendUtils{
     bool BallIsToPenaltyArea(){
         bool result = false;
         CVisionModule* pVision = vision;
-        const MobileVisionT ball = pVision->Ball();
+        const MobileVisionT ball = pVision->ball();
         double ballVeldirection = ball.Vel().dir();
         double ballVel = ball.Vel().mod();
         if (ballVel >50){
@@ -1689,13 +1689,13 @@ namespace DefendUtils{
 
     bool checkInDeadArea(){
         CVisionModule* pVision = vision;
-        double x = pVision->Ball().X();
-        double y = pVision->Ball().Y();
+        double x = pVision->ball().X();
+        double y = pVision->ball().Y();
         bool result = false;
         //球在死角区域内返回true
-        if ((!Utils::InOurPenaltyArea(pVision->Ball().Pos(),30) && x >-Param::Field::PITCH_LENGTH / 2.0*Param::Field::RATIO && x<-160*Param::Field::RATIO &&
+        if ((!Utils::InOurPenaltyArea(pVision->ball().Pos(),30) && x >-Param::Field::PITCH_LENGTH / 2.0*Param::Field::RATIO && x<-160*Param::Field::RATIO &&
             (4*y - 5*x - 1500*Param::Field::RATIO)>0 && y >0 && y<Param::Field::PITCH_WIDTH / 2.0*Param::Field::RATIO)||
-            (!Utils::InOurPenaltyArea(pVision->Ball().Pos(),30) && x >-Param::Field::PITCH_LENGTH / 2.0*Param::Field::RATIO && x<-160*Param::Field::RATIO &&
+            (!Utils::InOurPenaltyArea(pVision->ball().Pos(),30) && x >-Param::Field::PITCH_LENGTH / 2.0*Param::Field::RATIO && x<-160*Param::Field::RATIO &&
             (4*y + 5*x + 1500*Param::Field::RATIO)<0 && y <0 && y>-Param::Field::PITCH_WIDTH*Param::Field::RATIO)){
                 result = true;
         }
@@ -1704,10 +1704,10 @@ namespace DefendUtils{
 
     CGeoPoint getMiddleDefender(double bufferX){
         int enemyNum = ZSkillUtils::instance()->getTheirBestPlayer();
-        const PlayerVisionT& enemy = vision->TheirPlayer(enemyNum);
+        const PlayerVisionT& enemy = vision->theirPlayer(enemyNum);
         double defendDir = 0;
         CGeoPoint RenemyPos = reversePoint(enemy.Pos());
-        CGeoPoint RballPos = reversePoint(vision->Ball().Pos());
+        CGeoPoint RballPos = reversePoint(vision->ball().Pos());
         double RenemyDir = Utils::Normalize(enemy.Dir() + Param::Math::PI);
         if (Utils::InBetween(RenemyDir,(RLEFT - RenemyPos).dir(),(RRIGHT - RenemyPos).dir()),0){
             defendDir = RenemyDir;
@@ -1730,7 +1730,7 @@ namespace DefendUtils{
 
     double calcBalltoOurPenaty(){
         CVisionModule* pVision = vision;
-        CGeoPoint BallPos = vision->Ball().Pos();
+        CGeoPoint BallPos = vision->ball().Pos();
 
         // old
         //CGeoPoint OurGoalPos = CGeoPoint(-450,0);

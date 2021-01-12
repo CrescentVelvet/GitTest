@@ -134,7 +134,7 @@ Window {
                 acceptedButtons: Qt.NoButton;
                 onPositionChanged: {
                     positionDisplay.strX = (interaction.getRealX(mouseX)).toString();
-                    positionDisplay.strY = (-interaction.getRealY(mouseY)).toString();
+                    positionDisplay.strY = (interaction.getRealY(mouseY)).toString();
                 }
             }
         }

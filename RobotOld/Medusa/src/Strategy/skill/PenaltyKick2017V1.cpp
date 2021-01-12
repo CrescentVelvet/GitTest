@@ -46,7 +46,7 @@ CPenaltyKick2017V1::CPenaltyKick2017V1()
 
 void CPenaltyKick2017V1::plan(const CVisionModule* pVision)
 {
-	if (state() == BEGINNING || pVision->Cycle() - _lastCycle > 6) {
+	if (state() == BEGINNING || pVision->getCycle() - _lastCycle > 6) {
 		setState(PREPARING);
 		_round = 0;
 		_prepared = 0;
@@ -54,7 +54,7 @@ void CPenaltyKick2017V1::plan(const CVisionModule* pVision)
 		_getball = 0;
 		_theirGoalie = 0;
 		for (int i = 1; i <= Param::Field::MAX_PLAYER; i++) {
-			if (Utils::InTheirPenaltyArea(pVision->TheirPlayer(i).Pos(), 0)) {
+			if (Utils::InTheirPenaltyArea(pVision->theirPlayer(i).Pos(), 0)) {
 				_theirGoalie = i;
 			}
 		}
@@ -72,9 +72,9 @@ void CPenaltyKick2017V1::plan(const CVisionModule* pVision)
 	}
 
 	int rolenum = task().executor;
-	const MobileVisionT& ball = pVision->Ball();
-	const PlayerVisionT& me = pVision->OurPlayer(rolenum);
-	const PlayerVisionT& enemy = pVision->TheirPlayer(_theirGoalie);
+	const MobileVisionT& ball = pVision->ball();
+	const PlayerVisionT& me = pVision->ourPlayer(rolenum);
+	const PlayerVisionT& enemy = pVision->theirPlayer(_theirGoalie);
 	_canShoot = canShoot(pVision);
 
 	if (_prepared) {
@@ -94,15 +94,15 @@ void CPenaltyKick2017V1::plan(const CVisionModule* pVision)
 
 	++_round;
 	CStatedTask::plan(pVision);
-	_lastCycle = pVision->Cycle();
+	_lastCycle = pVision->getCycle();
 }
 
 void CPenaltyKick2017V1::planPrepare(const CVisionModule * pVision)
 {
 	int rolenum = task().executor;
-	const MobileVisionT& ball = pVision->Ball();
-	const PlayerVisionT& me = pVision->OurPlayer(rolenum);
-	const PlayerVisionT& enemy = pVision->TheirPlayer(_theirGoalie);
+	const MobileVisionT& ball = pVision->ball();
+	const PlayerVisionT& me = pVision->ourPlayer(rolenum);
+	const PlayerVisionT& enemy = pVision->theirPlayer(_theirGoalie);
 
 	if (VERBOSE_MODE) cout << "preparing" << endl;
 	TaskT myTask(task());
@@ -117,9 +117,9 @@ void CPenaltyKick2017V1::planPrepare(const CVisionModule * pVision)
 void CPenaltyKick2017V1::planChipKick(const CVisionModule * pVision)
 {
 	int rolenum = task().executor;
-	const MobileVisionT& ball = pVision->Ball();
-	const PlayerVisionT& me = pVision->OurPlayer(rolenum);
-	const PlayerVisionT& enemy = pVision->TheirPlayer(_theirGoalie);
+	const MobileVisionT& ball = pVision->ball();
+	const PlayerVisionT& me = pVision->ourPlayer(rolenum);
+	const PlayerVisionT& enemy = pVision->theirPlayer(_theirGoalie);
 
 	TaskT myTask(task());
 	CVector ball2Goal(ourGoal.x() - ball.Pos().x(), ourGoal.y() - ball.Pos().y());
@@ -161,9 +161,9 @@ void CPenaltyKick2017V1::planChipKick(const CVisionModule * pVision)
 void CPenaltyKick2017V1::planDirectKick(const CVisionModule * pVision)
 {
 	int rolenum = task().executor;
-	const MobileVisionT& ball = pVision->Ball();
-	const PlayerVisionT& me = pVision->OurPlayer(rolenum);
-	const PlayerVisionT& enemy = pVision->TheirPlayer(_theirGoalie);
+	const MobileVisionT& ball = pVision->ball();
+	const PlayerVisionT& me = pVision->ourPlayer(rolenum);
+	const PlayerVisionT& enemy = pVision->theirPlayer(_theirGoalie);
 	static int tmpCnt;
 
 	TaskT myTask(task());
@@ -223,8 +223,8 @@ void CPenaltyKick2017V1::planDirectKick(const CVisionModule * pVision)
 bool CPenaltyKick2017V1::canShoot(const CVisionModule* pVision)
 {
 	int rolenum = task().executor;
-	const PlayerVisionT& me = pVision->OurPlayer(rolenum);
-	const MobileVisionT& ball = pVision->Ball();
+	const PlayerVisionT& me = pVision->ourPlayer(rolenum);
+	const MobileVisionT& ball = pVision->ball();
 	bool distAble = ball.Pos().dist2(me.Pos()) < 60;
 
 	CGeoLine me2BallLine(me.Pos(), (ball.Pos() - me.Pos()).dir());

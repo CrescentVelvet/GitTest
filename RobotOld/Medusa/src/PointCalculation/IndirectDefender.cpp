@@ -66,10 +66,10 @@ CIndirectDefender::~CIndirectDefender()
 CGeoPoint CIndirectDefender::getDefPos(const CVisionModule* pVision, double radius, CGeoPoint leftUp, CGeoPoint rightDown, int mode)
 {
 	//同一帧内多次调用则只计算一次
-	if (pVision->Cycle() == _lastCycle)
+	if (pVision->getCycle() == _lastCycle)
 	{
 		return getPos();
-	} else _lastCycle = pVision->Cycle();
+	} else _lastCycle = pVision->getCycle();
 	_radius = radius;
 	_leftUp = leftUp;
 	_rightDown = rightDown;
@@ -97,10 +97,10 @@ CGeoPoint CIndirectDefender::getDefPos(const CVisionModule* pVision, double radi
 TwoKickPos CIndirectDefender::getTwoDefPos(const CVisionModule* pVision,double radius1,CGeoPoint left1,CGeoPoint right1,double radius2,CGeoPoint left2,CGeoPoint right2)
 {
 
-	if (pVision->Cycle() == _lastTwoKickCycle)
+	if (pVision->getCycle() == _lastTwoKickCycle)
 	{
 		return _twoKick;
-	} else _lastTwoKickCycle = pVision->Cycle();
+	} else _lastTwoKickCycle = pVision->getCycle();
 		_oneArea._Left = left1;
 		_oneArea._Right = right1;
 		_oneArea.radius = radius1;
@@ -114,13 +114,13 @@ TwoKickPos CIndirectDefender::getTwoDefPos(const CVisionModule* pVision,double r
 void CIndirectDefender::generateTwoDefPos(const CVisionModule* pVision)
 {
 	double targetDir;
-	const CGeoPoint ballPos = pVision->Ball().Pos();
+	const CGeoPoint ballPos = pVision->ball().Pos();
 	const int enemyNumber = DefenceInfo::Instance()->getAttackOppNumByPri(0);
 	if (enemyNumber == 0){
 		_twoKick.anotherPos = ballPos+Utils::Polar2Vector(60,(goalCenter - ballPos).dir());
 		_twoKick.onePos = ballPos + Utils::Polar2Vector(100,(goalCenter - ballPos).dir());
 	}else{
-	const PlayerVisionT& enemy = pVision->TheirPlayer(enemyNumber);
+	const PlayerVisionT& enemy = pVision->theirPlayer(enemyNumber);
 	const double enemy2ballDir = CVector(ballPos - enemy.Pos()).dir();
 	double oneDir = 0;
 	double anotherDir = 0;
@@ -179,13 +179,13 @@ CGeoPoint CIndirectDefender::generatePos(const CVisionModule* pVision)
 {
 	CGeoPoint defendPos;
 	double targetDir;
-	const CGeoPoint ballPos = pVision->Ball().Pos();
+	const CGeoPoint ballPos = pVision->ball().Pos();
 	//const int enemyNumber = ZSkillUtils::instance()->getTheirBestPlayer();
 	const int enemyNumber = DefenceInfo::Instance()->getAttackOppNumByPri(0);
 	if (enemyNumber == 0){
 		return ballPos+Utils::Polar2Vector(60,(goalCenter - ballPos).dir());
 	}
-	const PlayerVisionT& enemy = pVision->TheirPlayer(enemyNumber);
+	const PlayerVisionT& enemy = pVision->theirPlayer(enemyNumber);
 	 const double enemy2ballDir = CVector(ballPos - enemy.Pos()).dir();
 	 //cout<<"in indirect defend!!!"<<endl;
 	if (fabs(Utils::Normalize(enemy.Dir() - enemy2ballDir)) < Param::Math::PI / 12.0)
@@ -206,7 +206,7 @@ CGeoPoint CIndirectDefender::generatePos(const CVisionModule* pVision)
 		if (attacknum>=2){
 			while (count<attacknum){
 				int tempNum = DefenceInfo::Instance()->getAttackOppNumByPri(count);
-				CGeoPoint _tempEnemyPos = pVision->TheirPlayer(tempNum).Pos();
+				CGeoPoint _tempEnemyPos = pVision->theirPlayer(tempNum).Pos();
 				if (_tempEnemyPos.dist(ballPos)>60*Param::Field::RATIO && false == MarkingPosV2::Instance()->isInSpecialAreaBackLineMode(pVision,tempNum)
 					&& DefenceInfo::Instance()->checkInRecArea(tempNum,pVision,checkField)){
 					_targetDir[enemeynum]=(_tempEnemyPos-ballPos).dir();
@@ -253,7 +253,7 @@ CGeoPoint CIndirectDefender::generatePos(const CVisionModule* pVision)
 		}
 		//cout<<pVision->Cycle()<<"  "<<Utils::AngleBetween(targetDir,_targetDir[minnum],_targetDir[maxnum],0)<<"  "<<targetDir<<endl;
 		defendPos = DefendPos(ballPos,targetDir,_radius);
-		const string refMsg = pVision->GetCurrentRefereeMsg();
+		const string refMsg = pVision->getCurrentRefereeMsg();
 		//////////////////////////////////////////////////////////////////////////
 		//先跑这个
 		if (Utils::OutOfField(defendPos,FIELD_BUFFER) || enemy.Pos().dist(ballPos) > Param::Field::FREE_KICK_AVOID_BALL_DIST) {
@@ -266,8 +266,8 @@ CGeoPoint CIndirectDefender::generatePos(const CVisionModule* pVision)
 		//GDebugEngine::Instance()->gui_debug_line(ballPos,_leftUp,COLOR_ORANGE);
 		//GDebugEngine::Instance()->gui_debug_line(ballPos,_rightDown,COLOR_ORANGE);
 		//GDebugEngine::Instance()->gui_debug_line(ballPos,ballPos+Utils::Polar2Vector(200,targetDir),COLOR_BLACK);
-		double _target2LeftDir = (_leftUp - pVision->Ball().Pos()).dir();
-		double _target2RightDir = (_rightDown - pVision->Ball().Pos()).dir();
+		double _target2LeftDir = (_leftUp - pVision->ball().Pos()).dir();
+		double _target2RightDir = (_rightDown - pVision->ball().Pos()).dir();
 		//cout<<_target2LeftDir*180.0/Param::Math::PI<<" "<<_target2RightDir*180.0/Param::Math::PI<<endl;
 		if (!Utils::AngleBetween(targetDir,_target2RightDir,_target2LeftDir,0)){
 			double totalAngleDiff =fabs(Utils::Normalize(_target2LeftDir-_target2RightDir))/2;

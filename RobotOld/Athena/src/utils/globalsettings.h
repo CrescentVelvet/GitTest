@@ -18,7 +18,7 @@ public:
     void setBallPlacementPos(float,float);
     void setSelectCarArea(float,float,float,float);
     void resetSelectCarArea();
-    void setOldLogFlag(bool old);
+//    void setOldLogFlag(bool old);
 signals:
     void needRepaint();
     void addOutput(const QString&);

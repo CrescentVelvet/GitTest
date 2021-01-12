@@ -80,7 +80,7 @@ void CGetBallV3::plan(const CVisionModule* pVision)
 		}
 	}
 	// 内部状态进行重置
-	if (pVision->Cycle() - _lastCycle > Param::Vision::FRAME_RATE * 0.1) {
+	if (pVision->getCycle() - _lastCycle > Param::Vision::FRAME_RATE * 0.1) {
 		setState(BEGINNING);
 		ab_state = NOAVOID;
 		gb_state = LARGEANGLE;
@@ -90,10 +90,10 @@ void CGetBallV3::plan(const CVisionModule* pVision)
 	}
 	//////////////////////////////////////////////////////////////////////////
 	//视觉初步处理
-	const MobileVisionT& ball = pVision->Ball();
+	const MobileVisionT& ball = pVision->ball();
 	const int robotNum = task().executor;
 	CTRL_METHOD mode = task().player.specified_ctrl_method;
-	const PlayerVisionT& me = pVision->OurPlayer(robotNum);
+	const PlayerVisionT& me = pVision->ourPlayer(robotNum);
 	const CGeoPoint myhead = me.Pos() + Utils::Polar2Vector(Param::Vehicle::V2::PLAYER_FRONT_TO_CENTER + newVehicleBuffer, me.Dir());
 	const CVector self2ball = ball.Pos() - me.Pos();
 	const CVector ball2self = me.Pos() - ball.Pos();
@@ -500,12 +500,12 @@ void CGetBallV3::plan(const CVisionModule* pVision)
 	getball_task.player.specified_ctrl_method = mode;
 
 	// 防止守门员往球门里冲
-	if (robotNum == PlayInterface::Instance()->getNumbByRealIndex(TaskMediator::Instance()->goalie())) {
+	if (robotNum == TaskMediator::Instance()->goalie()) {
 		if (getball_task.player.pos.x() < -Param::Field::PITCH_LENGTH / 2 + Param::Vehicle::V2::PLAYER_SIZE)
 			getball_task.player.pos.setX(-Param::Field::PITCH_LENGTH / 2 + Param::Vehicle::V2::PLAYER_SIZE);
-		if (pVision->OurPlayer(robotNum).X() < -Param::Field::PITCH_LENGTH / 2 + 2) {
+		if (pVision->ourPlayer(robotNum).X() < -Param::Field::PITCH_LENGTH / 2 + 2) {
 			getball_task.player.pos.setX(-Param::Field::PITCH_LENGTH / 2 + Param::Vehicle::V2::PLAYER_SIZE);
-			getball_task.player.pos.setY(pVision->OurPlayer(robotNum).Y());
+			getball_task.player.pos.setY(pVision->ourPlayer(robotNum).Y());
 		}
 	}
 
@@ -516,7 +516,7 @@ void CGetBallV3::plan(const CVisionModule* pVision)
 		setSubTask(TaskFactoryV2::Instance()->SmartGotoPosition(getball_task));
 	}
 
-	_lastCycle = pVision->Cycle();
+	_lastCycle = pVision->getCycle();
 	CStatedTask::plan(pVision);
 }
 

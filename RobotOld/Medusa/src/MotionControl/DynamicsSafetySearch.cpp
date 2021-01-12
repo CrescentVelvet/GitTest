@@ -13,31 +13,31 @@
 #endif
 
 namespace {
-#define DIST_IGNORE 90000
+#define DIST_IGNORE 3000
 #define SAFE 1
 #define UNSAFE 0
 #define OURPLAYER 0
 #define THEIRPLAYER 1
 #define THISPLAYER 2
 #define BALL 3
-#define VELMIN 1 // 1cm/s
-#define ACCMIN 1 // 1cm/s^2
+#define VELMIN 10 // 1cm/s
+#define ACCMIN 10 // 1cm/s^2
 #define DEBUGFLAG 0  // 2014/03/12 关闭，为了调试时画面干净
-#define ACCURATE_AOID 250
+#define ACCURATE_AOID 2500
 
     bool DRAW_DEBUG_MSG = false;
-    double MIN_TEAMMATE_AVOID_DIST = 3;
-    double MAX_TEAMMATE_AVOID_DIST = 9;
-    double MIN_OPP_AVOID_DIST = 5;
-    double MAX_OPP_AVOID_DIST = 18;
+    double MIN_TEAMMATE_AVOID_DIST = 3*10;
+    double MAX_TEAMMATE_AVOID_DIST = 9*10;
+    double MIN_OPP_AVOID_DIST = 5*10;
+    double MAX_OPP_AVOID_DIST = 18*10;
 
-    double TEAMMATE_AVOID_DIST = 9; //Param::AvoidDist::TEAMMATE_AVOID_DIST / 2 - 2; // 厘米 13.5
-    double OPP_AVOID_DIST = 18; //Param::AvoidDist::OPP_AVOID_DIST - 2; // 厘米 18
-    double MIN_BALL_AVOID_DIST = 3;
-    double MAX_BALL_AVOID_DIST = 5;
+    double TEAMMATE_AVOID_DIST = 9*10; //Param::AvoidDist::TEAMMATE_AVOID_DIST / 2 - 2; // 厘米 13.5
+    double OPP_AVOID_DIST = 18*10; //Param::AvoidDist::OPP_AVOID_DIST - 2; // 厘米 18
+    double MIN_BALL_AVOID_DIST = 3*10;
+    double MAX_BALL_AVOID_DIST = 5*10;
     int MIN_PREDICT_FRAME_NUM = 15;
     double BALL_AVOID_DIST = Param::AvoidDist::BALL_AVOID_DIST / 2; // 厘米 1.5
-    double MAX_DEC_TO_STOP = 800;
+    double MAX_DEC_TO_STOP = 800*10;
 
     double MAX_TRANSLATION_SPEED; // 350
     double MAX_TRANSLATION_ACC;   // 650
@@ -50,17 +50,17 @@ namespace {
  初始化
 /************************************************************************/
 CDynamicSafetySearch::CDynamicSafetySearch() {
-    ZSS::ZParamManager::instance()->loadParam(MAX_TRANSLATION_SPEED,"CGotoPositionV2/MNormalSpeed",300);
-    ZSS::ZParamManager::instance()->loadParam(MAX_TRANSLATION_ACC,"CGotoPositionV2/MNormalAcc",450);
-    ZSS::ZParamManager::instance()->loadParam(MAX_TRANSLATION_DEC,"CGotoPositionV2/MNormalDec",450);
-    ZSS::ZParamManager::instance()->loadParam(MIN_SPEED_OPEN_DSS,"CGotoPositionV2/DSS_MinSpeedOpen",100);
-    ZSS::ZParamManager::instance()->loadParam(MIN_TEAMMATE_AVOID_DIST,"DSS/DSS_TeammateMinAvoidDist",1);
-    ZSS::ZParamManager::instance()->loadParam(MAX_TEAMMATE_AVOID_DIST,"DSS/DSS_TeammateMaxAvoidDist",9);
-    ZSS::ZParamManager::instance()->loadParam(MIN_OPP_AVOID_DIST,"DSS/DSS_OppMinAvoidDist",1);
-    ZSS::ZParamManager::instance()->loadParam(MAX_OPP_AVOID_DIST,"DSS/DSS_OppMaxAvoidDist",9);
+    ZSS::ZParamManager::instance()->loadParam(MAX_TRANSLATION_SPEED,"CGotoPositionV2/MNormalSpeed",300*10);
+    ZSS::ZParamManager::instance()->loadParam(MAX_TRANSLATION_ACC,"CGotoPositionV2/MNormalAcc",450*10);
+    ZSS::ZParamManager::instance()->loadParam(MAX_TRANSLATION_DEC,"CGotoPositionV2/MNormalDec",450*10);
+    ZSS::ZParamManager::instance()->loadParam(MIN_SPEED_OPEN_DSS,"CGotoPositionV2/DSS_MinSpeedOpen",100*10);
+    ZSS::ZParamManager::instance()->loadParam(MIN_TEAMMATE_AVOID_DIST,"DSS/DSS_TeammateMinAvoidDist",1*10);
+    ZSS::ZParamManager::instance()->loadParam(MAX_TEAMMATE_AVOID_DIST,"DSS/DSS_TeammateMaxAvoidDist",9*10);
+    ZSS::ZParamManager::instance()->loadParam(MIN_OPP_AVOID_DIST,"DSS/DSS_OppMinAvoidDist",1*10);
+    ZSS::ZParamManager::instance()->loadParam(MAX_OPP_AVOID_DIST,"DSS/DSS_OppMaxAvoidDist",9*10);
 
-    ZSS::ZParamManager::instance()->loadParam(MIN_BALL_AVOID_DIST,"DSS/DSS_BallMinAvoidDist",3);
-    ZSS::ZParamManager::instance()->loadParam(MAX_BALL_AVOID_DIST,"DSS/DSS_BallMaxAvoidDist",5);
+    ZSS::ZParamManager::instance()->loadParam(MIN_BALL_AVOID_DIST,"DSS/DSS_BallMinAvoidDist",3*10);
+    ZSS::ZParamManager::instance()->loadParam(MAX_BALL_AVOID_DIST,"DSS/DSS_BallMaxAvoidDist",5*10);
     ZSS::ZParamManager::instance()->loadParam(DRAW_DEBUG_MSG,"DSS/DSS_DRAW_DEBUG_MSG",false);
     ZSS::ZParamManager::instance()->loadParam(MIN_PREDICT_FRAME_NUM,"DSS/DSS_PredictFrameNum",8);
 
@@ -152,25 +152,25 @@ _C：表示程序一个周期的时间
 _CNum：表示程序的预测小车运行的周期
 /************************************************************************/
 CVector CDynamicSafetySearch::SafetySearch(const int player, CVector Vnext, const CVisionModule* pVision, const int t_priority, const CGeoPoint target, const int flags, const float stoptime, double max_acc) { // 获得下一帧的速度
-    if(DRAW_DEBUG_MSG) GDebugEngine::Instance()->gui_debug_msg(pVision->OurPlayer(player).Pos(), QString("vel: %1").arg(pVision->OurPlayer(player).Vel().mod()).toLatin1(), COLOR_PURPLE);
-    if((pVision->OurPlayer(player).Vel().mod() < MIN_SPEED_OPEN_DSS &&
+    if(DRAW_DEBUG_MSG) GDebugEngine::Instance()->gui_debug_msg(pVision->ourPlayer(player).Pos(), QString("vel: %1").arg(pVision->ourPlayer(player).Vel().mod()).toLatin1(), COLOR_PURPLE);
+    if((pVision->ourPlayer(player).Vel().mod() < MIN_SPEED_OPEN_DSS &&
             !(flags & PlayerStatus::DODGE_BALL))) { ///速度较小的时候强行关掉DSS
         return Vnext;
     }
 
-    CVector meVel = pVision->OurPlayer(player).Vel();
+    CVector meVel = pVision->ourPlayer(player).Vel();
     double factor = (MAX_TRANSLATION_SPEED == MIN_SPEED_OPEN_DSS ? 0.0 : (meVel.mod() - MIN_SPEED_OPEN_DSS) / (MAX_TRANSLATION_SPEED - MIN_SPEED_OPEN_DSS));
     if(flags & PlayerStatus::MIN_DSS) factor = 0.0;
     TEAMMATE_AVOID_DIST = MIN_TEAMMATE_AVOID_DIST + factor * (MAX_TEAMMATE_AVOID_DIST - MIN_TEAMMATE_AVOID_DIST);
     OPP_AVOID_DIST = MIN_OPP_AVOID_DIST + factor * (MAX_OPP_AVOID_DIST - MIN_OPP_AVOID_DIST);
     BALL_AVOID_DIST = MAX_BALL_AVOID_DIST;
     if(DRAW_DEBUG_MSG)  {
-        GDebugEngine::Instance()->gui_debug_msg(pVision->OurPlayer(player).Pos() + CVector(0, 20), QString("DSS").toLatin1(), COLOR_PURPLE);
-        GDebugEngine::Instance()->gui_debug_msg(pVision->OurPlayer(player).Pos() + CVector(0, 40), QString("Teammate: %1").arg(TEAMMATE_AVOID_DIST).toLatin1(), COLOR_PURPLE);
-        GDebugEngine::Instance()->gui_debug_msg(pVision->OurPlayer(player).Pos() + CVector(0, 60), QString("Opp     : %1").arg(OPP_AVOID_DIST).toLatin1(), COLOR_PURPLE);
-        GDebugEngine::Instance()->gui_debug_msg(pVision->OurPlayer(player).Pos() + CVector(0, 80), QString("Ball    : %1").arg(BALL_AVOID_DIST).toLatin1(), COLOR_PURPLE);
+        GDebugEngine::Instance()->gui_debug_msg(pVision->ourPlayer(player).Pos() + CVector(0, 200*10), QString("DSS").toLatin1(), COLOR_PURPLE);
+        GDebugEngine::Instance()->gui_debug_msg(pVision->ourPlayer(player).Pos() + CVector(0, 400*10), QString("Teammate: %1").arg(TEAMMATE_AVOID_DIST).toLatin1(), COLOR_PURPLE);
+        GDebugEngine::Instance()->gui_debug_msg(pVision->ourPlayer(player).Pos() + CVector(0, 600*10), QString("Opp     : %1").arg(OPP_AVOID_DIST).toLatin1(), COLOR_PURPLE);
+        GDebugEngine::Instance()->gui_debug_msg(pVision->ourPlayer(player).Pos() + CVector(0, 800*10), QString("Ball    : %1").arg(BALL_AVOID_DIST).toLatin1(), COLOR_PURPLE);
     }
-    GDebugEngine::Instance()->gui_debug_arc(pVision->OurPlayer(player).Pos(), 4, 0.0, 360, COLOR_PURPLE);
+    GDebugEngine::Instance()->gui_debug_arc(pVision->ourPlayer(player).Pos(), 4*10, 0.0, 360, COLOR_PURPLE);
 
     if (max_acc > 1) {
         _AECMAX = max_acc;
@@ -181,11 +181,11 @@ CVector CDynamicSafetySearch::SafetySearch(const int player, CVector Vnext, cons
     vector2f crashed_car_dir = vector2f(0.0f, 0.0f);
     int crash_car_num = 0;
     vector2f tempAcc = vector2f(0.0, 0.0f);
-    _pos = CGeoPoint2vector2f(pVision->OurPlayer(player).Pos());
+    _pos = CGeoPoint2vector2f(pVision->ourPlayer(player).Pos());
     refresh_priority(player, t_priority, CGeoPoint2vector2f(target), _pos);
     srand(time(NULL)); // 随机数初始化
     _nvel = CVector2vector2f(Vnext);
-    _vel = CVector2vector2f(pVision->OurPlayer(player).Vel());
+    _vel = CVector2vector2f(pVision->ourPlayer(player).Vel());
     _CNum = max(int(_vel.length() / MAX_DEC_TO_STOP * Param::Vision::FRAME_RATE), MIN_PREDICT_FRAME_NUM); // 对于一车静止，一车运动的情况，提前量比较少 // 保证下一个周期内不会碰撞
     _C = 1.0f / Param::Vision::FRAME_RATE; // 程序执行一个周期的时间
     _acc = (_nvel - _vel) / _C;
@@ -197,7 +197,7 @@ CVector CDynamicSafetySearch::SafetySearch(const int player, CVector Vnext, cons
         _t_acc = _acc;
         _e = 1.0f;
         find_flag[player - 1] = true;
-        //GDebugEngine::Instance()->gui_debug_msg(pVision->OurPlayer(player).Pos(), "Me", COLOR_YELLOW);
+        //GDebugEngine::Instance()->gui_debug_msg(pVision->ourPlayer(player).Pos(), "Me", COLOR_YELLOW);
     }
     else {
         float angle_start, angle_end, max_radius, t_mid_angle;
@@ -266,12 +266,12 @@ CVector CDynamicSafetySearch::SafetySearch(const int player, CVector Vnext, cons
     }
     if(fabs(Utils::Normalize(_t_acc.angle() - _acc.angle())) > PI / 12.0) {
         find_flag[player - 1] = false;
-        if(DRAW_DEBUG_MSG) GDebugEngine::Instance()->gui_debug_msg(pVision->OurPlayer(player).Pos() + CVector(0, 100), QString("Invalid result!!!").toLatin1(), COLOR_RED);
+        if(DRAW_DEBUG_MSG) GDebugEngine::Instance()->gui_debug_msg(pVision->ourPlayer(player).Pos() + CVector(0, 1000), QString("Invalid result!!!").toLatin1(), COLOR_RED);
     }
 
     if (find_flag[player - 1] == false) {
         _nvel = vector2f(0.0f, 0.0f);
-        if(DRAW_DEBUG_MSG) GDebugEngine::Instance()->gui_debug_msg(pVision->OurPlayer(player).Pos() + CVector(0, 120), QString("STOP!!!").toLatin1(), COLOR_RED);
+        if(DRAW_DEBUG_MSG) GDebugEngine::Instance()->gui_debug_msg(pVision->ourPlayer(player).Pos() + CVector(0, 1200), QString("STOP!!!").toLatin1(), COLOR_RED);
         last_acc[player - 1] = (_nvel - _vel) / _C;
         last_e[player - 1] = 1.0f;
     }
@@ -285,7 +285,7 @@ CVector CDynamicSafetySearch::SafetySearch(const int player, CVector Vnext, cons
         GDebugEngine::Instance()->gui_debug_line(vector2f2CGeoPoint(_pos), vector2f2CGeoPoint(_pos) + vector2f2CVector(_acc), COLOR_GREEN);
         GDebugEngine::Instance()->gui_debug_line(vector2f2CGeoPoint(_pos), vector2f2CGeoPoint(_pos) + vector2f2CVector(_t_acc), COLOR_BLUE);
         if (CheckAccel(player, _t_acc, pVision, crashed_car_dir, crash_car_num, type, EPSILON) == UNSAFE) {
-            GDebugEngine::Instance()->gui_debug_msg(CGeoPoint(-20.0, -20.0), "ERROR", 1);
+            GDebugEngine::Instance()->gui_debug_msg(CGeoPoint(-20.0*10, -20.0*10), "ERROR", 1);
             CheckAccel(player, _t_acc, pVision, crashed_car_dir, crash_car_num, type, EPSILON);
         }
     }
@@ -307,13 +307,13 @@ bool CDynamicSafetySearch::CheckAccel (const int player, vector2f acc, const CVi
     // type: 0表示我方车, 1表示敌方车, 2表示现在规划的小车, 3表示球
     std::vector<pair<int, double>> order;
     std::pair<int, double> temp;
-    CGeoPoint mePos = pVision->OurPlayer(player).Pos();
+    CGeoPoint mePos = pVision->ourPlayer(player).Pos();
     // 己方车
     if (!(_flag & PlayerStatus::NOT_AVOID_OUR_VEHICLE)) { // 躲避我方车
         for(int i = 1; i <= Param::Field::MAX_PLAYER; i++) { // 将非自己，且有效的车存储到order中
-            if(i != player && pVision->OurPlayer(i).Valid()) {
+            if(i != player && pVision->ourPlayer(i).Valid()) {
                 temp.first = i;
-                temp.second = pVision->OurPlayer(i).Pos().dist2(mePos);
+                temp.second = pVision->ourPlayer(i).Pos().dist(mePos);
                 if (temp.second < DIST_IGNORE) {
                     order.push_back(temp);
                 }
@@ -322,7 +322,7 @@ bool CDynamicSafetySearch::CheckAccel (const int player, vector2f acc, const CVi
     }
     sort(order.begin(), order.end(), compare_order); // 将己方小车由远到近排序
     while(!order.empty()) {
-        const PlayerVisionT& teamate = pVision->OurPlayer(order.back().first);
+        const PlayerVisionT& teamate = pVision->ourPlayer(order.back().first);
 
         vector2f pj = vector2f(teamate.Pos().x(), teamate.Pos().y()); // 位置向量
         vector2f vj = vector2f(teamate.VelX(), teamate.VelY()); // 速度向量
@@ -347,9 +347,9 @@ bool CDynamicSafetySearch::CheckAccel (const int player, vector2f acc, const CVi
     //敌方车
     if (!(_flag & PlayerStatus::NOT_AVOID_THEIR_VEHICLE)) {
         for(int i = 1; i <= Param::Field::MAX_PLAYER; i++) {
-            if(pVision->TheirPlayer(i).Valid()) {
+            if(pVision->theirPlayer(i).Valid()) {
                 temp.first = i;
-                temp.second = pVision->TheirPlayer(i).Pos().dist2(mePos);
+                temp.second = pVision->theirPlayer(i).Pos().dist(mePos);
                 if (temp.second < DIST_IGNORE) {
                     order.push_back(temp);
                 }
@@ -359,7 +359,7 @@ bool CDynamicSafetySearch::CheckAccel (const int player, vector2f acc, const CVi
     sort(order.begin(), order.end(), compare_order);//将敌方小车由远到近排序
     type = THEIRPLAYER;
     while(!order.empty()) {
-        const PlayerVisionT& opp = pVision->TheirPlayer(order.back().first);
+        const PlayerVisionT& opp = pVision->theirPlayer(order.back().first);
 
         vector2f pj = vector2f(opp.Pos().x(), opp.Pos().y());
         vector2f vj = vector2f(opp.VelX(), opp.VelY());
@@ -380,10 +380,10 @@ bool CDynamicSafetySearch::CheckAccel (const int player, vector2f acc, const CVi
     }
     // 球
     type = BALL;
-    if(pVision->Ball().Valid() && (_flag & PlayerStatus::DODGE_BALL)) {
-        vector2f pj = vector2f(pVision->Ball().Pos().x(), pVision->Ball().Pos().y());
-        vector2f vj = vector2f(pVision->Ball().VelX(), pVision->Ball().VelY());
-        const MobileVisionT& last_ball = pVision->Ball(pVision->LastCycle());
+    if(pVision->ball().Valid() && (_flag & PlayerStatus::DODGE_BALL)) {
+        vector2f pj = vector2f(pVision->ball().Pos().x(), pVision->ball().Pos().y());
+        vector2f vj = vector2f(pVision->ball().VelX(), pVision->ball().VelY());
+        const MobileVisionT& last_ball = pVision->ball(pVision->getLastCycle());
         vector2f Aj;
         Aj = (vj - vector2f(last_ball.VelX(), last_ball.VelY())) /_C;
         if(CheckRobot(player, _pos, _vel, acc, -1, pj, vj, Aj, type, limitTime) == UNSAFE) {
@@ -423,7 +423,7 @@ bool CDynamicSafetySearch::CheckRobot(const int player, vector2f pi, vector2f vi
         tradius = TEAMMATE_AVOID_DIST * sqrt(1 + 2 * vj.length() / ACCURATE_AOID) ;
     }
     else if (type == BALL) {
-        tradius = BALL_AVOID_DIST * sqrt(1 + vj.length() / 800.0f) ;
+        tradius = BALL_AVOID_DIST * sqrt(1 + vj.length() / 800.0f*10) ;
     }
     Pj.MakeTrajectory(obstacle, pj, vj, Aj, 0.0f, tc, Pi._tend, tradius, _DECMAX, type); // 构建障碍物的路径
     return Pi.CheckTrajectory(Pj);
@@ -525,7 +525,7 @@ void Trajectory::MakeTrajectory(const int player, const vector2f pos, const vect
     else if (type == OURPLAYER) {
         _type = OURPLAYER;
         _carnum = player;
-        if (vel.x < VELMIN && vel.y < VELMIN && acc.x < ACCMIN && acc.y < ACCMIN) { // 小车静止
+        if (fabs(vel.x) < VELMIN && fabs(vel.y) < VELMIN && fabs(acc.x) < ACCMIN && fabs(acc.y) < ACCMIN) { // 小车静止
             double t1 = tend;
             double x0 = pos.x;
             double y0 = pos.y;
@@ -557,7 +557,7 @@ void Trajectory::MakeTrajectory(const int player, const vector2f pos, const vect
             double vx1 = vx0 + ax0 * tc;
             double vy1 = vy0 + ay0 * tc;
             double v1 = sqrt(vx1 * vx1 + vy1 * vy1);
-            if (v1 <= EPSILON) { // 小车静止
+            if (fabs(v1) <= EPSILON) { // 小车静止
                 double t2 = tend;
                 q[_qlength].init(CCar(CPoint(x1, y1), 0.0f, 0.0f, 0.0f, 0.0f, Radius), t1, t2);
                 _qlength++;

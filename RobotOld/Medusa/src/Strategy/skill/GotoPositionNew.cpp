@@ -126,14 +126,14 @@ void CGotoPositionNew::plan(const CVisionModule* pVision) {
 CPlayerCommand* CGotoPositionNew::execute(const CVisionModule* pVision) {
 
     const int vecNumber = task().executor;
-    const PlayerVisionT& me = pVision->OurPlayer(vecNumber);
+    const PlayerVisionT& me = pVision->ourPlayer(vecNumber);
     const double vecDir = me.Dir();
     playerFlag = task().player.flag;
     CGeoPoint targetPos = task().player.pos;
     CGeoPoint startPosForRRT = me.Pos();
-    const bool isGoalie = vecNumber == PlayInterface::Instance()->getNumbByRealIndex(TaskMediator::Instance()->goalie());
-    const bool isBack = (vecNumber == PlayInterface::Instance()->getNumbByRealIndex(TaskMediator::Instance()->leftBack()))
-                        || (vecNumber == PlayInterface::Instance()->getNumbByRealIndex(TaskMediator::Instance()->rightBack()));
+    const bool isGoalie = vecNumber == TaskMediator::Instance()->goalie();
+    const bool isBack = (vecNumber == TaskMediator::Instance()->leftBack())
+                        || (vecNumber == TaskMediator::Instance()->rightBack());
     const double targetDir = task().player.angle;
     if (isnan(targetPos.x()) || isnan(targetPos.y())) {
         targetPos = me.Pos();
@@ -207,7 +207,7 @@ CPlayerCommand* CGotoPositionNew::execute(const CVisionModule* pVision) {
         }
         if(!planned) {
             if(!plannerNew[vecNumber].plannerInitted())
-                plannerNew[vecNumber].initPlanner(400, 20, 15, 0.05, 0.55, 18.0);
+                plannerNew[vecNumber].initPlanner(400, 20, 15, 0.05, 0.55, 180.0);
             plannerNew[vecNumber].planPath(obs, startForRRT, target);
             vector < stateNew > path = plannerNew[vecNumber].getPathPoints();
             viaPoints[0].clear();
@@ -264,8 +264,8 @@ CPlayerCommand* CGotoPositionNew::execute(const CVisionModule* pVision) {
     // CVector globalVel = nextFrame.vel;
     CVector globalVel = control.getNextStep().Vel();
     if(openDebug) {
-        GDebugEngine::Instance()->gui_debug_line(nextState[vecNumber].pos, nextState[vecNumber].pos + nextState[vecNumber].vel * 100, COLOR_PURPLE);
-        GDebugEngine::Instance()->gui_debug_line(me.Pos(), me.Pos() + globalVel * 100, COLOR_BLUE);
+        GDebugEngine::Instance()->gui_debug_line(nextState[vecNumber].pos, nextState[vecNumber].pos + nextState[vecNumber].vel * 1000, COLOR_PURPLE);
+        GDebugEngine::Instance()->gui_debug_line(me.Pos(), me.Pos() + globalVel * 1000, COLOR_BLUE);
     }
 
     int priority = 0;
@@ -308,7 +308,7 @@ PlayerCapabilityT CGotoPositionNew::setCapability(const CVisionModule* pVision) 
     PlayerCapabilityT capability;
 
     // Traslation
-    if (vecNumber == PlayInterface::Instance()->getNumbByRealIndex(TaskMediator::Instance()->goalie())) {
+    if (vecNumber == TaskMediator::Instance()->goalie()) {
         capability.maxSpeed = MAX_TRANSLATION_SPEED_GOALIE;
         capability.maxAccel = MAX_TRANSLATION_ACC_GOALIE;
         capability.maxDec = MAX_TRANSLATION_DEC_GOALIE;
@@ -347,7 +347,7 @@ PlayerCapabilityT CGotoPositionNew::setCapability(const CVisionModule* pVision) 
         capability.maxAngularDec *= SlowFactor;
     }
     if (playerFlag & PlayerStatus::QUICKLY
-            || vecNumber == PlayInterface::Instance()->getNumbByRealIndex(TaskMediator::Instance()->goalie())) {
+            || vecNumber == TaskMediator::Instance()->goalie()) {
         capability.maxSpeed *= FastFactor;
         capability.maxAccel *= FastFactor;
         capability.maxDec *= FastFactor;
@@ -357,7 +357,7 @@ PlayerCapabilityT CGotoPositionNew::setCapability(const CVisionModule* pVision) 
     }
 
     if (playerFlag & PlayerStatus::QUICKLY
-            || vecNumber == PlayInterface::Instance()->getNumbByRealIndex(TaskMediator::Instance()->goalie())) {
+            || vecNumber == TaskMediator::Instance()->goalie()) {
     }
 
     if (task().player.max_acceleration > 1) {
@@ -365,7 +365,7 @@ PlayerCapabilityT CGotoPositionNew::setCapability(const CVisionModule* pVision) 
         capability.maxDec = capability.maxAccel;
     }
     if (WorldModel::Instance()->CurrentRefereeMsg() == "gameStop") {
-        const MobileVisionT ball = pVision->Ball();
+        const MobileVisionT ball = pVision->ball();
         if (ball.Pos().x() < -240 && abs(ball.Pos().y()) > 150) {
             capability.maxSpeed = 100;
         } else {
@@ -453,12 +453,12 @@ vector < CGeoPoint > CGotoPositionNew::forBack(const CVisionModule* _pVision, co
     vector < CGeoPoint > result;
     result.clear();
     CGeoPoint anotherBack;
-    CGeoPoint mePos = _pVision->OurPlayer(vecNum).Pos();
+    CGeoPoint mePos = _pVision->ourPlayer(vecNum).Pos();
     for(int i = 1; i < Param::Field::MAX_PLAYER_NUM + 1; i++) {
-        if(i != vecNum && (i == PlayInterface::Instance()->getNumbByRealIndex(TaskMediator::Instance()->leftBack()) ||
-            i == PlayInterface::Instance()->getNumbByRealIndex(TaskMediator::Instance()->rightBack())) &&
-                _pVision->OurPlayer(i).Valid()) {
-            anotherBack = _pVision->OurPlayer(i).Pos();
+        if(i != vecNum && (i == TaskMediator::Instance()->leftBack() ||
+            i == TaskMediator::Instance()->rightBack()) &&
+                _pVision->ourPlayer(i).Valid()) {
+            anotherBack = _pVision->ourPlayer(i).Pos();
             break;
         }
     }

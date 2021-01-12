@@ -55,10 +55,10 @@ CCornerAreaPos::~CCornerAreaPos()
 
 CGeoPoint CCornerAreaPos::getCornerAreaPos(const CVisionModule* pVision)
 {
-	if (pVision->Cycle() == _lastCycle) {
+	if (pVision->getCycle() == _lastCycle) {
 		return _lastCAPos;
 	} else{
-		_lastCycle = pVision->Cycle();
+		_lastCycle = pVision->getCycle();
 	}
 	//生成中卫点
 	setPos(generatePos(pVision));	
@@ -79,7 +79,7 @@ CGeoPoint CCornerAreaPos::generatePos(const CVisionModule* pVision)
 {
 	_CAPos = CGeoPoint(-340,0); //已修改为Brazil zhyaic
 	//以下部分没有反向计算！！
-	const MobileVisionT& ball = pVision->Ball();
+	const MobileVisionT& ball = pVision->ball();
 	const CGeoPoint ballPos = ball.Pos();
 	static posSide ballSide = POS_SIDE_RIGHT;
 	const string refMsg = WorldModel::Instance()->CurrentRefereeMsg();
@@ -100,7 +100,7 @@ CGeoPoint CCornerAreaPos::generatePos(const CVisionModule* pVision)
 		if (!Utils::PlayerNumValid(enemyNum)) {
 			continue;
 		}
-		const PlayerVisionT& opp = pVision->TheirPlayer(enemyNum);
+		const PlayerVisionT& opp = pVision->theirPlayer(enemyNum);
 		if (opp.Valid() && !Utils::InOurPenaltyArea(opp.Pos(),ABSOLUTELY_IN))
 		{
 			CGeoPoint oppPos = opp.Pos();
@@ -149,7 +149,7 @@ CGeoPoint CCornerAreaPos::generatePos(const CVisionModule* pVision)
 
 	if (0 != enemyBreakMe)//敌人存在
 	{
-		const PlayerVisionT& headOpp = pVision->TheirPlayer(enemyBreakMe);
+		const PlayerVisionT& headOpp = pVision->theirPlayer(enemyBreakMe);
 		targetPos = headOpp.Pos() + Utils::Polar2Vector(headOpp.Vel().mod()*OPP_REAL_PRE_TIME,headOpp.Vel().dir());
 		double angle_goal2target = CVector(targetPos - GOAL_CENTRE_POS).dir();
 		if (POS_SIDE_LEFT == ballSide)
@@ -183,11 +183,11 @@ CGeoPoint CCornerAreaPos::generatePos(const CVisionModule* pVision)
 	//	if (Utils::InOurPenaltyArea(targetPos,CHANGE_BUFFER))//在我禁区外一圈
 	//	{
 	//		int defenderNum = WorldModel::Instance()->getOurMarkDenfender(enemyBreakMe);
-	//		if (pVision->OurPlayer(defenderNum).Valid() && _CAPos.dist(pVision->OurPlayer(defenderNum).Pos()) < DEAL_HIT_DIST)//而且盯人点和防头球点距离很近
+	//		if (pVision->ourPlayer(defenderNum).Valid() && _CAPos.dist(pVision->ourPlayer(defenderNum).Pos()) < DEAL_HIT_DIST)//而且盯人点和防头球点距离很近
 	//		{
 	//			_headAttackEnemy = enemyBreakMe;
 	//			_dealWithHit = true;
-	//			const PlayerVisionT& me = pVision->OurPlayer(defenderNum);
+	//			const PlayerVisionT& me = pVision->ourPlayer(defenderNum);
 	//			if (/*me.Y() < _CAPos.y()*/CVector(me.Pos() - GOAL_CENTRE_POS).dir() - CVector(_CAPos - GOAL_CENTRE_POS).dir() < 0)//盯人者 在 防头球者左边 ，防头球者走到右边
 	//			{
 	//				RblockPos = DefendUtils::calcDefenderPoint(RTargetPos,CVector(DefendUtils::reversePoint(GOAL_CENTRE_POS) - RTargetPos).dir(),POS_SIDE_LEFT);//注意这里的POS_SIDE_LEFT没有错

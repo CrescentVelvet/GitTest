@@ -2,7 +2,7 @@ module(..., package.seeall)
 
 function instance(role)
 	if type(role) == "number" then
-		return vision:TheirPlayer(role)
+		return vision:theirPlayer(role)
 	else
 		print("Invalid role in enemy.instance!!!")
 	end

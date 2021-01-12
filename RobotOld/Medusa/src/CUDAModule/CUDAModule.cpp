@@ -2,7 +2,7 @@
 #include <cuda.h>
 #include "cuda_runtime.h"
 #include "device_launch_parameters.h"
-#include "device_functions.h"
+#include "cuda_runtime.h"
 #include <vector>
 #include <QDebug>
 #include <GDebugEngine.h>
@@ -17,6 +17,7 @@
 #include "runpos.h"
 #include <algorithm>
 #include "Global.h"
+#include "RefereeBoxIf.h"
 
 #define ROBOT_NUM (16)
 #define VEL_NUM (16)
@@ -48,7 +49,7 @@ bool IGNORE_THEIR_GUARD = true;
 double ROLLING_FRICTION = 40;
 double SLIDING_FRICTION = ROLLING_FRICTION * 15;
 
-int FREEKICK_RANGE = 100;
+int FREEKICK_RANGE = 1000;
 // 传球点的参数
 namespace PASS_PARAM {
 const float wDist = 0.15f;
@@ -115,7 +116,7 @@ CUDAModule::CUDAModule()
     ZSS::ZParamManager::instance()->loadParam(FREE_KICK_DEBUG, "FreeKick/DEBUG", false);
     ZSS::ZParamManager::instance()->loadParam(IGNORE_THEIR_GUARD, "Messi/IGNORE_THEIR_GUARD", true);
     ZSS::ZParamManager::instance()->loadParam(PASS_ANGLE_ERROR, "Messi/PASS_ANGLE_ERROR", 4);
-    ZSS::ZParamManager::instance()->loadParam(FREEKICK_RANGE, "FreeKick/range", 100);
+    ZSS::ZParamManager::instance()->loadParam(FREEKICK_RANGE, "FreeKick/range", 1000);
     ZSS::ZParamManager::instance()->loadParam(FREE_KICK_PARAM::wAngle2Goal, "FreeKick/Angle2Goal", 0.0);
     ZSS::ZParamManager::instance()->loadParam(FREE_KICK_PARAM::min2PenaltyDist, "FreeKick/ToPenaltyDist", 20);
     auto cudastatus = cudaMallocManaged((void**)&players, 2 * Param::Field::MAX_PLAYER_NUM * sizeof(Player));
@@ -126,9 +127,9 @@ CUDAModule::CUDAModule()
         qDebug() <<  "CUDA ERROR: " <<cudaGetErrorString(cudastatus);
     }
     if(IS_SIMULATION)
-        ZSS::ZParamManager::instance()->loadParam(ROLLING_FRICTION, "AlertParam/Friction4Sim", 40.0);
+        ZSS::ZParamManager::instance()->loadParam(ROLLING_FRICTION, "AlertParam/Friction4Sim", 400.0);
     else
-        ZSS::ZParamManager::instance()->loadParam(ROLLING_FRICTION, "AlertParam/Friction4Real", 40.0);
+        ZSS::ZParamManager::instance()->loadParam(ROLLING_FRICTION, "AlertParam/Friction4Real", 400.0);
     SLIDING_FRICTION = ROLLING_FRICTION * 15;
     *rollingFraction = static_cast<float>(ROLLING_FRICTION);
     *slidingFraction = static_cast<float>(SLIDING_FRICTION);
@@ -162,8 +163,8 @@ ZSS_THREAD_FUNCTION void CUDAModule::drawScore() {
     while(true) {
         vision_to_cuda.Wait();
         if(show_heatmap){
-            for (auto x = -Param::Field::PITCH_LENGTH/2; x < Param::Field::PITCH_LENGTH/2; x+=10) {
-                for (auto y = -Param::Field::PITCH_WIDTH/2; y < Param::Field::PITCH_WIDTH/2; y+=10) {
+            for (auto x = -Param::Field::PITCH_LENGTH/2; x < Param::Field::PITCH_LENGTH/2; x+=100) {
+                for (auto y = Param::Field::PITCH_WIDTH/2; y > -Param::Field::PITCH_WIDTH/2; y-=100) {
                     std::vector<float> scores;
                     if (show_other_pos_score) {
                         scores = RunPosModule::Instance()->evaluateFunc(pVision,CGeoPoint(x,y));
@@ -206,25 +207,25 @@ void CUDAModule::calculateBestPass() {
     reset();
 
     for(int i = 0; i < Param::Field::MAX_PLAYER_NUM; i++) {
-        float x =  this->pVision->OurPlayer(i + 1).Pos().x();
+        float x =  this->pVision->ourPlayer(i + 1).Pos().x();
         players[i].Pos.x = x;
-        players[i].Pos.y = this->pVision->OurPlayer(i + 1).Pos().y();
-        players[i].Vel.x = this->pVision->OurPlayer(i + 1).VelX();
-        players[i].Vel.y = this->pVision->OurPlayer(i + 1).VelY();
+        players[i].Pos.y = this->pVision->ourPlayer(i + 1).Pos().y();
+        players[i].Vel.x = this->pVision->ourPlayer(i + 1).VelX();
+        players[i].Vel.y = this->pVision->ourPlayer(i + 1).VelY();
         if(receiver < 0)
-            players[i].isValid = this->pVision->OurPlayer(i + 1).Valid();
+            players[i].isValid = this->pVision->ourPlayer(i + 1).Valid();
         else
-            players[i].isValid = (i == receiver) ? this->pVision->OurPlayer(i + 1).Valid() : false;
+            players[i].isValid = (i == receiver) ? this->pVision->ourPlayer(i + 1).Valid() : false;
         //判断禁区和后卫
         if(players[i].isValid && Utils::InOurPenaltyArea(CGeoPoint(players[i].Pos.x, players[i].Pos.y), 50))
             players[i].isValid = false;
     }
     for(int i = 0; i < Param::Field::MAX_PLAYER_NUM; i++) {
-        players[i + Param::Field::MAX_PLAYER_NUM].Pos.x = this->pVision->TheirPlayer(i + 1).Pos().x();
-        players[i + Param::Field::MAX_PLAYER_NUM].Pos.y = this->pVision->TheirPlayer(i + 1).Pos().y();
-        players[i + Param::Field::MAX_PLAYER_NUM].Vel.x = this->pVision->TheirPlayer(i + 1).VelX();
-        players[i + Param::Field::MAX_PLAYER_NUM].Vel.y = this->pVision->TheirPlayer(i + 1).VelY();
-        players[i + Param::Field::MAX_PLAYER_NUM].isValid = this->pVision->TheirPlayer(i + 1).Valid();
+        players[i + Param::Field::MAX_PLAYER_NUM].Pos.x = this->pVision->theirPlayer(i + 1).Pos().x();
+        players[i + Param::Field::MAX_PLAYER_NUM].Pos.y = this->pVision->theirPlayer(i + 1).Pos().y();
+        players[i + Param::Field::MAX_PLAYER_NUM].Vel.x = this->pVision->theirPlayer(i + 1).VelX();
+        players[i + Param::Field::MAX_PLAYER_NUM].Vel.y = this->pVision->theirPlayer(i + 1).VelY();
+        players[i + Param::Field::MAX_PLAYER_NUM].isValid = this->pVision->theirPlayer(i + 1).Valid();
         //判断禁区和后卫
 //        if(players[i + Param::Field::MAX_PLAYER_NUM].isValid && Utils::InTheirPenaltyArea(CGeoPoint(players[i + Param::Field::MAX_PLAYER_NUM].Pos.x, players[i + Param::Field::MAX_PLAYER_NUM].Pos.y), IGNORE_THEIR_GUARD ? 0 : 30))
 //            players[i + Param::Field::MAX_PLAYER_NUM].isValid = false;
@@ -248,18 +249,18 @@ void CUDAModule::calculateBestPass() {
             if(!Utils::isValidFlatPass(pVision, leaderPos, candidate, false, true)) continue;
             // 互传
             if(result[i].playerIndex != leader){
-                if(candidate.dist(leaderPos) < 200) continue;
+                if(candidate.dist(leaderPos) < 2000) continue;
                 // 避免往后场传球
-                if(leaderPos.x() < 300 && candidate.x() < min(leaderPos.x() + 300, 300.0)) continue;
-                if(leaderPos.x() > 300 && result[i].interPos.x < 300) continue;
+                if(leaderPos.x() < 3000 && candidate.x() < min(leaderPos.x() + 3000, 3000.0)) continue;
+                if(leaderPos.x() > 3000 && result[i].interPos.x < 3000) continue;
                 // 避免往进攻威胁度低的区域传
                 if(leaderPos.x() > Param::Field::PITCH_LENGTH/4 && fabs(candidate.y()) > Param::Field::PITCH_WIDTH/3) continue;
             }
             // 自传
             else {
-                if(candidate.dist(leaderPos) > 200) continue;
-                if(Utils::OutOfField(candidate, 50)) continue;
-                if(leaderPos.x() < 200 && candidate.x() < leaderPos.x()) continue;
+                if(candidate.dist(leaderPos) > 2000) continue;
+                if(Utils::OutOfField(candidate, 500)) continue;
+                if(leaderPos.x() < 2000 && candidate.x() < leaderPos.x()) continue;
             }
             passPoints.push_back(result[i]);
             // 更新最佳平射传球点
@@ -292,13 +293,13 @@ void CUDAModule::calculateBestPass() {
         if(result[i].interTime < 10 && result[i].interTime > 0 && result[left].interTime < 10 && result[left].interTime > 0 && result[right].interTime < 10 && result[right].interTime > 0) {
             CGeoPoint candidate(result[i].interPos.x, result[i].interPos.y), p1(Param::Field::PITCH_LENGTH / 2, -Param::Field::GOAL_WIDTH / 2), p2(Param::Field::PITCH_LENGTH / 2, Param::Field::GOAL_WIDTH / 2);
             if(!Utils::isValidChipPass(pVision, leaderPos, candidate)) continue;
-            if(result[i].playerIndex != leader && candidate.dist(leaderPos) < 300) continue;
+            if(result[i].playerIndex != leader && candidate.dist(leaderPos) < 3000) continue;
             if(result[i].playerIndex == leader) continue;
-            if(Utils::OutOfField(candidate, 20)) continue;
+            if(Utils::OutOfField(candidate, 200)) continue;
 //            if(p0.dist(leaderPos) > 600) continue;
             // 避免往后场传球
-            if(leaderPos.x() < 300 && candidate.x() < min(leaderPos.x() + 300, 300.0)) continue;
-            if(leaderPos.x() > 300 && result[i].interPos.x < 300) continue;
+            if(leaderPos.x() < 3000 && candidate.x() < min(leaderPos.x() + 3000, 3000.0)) continue;
+            if(leaderPos.x() > 3000 && result[i].interPos.x < 3000) continue;
             // 避免往进攻威胁度低的区域传
             if(leaderPos.x() > Param::Field::PITCH_LENGTH/4 && fabs(candidate.y()) > Param::Field::PITCH_WIDTH/3) continue;
             chipPoints.push_back(result[i]);
@@ -355,7 +356,7 @@ void CUDAModule::calculateBestPass() {
             GDebugEngine::Instance()->gui_debug_msg(CGeoPoint(passPoints[i].interPos.x, passPoints[i].interPos.y), QString("%1").arg(passPoints[i].playerIndex).toLatin1(), COLOR_BLUE);
             points.push_back(CGeoPoint(passPoints[i].interPos.x, passPoints[i].interPos.y));
 //            GDebugEngine::Instance()->gui_debug_line(CGeoPoint(passPoints[i].interPos.x, passPoints[i].interPos.y), ballPos, COLOR_GRAY);
-//            GDebugEngine::Instance()->gui_debug_line(CGeoPoint(passPoints[i].interPos.x, passPoints[i].interPos.y), pVision->OurPlayer(passPoints[i].playerIndex + 1).Pos(), COLOR_GRAY);
+//            GDebugEngine::Instance()->gui_debug_line(CGeoPoint(passPoints[i].interPos.x, passPoints[i].interPos.y), pVision->ourPlayer(passPoints[i].playerIndex + 1).Pos(), COLOR_GRAY);
 //            GDebugEngine::Instance()->gui_debug_msg(CGeoPoint(passPoints[i].interPos.x, passPoints[i].interPos.y),QString("%1 %2 %3 %4").arg(passPoints[i].Vel).arg(passPoints[i].dir).arg(passPoints[i].interTime).arg(passPoints[i].deltaTime).toLatin1(), COLOR_RED);
         }
         GDebugEngine::Instance()->gui_debug_points(points, COLOR_CYAN);
@@ -371,27 +372,27 @@ void CUDAModule::calculateBestPass() {
 }
 
 // 计算最佳定位球的点
-ZSS_THREAD_FUNCTION void CUDAModule::calculateFreeKickPos(){
+void CUDAModule::calculateFreeKickPos(){
     // 跟球门的距离
-    static const int MIN_DIST_TO_GOAL = 80;
+    static const int MIN_DIST_TO_GOAL = 800;
     static const int MAX_DIST_TO_GOAL = MIN_DIST_TO_GOAL + FREEKICK_RANGE;
     // 跟球门的夹角
     static const int MAX_ANGLE_TO_GOAL = 60;
     // 距离、角度的最小单位
-    static const int DIST_UNIT = 10;
+    static const int DIST_UNIT = 100;
     static const int ANGLE_UNIT = 3;
     // 挑球距离
-    static const int MAX_CHIP_DIST = 600;
+    static const int MAX_CHIP_DIST = 6000;
 
     while (true) {
         // 根据不同开球位置设置不同的起始点
         CGeoPoint GOAL;
         double freekickPointBuf = 0;
         CGeoPoint kickStartPos;
-        if (VisionModule::Instance()->GetCurrentRefereeMsg() == "OurBallPlacement") {
-            kickStartPos = vision->getBallPlacementPosition();
+        if (VisionModule::Instance()->getCurrentRefereeMsg() == "OurBallPlacement") {
+            kickStartPos.fill(RefereeBoxInterface::Instance()->getBallPlacementPosX(), RefereeBoxInterface::Instance()->getBallPlacementPosY());
         } else {
-            kickStartPos = vision->Ball().Pos();
+            kickStartPos = vision->ball().Pos();
         }
         GOAL.fill((Param::Field::PITCH_LENGTH / 2 - kickStartPos.x()) < MAX_CHIP_DIST ? Param::Field::PITCH_LENGTH / 2 : kickStartPos.x() + MAX_CHIP_DIST, 0);
         freekickPointBuf = (Param::Field::PITCH_WIDTH / 2 - std::fabs(kickStartPos.y())) / 3;
@@ -403,7 +404,7 @@ ZSS_THREAD_FUNCTION void CUDAModule::calculateFreeKickPos(){
                 candidate = candidate + Utils::Polar2Vector(freekickPointBuf, Param::Math::PI / 2 * ((candidate.y() > 0) ? 1 : -1));
                 if (Utils::InTheirPenaltyArea(candidate, FREE_KICK_PARAM::min2PenaltyDist))
                     continue;
-                if (candidate.dist(vision->Ball().Pos()) < 300)
+                if (candidate.dist(vision->ball().Pos()) < Param::Field::PITCH_LENGTH / 4) //防止离球过近
                     continue;
                 if (std::fabs(kickStartPos.y()) > Param::Field::PENALTY_AREA_WIDTH / 2 && candidate.y() * kickStartPos.y() > 0)
                     continue;
@@ -454,11 +455,11 @@ ZSS_THREAD_FUNCTION void CUDAModule::calculateFreeKickPos(){
 //        players[i].isValid = this->pVision->TheirPlayer(i + 1).Valid();
 //    }
 //    //把下标为12的player设置为
-//    players[Param::Field::MAX_PLAYER_NUM].Pos.x = this->pVision->OurPlayer(this->receiver).Pos().x();
-//    players[Param::Field::MAX_PLAYER_NUM].Pos.y = this->pVision->OurPlayer(this->receiver).Pos().y();
-//    players[Param::Field::MAX_PLAYER_NUM].Vel.x = this->pVision->OurPlayer(this->receiver).VelX();
-//    players[Param::Field::MAX_PLAYER_NUM].Vel.y = this->pVision->OurPlayer(this->receiver).VelY();
-//    players[Param::Field::MAX_PLAYER_NUM].isValid = this->pVision->OurPlayer(this->receiver).Valid();
+//    players[Param::Field::MAX_PLAYER_NUM].Pos.x = this->pVision->ourPlayer(this->receiver).Pos().x();
+//    players[Param::Field::MAX_PLAYER_NUM].Pos.y = this->pVision->ourPlayer(this->receiver).Pos().y();
+//    players[Param::Field::MAX_PLAYER_NUM].Vel.x = this->pVision->ourPlayer(this->receiver).VelX();
+//    players[Param::Field::MAX_PLAYER_NUM].Vel.y = this->pVision->ourPlayer(this->receiver).VelY();
+//    players[Param::Field::MAX_PLAYER_NUM].isValid = this->pVision->ourPlayer(this->receiver).Valid();
 //    ball->x = this->pVision->Ball().Pos().x();
 //    ball->y = this->pVision->Ball().Pos().y();
 
@@ -569,31 +570,31 @@ std::vector<float> CUDAModule::evaluateFunc(CGeoPoint candidate, EvaluateMode mo
     float Angle2Goal4FreeKick = (fabs(Utils::Normalize(v2.dir())) < Param::Math::PI / 4.0f && fabs(Utils::Normalize(v2.dir())) > Param::Math::PI / 9.0f) ? 1 : 0;
     // 計算敵方到傳球線的距離
     float passLineDist = 9999;
-    CGeoSegment BallLine(vision->Ball().Pos(), p0);
+    CGeoSegment BallLine(vision->ball().Pos(), p0);
     for(int i = 0; i < Param::Field::MAX_PLAYER_NUM; i++) {
-        if(!pVision->TheirPlayer(i + 1).Valid())
+        if(!pVision->theirPlayer(i + 1).Valid())
             continue;
-        CGeoPoint targetPos = pVision->TheirPlayer(i + 1).Pos();
-        float dist = std::min(BallLine.dist2Point(targetPos), 100.0);
+        CGeoPoint targetPos = pVision->theirPlayer(i + 1).Pos();
+        float dist = std::min(BallLine.dist2Point(targetPos), 1000.0);
         if(dist < passLineDist)
             passLineDist = dist;
     }
     // 计算接球转身传球需要的角度
-    CGeoPoint ballPos = pVision->Ball().Pos();
-    CVector leaderToBall = ballPos - pVision->OurPlayer(leader+1).Pos();
-    CVector leaderToPassPos = p0 - pVision->OurPlayer(leader+1).Pos();
+    CGeoPoint ballPos = pVision->ball().Pos();
+    CVector leaderToBall = ballPos - pVision->ourPlayer(leader+1).Pos();
+    CVector leaderToPassPos = p0 - pVision->ourPlayer(leader+1).Pos();
     float turnAngle = fabs(leaderToBall.dir() - leaderToPassPos.dir());
     turnAngle = turnAngle > Param::Math::PI ? 2*Param::Math::PI - turnAngle : turnAngle;
-    if(ballPos.x() < pVision->OurPlayer(leader+1).X()) turnAngle = Param::Math::PI;
+    if(ballPos.x() < pVision->ourPlayer(leader+1).X()) turnAngle = Param::Math::PI;
     // 安全性 计算最近的敌方车的距离
     float closestEnemyDist = 9999;
     for (int i=0; i < Param::Field::MAX_PLAYER_NUM; i++) {
-        if(!pVision->TheirPlayer(i+1).Valid())
+        if(!pVision->theirPlayer(i+1).Valid())
             continue;
-        if(Utils::InTheirPenaltyArea(pVision->TheirPlayer(i+1).Pos(), 0))
+        if(Utils::InTheirPenaltyArea(pVision->theirPlayer(i+1).Pos(), 0))
             continue;
-        if(pVision->TheirPlayer(i+1).Pos().dist(p0) < closestEnemyDist)
-            closestEnemyDist = pVision->TheirPlayer(i+1).Pos().dist(p0);
+        if(pVision->theirPlayer(i+1).Pos().dist(p0) < closestEnemyDist)
+            closestEnemyDist = pVision->theirPlayer(i+1).Pos().dist(p0);
     }
     // 下底传中
     float underPass = (p0.x() < Param::Field::PITCH_LENGTH/2 && p0.x() > Param::Field::PITCH_LENGTH/2 - Param::Field::PENALTY_AREA_DEPTH) ? 1 : 0;
@@ -608,7 +609,7 @@ std::vector<float> CUDAModule::evaluateFunc(CGeoPoint candidate, EvaluateMode mo
 //    GDebugEngine::Instance()->gui_debug_msg(p, "IP",COLOR_RED);
 //    GDebugEngine::Instance()->gui_debug_msg(q,"IQ", COLOR_RED);
     for(int i = 1; i < Param::Field::MAX_PLAYER; i++) {
-        const PlayerVisionT& enemy = pVision->TheirPlayer(i);
+        const PlayerVisionT& enemy = pVision->theirPlayer(i);
         if (!Utils::InTheirPenaltyArea(enemy.Pos(), 0) && Utils::InTheirPenaltyArea(enemy.Pos(), 50)) {
             float pTime = WorldModel::Instance()->preditTheirGuard(enemy, p);
             float qTime = WorldModel::Instance()->preditTheirGuard(enemy, q);
@@ -627,17 +628,17 @@ std::vector<float> CUDAModule::evaluateFunc(CGeoPoint candidate, EvaluateMode mo
 //    float candiDir = (candidate - ball.Pos()).dir();
 //    float candiDist = candidate.dist(ball.Pos());
     for (int i = 1; i <= Param::Field::MAX_PLAYER; i++) {
-        if(pVision->TheirPlayer(i).Valid()) {
-            const PlayerVisionT& enemy = pVision->TheirPlayer(i);
-            float baseDir = (enemy.Pos() - vision->Ball().Pos()).dir();
-            float baseDist = enemy.Pos().dist(vision->Ball().Pos());
+        if(pVision->theirPlayer(i).Valid()) {
+            const PlayerVisionT& enemy = pVision->theirPlayer(i);
+            float baseDir = (enemy.Pos() - vision->ball().Pos()).dir();
+            float baseDist = enemy.Pos().dist(vision->ball().Pos());
 //            if (fabs(Utils::Normalize(candiDir - baseDir)) < RUNPOS_PARAM::maxSectorDir && candiDist > baseDist) {
 //                candiDir = fabs(Utils::Normalize(candiDir - baseDir));
 //                candiDist = (candiDist - baseDist) > RUNPOS_PARAM::maxSectorDist ? RUNPOS_PARAM::maxSectorDist : candiDist - baseDist;
 //            }
-            if (fabs(Utils::Normalize((candidate - vision->Ball().Pos()).dir() - baseDir)) < RUNPOS_PARAM::maxSectorDir && candidate.dist(vision->Ball().Pos()) > baseDist) {
-                candiDir = std::min(fabs(Utils::Normalize((candidate - vision->Ball().Pos()).dir() - baseDir)), double(candiDir));
-                candiDist = std::min(candidate.dist(vision->Ball().Pos()), double(candiDist));
+            if (fabs(Utils::Normalize((candidate - vision->ball().Pos()).dir() - baseDir)) < RUNPOS_PARAM::maxSectorDir && candidate.dist(vision->ball().Pos()) > baseDist) {
+                candiDir = std::min(fabs(Utils::Normalize((candidate - vision->ball().Pos()).dir() - baseDir)), double(candiDir));
+                candiDist = std::min(candidate.dist(vision->ball().Pos()), double(candiDist));
             }
         }
     }

@@ -4,7 +4,7 @@
 #include "kalmanfilterdir.h"
 
 #include <singleton.hpp>
-#include <messageformat.h>
+#include "messageformat.h"
 /**
  * @brief main class of process robot
  */
@@ -14,26 +14,25 @@ class CDealRobot {
     void run();
     void mergeRobot();
     void selectRobot();
-    void updateVel(int team, ReceiveVisionMessage& result);
+    void updateVel(ReceiveVisionMessage& result);
 //    bool updateCommand(ZSS::Protocol::Robot_Command command);
 
   private:
-    Robot robotSeqence[2][PARAM::ROBOTMAXID][PARAM::CAMERA];
+    Robot robotSeqence[PARAM::TEAMS][PARAM::ROBOTMAXID][PARAM::CAMERA];
     ReceiveVisionMessage result;
-    Robot sortTemp[2][PARAM::ROBOTMAXID];
-    Robot lastRobot[2][PARAM::ROBOTMAXID];
-    Robot currentRobot[2][PARAM::ROBOTMAXID];
-    void init();
-    double posDist(CGeoPoint, CGeoPoint);
-    double calculateWeight(int camID, CGeoPoint roboPos);
-    void sortRobot(int);
-    bool isOnField(CGeoPoint);
-    KalmanFilter _kalmanFilter[2][PARAM::ROBOTMAXID];
-    KalmanFilter _dirFilter[2][PARAM::ROBOTMAXID];
-    bool filteDir;
-    int validNum[2];
+    Robot sortTemp[PARAM::TEAMS][PARAM::ROBOTMAXID];
+    Robot lastRobot[PARAM::TEAMS][PARAM::ROBOTMAXID];
+    Robot currentRobot[PARAM::TEAMS][PARAM::ROBOTMAXID];
+    KalmanFilter _kalmanFilter[PARAM::TEAMS][PARAM::ROBOTMAXID];
+    KalmanFilter _dirFilter[PARAM::TEAMS][PARAM::ROBOTMAXID];
+    int validNum[PARAM::TEAMS];
     int minBelieveFrame, ourMaxLostFrame, theirMaxLostFrame, fieldWidth, fieldHeight;
-    double upPossible, decidePossible, ourDownPossible, theirDownPossible;
+
+    void init();
+    double calculateWeight(int camID, CGeoPoint roboPos);
+    void setPossibility();
+    bool isOnField(CGeoPoint);
+
 };
 typedef Singleton <CDealRobot> DealRobot;
 

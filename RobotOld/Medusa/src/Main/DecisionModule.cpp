@@ -115,7 +115,7 @@ void CDecisionModule::PlanTasks()
     for (int num = 1; num <= Param::Field::MAX_PLAYER; ++ num) {
 		// TODO 只有场上看得到且被赋予任务的小车才进行优先级排序，是否会存在问题
 		
-		if (/*_pVision->OurPlayer(num).Valid() && */TaskMediator::Instance()->getPlayerTask(num)) {
+		if (/*_pVision->ourPlayer(num).Valid() && */TaskMediator::Instance()->getPlayerTask(num)) {
 			// 存储所有已经设定好任务的队员,它的skill的priority,用来排序;
 			// cout << "in decision module" << num  <<endl;
 			taskPairList.push_back(TaskPair(num, TaskMediator::Instance()->getPlayerTaskPriority(num)));

@@ -68,7 +68,7 @@ bool  CWorldModel::KickDirArrived(int current_cycle, double kickdir, double kick
 
 	// 计算
 	//if (last_cycle[myNum-1] < current_cycle) {
-		const PlayerVisionT& me = this->_pVision->OurPlayer(myNum);
+		const PlayerVisionT& me = this->_pVision->ourPlayer(myNum);
 		// 球在身前 ： 距离 & 角度
 		bool ball_in_front = true;
         ZSS::ZParamManager::instance()->loadParam(IS_SIMULATION,"Alert/IsSimulation",false);
@@ -96,7 +96,7 @@ double CWorldModel::getPointShootMaxAngle(CGeoPoint point) {
 	CValueRange originRange(leftDir,rightDir);
 	rangeList.add(originRange);
 	for (int i = 1; i <= Param::Field::MAX_PLAYER; i++) {
-		auto& enemy = _pVision->TheirPlayer(i);
+		auto& enemy = _pVision->theirPlayer(i);
 		if (enemy.Valid()) {
 			double leftDir, rightDir;
 			{
@@ -119,9 +119,9 @@ double CWorldModel::getPointShootMaxAngle(CGeoPoint point) {
 }
 bool CWorldModel::isMarked(int num) {
 	int closestDist = 9999;
-	auto& me = _pVision->OurPlayer(num);
+	auto& me = _pVision->ourPlayer(num);
 	for (int i = 1; i < Param::Field::MAX_PLAYER; i++) {
-		auto& enemy = _pVision->TheirPlayer(i);
+		auto& enemy = _pVision->theirPlayer(i);
 		if (enemy.Valid()) {
 			double dir1 = (CGeoPoint(Param::Field::PITCH_LENGTH / 2.0, 0) - me.Pos()).dir();
 			double dir2 = (enemy.Pos() - me.Pos()).dir();
@@ -143,11 +143,11 @@ bool CWorldModel::isMarked(int num) {
 bool CWorldModel::getEnemyAmountInArea(double x1, double x2, double y1, double y2, double buffer) {
     int count = 0;
     for (int i = 1; i <= Param::Field::MAX_PLAYER; i++) {
-        if (_pVision->TheirPlayer(i).Valid()
-                && _pVision->TheirPlayer(i).Pos().x() >= x1 - buffer
-                && _pVision->TheirPlayer(i).Pos().x() <= x2 + buffer
-                && _pVision->TheirPlayer(i).Pos().y() >= y1 - buffer
-                && _pVision->TheirPlayer(i).Pos().y() <= y2 + buffer) {
+        if (_pVision->theirPlayer(i).Valid()
+                && _pVision->theirPlayer(i).Pos().x() >= x1 - buffer
+                && _pVision->theirPlayer(i).Pos().x() <= x2 + buffer
+                && _pVision->theirPlayer(i).Pos().y() >= y1 - buffer
+                && _pVision->theirPlayer(i).Pos().y() <= y2 + buffer) {
             count++;
         }
     }
@@ -157,7 +157,7 @@ bool CWorldModel::getEnemyAmountInArea(double x1, double x2, double y1, double y
 bool CWorldModel::getEnemyAmountInArea(const CGeoPoint& center ,double radius, double buffer) {
     int count = 0;
     for (int i = 1; i <= Param::Field::MAX_PLAYER; i++) {
-        if (_pVision->TheirPlayer(i).Valid() && _pVision->TheirPlayer(i).Pos().dist(center) <= radius + buffer) {
+        if (_pVision->theirPlayer(i).Valid() && _pVision->theirPlayer(i).Pos().dist(center) <= radius + buffer) {
             count++;
         }
     }
@@ -167,11 +167,11 @@ bool CWorldModel::getEnemyAmountInArea(const CGeoPoint& center ,double radius, d
 bool CWorldModel::getOurAmountInArea(double x1, double x2, double y1, double y2, double buffer) {
     int count = 0;
     for (int i = 1; i <= Param::Field::MAX_PLAYER; i++) {
-        if (_pVision->OurPlayer(i).Valid()
-                && _pVision->OurPlayer(i).Pos().x() >= x1 - buffer
-                && _pVision->OurPlayer(i).Pos().x() <= x2 + buffer
-                && _pVision->OurPlayer(i).Pos().y() >= y1 - buffer
-                && _pVision->OurPlayer(i).Pos().y() <= y2 + buffer) {
+        if (_pVision->ourPlayer(i).Valid()
+                && _pVision->ourPlayer(i).Pos().x() >= x1 - buffer
+                && _pVision->ourPlayer(i).Pos().x() <= x2 + buffer
+                && _pVision->ourPlayer(i).Pos().y() >= y1 - buffer
+                && _pVision->ourPlayer(i).Pos().y() <= y2 + buffer) {
             count++;
         }
     }
@@ -181,7 +181,7 @@ bool CWorldModel::getOurAmountInArea(double x1, double x2, double y1, double y2,
 bool CWorldModel::getOurAmountInArea(const CGeoPoint& center ,double radius, double buffer) {
     int count = 0;
     for (int i = 1; i <= Param::Field::MAX_PLAYER; i++) {
-        if (_pVision->OurPlayer(i).Valid() && _pVision->OurPlayer(i).Pos().dist(center) <= radius + buffer) {
+        if (_pVision->ourPlayer(i).Valid() && _pVision->ourPlayer(i).Pos().dist(center) <= radius + buffer) {
             count++;
         }
     }
@@ -191,11 +191,11 @@ bool CWorldModel::getOurAmountInArea(const CGeoPoint& center ,double radius, dou
 int CWorldModel::getEnemyAmountInArea(double x1, double x2, double y1, double y2, std::vector<int>& enemyNumVec, double buffer) {
     enemyNumVec.clear();
     for (int i = 1; i <= Param::Field::MAX_PLAYER; i++) {
-        if (_pVision->TheirPlayer(i).Valid()
-                && _pVision->TheirPlayer(i).Pos().x() >= x1 - buffer
-                && _pVision->TheirPlayer(i).Pos().x() <= x2 + buffer
-                && _pVision->TheirPlayer(i).Pos().y() >= y1 - buffer
-                && _pVision->TheirPlayer(i).Pos().y() <= y2 + buffer) {
+        if (_pVision->theirPlayer(i).Valid()
+                && _pVision->theirPlayer(i).Pos().x() >= x1 - buffer
+                && _pVision->theirPlayer(i).Pos().x() <= x2 + buffer
+                && _pVision->theirPlayer(i).Pos().y() >= y1 - buffer
+                && _pVision->theirPlayer(i).Pos().y() <= y2 + buffer) {
             enemyNumVec.push_back(i);
         }
     }
@@ -205,7 +205,7 @@ int CWorldModel::getEnemyAmountInArea(double x1, double x2, double y1, double y2
 int CWorldModel::getEnemyAmountInArea(const CGeoPoint& center ,double radius, std::vector<int>& enemyNumVec, double buffer) {
     enemyNumVec.clear();
     for (int i = 1; i <= Param::Field::MAX_PLAYER; i++) {
-        if (_pVision->TheirPlayer(i).Valid() && _pVision->TheirPlayer(i).Pos().dist(center) <= radius + buffer) {
+        if (_pVision->theirPlayer(i).Valid() && _pVision->theirPlayer(i).Pos().dist(center) <= radius + buffer) {
             enemyNumVec.push_back(i);
         }
     }
@@ -215,11 +215,11 @@ int CWorldModel::getEnemyAmountInArea(const CGeoPoint& center ,double radius, st
 int CWorldModel::getOurAmountInArea(double x1, double x2, double y1, double y2, std::vector<int>& ourNumVec, double buffer) {
     ourNumVec.clear();
     for (int i = 1; i <= Param::Field::MAX_PLAYER; i++) {
-        if (_pVision->OurPlayer(i).Valid()
-                && _pVision->OurPlayer(i).Pos().x() >= x1 - buffer
-                && _pVision->OurPlayer(i).Pos().x() <= x2 + buffer
-                && _pVision->OurPlayer(i).Pos().y() >= y1 - buffer
-                && _pVision->OurPlayer(i).Pos().y() <= y2 + buffer) {
+        if (_pVision->ourPlayer(i).Valid()
+                && _pVision->ourPlayer(i).Pos().x() >= x1 - buffer
+                && _pVision->ourPlayer(i).Pos().x() <= x2 + buffer
+                && _pVision->ourPlayer(i).Pos().y() >= y1 - buffer
+                && _pVision->ourPlayer(i).Pos().y() <= y2 + buffer) {
             ourNumVec.push_back(i);
         }
     }
@@ -229,7 +229,7 @@ int CWorldModel::getOurAmountInArea(double x1, double x2, double y1, double y2, 
 int CWorldModel::getOurAmountInArea(const CGeoPoint& center ,double radius, std::vector<int>& ourNumVec, double buffer) {
     ourNumVec.clear();
     for (int i = 1; i <= Param::Field::MAX_PLAYER; i++) {
-        if (_pVision->OurPlayer(i).Valid() && _pVision->OurPlayer(i).Pos().dist(center) <= radius + buffer) {
+        if (_pVision->ourPlayer(i).Valid() && _pVision->ourPlayer(i).Pos().dist(center) <= radius + buffer) {
             ourNumVec.push_back(i);
         }
     }

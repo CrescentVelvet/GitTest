@@ -73,12 +73,12 @@ void CMarking::plan(const CVisionModule* pVision)
 	static bool is_first = true;
 	
 	//内部状态进行重置
-	if ( pVision->Cycle() - _lastCycle > Param::Vision::FRAME_RATE * 0.1 )
+	if ( pVision->getCycle() - _lastCycle > Param::Vision::FRAME_RATE * 0.1 )
 	{
 		setState(BEGINNING);
 	}
 
-	const MobileVisionT& ball = pVision->Ball();
+	const MobileVisionT& ball = pVision->ball();
 	int vecNumber = task().executor;                                 //我方小车
 	int enemyNum = task().ball.Sender;                             //敌方
 	bool front = task().ball.front;
@@ -98,13 +98,13 @@ void CMarking::plan(const CVisionModule* pVision)
 		//cout << "in?"<< endl;
 		markPos = MarkingPosV2::Instance()->getMarkingPosByNum(pVision,enemyNum);
 	}else markPos = task().player.pos;
-	//cout << pVision->OurPlayer(vecNumber).Pos().x()<<" "<< pVision->OurPlayer(vecNumber).Pos().y() <<"-----"<<markPos.x()<<" "<<markPos.y()<< endl;
+	//cout << pVision->ourPlayer(vecNumber).Pos().x()<<" "<< pVision->ourPlayer(vecNumber).Pos().y() <<"-----"<<markPos.x()<<" "<<markPos.y()<< endl;
 	//向worldModel中注册盯人信息，重要！！
 	//WorldModel::Instance()->setMarkList(enemyNum,vecNumber,pVision->Cycle());
 	DefenceInfo::Instance()->setMarkList(pVision,vecNumber,enemyNum);
 
-	const PlayerVisionT& me = pVision->OurPlayer(vecNumber);
-	const PlayerVisionT& enemy = pVision->TheirPlayer(enemyNum);
+	const PlayerVisionT& me = pVision->ourPlayer(vecNumber);
+	const PlayerVisionT& enemy = pVision->theirPlayer(enemyNum);
 	CGeoPoint enemyPos = enemy.Pos();
 	CGeoPoint mePos = me.Pos();	
 	CVector markPos2me = mePos - markPos;
@@ -194,7 +194,7 @@ void CMarking::plan(const CVisionModule* pVision)
 	MarkingTask.player.is_specify_ctrl_method = true;
 	MarkingTask.player.specified_ctrl_method = CMU_TRAJ;
 	//当是角球区域，盯人车对着球
-	if (("TheirIndirectKick" == refMsg || "TheirDirectKick" == refMsg || "GameStop" == refMsg) && pVision->Ball().X()<0 ) {
+	if (("TheirIndirectKick" == refMsg || "TheirDirectKick" == refMsg || "GameStop" == refMsg) && pVision->ball().X()<0 ) {
 		//cout<<"markingCorner"<<endl;
 		MarkingTask.player.angle = me2ballDir;
 	}
@@ -211,7 +211,7 @@ void CMarking::plan(const CVisionModule* pVision)
 	}
 	bool checkKickOffArea = false;
 	if ("TheirIndirectKick" == refMsg || "TheirDirectKick" == refMsg){
-		if (pVision->Ball().Y() >0){
+		if (pVision->ball().Y() >0){
 			kickOffSide[vecNumber] = false;
 		}else{
 			kickOffSide[vecNumber] = true;
@@ -290,7 +290,7 @@ void CMarking::plan(const CVisionModule* pVision)
 
 	GDebugEngine::Instance()->gui_debug_msg(MarkingTask.player.pos,"M",COLOR_WHITE);
 	//cout<<enemyNum<<": "<<pVision->TheirPlayer(enemyNum).Vel().mod()<<" "<<vecNumber<<endl;
-	_lastCycle = pVision->Cycle();
+	_lastCycle = pVision->getCycle();
 	CStatedTask::plan(pVision);
 }
 

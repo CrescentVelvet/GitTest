@@ -55,8 +55,8 @@ void CGoAndTurnKickV4::plan(const CVisionModule * pVision)
     needdribble = flag & PlayerStatus::DRIBBLE;
     safeMode = flag & PlayerStatus::SAFE;
 
-    const MobileVisionT& ball = pVision->Ball();
-    const PlayerVisionT& me = pVision->OurPlayer(robotNum);
+    const MobileVisionT& ball = pVision->ball();
+    const PlayerVisionT& me = pVision->ourPlayer(robotNum);
 
     TaskT chase_kick_task(task());
     CGeoLine ballLine(ball.RawPos(), ball.Vel().dir());//球线
@@ -296,10 +296,10 @@ CPlayerCommand* CGoAndTurnKickV4::execute(const CVisionModule* pVision)
 
 int CGoAndTurnKickV4::getStaticDir(const CVisionModule * pVision, int staticDir)
 {
-    const MobileVisionT& ball = pVision->Ball();
+    const MobileVisionT& ball = pVision->ball();
     const int robotNum = task().executor;
     const CGeoPoint target = task().player.pos;
-    const PlayerVisionT& me = pVision->OurPlayer(robotNum);
+    const PlayerVisionT& me = pVision->ourPlayer(robotNum);
     const CVector me2Target = target - me.Pos();
     double ball2MeDir = (me.Pos() - ball.Pos()).dir();
     double finalDir = me2Target.dir();

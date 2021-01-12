@@ -23,27 +23,27 @@ namespace{
     bool DRAW_TARGET = false;
     bool DRAW_DEBUG_MSG = false;
 
-    double MAX_DIST_NOT_STOP = 300;
-    double MIN_DIST_NOT_STOP = 60;
+    double MAX_DIST_NOT_STOP = 300*10;
+    double MIN_DIST_NOT_STOP = 60*10;
 
     /// 用于解决到点晃动的问题
-    const double DIST_REACH_CRITICAL = 2;	// [unit : cm]
+    const double DIST_REACH_CRITICAL = 2*10;	// [unit : cm]
     const double SlowFactor = 0.5;
     const double FastFactor = 1.2;
 
     /// 底层运动控制参数 ： 默认增大平动的控制性能
-    double MAX_TRANSLATION_SPEED = 400;
-    double MAX_TRANSLATION_ACC = 600;
+    double MAX_TRANSLATION_SPEED = 400*10;
+    double MAX_TRANSLATION_ACC = 600*10;
     double MAX_ROTATION_SPEED = 5;
     double MAX_ROTATION_ACC = 15;
-    double MAX_TRANSLATION_DEC = 650;
+    double MAX_TRANSLATION_DEC = 650*10;
 
-    const double TRANSLATION_ACC_LIMIT = 500;
-    double TRANSLATION_SPEED_LIMIT = 350;
+    const double TRANSLATION_ACC_LIMIT = 500*10;
+    double TRANSLATION_SPEED_LIMIT = 350*10;
     const double TRANSLATION_ROTATE_ACC_LIMIT = 50;
 
 
-    double stopBallAvoidDist = 50;
+    double stopBallAvoidDist = 50*10;
     /// 守门员专用
     double MAX_TRANSLATION_SPEED_GOALIE;
     double MAX_TRANSLATION_ACC_GOALIE;
@@ -71,22 +71,22 @@ using namespace Param::Vehicle::V2;
 /// 构造函数 ： 参数初始化
 CGotoPositionV2::CGotoPositionV2()
 {
-    ZSS::ZParamManager::instance()->loadParam(MAX_DIST_NOT_STOP,"CGotoPositionV2/MaxDistNotStop",60);
-    ZSS::ZParamManager::instance()->loadParam(MIN_DIST_NOT_STOP,"CGotoPositionV2/MinDistNotStop",20);
+    ZSS::ZParamManager::instance()->loadParam(MAX_DIST_NOT_STOP,"CGotoPositionV2/MaxDistNotStop",60*10);
+    ZSS::ZParamManager::instance()->loadParam(MIN_DIST_NOT_STOP,"CGotoPositionV2/MinDistNotStop",20*10);
 
-    ZSS::ZParamManager::instance()->loadParam(MAX_TRANSLATION_SPEED,"CGotoPositionV2/MNormalSpeed",300);
-    ZSS::ZParamManager::instance()->loadParam(MAX_TRANSLATION_ACC,"CGotoPositionV2/MNormalAcc",450);
-    ZSS::ZParamManager::instance()->loadParam(MAX_TRANSLATION_DEC,"CGotoPositionV2/MNormalDec",450);
-    ZSS::ZParamManager::instance()->loadParam(MAX_TRANSLATION_SPEED_BACK,"CGotoPositionV2/MBackSpeed",300);
-    ZSS::ZParamManager::instance()->loadParam(MAX_TRANSLATION_ACC_BACK,"CGotoPositionV2/MBackAcc",450);
-    ZSS::ZParamManager::instance()->loadParam(MAX_TRANSLATION_DEC_BACK,"CGotoPositionV2/MBackDec",450);
+    ZSS::ZParamManager::instance()->loadParam(MAX_TRANSLATION_SPEED,"CGotoPositionV2/MNormalSpeed",300*10);
+    ZSS::ZParamManager::instance()->loadParam(MAX_TRANSLATION_ACC,"CGotoPositionV2/MNormalAcc",450*10);
+    ZSS::ZParamManager::instance()->loadParam(MAX_TRANSLATION_DEC,"CGotoPositionV2/MNormalDec",450*10);
+    ZSS::ZParamManager::instance()->loadParam(MAX_TRANSLATION_SPEED_BACK,"CGotoPositionV2/MBackSpeed",300*10);
+    ZSS::ZParamManager::instance()->loadParam(MAX_TRANSLATION_ACC_BACK,"CGotoPositionV2/MBackAcc",450*10);
+    ZSS::ZParamManager::instance()->loadParam(MAX_TRANSLATION_DEC_BACK,"CGotoPositionV2/MBackDec",450*10);
 
     ZSS::ZParamManager::instance()->loadParam(MAX_ROTATION_ACC_BACK,"CGotoPositionV2/MBackRotateAcc",15);
     ZSS::ZParamManager::instance()->loadParam(MAX_ROTATION_SPEED_BACK,"CGotoPositionV2/MBackRotateSpeed",15);
 
-    ZSS::ZParamManager::instance()->loadParam(MAX_TRANSLATION_SPEED_GOALIE,"CGotoPositionV2/MGoalieSpeed",300);
-    ZSS::ZParamManager::instance()->loadParam(MAX_TRANSLATION_ACC_GOALIE,"CGotoPositionV2/MGoalieAcc",450);
-    ZSS::ZParamManager::instance()->loadParam(MAX_TRANSLATION_DEC_GOALIE,"CGotoPositionV2/MGoalieDec",450);
+    ZSS::ZParamManager::instance()->loadParam(MAX_TRANSLATION_SPEED_GOALIE,"CGotoPositionV2/MGoalieSpeed",300*10);
+    ZSS::ZParamManager::instance()->loadParam(MAX_TRANSLATION_ACC_GOALIE,"CGotoPositionV2/MGoalieAcc",450*10);
+    ZSS::ZParamManager::instance()->loadParam(MAX_TRANSLATION_DEC_GOALIE,"CGotoPositionV2/MGoalieDec",450*10);
 
     ZSS::ZParamManager::instance()->loadParam(MAX_ROTATION_ACC_GOALIE,"CGotoPositionV2/MGoalieRotateAcc",15);
     ZSS::ZParamManager::instance()->loadParam(MAX_ROTATION_SPEED_GOALIE,"CGotoPositionV2/MGoalieRotateSpeed",15);
@@ -99,7 +99,7 @@ CGotoPositionV2::CGotoPositionV2()
     ZSS::ZParamManager::instance()->loadParam(Y_COMPENSATE_K,"CGotoPositionV2/YCompensateK",0.0035);
     ZSS::ZParamManager::instance()->loadParam(Y_COMPENSATE_B,"CGotoPositionV2/YCompensateB",-0.1042);
 
-    ZSS::ZParamManager::instance()->loadParam(TRANSLATION_SPEED_LIMIT,"CGotoPositionV2/NormalSpeedLimit",400); //下发速度最大限制，守门员、后卫除外
+    ZSS::ZParamManager::instance()->loadParam(TRANSLATION_SPEED_LIMIT,"CGotoPositionV2/NormalSpeedLimit",400*10); //下发速度最大限制，守门员、后卫除外
 }
 
 /// 输出流 ： 参数显示
@@ -121,17 +121,17 @@ CPlayerCommand* CGotoPositionV2::execute(const CVisionModule* pVision)
     /* 任务参数解析                                                         */
     /************************************************************************/
     const int vecNumber = task().executor;
-    const PlayerVisionT& self = pVision->OurPlayer(vecNumber);
+    const PlayerVisionT& self = pVision->ourPlayer(vecNumber);
     const CGeoPoint& vecPos = self.Pos();							// 小车的位置
     CGeoPoint target = task().player.pos;							// 目标的位置
     playerFlag = task().player.flag;
     const bool needBreakRotate = (playerFlag & PlayerStatus::BREAK_THROUGH);
     nonZeroMode mode =  FAST;
-    const bool isBack = (vecNumber == PlayInterface::Instance()->getNumbByRealIndex(TaskMediator::Instance()->leftBack())) ||
-                         (vecNumber == PlayInterface::Instance()->getNumbByRealIndex(TaskMediator::Instance()->rightBack())) ||
-                        (vecNumber == PlayInterface::Instance()->getNumbByRealIndex(TaskMediator::Instance()->singleBack())) ||
-                        (vecNumber == PlayInterface::Instance()->getNumbByRealIndex(TaskMediator::Instance()->sideBack())) ||
-                        (vecNumber == PlayInterface::Instance()->getNumbByRealIndex(TaskMediator::Instance()->defendMiddle()));
+    const bool isBack = (vecNumber == TaskMediator::Instance()->leftBack()) ||
+                         (vecNumber == TaskMediator::Instance()->rightBack()) ||
+                        (vecNumber == TaskMediator::Instance()->singleBack()) ||
+                        (vecNumber == TaskMediator::Instance()->sideBack()) ||
+                        (vecNumber == TaskMediator::Instance()->defendMiddle());
 
     const bool avoidBallCircle = (WorldModel::Instance()->CurrentRefereeMsg() == "GameStop") || (playerFlag & PlayerStatus::AVOID_STOP_BALL_CIRCLE);
     /************************************************************************/
@@ -141,17 +141,17 @@ CPlayerCommand* CGotoPositionV2::execute(const CVisionModule* pVision)
         target = self.Pos();
         cout << "Target Pos is NaN, vecNumber is : " << vecNumber << endl;
     }
-    double arrivedDist = self.Vel().mod() * 0.12 + 0.1;
+    double arrivedDist = self.Vel().mod() * 0.12*10 + 0.1*10;
 
     //如果是后卫且距离禁区比较远，需要打开DSS避障，防止刚匹配的后卫发生碰撞
     //在禁区边的后卫允许撞车，否则容易被进球!!!
-    if(isBack && !Utils::InOurPenaltyArea(vecPos, 40)) {
+    if(isBack && !Utils::InOurPenaltyArea(vecPos, 40*10)) {
         playerFlag |= PlayerStatus::ALLOW_DSS;
     }
 
     double avoidLength = Param::Vehicle::V2::PLAYER_SIZE;
     if ((playerFlag & PlayerStatus::FREE_KICK)) {
-        avoidLength += 20.0;
+        avoidLength += 20.0*10;
     }
 
     bool ignoreNotStop = false;
@@ -165,7 +165,7 @@ CPlayerCommand* CGotoPositionV2::execute(const CVisionModule* pVision)
     }
     if(avoidBallCircle) {
         double buffer = Param::Vehicle::V2::PLAYER_SIZE;
-        CGeoPoint ballPos = pVision->Ball().Pos();
+        CGeoPoint ballPos = pVision->ball().Pos();
         target = Utils::MakeOutOfCircle(ballPos, stopBallAvoidDist, target, buffer);
         if(self.Pos().dist(ballPos) < stopBallAvoidDist + buffer)
             target = Utils::MakeOutOfCircle(self.Pos(), stopBallAvoidDist, target, buffer);
@@ -208,10 +208,10 @@ CPlayerCommand* CGotoPositionV2::execute(const CVisionModule* pVision)
             if(taskVel.mod() < 1e-8) {
                 CVector velUnit = player2target / player2target.mod();
                 double v0 = self.Vel() * velUnit;
-                double speed = 300.0;
+                double speed = 300.0*10;
                 if(speed > 0.8 * sqrt(pow(v0, 2) + 2 * capability.maxAccel * distToTarget))
                     speed = 0.8 * sqrt(pow(v0, 2) + 2 * capability.maxAccel * distToTarget);
-                if(distToTarget < 10) {
+                if(distToTarget < 10*10) {
                     speed = 0.0;
                 }
                 ignoreNotStop = true;
@@ -265,18 +265,20 @@ CPlayerCommand* CGotoPositionV2::execute(const CVisionModule* pVision)
     if (playerFlag & PlayerStatus::ALLOW_DSS) {
 
         CVector tempVel = DynamicSafetySearch::Instance()->SafetySearch(vecNumber, globalVel, pVision, priority, target, task().player.flag, usedtime, task().player.max_acceleration);
-        if (WorldModel::Instance()->CurrentRefereeMsg() == "GameStop" && tempVel.mod() > 150) { // 不加这个在stop的时候车可能会冲出去
+        if (WorldModel::Instance()->CurrentRefereeMsg() == "GameStop" && tempVel.mod() > 150*10) { // 不加这个在stop的时候车可能会冲出去
         }
         else {
+//            GDebugEngine::Instance()->gui_debug_msg(self.Pos(), QString("%1").arg(task().player.max_acceleration).toLatin1(),COLOR_BLUE);
+
             globalVel = tempVel;
         }
     }
     if(DRAW_DEBUG_MSG) {
         GDebugEngine::Instance()->gui_debug_msg(self.Pos(), QString("originVel: (%1, %2)  %3").arg(self.Vel().x()).arg(self.Vel().y()).arg(self.Vel().mod()).toLatin1());
-        GDebugEngine::Instance()->gui_debug_msg(self.Pos() + CVector(0, 20), QString("finalVel: (%1, %2)").arg(globalVel.x()).arg(globalVel.y()).toLatin1());
-        GDebugEngine::Instance()->gui_debug_msg(self.Pos() + CVector(0, 40), QString("deltaVel: %1").arg(globalVel.mod() - self.Vel().mod()).toLatin1());
-        GDebugEngine::Instance()->gui_debug_msg(self.Pos() + CVector(0, 60), QString("acc: %1").arg(capability.maxAccel).toLatin1());
-        GDebugEngine::Instance()->gui_debug_msg(self.Pos() + CVector(0, 80), QString("targetVel: (%1, %2)").arg(task().player.vel.x()).arg(task().player.vel.y()).toLatin1());
+        GDebugEngine::Instance()->gui_debug_msg(self.Pos() + CVector(0, 20*10), QString("finalVel: (%1, %2)").arg(globalVel.x()).arg(globalVel.y()).toLatin1());
+        GDebugEngine::Instance()->gui_debug_msg(self.Pos() + CVector(0, 40*10), QString("deltaVel: %1").arg(globalVel.mod() - self.Vel().mod()).toLatin1());
+        GDebugEngine::Instance()->gui_debug_msg(self.Pos() + CVector(0, 60*10), QString("acc: %1").arg(capability.maxAccel).toLatin1());
+        GDebugEngine::Instance()->gui_debug_msg(self.Pos() + CVector(0, 80*10), QString("targetVel: (%1, %2)").arg(task().player.vel.x()).arg(task().player.vel.y()).toLatin1());
     }
 
     /************************************************************************/
@@ -313,7 +315,7 @@ CPlayerCommand* CGotoPositionV2::execute(const CVisionModule* pVision)
     if (dribble) {
         dribblePower = DRIBBLE_NORAML;
     }
-
+//    GDebugEngine::Instance()->gui_debug_msg(self.Pos(), QString("%1").arg(localVel.mod()).toLatin1(),COLOR_BLUE);
     /// 生成并返回控制指令
     return pCmdFactory->newCommand(CPlayerSpeedV2(vecNumber, localVel.x(), localVel.y(), rotVel, dribblePower));
 //        return pCmdFactory->newCommand(CPlayerSpeedV2(vecNumber, 0, 0, rotVel, dribblePower));
@@ -321,18 +323,18 @@ CPlayerCommand* CGotoPositionV2::execute(const CVisionModule* pVision)
 
 PlayerCapabilityT CGotoPositionV2::setCapability(const CVisionModule *pVision) {
     const int vecNumber = task().executor;
-    const bool isGoalie = (vecNumber == PlayInterface::Instance()->getNumbByRealIndex(TaskMediator::Instance()->goalie()));
-    const bool isBack = (vecNumber == PlayInterface::Instance()->getNumbByRealIndex(TaskMediator::Instance()->leftBack())) ||
-                         (vecNumber == PlayInterface::Instance()->getNumbByRealIndex(TaskMediator::Instance()->rightBack())) ||
-                        (vecNumber == PlayInterface::Instance()->getNumbByRealIndex(TaskMediator::Instance()->singleBack())) ||
-                        (vecNumber == PlayInterface::Instance()->getNumbByRealIndex(TaskMediator::Instance()->sideBack())) ||
-                        (vecNumber == PlayInterface::Instance()->getNumbByRealIndex(TaskMediator::Instance()->defendMiddle()));
+    const bool isGoalie = (vecNumber == TaskMediator::Instance()->goalie());
+    const bool isBack = (vecNumber == TaskMediator::Instance()->leftBack()) ||
+                         (vecNumber == TaskMediator::Instance()->rightBack()) ||
+                        (vecNumber == TaskMediator::Instance()->singleBack()) ||
+                        (vecNumber == TaskMediator::Instance()->sideBack()) ||
+                        (vecNumber == TaskMediator::Instance()->defendMiddle());
 
     const int playerFlag = task().player.flag;
     PlayerCapabilityT capability;
 
     // Traslation 确定运动参数
-    if (vecNumber == PlayInterface::Instance()->getNumbByRealIndex(TaskMediator::Instance()->goalie())) {
+    if (vecNumber == TaskMediator::Instance()->goalie()) {
         capability.maxSpeed = MAX_TRANSLATION_SPEED_GOALIE;
         capability.maxAccel = MAX_TRANSLATION_ACC_GOALIE;
         capability.maxDec = MAX_TRANSLATION_DEC_GOALIE;
@@ -365,7 +367,7 @@ PlayerCapabilityT CGotoPositionV2::setCapability(const CVisionModule *pVision) {
 
 
     if (playerFlag & PlayerStatus::SLOWLY) {
-        capability.maxSpeed = 140;
+        capability.maxSpeed = 140*10;
         capability.maxAccel *= SlowFactor;
         capability.maxDec *= SlowFactor;
         capability.maxAngularSpeed *= SlowFactor;
@@ -373,7 +375,7 @@ PlayerCapabilityT CGotoPositionV2::setCapability(const CVisionModule *pVision) {
         capability.maxAngularDec *= SlowFactor;
     }
     if (playerFlag & PlayerStatus::QUICKLY
-        || vecNumber == PlayInterface::Instance()->getNumbByRealIndex(TaskMediator::Instance()->goalie())) {
+        || vecNumber == TaskMediator::Instance()->goalie()) {
         capability.maxSpeed *= FastFactor;
         capability.maxAccel *= FastFactor;
         capability.maxDec *= FastFactor;
@@ -382,9 +384,6 @@ PlayerCapabilityT CGotoPositionV2::setCapability(const CVisionModule *pVision) {
         capability.maxAngularDec *= FastFactor;
     }
 
-    if (playerFlag & PlayerStatus::QUICKLY
-        || vecNumber == PlayInterface::Instance()->getNumbByRealIndex(TaskMediator::Instance()->goalie())) {
-    }
     if (task().player.max_acceleration > 1e-8) {
         capability.maxAccel = task().player.max_acceleration > TRANSLATION_ACC_LIMIT ? TRANSLATION_ACC_LIMIT : task().player.max_acceleration;
         if(isGoalie || isBack)
@@ -405,14 +404,14 @@ PlayerCapabilityT CGotoPositionV2::setCapability(const CVisionModule *pVision) {
     }
 
     if (WorldModel::Instance()->CurrentRefereeMsg() == "GameStop") {
-        capability.maxSpeed = 140;
+        capability.maxSpeed = 140*10;
     }
     return capability;
 }
 
 CGeoPoint CGotoPositionV2::avoidPenaltyArea(const CVisionModule* pVision, const CGeoPoint &startPos, const CGeoPoint &targetPos, const double avoidLength, const int vecNumber) {
     CGeoPoint target = targetPos;
-    const int goalieNum = PlayInterface::Instance()->getNumbByRealIndex(TaskMediator::Instance()->goalie());
+    const int goalieNum = TaskMediator::Instance()->goalie();
     const bool isGoalie = (vecNumber == goalieNum);
 
     if (!(playerFlag & PlayerStatus::NOT_AVOID_PENALTY) && !isGoalie) target = Utils::MakeInField(target, -avoidLength);
@@ -425,12 +424,12 @@ CGeoPoint CGotoPositionV2::avoidPenaltyArea(const CVisionModule* pVision, const 
         }
         else if (isTargetInOurPenaltyArea) {//目标在禁区
                 double extra_out_dist = avoidLength * 1.5;
-                while (extra_out_dist < 100) {
+                while (extra_out_dist < 100*10) {
                     target = Utils::MakeOutOfOurPenaltyArea(target, extra_out_dist);
                     bool checkOk = true;
                     for (int teammate = 1; teammate <= Param::Field::MAX_PLAYER_NUM; teammate++) {
                         if (teammate != vecNumber) {
-                            if (pVision->OurPlayer(teammate).Pos().dist(target) < avoidLength) {
+                            if (pVision->ourPlayer(teammate).Pos().dist(target) < avoidLength) {
                                 checkOk = false;
                                 break;
                             }
@@ -452,12 +451,12 @@ CGeoPoint CGotoPositionV2::avoidPenaltyArea(const CVisionModule* pVision, const 
         //modified by Wang in 2018/4/3
         else if (isTargetInTheirPenaltyArea) {
             double extraOutDist = avoidLength * 1.5;
-            while (extraOutDist < 100) {
+            while (extraOutDist < 100*10) {
                 target = Utils::MakeOutOfTheirPenaltyArea(target, extraOutDist);
                 bool checkOk = true;
                 for (int teammate = 1; teammate <= Param::Field::MAX_PLAYER_NUM; teammate++) {
                     if (teammate != vecNumber) {
-                        if (pVision->OurPlayer(teammate).Pos().dist(target) < avoidLength) {
+                        if (pVision->ourPlayer(teammate).Pos().dist(target) < avoidLength) {
                             checkOk = false;
                             break;
                         }

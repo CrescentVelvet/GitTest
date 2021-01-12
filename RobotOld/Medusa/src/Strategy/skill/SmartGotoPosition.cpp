@@ -116,7 +116,7 @@ void CSmartGotoPositionV2::plan(const CVisionModule* pVision)
     if ((lastFinalPoint[task().executor] - task().player.pos).mod() > 5) {
         lastPoint[task().executor] = task().player.pos; /// added by gjy 5.29
         lastFinalPoint[task().executor] = task().player.pos;
-        veryStart[task().executor] = pVision->OurPlayer(task().executor).Pos();
+        veryStart[task().executor] = pVision->ourPlayer(task().executor).Pos();
         isExecuting[task().executor] = false;
     }
     /************************************************************************/
@@ -125,11 +125,11 @@ void CSmartGotoPositionV2::plan(const CVisionModule* pVision)
 	playerFlag = task().player.flag;
 	const bool rec = task().player.needdribble;
 	const int vecNumber = task().executor;
-	const PlayerVisionT& self = pVision->OurPlayer(vecNumber);
+	const PlayerVisionT& self = pVision->ourPlayer(vecNumber);
 
-    const bool isGoalie = vecNumber == PlayInterface::Instance()->getNumbByRealIndex(TaskMediator::Instance()->goalie());
-    const bool isBack = (vecNumber == PlayInterface::Instance()->getNumbByRealIndex(TaskMediator::Instance()->leftBack()))
-                        || (vecNumber == PlayInterface::Instance()->getNumbByRealIndex(TaskMediator::Instance()->rightBack()));
+    const bool isGoalie = vecNumber == TaskMediator::Instance()->goalie();
+    const bool isBack = (vecNumber == TaskMediator::Instance()->leftBack())
+                        || (vecNumber == TaskMediator::Instance()->rightBack());
     bool avoidBallCircle = (WorldModel::Instance()->CurrentRefereeMsg() == "GameStop") || (WorldModel::Instance()->CurrentRefereeMsg() == "TheirKickOff");
     CGeoPoint myPos = self.Pos();
     CGeoPoint finalTargetPos = task().player.pos;
@@ -186,7 +186,7 @@ void CSmartGotoPositionV2::plan(const CVisionModule* pVision)
         obs.addObs(pVision, task(), DRAW_OBSTACLES, Param::Vehicle::V2::PLAYER_SIZE + Param::Field::BALL_SIZE + 2.0, Param::Vehicle::V2::PLAYER_SIZE + Param::Field::BALL_SIZE + 2.0, Param::Field::BALL_SIZE);
 
     if(WorldModel::Instance()->CurrentRefereeMsg() == "TheirBallPlacement") {
-        CGeoPoint segP1 = pVision->Ball().Pos(), segP2(RefereeBoxInterface::Instance()->getBallPlacementPosX(), RefereeBoxInterface::Instance()->getBallPlacementPosY());
+        CGeoPoint segP1 = pVision->ball().Pos(), segP2(RefereeBoxInterface::Instance()->getBallPlacementPosX(), RefereeBoxInterface::Instance()->getBallPlacementPosY());
         bool addObs;
         finalTargetPos = finalPointBallPlacement(myPos, finalTargetPos, segP1, segP2, avoidLength, addObs);
         if(addObs)
@@ -296,7 +296,7 @@ void CSmartGotoPositionV2::plan(const CVisionModule* pVision)
         setSubTask(TaskFactoryV2::Instance()->GotoPosition(newTask));
     }
 
-    _lastCycle = pVision->Cycle();
+    _lastCycle = pVision->getCycle();
     CPlayerTask::plan(pVision);
     return ;
 }
@@ -333,7 +333,7 @@ PlayerCapabilityT CSmartGotoPositionV2::setCapability(const CVisionModule* pVisi
     PlayerCapabilityT capability;
 
     // Traslation 确定平动运动参数
-    if (vecNumber == PlayInterface::Instance()->getNumbByRealIndex(TaskMediator::Instance()->goalie())) {
+    if (vecNumber == TaskMediator::Instance()->goalie()) {
         capability.maxSpeed = MAX_TRANSLATION_SPEED_GOALIE;
         capability.maxAccel = MAX_TRANSLATION_ACC_GOALIE;
         capability.maxDec = MAX_TRANSLATION_DEC_GOALIE;
@@ -373,7 +373,7 @@ PlayerCapabilityT CSmartGotoPositionV2::setCapability(const CVisionModule* pVisi
         capability.maxAngularDec *= SlowFactor;
     }
     if (playerFlag & PlayerStatus::QUICKLY
-        || vecNumber == PlayInterface::Instance()->getNumbByRealIndex(TaskMediator::Instance()->goalie())) {
+        || vecNumber == TaskMediator::Instance()->goalie()) {
         capability.maxSpeed *= FastFactor;
         capability.maxAccel *= FastFactor;
         capability.maxDec *= FastFactor;
@@ -383,7 +383,7 @@ PlayerCapabilityT CSmartGotoPositionV2::setCapability(const CVisionModule* pVisi
     }
 
     if (playerFlag & PlayerStatus::QUICKLY
-        || vecNumber == PlayInterface::Instance()->getNumbByRealIndex(TaskMediator::Instance()->goalie())) {
+        || vecNumber == TaskMediator::Instance()->goalie()) {
     }
 
     if (task().player.max_acceleration > 1e-8) { // 2014-03-26 修改, 因为double数不能进行相等判断

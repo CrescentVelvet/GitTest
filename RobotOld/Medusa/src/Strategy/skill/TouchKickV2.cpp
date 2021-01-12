@@ -46,8 +46,8 @@ void CTouchKickV2::plan(const CVisionModule * pVision)
     needdribble = flag & PlayerStatus::DRIBBLE;
     safeMode = flag & PlayerStatus::SAFE;
 
-    const MobileVisionT& ball = pVision->Ball();
-    const PlayerVisionT& me = pVision->OurPlayer(robotNum);
+    const MobileVisionT& ball = pVision->ball();
+    const PlayerVisionT& me = pVision->ourPlayer(robotNum);
 
     TaskT chase_kick_task(task());
     //double ballArriveTime = 0;
@@ -237,9 +237,9 @@ CPlayerCommand* CTouchKickV2::execute(const CVisionModule* pVision)
 
 int CTouchKickV2::getStaticDir(const CVisionModule * pVision, int staticDir)
 {
-    const MobileVisionT& ball = pVision->Ball();
+    const MobileVisionT& ball = pVision->ball();
     const int robotNum = task().executor;
-    const PlayerVisionT& me = pVision->OurPlayer(robotNum);
+    const PlayerVisionT& me = pVision->ourPlayer(robotNum);
 
     double ball2MeDir = (me.Pos() - ball.Pos()).dir();
     double finalDir = task().player.angle;

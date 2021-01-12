@@ -26,8 +26,8 @@ void CDrawScore::storePoint(int px, int py, double score) {
 
 void CDrawScore::sendPackages() {
     std::sort(rawScores.begin(), rawScores.end(), [](const RawScore& a, const RawScore& b){return a.score < b.score;});
-    if (messiDebug)
-        GDebugEngine::Instance()->gui_debug_msg(CGeoPoint(100, 380), QString("MaxScore: %1  MinScore: %2").arg(QString::number(rawScores.back().score)).arg(QString::number(rawScores.begin()->score)).toLatin1(),COLOR_ORANGE);
+    // if (messiDebug)
+    //     GDebugEngine::Instance()->gui_debug_msg(CGeoPoint(100, 380), QString("MaxScore: %1  MinScore: %2").arg(QString::number(rawScores.back().score)).arg(QString::number(rawScores.begin()->score)).toLatin1(),COLOR_ORANGE);
     //将点均分为若干个颜色,现在情况为把所有点按分值大小分配为256部分，每部分对应一个颜色
     ZSS::Protocol::Debug_Score* score;
     ZSS::Protocol::Point* p;

@@ -445,6 +445,7 @@
 #define __ZSS_SERVER_H__
 #include "param.h"
 #include "geometry.h"
+#include "staticparams.h"
 struct PosT {
     PosT(): valid(0), x(0), y(0) {}
     int valid;
@@ -472,8 +473,8 @@ enum ballState {received, touched, kicked, struggle, chip_pass, flat_pass};
 
 struct VisualInfoT {
     VisualInfoT(): cycle(0), BallState(received), BallLastTouch(0), mode(0) {}
-    int cycle;
-    VehicleInfoT player[ 2 * Param::Field::MAX_PLAYER_NUM];//前一半永远存放我方车
+    unsigned int cycle;
+    VehicleInfoT player[PARAM::TEAMS][Param::Field::MAX_PLAYER_NUM];
     PosT ball;
     PosT rawBall;
     PosT chipPredict;
@@ -482,10 +483,8 @@ struct VisualInfoT {
     int BallLastTouch;
     int mode;
     int next_command;
-    unsigned char ourRobotIndex[ Param::Field::MAX_PLAYER_NUM];
     //unsigned char ourRobotIndexBefore[ Param::Field::MAX_PLAYER_NUM] = {};
     int before_cycle[ 2 * Param::Field::MAX_PLAYER_NUM] = {};
-    unsigned char theirRobotIndex[ Param::Field::MAX_PLAYER_NUM] = {};
     // unsigned char theirRobotIndexBefore[ Param::Field::MAX_PLAYER_NUM] = {};
     //PosT imageBall;
     PosT ballPlacePosition;

@@ -48,7 +48,8 @@ namespace
 
 	const int State_Counter_Num=5;
 
-	const double crossWiseFactor[13]={1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5};
+//	const double crossWiseFactor[13]={1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5};
+    const double crossWiseFactor = 1.5;
 	const double verticalFactor[13]= {1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5,1.5};
 
 	const double MaxSpeed=350;
@@ -69,17 +70,17 @@ CChaseKickV2::CChaseKickV2()
 void CChaseKickV2::plan(const CVisionModule* pVision)
 {
 	//刚进入本skill，为初始状态，即BEGINNING，需要做一些清理工作
-	if ( pVision->Cycle() - _lastCycle > Param::Vision::FRAME_RATE * 0.1 ){
+	if ( pVision->getCycle() - _lastCycle > Param::Vision::FRAME_RATE * 0.1 ){
 		setState(BEGINNING);
 		_goKickCouter=0;
 		_compensateDir=0;
 	}
 
 	_directCommand = NULL;
-	const MobileVisionT& ball = pVision->Ball();
+    const MobileVisionT& ball = pVision->ball();
 	const int robotNum = task().executor;
-	const int realNum=PlayInterface::Instance()->getRealIndexByNum(robotNum);
-	const PlayerVisionT& me = pVision->OurPlayer(robotNum);
+//	const int realNum=PlayInterface::Instance()->getRealIndexByNum(robotNum);
+    const PlayerVisionT& me = pVision->ourPlayer(robotNum);
 //	const int playerFlag = task().player.flag;
 
 	const CGeoPoint predict_posBall = BallSpeedModel::Instance()->posForTime(20, pVision);	//预测点
@@ -87,7 +88,7 @@ void CChaseKickV2::plan(const CVisionModule* pVision)
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	//2.当前传感信息，主要是图像信息
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	const CVector meVel=pVision->OurRawPlayerSpeed(robotNum);
+	const CVector meVel=pVision->getOurRawPlayerSpeed(robotNum);
 	const double meSpeed = meVel.mod();
 	double finalKickDir = task().player.angle;									//设置的踢球方向
 
@@ -355,7 +356,7 @@ void CChaseKickV2::plan(const CVisionModule* pVision)
 			}
 		}	
 		//记录当前周期
-		_lastCycle = pVision->Cycle();
+		_lastCycle = pVision->getCycle();
 		///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		//5.根据当前信息综合决定球的预测位置: 离球越近或者是球速越小，预测量应随之越小//对预测位置加了修正
 		// TODO　TODO  TODO
@@ -439,7 +440,7 @@ void CChaseKickV2::plan(const CVisionModule* pVision)
 			//speedUpDistanceX则影响球车纵向距离，和球速方向相关，大角度时应为负值。
 			//speedUpVel设置为球速方便后面跟球，
             //cout<<"speed Up"<<endl;
-            speedUpDistanceY=fabs(kickPos.y()-me.Pos().y())+crossWiseFactor[realNum]*Param::Vehicle::V2::PLAYER_SIZE+max((ballSpeed-100)*sin(fabs(ballVelDir-Param::Math::PI*20/180))*0.25,0.0);
+            speedUpDistanceY=fabs(kickPos.y()-me.Pos().y())+crossWiseFactor*Param::Vehicle::V2::PLAYER_SIZE+max((ballSpeed-100)*sin(fabs(ballVelDir-Param::Math::PI*20/180))*0.25,0.0);
             speedUpDistanceY=min(speedUpDistanceY,50.0);
 			speedUpDistanceX=15-sin(fabs(ballVelDir))*10+kickPos.x()-me.Pos().x();
             speedUpDistanceX=min(speedUpDistanceX,20.0);
@@ -605,12 +606,12 @@ void CChaseKickV2::plan(const CVisionModule* pVision)
 		/* 6.Touch Kick　判断及调取底层skill											*/
 		/************************************************************************/
 		if (NormalPlayUtils::faceTheirGoal(pVision,robotNum,Param::Math::PI*2/180)
-			||WorldModel::Instance()->KickDirArrived(pVision->Cycle(),finalKickDir,Param::Math::PI*2/180,robotNum))
+			||WorldModel::Instance()->KickDirArrived(pVision->getCycle(),finalKickDir,Param::Math::PI*2/180,robotNum))
 		{
 			//if (verBos)	{cout<<"chase-kickOk"<<endl;}
 			//KickStatus::Instance()->setKick(robotNum,1200);
 
-			double finalBallSpeed = Param::Field::MAX_BALL_SPEED - 0.5 * abs(pVision->OurPlayer(robotNum).Vel().x());
+            double finalBallSpeed = Param::Field::MAX_BALL_SPEED - 0.5 * abs(pVision->ourPlayer(robotNum).Vel().x());
 			//cout << "setKickINCHASE" << endl;
 			KickStatus::Instance()->setKick(robotNum, finalBallSpeed);
 		}

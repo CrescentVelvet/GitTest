@@ -56,18 +56,18 @@ CPenaltyDefV2::~CPenaltyDefV2() {}
 
 void CPenaltyDefV2::plan(const CVisionModule* pVision) {
     if (resetFlag && (CATEGORY == 3 || _state == CATEGORY_3)) {
-        VisionModule::Instance()->ResetTheirPenaltyNum();
+        VisionModule::Instance()->resetTheirPenaltyNum();
         resetData();
         resetFlag = false;
     }
 
-    if ( pVision->Cycle() - _lastCycle > Param::Vision::FRAME_RATE * 0.1 ) { _state = BEGINNING; }
+    if ( pVision->getCycle() - _lastCycle > Param::Vision::FRAME_RATE * 0.1 ) { _state = BEGINNING; }
     // 视觉预处理
-    const MobileVisionT& ball = pVision->Ball();
+    const MobileVisionT& ball = pVision->ball();
     const int runner = task().executor;
     const int flag = task().player.flag;
-    const PlayerVisionT& self  = pVision->OurPlayer(runner);
-    const PlayerVisionT& enemy = pVision->TheirPlayer(this->GetNearestEnemy(pVision));
+    const PlayerVisionT& self  = pVision->ourPlayer(runner);
+    const PlayerVisionT& enemy = pVision->theirPlayer(this->GetNearestEnemy(pVision));
     if (verbose) {
         GDebugEngine::Instance()->gui_debug_line(ball.Pos(), CGeoPoint(-Param::Field::PITCH_LENGTH / 2, Param::Field::GOAL_WIDTH / 2), COLOR_WHITE);
         GDebugEngine::Instance()->gui_debug_line(ball.Pos(), CGeoPoint(-Param::Field::PITCH_LENGTH / 2, -Param::Field::GOAL_WIDTH / 2), COLOR_WHITE);
@@ -84,7 +84,7 @@ void CPenaltyDefV2::plan(const CVisionModule* pVision) {
         captureFlag = true;
     }
 
-    _theirPenaltyNum = VisionModule::Instance()->GetTheirPenaltyNum();
+    _theirPenaltyNum = VisionModule::Instance()->getTheirPenaltyNum();
     if (VERBOSE_MODE) { cout << "_theirPenaltyNum: " << _theirPenaltyNum << endl; }
     if (_theirPenaltyNum == 1) { _isFirst = true; }
     else { _isFirst = false; }
@@ -509,7 +509,7 @@ void CPenaltyDefV2::plan(const CVisionModule* pVision) {
         break;
     }
 
-    _lastCycle  = pVision->Cycle();
+    _lastCycle  = pVision->getCycle();
     _isNormalStartLastCycle = VisionModule::Instance()->gameState().canEitherKickBall();
     CStatedTask::plan(pVision);
 }
@@ -525,7 +525,7 @@ CPlayerCommand* CPenaltyDefV2::execute(const CVisionModule* pVision) {
 }
 
 bool CPenaltyDefV2::isOppTurn(const CVisionModule *pVision) {
-    const PlayerVisionT& enemy = pVision->TheirPlayer(this->GetNearestEnemy(pVision));
+    const PlayerVisionT& enemy = pVision->theirPlayer(this->GetNearestEnemy(pVision));
     double currentOppDir = enemy.Dir();
     if (fabs(Utils::Normalize(currentOppDir - _initOppDir)) > Param::Math::PI / 90) {
         return true;
@@ -535,8 +535,8 @@ bool CPenaltyDefV2::isOppTurn(const CVisionModule *pVision) {
 
 // 当球距地方车一定距离范围内，并保持一定时间时，返回ture
 bool CPenaltyDefV2::isOppReady(const CVisionModule *pVision) {
-    const PlayerVisionT& enemy = pVision->TheirPlayer(this->GetNearestEnemy(pVision));
-    const MobileVisionT& ball  = pVision->Ball();
+    const PlayerVisionT& enemy = pVision->theirPlayer(this->GetNearestEnemy(pVision));
+    const MobileVisionT& ball  = pVision->ball();
     CVector opp2ball = ball.Pos() - enemy.Pos();
     double opp2ballDist = opp2ball.mod();
     //cout << "opp2ballDist: " << opp2ballDist << endl;
@@ -560,9 +560,9 @@ int CPenaltyDefV2::GetNearestEnemy(const CVisionModule *pVision) {
     double nearest_dist = Param::Field::PITCH_LENGTH;
     int enemy_num = 1;
     for (int i = 1; i <= Param::Field::MAX_PLAYER; i++) {
-        if (pVision->TheirPlayer(i).Valid() == true) {
-            if (pVision->TheirPlayer(i).Pos().dist(goal_center) < nearest_dist) {
-                nearest_dist = pVision->TheirPlayer(i).Pos().dist(goal_center);
+        if (pVision->theirPlayer(i).Valid() == true) {
+            if (pVision->theirPlayer(i).Pos().dist(goal_center) < nearest_dist) {
+                nearest_dist = pVision->theirPlayer(i).Pos().dist(goal_center);
                 enemy_num = i;
             }
         }

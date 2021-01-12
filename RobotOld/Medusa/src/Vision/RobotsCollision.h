@@ -1,25 +1,25 @@
-#ifndef __2009_ROBOTS_COLLISION_H__
-#define __2009_ROBOTS_COLLISION_H__
+//#ifndef __2009_ROBOTS_COLLISION_H__
+//#define __2009_ROBOTS_COLLISION_H__
 
-#include <param.h>
+//#include <param.h>
 
-class CVisionModule;
-struct RobotVisionData;
-class RobotsCollisionDetector{
-public:
-	static RobotsCollisionDetector* Instance();
-	void clearLastResult();
-	void setVision(CVisionModule* pVision);
-	void setCheckNum(int side, int robotID);
-	bool checkCollision(const RobotVisionData& visionPos, double calTime);
-private:
-	RobotsCollisionDetector();
-	CVisionModule* _pVision;
-	int our_collision[Param::Field::MAX_PLAYER+1];
-	int opp_collision[Param::Field::MAX_PLAYER+1];
+//class CVisionModule;
+//struct RobotVisionData;
+//class RobotsCollisionDetector{
+//public:
+//	static RobotsCollisionDetector* Instance();
+//	void clearLastResult();
+//	void setVision(CVisionModule* pVision);
+//	void setCheckNum(int side, int robotID);
+//	bool checkCollision(const RobotVisionData& visionPos, double calTime);
+//private:
+//	RobotsCollisionDetector();
+//	CVisionModule* _pVision;
+//	int our_collision[Param::Field::MAX_PLAYER+1];
+//	int opp_collision[Param::Field::MAX_PLAYER+1];
 
-	int current_check_num;
-	int current_check_side;
-};
+//	int current_check_num;
+//	int current_check_side;
+//};
 
-#endif
+//#endif

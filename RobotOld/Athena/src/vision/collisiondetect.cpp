@@ -1,6 +1,15 @@
 #include "collisiondetect.h"
 #include "messageformat.h"
 
+namespace  {
+const int DETECT_DIST = 10; //detect whether the ball in 300mm of vechile
+const int SPLIT_THRESHOLD = 20;  //split
+const int NEAR_VECHILE_MIN_FRAME = 5; //keep frame to detect ball SLIGHTLY touch vechile
+const int LENGTH_THERESHOLD = 5800;
+const int WIDTH_THERESHOLD = 4400;
+const int MAX_FRAME_NUM = 20;    //split and merge frame num
+int LinePoint[MAX_FRAME_NUM];
+}
 CCollisionDetect::CCollisionDetect() {
 
 }
@@ -10,19 +19,19 @@ bool CCollisionDetect::ballIsOnEdge(CGeoPoint ball) {
     return false;
 }
 
-bool CCollisionDetect::ballCloseEnough2Analyze(int color) {
-    ReceiveVisionMessage _pVision = GlobalData::instance()->maintain[0];
-    bool found = false;
-//    for (int i = 0; i < _pVision.robotSize[color]; i++)
-    for (int i = 0; i < PARAM::ROBOTNUM; i++)//change by lzx
-        if (_pVision.robot[color][i].valid/*change by lzX*/&&_pVision.ball[0].pos.dist(_pVision.robot[color][i].pos) < DETECT_DIST) {
-            found = true;
-            break;
+bool CCollisionDetect::ballCloseEnough2Analyze() {
+    for (int color = 0; color < PARAM::TEAMS; color ++) {
+        for (int i = 0; i < PARAM::ROBOTNUM; i++) {
+            auto& vision = GlobalData::instance()->maintain[0];
+            if (vision.robot[color][i].valid && vision.ball[0].pos.dist(vision.robot[color][i].pos) < DETECT_DIST) {
+                return true;
+            }
         }
-    return found;
+    }
+    return false;
 }
 
-void CCollisionDetect::analyzeData(ReceiveVisionMessage & result) {
+void CCollisionDetect::analyzeData(ReceiveVisionMessage& result) {
     //first test near ball
     int OurTouchNum = -1, TheirTouchNum = -1;
     for (int roboId = 0; roboId < PARAM::ROBOTMAXID; roboId++) {

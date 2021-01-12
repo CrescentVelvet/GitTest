@@ -44,21 +44,21 @@ CInterceptTouch::CInterceptTouch() : buffer_counter_(0), last_cycle_(0) {
     bool IS_SIMULATION;
     ZSS::ZParamManager::instance()->loadParam(IS_SIMULATION,"Alert/IsSimulation",false);
     if (IS_SIMULATION)
-        ZSS::ZParamManager::instance()->loadParam(FRICTION,"AlertParam/Friction4Sim",80);
+        ZSS::ZParamManager::instance()->loadParam(FRICTION,"AlertParam/Friction4Sim",800);
     else
-        ZSS::ZParamManager::instance()->loadParam(FRICTION,"AlertParam/Friction4Real",152);
+        ZSS::ZParamManager::instance()->loadParam(FRICTION,"AlertParam/Friction4Real",1520);
 }
 
 void CInterceptTouch::plan(const CVisionModule* pVision) {
   using namespace Threshold;
 
-	if ( pVision->Cycle() - last_cycle_ > 6 )
+	if ( pVision->getCycle() - last_cycle_ > 6 )
 		setState(BEGINNING);
 
   const int runner = task().executor;
   if (task().player.pos.x() == 999 && task().player.pos.y() == 999) {
     if (state() == BEGINNING)
-      waitPos = pVision->OurPlayer(runner).RawPos();
+      waitPos = pVision->ourPlayer(runner).RawPos();
   } else {
     waitPos = task().player.pos;
   }
@@ -68,9 +68,9 @@ void CInterceptTouch::plan(const CVisionModule* pVision) {
   const bool useChip = task().player.ischipkick;
   const bool testMode = task().ball.front;
   const CGeoPoint target = CGeoPoint(task().player.speed_x, task().player.speed_y);//add by Wang in 2018/06/18
-  const PlayerVisionT& me = pVision->OurPlayer(runner);
-  const MobileVisionT& ball = pVision->Ball();
-  const CGeoPoint& myPos = pVision->OurPlayer(runner).Pos();
+  const PlayerVisionT& me = pVision->ourPlayer(runner);
+  const MobileVisionT& ball = pVision->ball();
+  const CGeoPoint& myPos = pVision->ourPlayer(runner).Pos();
   const CGeoPoint& ballPos = ball.RawPos();
   const double ballVelDir = ball.Vel().dir();
   
@@ -229,7 +229,7 @@ void CInterceptTouch::plan(const CVisionModule* pVision) {
 
   GDebugEngine::Instance()->gui_debug_line(ballPos, ballPos + Utils::Polar2Vector(500, ballVelDir),COLOR_GREEN);
   GDebugEngine::Instance()->gui_debug_msg(CGeoPoint(-300, 0), msg.c_str(),COLOR_GREEN);
-  last_cycle_ = pVision->Cycle();
+  last_cycle_ = pVision->getCycle();
   CPlayerTask::plan(pVision);
 }
 

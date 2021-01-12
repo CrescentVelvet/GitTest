@@ -69,20 +69,20 @@ void CGoImmortalRush::plan(const CVisionModule* pVision)
 /// 执行接口
 CPlayerCommand* CGoImmortalRush::execute(const CVisionModule* pVision)
 {
-	if (pVision->Cycle() - _lastCycle > Param::Vision::FRAME_RATE * 0.1) {
+	if (pVision->getCycle() - _lastCycle > Param::Vision::FRAME_RATE * 0.1) {
         startedFlag[task().executor] = 0;
         rushFlag[task().executor] = 0;
         arrivedFlag[task().executor] = 0;
 	}
 
 	const int vecNumber = task().executor;
-	const PlayerVisionT& self = pVision->OurPlayer(vecNumber);
+	const PlayerVisionT& self = pVision->ourPlayer(vecNumber);
 	CGeoPoint target = task().player.pos;							// 目标的位置
     double dist = (target - self.Pos()).mod();
     const int playerFlag = task().player.flag;
     const double targetDir = task().player.angle;
     const CVector targetVel = task().player.vel;
-    const int goalieNum = PlayInterface::Instance()->getNumbByRealIndex(TaskMediator::Instance()->goalie());
+    const int goalieNum = TaskMediator::Instance()->goalie();
     bool isGoalie = (vecNumber == goalieNum);
 
     if (isnan(target.x()) || isnan(target.y())) {
@@ -113,7 +113,7 @@ CPlayerCommand* CGoImmortalRush::execute(const CVisionModule* pVision)
 
                 for (int teammate = 1; teammate <= Param::Field::MAX_PLAYER; ++teammate) {
                     if (teammate != vecNumber) {
-                        if (pVision->OurPlayer(teammate).Pos().dist(target) < thisPenaltyAvoidDist * 4) {
+                        if (pVision->ourPlayer(teammate).Pos().dist(target) < thisPenaltyAvoidDist * 4) {
                             checkOk = false;
                             break;
                         }
@@ -141,7 +141,7 @@ CPlayerCommand* CGoImmortalRush::execute(const CVisionModule* pVision)
                 bool checkOk = true;
                 for (int teammate = 1; teammate <= Param::Field::MAX_PLAYER; ++teammate) {
                     if (teammate != vecNumber) {
-                        if (pVision->OurPlayer(teammate).Pos().dist(target) < thisPenaltyAvoidDist * 4) {
+                        if (pVision->ourPlayer(teammate).Pos().dist(target) < thisPenaltyAvoidDist * 4) {
                             checkOk = false;
                             break;
                         }
@@ -189,12 +189,12 @@ CPlayerCommand* CGoImmortalRush::execute(const CVisionModule* pVision)
     }
     CVector localVel = (nextVel*alpha).rotate(-self.Dir());
 
-	_lastCycle = pVision->Cycle();
+	_lastCycle = pVision->getCycle();
     return pCmdFactory->newCommand(CPlayerSpeedV2(vecNumber, localVel.x(), localVel.y(), nextRotVel, set_power, 1));
 }
 
 void CGoImmortalRush::calcZeroRush(const CVisionModule *pVision, CVector &nextVel, double &nextRotVel, double &nextAngle) {
-    const PlayerVisionT& self = pVision->OurPlayer(task().executor);
+    const PlayerVisionT& self = pVision->ourPlayer(task().executor);
     if (!startedFlag[task().executor] && !rushFlag[task().executor]  && (self.Pos() - _target).mod() > 20) {
         if (abs(Utils::Normalize((_target - self.Pos()).dir() + Param::Math::PI) - self.Dir()) < 0.8) startedFlag[task().executor] = 1;
         arrivedFlag[task().executor] = 0;
@@ -216,7 +216,7 @@ void CGoImmortalRush::calcZeroRush(const CVisionModule *pVision, CVector &nextVe
 void CGoImmortalRush::calcNoneZeroRush(const CVisionModule *pVision, CVector &nextVel, double &nextRotVel, double &nextAngle) {}
 
 void CGoImmortalRush::getStartRotate(const CVisionModule *pVision, CVector &nextVel, double &nextRotVel, double &nextAngle) {
-    const PlayerVisionT& self = pVision->OurPlayer(task().executor);
+    const PlayerVisionT& self = pVision->ourPlayer(task().executor);
     double targetDir = (self.Pos() - _target).dir();
     nextAngle = Utils::Normalize(targetDir - self.Dir());
     PlayerPoseT final;
@@ -229,7 +229,7 @@ void CGoImmortalRush::getStartRotate(const CVisionModule *pVision, CVector &next
 }
 
 void CGoImmortalRush::getMiddleRush(const CVisionModule *pVision, CVector &nextVel, double &nextRotVel, double &nextAngle) {
-    const PlayerVisionT& self = pVision->OurPlayer(task().executor);
+    const PlayerVisionT& self = pVision->ourPlayer(task().executor);
     CGeoPoint target = task().player.pos;
 //    cout << self.Vel().mod() << endl;
     double targetDir = (self.Pos() - _target).dir();//Utils::Normalize((_target - self.Pos()).dir() + Param::Math::PI);//(self.Pos() - target).dir();
@@ -249,7 +249,7 @@ void CGoImmortalRush::getMiddleRush(const CVisionModule *pVision, CVector &nextV
 }
 
 void CGoImmortalRush::getArrivedRotate(const CVisionModule *pVision, CVector &nextVel, double &nextRotVel, double &nextAngle) {
-    const PlayerVisionT& self = pVision->OurPlayer(task().executor);
+    const PlayerVisionT& self = pVision->ourPlayer(task().executor);
     CGeoPoint target = task().player.pos;
     double targetDir = task().player.angle;
     nextAngle = Utils::Normalize(targetDir - self.Dir());
@@ -263,7 +263,7 @@ void CGoImmortalRush::getArrivedRotate(const CVisionModule *pVision, CVector &ne
 }
 
 double calcImmortalTime(const CVisionModule *pVision, const int robotNum, const CGeoPoint targetPos, const double targetDir, const int mode) {
-    PlayerVisionT self = pVision->OurPlayer(robotNum);
+    PlayerVisionT self = pVision->ourPlayer(robotNum);
     double trajTime = 0.0;
     PlayerPoseT rushStart;
     rushStart.SetPos(self.Pos());
@@ -316,7 +316,7 @@ PlayerCapabilityT CGoImmortalRush::setCapability(const CVisionModule* pVision) {
     capability.maxAngularDec = MAX_RUSH_ROTATE_ACC;
 
 	if (WorldModel::Instance()->CurrentRefereeMsg() == "GameStop") {
-		const MobileVisionT ball = pVision->Ball();
+		const MobileVisionT ball = pVision->ball();
 		if (ball.Pos().x() < -240 && abs(ball.Pos().y()) > 150) {
 			capability.maxSpeed = 100;
 		}
@@ -416,7 +416,7 @@ PlayerCapabilityT CGoImmortalRush::setCapability(const CVisionModule* pVision) {
 
 void CGoImmortalRush::LeavePenaltyArea(const CVisionModule* pVision, const int player)
 {
-    const CGeoPoint& vecPos = pVision->OurPlayer(player).Pos();
+    const CGeoPoint& vecPos = pVision->ourPlayer(player).Pos();
     const double keepDistance = Param::Field::MAX_PLAYER_SIZE + 10;
     if( Utils::InOurPenaltyArea(vecPos, Param::Field::MAX_PLAYER_SIZE) ){
         // 在我方禁区里面,在禁区线上找一些点，找距离最近的挡不住的路线
@@ -474,7 +474,7 @@ void CGoImmortalRush::LeavePenaltyArea(const CVisionModule* pVision, const int p
 
 void CGoImmortalRush::LeaveTheirPenaltyArea(const CVisionModule* pVision,
                                             const int player) {
-    const CGeoPoint& vecPos = pVision->OurPlayer(player).Pos();
+    const CGeoPoint& vecPos = pVision->ourPlayer(player).Pos();
     // 在对方禁区里面,在禁区线上找一些点，找距离最近的挡不住的路线
     CGeoPoint theirGoal(Param::Field::PITCH_LENGTH/2, 0);
     CVector goal2player(vecPos - theirGoal);

@@ -3,8 +3,8 @@ local AFTER_KICK_FLAG = flag.allow_dss + flag.dodge_ball
 local pass_pos = messi:freeKickPos();--flatPassPos();--flatShootPos();--chipPassPos();--chipShootPos();
 local wait_pos = messi:freeKickWaitPos() --messi:freeKickWaitPos()
 local fake_pos = pos.getOtherPos(2)() --CGeoPoint:new_local(440, 180)
-local small_r  = 75
-local line_x   = 30
+local small_r  = 750
+local line_x   = 300
 local count    = 0
 local Rcount   = 0
 local dirFlag  = 1
@@ -36,8 +36,8 @@ local initVariable = function()
 		dirFlag  = -1
 	end
 	fake_pos = pos.getOtherPos(2)()
-	small_r  = 75
-	line_x   = 40
+	small_r  = 750
+	line_x   = 400
 	Rcount   = 0
 	BACK_KICK     = false
 	MIDDLE_KICK   = false
@@ -54,7 +54,7 @@ local initVariable = function()
 end
 local function circlePosMove( number )
     return function ()
-        return wait_pos + Utils.Polar2Vector(small_r +20*Rcount,math.pi*2/6*(number-3+dirFlag*(count-2)))
+        return wait_pos + Utils.Polar2Vector(small_r +200*Rcount,math.pi*2/6*(number-3+dirFlag*(count-2)))
     end
 end
 local function linePos (number)
@@ -157,12 +157,12 @@ firstState = "initState",
 	switch = function()
 		freeKickDebug()
 		if bufcnt(
-            player.toTargetDist("Assister") <20 and 
-            player.toTargetDist("Fronter")  <20 and 
-            player.toTargetDist("Special")  <20 and 
-            player.toTargetDist("Defender") <20 and 
-            player.toTargetDist("Middle")   <20 and
-            player.toTargetDist("Receiver") <20
+            player.toTargetDist("Assister") <200 and 
+            player.toTargetDist("Fronter")  <200 and 
+            player.toTargetDist("Special")  <200 and 
+            player.toTargetDist("Defender") <200 and 
+            player.toTargetDist("Middle")   <200 and
+            player.toTargetDist("Receiver") <200
             ,20 ,100) then
 			STOP_BALL_PLACE = true
 		end
@@ -175,8 +175,8 @@ firstState = "initState",
 			end
 			fake_pos = pos.getOtherPos(2)()
 			-- fake_pos = CGeoPoint:new_local(pass_pos:x(), pass_pos:y() + ball.posY() > 0 and -200 or 200)
-			line_x   = 80
-			local rush_dist = BACK_KICK and 50 or MIDDLE_KICK and 150 or 100
+			line_x   = 800
+			local rush_dist = BACK_KICK and 500 or MIDDLE_KICK and 1500 or 1000
 			if wait_pos:y() > 0 then
 				wait_pos = wait_pos + Utils.Polar2Vector(rush_dist, math.pi * (-1 / 4))
 			else

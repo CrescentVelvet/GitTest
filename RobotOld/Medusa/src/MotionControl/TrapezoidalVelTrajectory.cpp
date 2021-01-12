@@ -263,8 +263,8 @@ vector< vector<double> > tg_recurs(double t0,
 	// t: 这一阶段所用时间
 	// t0U: 已用时间（不包括这一阶段）
 	const double tol = 0.01;   // tolerance for machine precision
-	const double pos_tol = vzMax/100;
-	const double vel_tol = vzMax/100;
+	const double pos_tol = vzMax/1000;
+	const double vel_tol = vzMax/1000;
 	double zfU = zf;
 	double z0U = z0;
 	double vz0U = vz0;

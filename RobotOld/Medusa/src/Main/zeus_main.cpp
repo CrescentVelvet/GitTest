@@ -51,10 +51,10 @@
 */
 
 extern Semaphore visionEvent;
-extern std::mutex *decisionMutex;
+extern std::mutex decisionMutex;
 /// <summary> For GPU. </summary>
-std::mutex* _best_visiondata_copy_mutex = 0;
-std::mutex* _value_getter_mutex = 0;
+std::mutex* _best_visiondata_copy_mutex = nullptr;
+std::mutex* _value_getter_mutex = nullptr;
 
 using Param::Latency::TOTAL_LATED_FRAME;
 
@@ -64,11 +64,11 @@ bool wireless_off = false;
 bool record_run_pos_on = false;
 namespace {
 COptionModule *option;
-VisionReceiver *receiver;
+//VisionReceiver *receiver;
 CDecisionModule *decision;
 CActionModule *action;
 CServerInterface::VisualInfo visionInfo;
-RefRecvMsg refRecvMsg;
+//RefRecvMsg refRecvMsg;
 }
 
 int runLoop() {
@@ -79,38 +79,34 @@ int runLoop() {
     initializeSingleton();
     option = new COptionModule();
     CCommandInterface::instance(option);
-    receiver = VisionReceiver::instance(option);
+//    receiver = VisionReceiver::instance(option);
+    vision->registerOption(option);
+    vision->startReceiveThread();
     decision = new CDecisionModule(vision);
     action = new CActionModule(vision, decision);
-    vision->registerOption(option);
     WORLD_MODEL->registerVision(vision);
 //    MATCH_STATE->initialize(option, vision);
     _best_visiondata_copy_mutex = new std::mutex();
     _value_getter_mutex = new std::mutex();
 //    GPUBestAlgThread::Instance()->initialize(VisionModule::Instance());
-    CollisionDetect::Instance()->initialize(VisionModule::Instance());
+//    CollisionDetect::Instance()->initialize(VisionModule::Instance());
     RefereeBoxInterface::Instance();
 #ifdef USE_CUDA_MODULE
     ZCUDAModule::instance()->initialize(VisionModule::Instance());
 #endif
     while (true) {
-        visionEvent.Wait();
-        decisionMutex->lock();
-        if (! receiver->getVisionInfo(visionInfo, refRecvMsg)) {
-            std::cout << "no vision input" << std::endl;
-        }
-        vision->SetRefRecvMsg(refRecvMsg);
-        vision->SetNewVision(visionInfo);
+        vision->setNewVision();
 #ifdef USE_PYTHON_MODULE
         PythonModule::instance()->run();
 #endif
+//        decisionMutex.lock();
         decision->DoDecision(false);
         if (! wireless_off) {
-            action->sendAction(visionInfo.ourRobotIndex);
+            action->sendAction();
         } else {
-            action->sendNoAction(visionInfo.ourRobotIndex);
+            action->sendNoAction();
         }
-        decisionMutex->unlock();
+//        decisionMutex.unlock();
 //        GDebugEngine::Instance()->send(IS_SIMULATION && option->MyColor() == TEAM_YELLOW); // Simulation Yellow no debug messages
         GDebugEngine::Instance()->send(option->MyColor() == TEAM_BLUE); //Show two teams debug messages
 //        std::this_thread::sleep_for(std::chrono::milliseconds(1));

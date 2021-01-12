@@ -5,6 +5,7 @@
 #include <cmath>
 #include "GoImmortalRush.h"
 #include "ballmodel.h"
+using namespace std;
 namespace {
     bool DEBUG = false;
     constexpr double TIME_FOR_OUR = 0.3;
@@ -12,31 +13,30 @@ namespace {
     constexpr double TIME_FOR_THEIR_BOTH_KEEP = -0.1;
     constexpr double TIME_FOR_THEIR = -0.3;
     constexpr double TIME_FOR_JUDGE_HOLDING = 0.5;
-    constexpr double THEIR_MAX_SPEED = 350;
-    constexpr double DELTA_T = 1.0/75;
+    const double DELTA_T = 10.0 / Param::Vision::FRAME_RATE;
 }
 SkillUtils::SkillUtils() {
     bool isSimulation;
     ZSS::ZParamManager::instance()->loadParam(isSimulation, "Alert/IsSimulation", false);
     if(isSimulation)
-        ZSS::ZParamManager::instance()->loadParam(FRICTION, "AlertParam/Friction4Sim", 152.0);
+        ZSS::ZParamManager::instance()->loadParam(FRICTION, "AlertParam/Friction4Sim", 1520.0);
     else
-        ZSS::ZParamManager::instance()->loadParam(FRICTION, "AlertParam/Friction4Real", 80.0);
+        ZSS::ZParamManager::instance()->loadParam(FRICTION, "AlertParam/Friction4Real", 800.0);
     ZSS::ZParamManager::instance()->loadParam(DEBUG, "Debug/InterTimeDisplay", false);
 }
 SkillUtils::~SkillUtils() {
 }
 
 bool SkillUtils::predictedInterTime(const CVisionModule* pVision, int robotNum, CGeoPoint& interceptPoint, double& interTime, double responseTime) {
-    const MobileVisionT ball = pVision->Ball();//获得球
-    const PlayerVisionT me = pVision->OurPlayer(robotNum);//获得车
+    const MobileVisionT ball = pVision->ball();//获得球
+    const PlayerVisionT me = pVision->ourPlayer(robotNum);//获得车
     static const double ballAcc = FRICTION / 2;//球减速度
     if (!me.Valid()) {//车不存在
         interTime = 99999;
-        interceptPoint = CGeoPoint(999, 999);
+        interceptPoint = CGeoPoint(99999, 99999);
         return false;
     }
-    if(ball.Vel().mod() < 30) {
+    if(ball.Vel().mod() < 300) {
         interceptPoint = ball.RawPos();//截球点
         interTime = predictedTime(me, interceptPoint);//截球时间
         return true;
@@ -59,7 +59,7 @@ bool SkillUtils::predictedInterTime(const CVisionModule* pVision, int robotNum, 
         CVector me2testPoint = testPoint - me.RawPos();
         meArriveTime = predictedTime(me, testPoint + Utils::Polar2Vector(width, projection2me.dir()));//我到截球点的时间
         if(meArriveTime < 0.2) meArriveTime = 0;
-        if(me.Vel().mod() < 150 /*&& projection2me.mod() < 2*Param::Vehicle::V2::PLAYER_SIZE*/ && me2testPoint.mod() < 3*Param::Vehicle::V2::PLAYER_SIZE) meArriveTime = 0;
+        if(me.Vel().mod() < 1500 /*&& projection2me.mod() < 2*Param::Vehicle::V2::PLAYER_SIZE*/ && me2testPoint.mod() < 3*Param::Vehicle::V2::PLAYER_SIZE) meArriveTime = 0;
 //        if(me.Pos().dist(testPoint) < Param::Vehicle::V2::PLAYER_SIZE*2 && meArriveTime < 0.3) meArriveTime = 0;
         if (!IsInField(testPoint) || (meArriveTime + responseTime) < ballArriveTime) {
             break;
@@ -68,19 +68,19 @@ bool SkillUtils::predictedInterTime(const CVisionModule* pVision, int robotNum, 
     interceptPoint = testPoint;//截球点
     interTime = predictedTime(me, interceptPoint);//截球时间
 
-    double minDist = 9999;
+    double minDist = 999999;
     for(int i=0; i<Param::Field::MAX_PLAYER_NUM; i++){
-        auto enemy = pVision->TheirPlayer(i+1);
+        auto enemy = pVision->theirPlayer(i+1);
         if(!enemy.Valid()) continue;
         CVector enemy2ballLine = ballLine.projection(enemy.Pos()) - enemy.Pos();
         CVector ball2enemy = enemy.Pos() - ball.RawPos();
-        if(enemy2ballLine.mod() < 12 && (fabs(Utils::Normalize(ball.Vel().dir() - (enemy.Pos()-ball.RawPos()).dir()))<Param::Math::PI/6) && enemy.Vel().mod() < 200 && (ball2enemy.mod() < ball.Vel().mod2()/FRICTION)){
+        if(enemy2ballLine.mod() < 1200 && (fabs(Utils::Normalize(ball.Vel().dir() - (enemy.Pos()-ball.RawPos()).dir()))<Param::Math::PI/6) && enemy.Vel().mod() < 2000 && (ball2enemy.mod() < ball.Vel().mod2()/FRICTION)){
             minDist = std::min(minDist, ball2enemy.mod());
 //            GDebugEngine::Instance()->gui_debug_arc(enemy.Pos(), 30, 0.0f, 360.0f, COLOR_GREEN);
 //            GDebugEngine::Instance()->gui_debug_msg(enemy.Pos(), QString("dist: %1  dir: %2").arg(enemy2ballLine.mod()).arg(fabs(Utils::Normalize(ball.Vel().dir() - (enemy.Pos()-ball.RawPos()).dir())/Param::Math::PI*180)).toLatin1(), COLOR_WHITE);
         }
     }
-    if(minDist<3000){
+    if(minDist<888888){
         CGeoPoint new_interceptPoint = ball.RawPos() + Utils::Polar2Vector(std::max(minDist-Param::Vehicle::V2::PLAYER_SIZE,0.0), ball.Vel().dir());
 //        GDebugEngine::Instance()->gui_debug_x(new_interceptPoint, COLOR_PURPLE);
 //        GDebugEngine::Instance()->gui_debug_arc(new_interceptPoint, 30, 0.0f, 360.0f, COLOR_PURPLE);
@@ -94,18 +94,18 @@ bool SkillUtils::predictedInterTime(const CVisionModule* pVision, int robotNum, 
 }
 
 bool SkillUtils::predictedTheirInterTime(const CVisionModule* pVision, int robotNum, CGeoPoint& interceptPoint, double& interTime, double responseTime) {
-    const MobileVisionT& ball = pVision->Ball();//获得球
-    const PlayerVisionT& me = pVision->TheirPlayer(robotNum);//获得车
+    const MobileVisionT& ball = pVision->ball();//获得球
+    const PlayerVisionT& me = pVision->theirPlayer(robotNum);//获得车
     static const double AVOID_DIST = Param::Vehicle::V2::PLAYER_SIZE;
     static const double ballAcc = FRICTION / 2;//球减速度
     if (!me.Valid()) {//车不存在
         interTime = 99999;
-        interceptPoint = CGeoPoint(999, 999);
+        interceptPoint = CGeoPoint(99999, 99999);
         return false;
     }
     //double maxArriveTime = 5;//车最多移动时间
     double ballArriveTime = 0;
-    double meArriveTime = 9999;
+    double meArriveTime = 999999;
     double testBallLength = 0;//球移动距离
     CGeoPoint testPoint = ball.Pos();
     double testVel = ball.Vel().mod();
@@ -116,7 +116,7 @@ bool SkillUtils::predictedTheirInterTime(const CVisionModule* pVision, int robot
         testPoint = ball.Pos() + Utils::Polar2Vector(testBallLength, ball.Vel().dir()) + Utils::Polar2Vector(AVOID_DIST, (me.Pos() - testPoint).dir());
         meArriveTime = predictedTheirTime(me, testPoint);//我到截球点的时间
         CVector me2testPoint = testPoint - me.RawPos();
-        if(me.Vel().mod() < 150 && me2testPoint.mod() < 3*Param::Vehicle::V2::PLAYER_SIZE) meArriveTime = 0;
+        if(me.Vel().mod() < 1500 && me2testPoint.mod() < 3*Param::Vehicle::V2::PLAYER_SIZE) meArriveTime = 0;
         if (!IsInField(testPoint) || (meArriveTime + responseTime) < ballArriveTime) {
             break;
         }
@@ -128,8 +128,8 @@ bool SkillUtils::predictedTheirInterTime(const CVisionModule* pVision, int robot
 
 CGeoPoint SkillUtils::predictedTheirInterPoint(CGeoPoint enemy, CGeoPoint ball) {
     static const double ballAcc = FRICTION / 2;//球减速度
-    constexpr double carAcc = 400;
-    constexpr double maxBallSpeed = 650;
+    constexpr double carAcc = 4000;
+    constexpr double maxBallSpeed = 6500;
     double dist = (enemy - ball).mod();
     double delta = maxBallSpeed * maxBallSpeed + 2 * (carAcc - ballAcc) * dist;
     double t = (std::sqrt(delta) - maxBallSpeed) / (carAcc - ballAcc);
@@ -177,17 +177,17 @@ CGeoPoint SkillUtils::getTheirInterPoint(int num) {
 }
 
 bool SkillUtils::isSafeShoot(const CVisionModule* pVision, double ballVel, CGeoPoint target) {
-    const MobileVisionT ball = pVision->Ball();//获得球
+    const MobileVisionT ball = pVision->ball();//获得球
     const CGeoPoint ballPos = ball.Pos();
     const CVector ball2target = target - ballPos;
     double ballAcc = FRICTION / 2;//球减速度
     for(int robotNum = 1; robotNum <= Param::Field::MAX_PLAYER_NUM; robotNum++) {
-        PlayerVisionT me = pVision->TheirPlayer(robotNum);//获得车
+        PlayerVisionT me = pVision->theirPlayer(robotNum);//获得车
         if (!me.Valid()) {//车不存在
             continue;//无车，查看下一辆
         }
         double ballArriveTime = 0;
-        double meArriveTime = 9999;
+        double meArriveTime = 99999;
         double testBallLength = 0;//球移动距离
         CGeoPoint testPoint(ballPos.x(), ballPos.y());
         double testVel = ballVel;
@@ -223,7 +223,7 @@ bool SkillUtils::validShootPos(const CVisionModule *pVision, CGeoPoint shootPos,
     if(DEBUG_MODE) GDebugEngine::Instance()->gui_debug_x(target, COLOR_CYAN);
 
     for(int robotNum = 1; robotNum <= Param::Field::MAX_PLAYER_NUM; robotNum++) {
-        const PlayerVisionT& me = pVision->TheirPlayer(robotNum);//获得车
+        const PlayerVisionT& me = pVision->theirPlayer(robotNum);//获得车
         bool isGoalie = Utils::InTheirPenaltyArea(me.Pos(), 0);
         if (!me.Valid()) continue;
         // 忽略距离近的防守车
@@ -235,7 +235,7 @@ bool SkillUtils::validShootPos(const CVisionModule *pVision, CGeoPoint shootPos,
         // 忽略对面的守门员
         if(ignoreTheirGoalie && Utils::InTheirPenaltyArea(me.Pos(), 0)) continue;
         // 忽略对面的后卫
-        if(ignoreTheirGuard && Utils::InTheirPenaltyArea(me.Pos(), 30)) continue;
+        if(ignoreTheirGuard && Utils::InTheirPenaltyArea(me.Pos(), 300)) continue;
         // 初始化球
         double ballMoveTime = 0;
         while (true) {
@@ -282,15 +282,15 @@ bool SkillUtils::validChipPos(const CVisionModule *pVision, CGeoPoint shootPos, 
     const double passLineDist = passLine.mod() - Param::Vehicle::V2::PLAYER_SIZE;
     const double passLineDir = passLine.dir();
 
-    double chipLength1 = shootVel / 100;
+    double chipLength1 = shootVel / 1000;
     double chipTime1 = sqrt(2.0 * chipLength1 * tan(CHIP_FIRST_ANGLE) / G);
     double chipLength2 = (CHIP_LENGTH_RATIO - 1) * chipLength1;
     double chipTime2 = sqrt(2 * chipLength2 * tan(CHIP_SECOND_ANGLE) / G);
-    chipLength1 *= 100;
-    chipLength2 *= 100;
+    chipLength1 *= 1000;
+    chipLength2 *= 1000;
     CGeoPoint startPos = shootPos + Utils::Polar2Vector(chipLength1 + chipLength2, passLineDir);
     double startTime = chipTime1 + chipTime2;
-    double startVel = pow(chipTime1 * 100 * G / (2 * sin(CHIP_FIRST_ANGLE)), 2) * CHIP_VEL_RATIO / 980;
+    double startVel = pow(chipTime1 * 1000 * G / (2 * sin(CHIP_FIRST_ANGLE)), 2) * CHIP_VEL_RATIO / 9800;
     double startDist = startPos.dist(shootPos);
     if(DEBUG_MODE){
         GDebugEngine::Instance()->gui_debug_x(target);
@@ -300,7 +300,7 @@ bool SkillUtils::validChipPos(const CVisionModule *pVision, CGeoPoint shootPos, 
     }
 
     for(int robotNum = 1; robotNum <= Param::Field::MAX_PLAYER_NUM; robotNum++) {
-        const PlayerVisionT& me = pVision->TheirPlayer(robotNum);//获得车
+        const PlayerVisionT& me = pVision->theirPlayer(robotNum);//获得车
         if (!me.Valid()) continue;
 //        // 忽略距离近的防守车
 //        if(me.Pos().dist(shootPos) < ignoreCloseEnemyDist) continue;
@@ -309,7 +309,7 @@ bool SkillUtils::validChipPos(const CVisionModule *pVision, CGeoPoint shootPos, 
         if(ballLine.dist2Point(me.Pos()) < AVOID_DIST)
             return false;
         // 忽略对面的后卫
-        if(ignoreTheirGuard && Utils::InTheirPenaltyArea(me.Pos(), 30)) continue;
+        if(ignoreTheirGuard && Utils::InTheirPenaltyArea(me.Pos(), 300)) continue;
         // 初始化球速、加速度、球移动的距离、球初始位置
         CGeoPoint ballPos = startPos;
         double ballVel = startVel;
@@ -341,15 +341,15 @@ bool SkillUtils::validChipPos(const CVisionModule *pVision, CGeoPoint shootPos, 
 }
 
 void SkillUtils::generatePredictInformation(const CVisionModule* pVision) {
-    CGeoPoint ball = pVision->Ball().Pos();//获得球
+    CGeoPoint ball = pVision->ball().Pos();//获得球
     double ballAcc = FRICTION;//球减速度
-    double carAcc = 500;
-    double maxBallSpeed = 650;
+    double carAcc = 5000;
+    double maxBallSpeed = 6500;
     for(int enemyNum = 1; enemyNum < Param::Field::MAX_PLAYER_NUM + 1; enemyNum++) {
-        PlayerVisionT enemy = pVision->TheirPlayer(enemyNum);//获得车
+        PlayerVisionT enemy = pVision->theirPlayer(enemyNum);//获得车
         if (!enemy.Valid()) {//车不存在
             predictTheirInterTime[enemyNum] = 99999;
-            predictTheirInterPoint[enemyNum] = CGeoPoint(999, 999);
+            predictTheirInterPoint[enemyNum] = CGeoPoint(99999, 99999);
             continue;
         }
         CGeoPoint enemyPoint = enemy.Pos();
@@ -371,7 +371,7 @@ CGeoPoint SkillUtils::getPredictPoint(int num) {
 }
 
 void SkillUtils::run(const CVisionModule* pVision) {
-    _lastCycle = pVision->Cycle();
+    _lastCycle = pVision->getCycle();
     ourBestInterRobot = theirBestInterRobot = theirGoalie = 1;
     generateInterInformation(pVision);
     generatePredictInformation(pVision);
@@ -380,18 +380,18 @@ void SkillUtils::run(const CVisionModule* pVision) {
     if(DEBUG) {
         for(int i = 1; i <= Param::Field::MAX_PLAYER_NUM; i++) {
             GDebugEngine::Instance()->gui_debug_x(theirInterPoint[i]);
-            GDebugEngine::Instance()->gui_debug_msg(CGeoPoint(200, -300 + i * 30), QString("%1 %2").arg(i).arg(theirInterTime[i]).toLatin1());
+            GDebugEngine::Instance()->gui_debug_msg(CGeoPoint(2000, 3000 - i * 300), QString("%1 %2").arg(i).arg(theirInterTime[i]).toLatin1());
             GDebugEngine::Instance()->gui_debug_x(ourInterPoint[i], COLOR_WHITE);
-            GDebugEngine::Instance()->gui_debug_msg(CGeoPoint(-200, -300 + i * 30), QString("%1 %2").arg(i).arg(ourInterTime[i]).toLatin1(), COLOR_WHITE);
+            GDebugEngine::Instance()->gui_debug_msg(CGeoPoint(-2000, 3000 - i * 300), QString("%1 %2").arg(i).arg(ourInterTime[i]).toLatin1(), COLOR_WHITE);
         }
-        GDebugEngine::Instance()->gui_debug_msg(CGeoPoint(-200, 200), QString("OurBest : %1").arg(ourBestInterRobot).toLatin1(), COLOR_WHITE);
-        GDebugEngine::Instance()->gui_debug_msg(CGeoPoint(200, 200), QString("TheirBest : %1").arg(theirBestInterRobot).toLatin1());
+        GDebugEngine::Instance()->gui_debug_msg(CGeoPoint(-2000, -2000), QString("OurBest : %1").arg(ourBestInterRobot).toLatin1(), COLOR_WHITE);
+        GDebugEngine::Instance()->gui_debug_msg(CGeoPoint(2000, -2000), QString("TheirBest : %1").arg(theirBestInterRobot).toLatin1());
     }
-    GDebugEngine::Instance()->gui_debug_msg(CGeoPoint(0, -Param::Field::PITCH_WIDTH / 2 - 5), ZBallState::toStr[ballState].c_str(), COLOR_CYAN);
+    GDebugEngine::Instance()->gui_debug_msg(CGeoPoint(0, Param::Field::PITCH_WIDTH / 2), ZBallState::toStr[ballState].c_str(), COLOR_CYAN);
 }
 void SkillUtils::calculateBallBelongs(const CVisionModule* pVision) {
     for(int i = 1; i <= Param::Field::MAX_PLAYER; i++) {
-        if(pVision->OurPlayer(i).Valid() && Utils::InOurPenaltyArea(CGeoPoint(pVision->OurPlayer(i).Pos().x(), pVision->OurPlayer(i).Pos().y()), 20))
+        if(pVision->ourPlayer(i).Valid() && Utils::InOurPenaltyArea(CGeoPoint(pVision->ourPlayer(i).Pos().x(), pVision->ourPlayer(i).Pos().y()), 200))
             continue; //排除我方后卫
         if(ourInterTime[i] < ourInterTime[ourBestInterRobot])
             ourBestInterRobot = i;
@@ -423,7 +423,7 @@ void SkillUtils::calculateBallBelongs(const CVisionModule* pVision) {
         ballState = ZBallState::BothHolding;
 
 
-    GDebugEngine::Instance()->gui_debug_msg(CGeoPoint(150, -Param::Field::PITCH_WIDTH / 2 - 5), QString("OurBest %1 TheirBest %2").arg(ourBestInterRobot - 1).arg(theirBestInterRobot - 1).toLatin1());
+    GDebugEngine::Instance()->gui_debug_msg(CGeoPoint(1500, Param::Field::PITCH_WIDTH / 2), QString("OurBest %1 TheirBest %2").arg(ourBestInterRobot - 1).arg(theirBestInterRobot - 1).toLatin1());
 //    if(bothHolding)
 //        ballState = ZBallState::BothHolding;
 //    else if(ourHolding)
@@ -438,7 +438,7 @@ void SkillUtils::updateTheirGoalie(const CVisionModule* pVision) {
     double min_dist = 999999;
     bool in_penalty = false;
     for(int i = 1; i <= Param::Field::MAX_PLAYER; i++) {
-        auto enemy_pos = pVision->TheirPlayer(i).Pos();
+        auto enemy_pos = pVision->theirPlayer(i).Pos();
         auto dist = (GOAL_CENTER-enemy_pos).mod();
         if(Utils::InTheirPenaltyArea(enemy_pos,0)){
             dist -= 1000;//by wangzai
@@ -472,11 +472,11 @@ int SkillUtils::getTheirGoalie(){
 // CANNOT USE!!!!!!!
 // CANNOT USE!!!!!!!
 double SkillUtils::getImmortalRushTime(const CVisionModule *pVision, int robotNum, CGeoPoint targetPos, double targetDir) {
-    PlayerVisionT me = pVision->OurPlayer(robotNum);
+    PlayerVisionT me = pVision->ourPlayer(robotNum);
     int mode = 0;
-    if ((me.Pos() - targetPos).mod() < 15) { //almost arrived
+    if ((me.Pos() - targetPos).mod() < 150) { //almost arrived
         mode = 3;
-    } else if ((me.Pos() - targetPos).mod() > 20 && Utils::Normalize(me.Dir() - (me.Pos() - targetPos).dir()) > 0.5) {
+    } else if ((me.Pos() - targetPos).mod() > 200 && Utils::Normalize(me.Dir() - (me.Pos() - targetPos).dir()) > 0.5) {
         mode = 1;
     } else {
         mode = 2;
@@ -551,16 +551,16 @@ CGeoPoint SkillUtils::getMarkingPoint (CGeoPoint markingPos, CVector markingVel,
 }
 
 double SkillUtils::holdBallDir(const CVisionModule *pVision, int robotNum){
-    static const int DIS_THRESHOLD = 80;
+    static const int DIS_THRESHOLD = 800;
 
     // 计算多人包夹时的角度
     double finalAngle = 0;
     double coeff = 0;
-    const PlayerVisionT& me = pVision->OurPlayer(robotNum);
+    const PlayerVisionT& me = pVision->ourPlayer(robotNum);
     for(int i=1; i<=Param::Field::MAX_PLAYER_NUM; i++){
-        if(!pVision->TheirPlayer(i).Valid()) continue;
-        if(pVision->TheirPlayer(i).Pos().dist(me.Pos()) > DIS_THRESHOLD) continue;
-        const PlayerVisionT& enemy = pVision->TheirPlayer(i);
+        if(!pVision->theirPlayer(i).Valid()) continue;
+        if(pVision->theirPlayer(i).Pos().dist(me.Pos()) > DIS_THRESHOLD) continue;
+        const PlayerVisionT& enemy = pVision->theirPlayer(i);
         CVector enemy2me = me.Pos() - enemy.Pos();
         double targetAngle = enemy2me.dir()/* > 0 ? 2*Param::Math::PI - enemy2me.dir() : -1*enemy2me.dir()*/;
         finalAngle += targetAngle/enemy2me.mod();
@@ -573,9 +573,9 @@ double SkillUtils::holdBallDir(const CVisionModule *pVision, int robotNum){
     double anotherAngle = finalAngle < Param::Math::PI ? finalAngle + Param::Math::PI : finalAngle - Param::Math::PI;
     double diff1 = 0, diff2 = 0;
     for(int i=1; i<=Param::Field::MAX_PLAYER_NUM; i++){
-        if(!pVision->TheirPlayer(i).Valid()) continue;
-        if(pVision->TheirPlayer(i).Pos().dist(me.Pos()) > DIS_THRESHOLD) continue;
-        const PlayerVisionT& enemy = pVision->TheirPlayer(i);
+        if(!pVision->theirPlayer(i).Valid()) continue;
+        if(pVision->theirPlayer(i).Pos().dist(me.Pos()) > DIS_THRESHOLD) continue;
+        const PlayerVisionT& enemy = pVision->theirPlayer(i);
         CVector enemy2me = me.Pos() - enemy.Pos();
         double targetAngle = enemy2me.dir()/* > 0 ? 2*Param::Math::PI - enemy2me.dir() : -1*enemy2me.dir()*/;
         double d_angle1 = fabs(targetAngle-finalAngle) < Param::Math::PI ? fabs(targetAngle-finalAngle) : 2*Param::Math::PI - fabs(targetAngle-finalAngle);
@@ -590,7 +590,7 @@ double SkillUtils::holdBallDir(const CVisionModule *pVision, int robotNum){
 bool SkillUtils::predictedInterTimeV2(const CVector ballVel, const CGeoPoint ballPos, const PlayerVisionT me, CGeoPoint& interceptPoint, double& interTime, double responseTime) {
     double ballAcc = FRICTION / 2;//球减速度
     double ballArriveTime = 0;
-    double meArriveTime = 9999;
+    double meArriveTime = 99999;
     double testBallLength = 0;//球移动距离
     CGeoPoint testPoint = ballPos;
     double testVel = ballVel.mod();
@@ -619,8 +619,8 @@ CGeoPoint SkillUtils::getZMarkingPos(const CVisionModule* pVision, const int rob
     constexpr bool VERBOSE_MODE = false;
     constexpr double MARKING_DIST_RATE = 0.8;
     bool half_field_mode = flag & PlayerStatus::AVOID_HALF_FIELD;
-    const PlayerVisionT& enemy = pVision->TheirPlayer(enemyNum);
-    const MobileVisionT& ball = pVision->Ball();
+    const PlayerVisionT& enemy = pVision->theirPlayer(enemyNum);
+    const MobileVisionT& ball = pVision->ball();
 
     CGeoPoint interceptPoint = predictedTheirInterPoint(enemy.Pos(), ball.RawPos());
     double interDist = MARKING_DIST_RATE * (enemy.Pos() - interceptPoint).mod();
@@ -635,7 +635,7 @@ CGeoPoint SkillUtils::getZMarkingPos(const CVisionModule* pVision, const int rob
     CVector point2goal = Utils::Polar2Vector(interDist, (CGeoPoint(-Param::Field::PITCH_LENGTH/2, 0)- interceptPoint).dir());
     CGeoPoint markingPos = interceptPoint + point2goal;
     if(! enemy.Valid()){
-        markingPos = CGeoPoint(-150 - 30*pri, 0);
+        markingPos = CGeoPoint(-150*10 - 30*10*pri, 0);
         return markingPos;
     }
     auto inter2ball = ball.RawPos() - interceptPoint;
@@ -653,14 +653,14 @@ CGeoPoint SkillUtils::getZMarkingPos(const CVisionModule* pVision, const int rob
             if(Utils::OutOfField(test_point, Param::Vehicle::V2::PLAYER_SIZE)) continue;
 
             if(VERBOSE_MODE) GDebugEngine::Instance()->gui_debug_x(test_point, COLOR_WHITE);
-            if(VERBOSE_MODE) GDebugEngine::Instance()->gui_debug_arc(test_point, 5, 0.0f, 360.0f, COLOR_WHITE);
+            if(VERBOSE_MODE) GDebugEngine::Instance()->gui_debug_arc(test_point, 5*10, 0.0f, 360.0f, COLOR_WHITE);
             noPoint = false;
             for(int i =0; i<Param::Field::MAX_PLAYER_NUM; i++){
                 if((i+1)==robotNum) continue;
-                if(!pVision->OurPlayer(i+1).Valid()) continue;
-                if((test_point - pVision->OurPlayer(i+1).RawPos()).mod() < Param::Vehicle::V2::PLAYER_SIZE * 2 + 2){
+                if(!pVision->ourPlayer(i+1).Valid()) continue;
+                if((test_point - pVision->ourPlayer(i+1).RawPos()).mod() < Param::Vehicle::V2::PLAYER_SIZE * 2 + 2*10){
                     noPoint = true;
-                    if(VERBOSE_MODE) GDebugEngine::Instance()->gui_debug_arc(pVision->OurPlayer(i+1).RawPos(), 10, 0.0f, 360.0f, COLOR_CYAN);
+                    if(VERBOSE_MODE) GDebugEngine::Instance()->gui_debug_arc(pVision->ourPlayer(i+1).RawPos(), 10*10, 0.0f, 360.0f, COLOR_CYAN);
                     break;
                 }
             }
@@ -677,36 +677,36 @@ CGeoPoint SkillUtils::getZMarkingPos(const CVisionModule* pVision, const int rob
         GDebugEngine::Instance()->gui_debug_arc(markingPos, 8, 0.0f, 360.0f, COLOR_PURPLE);
     }
     //防止车出场
-    if (Utils::OutOfField(markingPos, 18))
-        markingPos = Utils::MakeInField(markingPos, 18);
+    if (Utils::OutOfField(markingPos, Param::Vehicle::V2::PLAYER_SIZE * 2))
+        markingPos = Utils::MakeInField(markingPos, Param::Vehicle::V2::PLAYER_SIZE * 2);
     //防止车进入禁区
-    if (Utils::InOurPenaltyArea(markingPos, 18)){
+    if (Utils::InOurPenaltyArea(markingPos, Param::Vehicle::V2::PLAYER_SIZE * 2)){
         CGeoLine markingLine = CGeoLine(markingPos, enemy.Pos());
         double buffer = Param::Vehicle::V2::PLAYER_SIZE;
-        CGeoRectangle penalty= CGeoRectangle(CGeoPoint(-Param::Field::PITCH_LENGTH / 2, -Param::Field::PENALTY_AREA_WIDTH / 2-buffer), CGeoPoint(-Param::Field::PITCH_LENGTH / 2 + Param::Field::PENALTY_AREA_DEPTH+buffer, Param::Field::PENALTY_AREA_WIDTH / 2+buffer));
+        CGeoRectangle penalty= CGeoRectangle(CGeoPoint(-Param::Field::PITCH_LENGTH / 2, -Param::Field::PENALTY_AREA_WIDTH / 2 - buffer), CGeoPoint(-Param::Field::PITCH_LENGTH / 2 + Param::Field::PENALTY_AREA_DEPTH+buffer, Param::Field::PENALTY_AREA_WIDTH / 2+buffer));
         CGeoLineRectangleIntersection intersection = CGeoLineRectangleIntersection(markingLine, penalty);
         auto point1 = intersection.point1();
         auto point2 = intersection.point2();
         double p1_l = (point1 - enemy.Pos()).mod();
         double p2_l = (point2 - enemy.Pos()).mod();
         if(p1_l < p2_l){
-            if(point1.x() != 0 && point1.y() != 0) markingPos = point1;
+            if(fabs(point1.x()) > 1e-4  && fabs(point1.y()) > 1e-4) markingPos = point1;
             else markingPos = Utils::MakeOutOfOurPenaltyArea(markingPos, buffer);
         }
         else{
-            if(point2.x() != 0 && point2.y() != 0) markingPos = point2;
+            if(fabs(point2.x()) > 1e-4 && fabs(point2.y()) > 1e-4) markingPos = point2;
             else markingPos = Utils::MakeOutOfOurPenaltyArea(markingPos, buffer);
         }
     }
     //防止禁区前车挤车,绕前marking
-    if ((markingPos - enemy.Pos()).mod() < 23)
-        markingPos = enemy.Pos() + Utils::Polar2Vector(20, (ball.Pos()- enemy.Pos()).dir());
+    if ((markingPos - enemy.Pos()).mod() < 23 * 10)
+        markingPos = enemy.Pos() + Utils::Polar2Vector(20 * 10, (ball.Pos()- enemy.Pos()).dir());
     if(VERBOSE_MODE){
         GDebugEngine::Instance()->gui_debug_line(enemy.Pos(),ball.Pos(),COLOR_CYAN);
-        GDebugEngine::Instance()->gui_debug_line(enemy.Pos(),CGeoPoint(-600,0),COLOR_CYAN);
+        GDebugEngine::Instance()->gui_debug_line(enemy.Pos(),CGeoPoint(-600 * 10,0),COLOR_CYAN);
     }
     if(half_field_mode){
-        if(markingPos.x() > -15) markingPos.setX(-15);
+        if(markingPos.x() > -15 * 10) markingPos.setX(-15 * 10);
     }
     return markingPos;
 }

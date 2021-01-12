@@ -34,22 +34,15 @@ void ViewerInterface::changeRobotInfo(int team,int id){
 }
 
 void ViewerInterface::exist_display(){
-    bool exist_new[PARAM::TEAMS][PARAM::ROBOTMAXID];
+//    bool exist_new[PARAM::TEAMS][PARAM::ROBOTMAXID];
     while(true){
         std::this_thread::sleep_for(std::chrono::microseconds(1000));
         // exist
         for (int team = PARAM::BLUE; team <= PARAM::YELLOW; team++){
             for (int id = 0; id < PARAM::ROBOTNUM; id++){
-                exist_new[team][id] = false;
-                for (int i = 0; i < GlobalData::instance()->processRobot[0].robotSize[team]; i++){
-                    auto& robot = GlobalData::instance()->processRobot[0].robot[team][i];
-                    if (robot.id == id){
-                        exist_new[team][id] = true;
-                        break;
-                    }
-                }
-                if (exist_new[team][id] != displayExist[team][id]){
-                    displayExist[team][id] = exist_new[team][id];
+                auto& robot = GlobalData::instance()->processRobot[0].robot[team][id];
+                if (robot.valid != displayExist[team][id]){
+                    displayExist[team][id] = robot.valid;
                     emit dataChanged(createIndex(team+id*PARAM::TEAMS,0),createIndex(team+id*PARAM::TEAMS,0),{Roles::robotInexist});
                 }
             }

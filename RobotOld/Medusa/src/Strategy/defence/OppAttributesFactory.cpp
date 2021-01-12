@@ -97,14 +97,14 @@ void CAttributeFactory::configuration()
 EVALUATE_ATTRIBUTE(ATest)
 {
 	double tempValue = 0;//按照习惯，tempValue初始化时将给出最差值
-	tempValue = pVision->TheirPlayer(num).Pos().x();
+    tempValue = pVision->theirPlayer(num).Pos().x();
 	setValue(tempValue);
 }
 
 //for test
 EVALUATE_ATTRIBUTE(ATest2)
 {
-	double tempValue = pVision->TheirPlayer(num).Pos().y();
+    double tempValue = pVision->theirPlayer(num).Pos().y();
 	setValue(tempValue);
 }
 
@@ -116,17 +116,17 @@ EVALUATE_ATTRIBUTE(ACanBeLeader)
 		tempValue = 1;
 		const string refMsg = WorldModel::Instance()->CurrentRefereeMsg();
 		if (("TheirIndirectKick" == refMsg || "TheirDirectKick" == refMsg)
-			&& pVision->Ball().X() > 240
-			&& pVision->Ball().X() > pVision->TheirPlayer(num).X())
+            && pVision->ball().X() > 240
+            && pVision->ball().X() > pVision->theirPlayer(num).X())
 		{
 			for (int i = 1;i <= Param::Field::MAX_PLAYER; i++)
 			{
 				if (i != num)
 				{
-					double othertoBallDir = (pVision->Ball().Pos() - pVision->TheirPlayer(i).Pos()).dir();
-					double toLeftGudgeDir = (LEFTGUDGE - pVision->TheirPlayer(i).Pos()).dir();
-					double toRightGudgeDir = (RIGHTGUDGE - pVision->TheirPlayer(i).Pos()).dir();
-					if (pVision->TheirPlayer(i).Pos().dist(pVision->Ball().Pos())<50
+                    double othertoBallDir = (pVision->ball().Pos() - pVision->theirPlayer(i).Pos()).dir();
+                    double toLeftGudgeDir = (LEFTGUDGE - pVision->theirPlayer(i).Pos()).dir();
+                    double toRightGudgeDir = (RIGHTGUDGE - pVision->theirPlayer(i).Pos()).dir();
+                    if (pVision->theirPlayer(i).Pos().dist(pVision->ball().Pos())<50
 						&& othertoBallDir >= toRightGudgeDir
 						&& othertoBallDir <= toLeftGudgeDir)
 					{
@@ -140,14 +140,14 @@ EVALUATE_ATTRIBUTE(ACanBeLeader)
 	{
 		int best = ZSkillUtils::instance()->getTheirBestPlayer();
 		const string refMsg = WorldModel::Instance()->CurrentRefereeMsg();
-//        double besttoBallDir = (pVision->Ball().Pos() - pVision->TheirPlayer(best).Pos()).dir();
+//        double besttoBallDir = (pVision->ball().Pos() - pVision->theirPlayer(best).Pos()).dir();
 		if (("TheirIndirectKick" == refMsg || "TheirDirectKick" == refMsg)
-			&& pVision->TheirPlayer(best).X() < pVision->Ball().X())
+            && pVision->theirPlayer(best).X() < pVision->ball().X())
 		{
-			double metoBallDir = (pVision->Ball().Pos() - pVision->TheirPlayer(num).Pos()).dir();
-			double toLeftGudgeDir = (LEFTGUDGE - pVision->TheirPlayer(num).Pos()).dir();
-			double toRightGudgeDir = (RIGHTGUDGE - pVision->TheirPlayer(num).Pos()).dir();
-			if (pVision->TheirPlayer(num).Pos().dist(pVision->Ball().Pos()) < 50
+            double metoBallDir = (pVision->ball().Pos() - pVision->theirPlayer(num).Pos()).dir();
+            double toLeftGudgeDir = (LEFTGUDGE - pVision->theirPlayer(num).Pos()).dir();
+            double toRightGudgeDir = (RIGHTGUDGE - pVision->theirPlayer(num).Pos()).dir();
+            if (pVision->theirPlayer(num).Pos().dist(pVision->ball().Pos()) < 50
 				&& metoBallDir >= toRightGudgeDir
 				&& metoBallDir <= toLeftGudgeDir)
 			{
@@ -161,25 +161,25 @@ EVALUATE_ATTRIBUTE(ACanBeLeader)
 //return double		到对方球门中心点的距离
 EVALUATE_ATTRIBUTE(ADist2TheirGoal)
 {
-	double tempValue = pVision->TheirPlayer(num).Pos().dist(THEIR_GOAL_CENTER);
+    double tempValue = pVision->theirPlayer(num).Pos().dist(THEIR_GOAL_CENTER);
 	setValue(tempValue);
 }
 //return double		到我方球门中心点的距离
 EVALUATE_ATTRIBUTE(ADist2OurGoal)
 {
-	double tempValue = pVision->TheirPlayer(num).Pos().dist(OUR_GOAL_CENTER);
+    double tempValue = pVision->theirPlayer(num).Pos().dist(OUR_GOAL_CENTER);
 	setValue(tempValue);
 }
 //return double		到球的距离
 EVALUATE_ATTRIBUTE(ADist2Ball)
 {
-	double tempValue = pVision->TheirPlayer(num).Pos().dist(pVision->Ball().Pos());
+    double tempValue = pVision->theirPlayer(num).Pos().dist(pVision->ball().Pos());
 	setValue(tempValue);
 }
 //return 1 or 0		对方是否存在
 EVALUATE_ATTRIBUTE(AValid)
 {
-	if (pVision->TheirPlayer(num).Valid())
+    if (pVision->theirPlayer(num).Valid())
 	{
 		setValue(1.00);
 	} else setValue(0.00);
@@ -198,7 +198,7 @@ EVALUATE_ATTRIBUTE(AShootRange)
 	CShootRangeList shootRangeList(pVision,
 													   SR_DEFENCE,
 													   0,
-													   pVision->TheirPlayer(num).Pos());
+                                                       pVision->theirPlayer(num).Pos());
 	const CValueRangeList& shootRange = shootRangeList.getShootRange();
 	CValueRange* bestRange = NULL;
 	double biggestRange = 0;
@@ -214,7 +214,7 @@ EVALUATE_ATTRIBUTE(AShootRangeWithoutMarker)
 	CShootRangeList shootRangeList(pVision,
 													   SR_DEFENCE,
 													   DefenceInfo::Instance()->getOurMarkDenfender(num),
-													   pVision->TheirPlayer(num).Pos());
+                                                       pVision->theirPlayer(num).Pos());
 	const CValueRangeList& shootRange = shootRangeList.getShootRange();
 	CValueRange* bestRange = NULL;
 	double biggestRange = 0;
@@ -227,9 +227,9 @@ EVALUATE_ATTRIBUTE(AShootRangeWithoutMarker)
 //return double		补防距离
 EVALUATE_ATTRIBUTE(AFillingInDist)
 {
-	const int ourGoalie = PlayInterface::Instance()->getNumbByRealIndex(TaskMediator::Instance()->goalie());
+	const int ourGoalie = TaskMediator::Instance()->goalie();
 	const int defender = DefenceInfo::Instance()->getOurMarkDenfender(num);
-	const PlayerVisionT& opp = pVision->TheirPlayer(num);
+    const PlayerVisionT& opp = pVision->theirPlayer(num);
 	double minDist = 500;
 	double tempDist = 0;
 	for (int i = 1;i <= Param::Field::MAX_PLAYER; i++)
@@ -238,7 +238,7 @@ EVALUATE_ATTRIBUTE(AFillingInDist)
 		{
 			continue;
 		}
-		const PlayerVisionT& replacer = pVision->OurPlayer(i);
+        const PlayerVisionT& replacer = pVision->ourPlayer(i);
 		double angle_opp2replacer_opp2goal = fabs(Utils::Normalize(CVector(replacer.Pos()-opp.Pos()).dir()-CVector(OUR_GOAL_CENTER-opp.Pos()).dir()));
 		if (replacer.X() > opp.X() + 50 || angle_opp2replacer_opp2goal > Param::Math::PI * 90 / 180)//X方向被甩来70cm无法补防
 		{
@@ -261,8 +261,8 @@ EVALUATE_ATTRIBUTE(AKeeperDirFactor)
 	int keeperNum = ZSkillUtils::instance()->getTheirBestPlayer();
 	if (num != keeperNum)
 	{
-		const PlayerVisionT& theirKeeper = pVision->TheirPlayer(keeperNum);
-		const PlayerVisionT& opp = pVision->TheirPlayer(num);
+        const PlayerVisionT& theirKeeper = pVision->theirPlayer(keeperNum);
+        const PlayerVisionT& opp = pVision->theirPlayer(num);
 		tempValue = std::fabs(Utils::Normalize(CVector(opp.Pos() - theirKeeper.Pos()).dir() - theirKeeper.Dir()));
 	}
 	setValue(tempValue);
@@ -274,7 +274,7 @@ EVALUATE_ATTRIBUTE(AMarkerDistFactor)
 	const int defender = DefenceInfo::Instance()->getOurMarkDenfender(num);
 	if (0 != defender)
 	{
-		tempValue = pVision->TheirPlayer(num).Pos().dist(pVision->OurPlayer(defender).Pos());
+        tempValue = pVision->theirPlayer(num).Pos().dist(pVision->ourPlayer(defender).Pos());
 	} 
 	setValue(tempValue);
 }
@@ -285,8 +285,8 @@ EVALUATE_ATTRIBUTE(AMarkerDirFactor)
 	const int defender = DefenceInfo::Instance()->getOurMarkDenfender(num);
 	if (0 != defender)
 	{
-		const PlayerVisionT& me = pVision->OurPlayer(defender);
-		const PlayerVisionT& opp = pVision->TheirPlayer(num);
+        const PlayerVisionT& me = pVision->ourPlayer(defender);
+        const PlayerVisionT& opp = pVision->theirPlayer(num);
 		tempValue = fabs(Utils::Normalize(CVector(me.Pos() - opp.Pos()).dir() - CVector(OUR_GOAL_CENTER - opp.Pos()).dir()));
 	} 
 	setValue(tempValue);
@@ -295,8 +295,8 @@ EVALUATE_ATTRIBUTE(AMarkerDirFactor)
 EVALUATE_ATTRIBUTE(AShootReflectAngle)
 {
 	double tempValue = Param::Math::PI;
-	CGeoPoint ballPos = pVision->Ball().Pos();
-	CGeoPoint oppPos = pVision->TheirPlayer(num).Pos();
+    CGeoPoint ballPos = pVision->ball().Pos();
+    CGeoPoint oppPos = pVision->theirPlayer(num).Pos();
 	tempValue = fabs(Utils::Normalize(CVector(ballPos - oppPos).dir() - CVector(OUR_GOAL_CENTER - oppPos).dir()));
 	setValue(tempValue);
 }
@@ -304,11 +304,11 @@ EVALUATE_ATTRIBUTE(AShootReflectAngle)
 EVALUATE_ATTRIBUTE(AReceiveReflectAngle)
 {
 	double tempValue = Param::Math::PI;
-	const MobileVisionT& ball = pVision->Ball();
+    const MobileVisionT& ball = pVision->ball();
 	if (ball.Vel().mod() > OPP_PASS_VEL)
 	{
 		CGeoPoint rBallVelPos = ball.Pos() + Utils::Polar2Vector(100,Utils::Normalize(ball.Vel().dir()+Param::Math::PI));
-		CGeoPoint oppPos = pVision->TheirPlayer(num).Pos();
+        CGeoPoint oppPos = pVision->theirPlayer(num).Pos();
 		CGeoLine ballLine = CGeoLine(ball.Pos(),rBallVelPos);
 		CGeoPoint projectP = ballLine.projection(oppPos);
 		tempValue = fabs(Utils::Normalize(CVector(rBallVelPos - ball.Pos()).dir() - CVector(OUR_GOAL_CENTER - projectP).dir()));
@@ -318,7 +318,7 @@ EVALUATE_ATTRIBUTE(AReceiveReflectAngle)
       if (toProjectDist < Param::Vehicle::V2::PLAYER_SIZE)
         toProjectDist = Param::Vehicle::V2::PLAYER_SIZE;
       toProjectDist /= toProjectDist;
-      double oppFaceDir = pVision->TheirPlayer(num).Dir();
+      double oppFaceDir = pVision->theirPlayer(num).Dir();
       tempValue = fabs(Utils::Normalize((rBallVelPos - ball.Pos()).dir() - oppFaceDir) * toProjectDist);
     }
 	}
@@ -328,25 +328,25 @@ EVALUATE_ATTRIBUTE(AReceiveReflectAngle)
 //posX
 EVALUATE_ATTRIBUTE(APosX)
 {
-	double tempValue = pVision->TheirPlayer(num).X();
+    double tempValue = pVision->theirPlayer(num).X();
 	setValue(tempValue);
 }
 //posY
 EVALUATE_ATTRIBUTE(APosY)
 {
-	double tempValue = pVision->TheirPlayer(num).Y();
+    double tempValue = pVision->theirPlayer(num).Y();
 	setValue(tempValue);
 }
 //velX
 EVALUATE_ATTRIBUTE(AVelX)
 {
-	double tempValue = pVision->TheirPlayer(num).VelX();
+    double tempValue = pVision->theirPlayer(num).VelX();
 	setValue(tempValue);
 }
 //velY
 EVALUATE_ATTRIBUTE(AVelY)
 {
-	double tempValue = pVision->TheirPlayer(num).VelY();
+    double tempValue = pVision->theirPlayer(num).VelY();
 	setValue(tempValue);
 }
 
@@ -358,7 +358,7 @@ EVALUATE_ATTRIBUTE(AGoalie)
 	int goalieNum = 0;
 	for (int i = 1;i <= Param::Field::MAX_PLAYER;++i)
 	{
-		double myDist = pVision->TheirPlayer(i).Pos().dist(THEIR_GOAL_CENTER);
+        double myDist = pVision->theirPlayer(i).Pos().dist(THEIR_GOAL_CENTER);
 		if (myDist < dist)
 		{
 			dist = myDist;
@@ -366,7 +366,7 @@ EVALUATE_ATTRIBUTE(AGoalie)
 		}
 	}
 	//modified for Brazil by thj
-	if (num == goalieNum && pVision->TheirPlayer(num).Pos().x() > Param::Field::PITCH_LENGTH/2 - Param::Field::PENALTY_AREA_DEPTH)
+    if (num == goalieNum && pVision->theirPlayer(num).Pos().x() > Param::Field::PITCH_LENGTH/2 - Param::Field::PENALTY_AREA_DEPTH)
 	{
 		tempValue = 1.0;
 	}
@@ -393,14 +393,14 @@ EVALUATE_ATTRIBUTE(ARecive)
 EVALUATE_ATTRIBUTE(APassBlock)
 {
 	double tempValue = 90;
-	CGeoPoint oPos = pVision->TheirPlayer(num).Pos();
-	CGeoPoint ballPos = pVision->Ball().Pos();
+    CGeoPoint oPos = pVision->theirPlayer(num).Pos();
+    CGeoPoint ballPos = pVision->ball().Pos();
 	for (int i = 1;i <= Param::Field::MAX_PLAYER;++i)
 	{
 		int defender = DefenceInfo::Instance()->getOurMarkDenfender(num);
-		if (pVision->OurPlayer(i).Valid() && i != defender)
+        if (pVision->ourPlayer(i).Valid() && i != defender)
 		{
-			CGeoPoint myPos = pVision->OurPlayer(i).Pos();
+            CGeoPoint myPos = pVision->ourPlayer(i).Pos();
 			double tempAngle1 = fabs(Utils::Normalize(CVector(myPos - oPos).dir() - CVector(ballPos - oPos).dir()));
 			double tempAngle2 = fabs(Utils::Normalize(CVector(myPos - ballPos).dir() - CVector(oPos - ballPos).dir()));
 			if (tempAngle1 < Param::Math::PI * 80 / 180 && tempAngle2 < Param::Math::PI * 80 / 180	&& myPos.dist(oPos) < 100)
@@ -419,25 +419,25 @@ EVALUATE_ATTRIBUTE(APassBlock)
 
 EVALUATE_ATTRIBUTE(AImmortalFactor)//用于防范远距离immortal
 {
-	static CGeoPoint lastBallPos = pVision->Ball().Pos();
-	static int lastCycle = pVision->Cycle();
+    static CGeoPoint lastBallPos = pVision->ball().Pos();
+    static int lastCycle = pVision->getCycle();
 	double tempValue = 0;
 	const string refMsg = WorldModel::Instance()->CurrentRefereeMsg();
 	if ("TheirIndirectKick" == refMsg || "TheirDirectKick" == refMsg)
 	{
-		if (pVision->Cycle() > lastCycle)
+        if (pVision->getCycle() > lastCycle)
 		{
-			if (lastBallPos.dist(pVision->Ball().Pos()) > 3)
+            if (lastBallPos.dist(pVision->ball().Pos()) > 3)
 			{
-				lastBallPos = pVision->Ball().Pos();
+                lastBallPos = pVision->ball().Pos();
 			}
-			lastCycle = pVision->Cycle();
+            lastCycle = pVision->getCycle();
 		}
 		//进行计算
 		if (lastBallPos.x() > Param::Field::PITCH_LENGTH / 6)
 		{
-			CGeoPoint oppPos = pVision->TheirPlayer(num).Pos();
-			CGeoPoint ballPos = pVision->Ball().Pos();
+            CGeoPoint oppPos = pVision->theirPlayer(num).Pos();
+            CGeoPoint ballPos = pVision->ball().Pos();
 			CVector ball2opp = oppPos - ballPos;
 			double angleDiff = fabs(Utils::Normalize(ball2opp.dir() - CVector(OUR_GOAL_CENTER - ballPos).dir()));
 			CGeoLine line_ball2goal = CGeoLine(ballPos,OUR_GOAL_CENTER);
@@ -456,13 +456,13 @@ EVALUATE_ATTRIBUTE(AImmortalFactor)//用于防范远距离immortal
 EVALUATE_ATTRIBUTE(ATouchAbility)
 {
 	double tempValue = 600;//该属性的值越小，则属性性能越好
-	const MobileVisionT& ball = pVision->Ball();
-	double ballVelMod = pVision->Ball().Vel().mod();
+    const MobileVisionT& ball = pVision->ball();
+    double ballVelMod = pVision->ball().Vel().mod();
 	if (ballVelMod > OPP_PASS_VEL)
 	{
 		CGeoPoint ballPos = ball.Pos();
 		double ballSpeedDir = ball.Vel().dir();
-		const PlayerVisionT& opp = pVision->TheirPlayer(num);
+        const PlayerVisionT& opp = pVision->theirPlayer(num);
 		CGeoPoint oppPos = opp.Pos() + Utils::Polar2Vector(opp.Vel().mod()*0.7,opp.Vel().dir());
 		CVector ball2opp = oppPos - ballPos;
 		double angleDiff = fabs(Utils::Normalize(ball2opp.dir() - ballSpeedDir));
@@ -479,18 +479,18 @@ EVALUATE_ATTRIBUTE(ATouchAbility)
 EVALUATE_ATTRIBUTE(AChaseAbility)
 {
 	//自己处理球速数据
-	static CGeoPoint logBallPos = pVision->Ball().RawPos();
-	static int logCycle = pVision->Cycle();
-	if (pVision->Cycle() > logCycle)
+    static CGeoPoint logBallPos = pVision->ball().RawPos();
+    static int logCycle = pVision->getCycle();
+    if (pVision->getCycle() > logCycle)
 	{
-		logCycle = pVision->Cycle();
-		logBallPos = pVision->Ball().RawPos();
+        logCycle = pVision->getCycle();
+        logBallPos = pVision->ball().RawPos();
 	}
 	//特别针对immortal的chaseKicker
 	double tempValue = 0;
-	const MobileVisionT& ball = pVision->Ball();
-	const PlayerVisionT& opp = pVision->TheirPlayer(num);
-	CVector ballVel = pVision->Ball().Pos() - logBallPos;
+    const MobileVisionT& ball = pVision->ball();
+    const PlayerVisionT& opp = pVision->theirPlayer(num);
+    CVector ballVel = pVision->ball().Pos() - logBallPos;
 	double angle_opp2ball_opp2goal = fabs(Utils::Normalize(CVector(ball.Pos() - opp.Pos()).dir()-CVector(OUR_GOAL_CENTER - opp.Pos()).dir()));
 	//double angle_oppVel_opp2goal = fabs(Utils::Normalize(opp.Vel().dir()-CVector(OUR_GOAL_CENTER - opp.Pos()).dir()));
 	//double angle_oppVel_opp2ball = fabs(Utils::Normalize(opp.Vel().dir()-CVector(ball.Pos() - opp.Pos()).dir()));

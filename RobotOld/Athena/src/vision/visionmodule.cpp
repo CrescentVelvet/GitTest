@@ -169,14 +169,14 @@ void CVisionModule::parse(void * ptr, int size) {
             const SSL_DetectionRobot& robot = detection.robots_blue(i);
             if (GlobalSettings::instance()->inChosenArea(saoConvert(CGeoPoint(robot.x(), robot.y())))
                     && robot.robot_id() < PARAM::ROBOTMAXID) {
-                message.addRobot(PARAM::BLUE, robot.robot_id(), saoConvert(CGeoPoint(robot.x(), robot.y())), saoConvert(robot.orientation()));
+                message.setRobot(PARAM::BLUE, robot.robot_id(), saoConvert(CGeoPoint(robot.x(), robot.y())), saoConvert(robot.orientation()));
             }
         }
         for (int i = 0; i < yellowSize; i++) {
             const SSL_DetectionRobot& robot = detection.robots_yellow(i);
             if (GlobalSettings::instance()->inChosenArea(saoConvert(CGeoPoint(robot.x(), robot.y())))
                     && robot.robot_id() < PARAM::ROBOTMAXID) {
-                message.addRobot(PARAM::YELLOW, robot.robot_id(), saoConvert(CGeoPoint(robot.x(), robot.y())), saoConvert(robot.orientation()));
+                message.setRobot(PARAM::YELLOW, robot.robot_id(), saoConvert(CGeoPoint(robot.x(), robot.y())), saoConvert(robot.orientation()));
             }
         }
         GlobalData::instance()->camera[message.camID].push(message);
@@ -203,7 +203,7 @@ void CVisionModule::checkCommand() {
             GlobalData::instance()->robotCommand[team].push(commands);
             GlobalData::instance()->commandMissingFrame[team] >= 20 ?
             GlobalData::instance()->commandMissingFrame[team] = 20 :
-                    GlobalData::instance()->commandMissingFrame[team]++;
+            GlobalData::instance()->commandMissingFrame[team]++;
         }
     }
     ZCommunicator::instance()->clearCommands();
@@ -215,12 +215,12 @@ void  CVisionModule::udpSend() {
     ReceiveVisionMessage result = GlobalData::instance()->maintain[0];
     if (result.ballSize > 0) {
         detectionBall->set_x(result.ball[0].pos.x());
-        if (result.ball[0].pos.y() == 0) detectionBall->set_y(float(0.1));
+        if (std::fabs(result.ball[0].pos.y()) < 1e-4) detectionBall->set_y(float(0.1));
         else detectionBall->set_y(result.ball[0].pos.y());//to fix a role match bug 2018.6.15
         CVector TransferVel(result.ball[0].velocity.x(), result.ball[0].velocity.y());
         detectionBall->set_vel_x(TransferVel.x());
         detectionBall->set_vel_y(TransferVel.y());
-        detectionBall->set_valid(DealBall::instance()->getValid());
+        detectionBall->set_valid(result.isBallValid);
         detectionBall->set_last_touch(GlobalData::instance()->lastTouch);
         detectionBall->set_ball_state(result.ball[0].ball_state_machine.ballState);
         detectionBall->set_raw_x(GlobalData::instance()->processBall[0].ball[0].pos.x());
@@ -229,23 +229,21 @@ void  CVisionModule::udpSend() {
         detectionBall->set_chip_predict_y(GlobalData::instance()->maintain[0].ball[0].predict_pos.y());
     } else {
         detectionBall->set_valid(false);
-        detectionBall->set_x(-32767);
-        detectionBall->set_y(-32767);
+        detectionBall->set_x(99999);
+        detectionBall->set_y(99999);
     }
 
     for (int team = 0; team < PARAM::TEAMS; team++) {
 //        for (int i = 0; i < result.robotSize[team]; i++) {
 //            if (i == PARAM::SENDROBOTNUM) break; //for sending MAX 8 car possible
-        for(int i = 0;i<GlobalData::instance()->processRobot[0].robotSize[team];i++){//change by lzx
-            if (i == PARAM::SENDROBOTNUM) break; //for sending MAX 8 car possible
+        for(int id = 0;id< PARAM::ROBOTNUM;id++){//change by lzx
             Vision_DetectionRobot* robot;
-            int id = GlobalData::instance()->processRobot[0].robot[team][i].id;
-            if (team == 0 )  robot = detectionFrame.add_robots_blue();
+            if (team == 0 ) robot = detectionFrame.add_robots_blue();
             else robot = detectionFrame.add_robots_yellow();
             robot->set_x(result.robot[team][id].pos.x());
             robot->set_y(result.robot[team][id].pos.y());
             robot->set_orientation(result.robot[team][id].angle);
-            robot->set_robot_id(result.robot[team][id].id);
+            robot->set_robot_id(id);
             CVector TransferVel(result.robot[team][id].velocity.x(),
                                 result.robot[team][id].velocity.y());
             robot->set_vel_x(TransferVel.x());
@@ -253,11 +251,11 @@ void  CVisionModule::udpSend() {
             robot->set_rotate_vel(result.robot[team][id].rotateVel);
             robot->set_accelerate_x(result.robot[team][id].accelerate.x());
             robot->set_accelerate_y(result.robot[team][id].accelerate.y());
-            robot->set_raw_x(GlobalData::instance()->processRobot[0].robot[team][i].pos.x());
-            robot->set_raw_y(GlobalData::instance()->processRobot[0].robot[team][i].pos.y());
-            robot->set_raw_orientation(GlobalData::instance()->processRobot[0].robot[team][i].angle);
+            robot->set_raw_x(GlobalData::instance()->processRobot[0].robot[team][id].pos.x());
+            robot->set_raw_y(GlobalData::instance()->processRobot[0].robot[team][id].pos.y());
+            robot->set_raw_orientation(GlobalData::instance()->processRobot[0].robot[team][id].angle);
             robot->set_valid(result.robot[team][id].valid);
-            if(result.robot[team][id].valid!=true) qDebug()<<"a error of valid in maintain";
+//            if(result.robot[team][id].valid!=true) qDebug()<<"a error of valid in maintain";
             robot->set_raw_vel_x(result.robot[team][id].raw_vel.x());
             robot->set_raw_vel_y(result.robot[team][id].raw_vel.y());
             robot->set_raw_rotate_vel(result.robot[team][id].rawRotateVel);

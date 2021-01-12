@@ -16,16 +16,16 @@ const double FRAME_PERIOD = 1.0 / Param::Vision::FRAME_RATE;
 bool DEBUG_NO_ZERO_VEL = false;
 const double DEC_FACTOR = 2.0;
 const double lowerBoundSpeedLimitRotate = 0;
-const double upperBoundSpeedLimitRotate = 300;
+const double upperBoundSpeedLimitRotate = 300*10;
 const double min_max_angle_acc = 10.0;
 const double min_max_angle_speed = 10.0;
 const double rotateScaleFactor = 1.0;
 const double minAngleLimitRotateSpeed = 15.0 / 180.0 * Param::Math::PI;
 
 bool IS_SIMULATION = ZSS::ZParamManager::instance()->value("Alert/IsSimulation", QVariant(false)).toBool();
-double OUR_MAX_SPEED = ZSS::ZParamManager::instance()->value("CGotoPositionV2/MNormalSpeed",QVariant(300)).toDouble();
-double OUR_MAX_ACC = ZSS::ZParamManager::instance()->value("CGotoPositionV2/MNormalAcc",QVariant(450)).toDouble();
-double OUR_MAX_DEC = ZSS::ZParamManager::instance()->value("CGotoPositionV2/MNormalDec",QVariant(450)).toDouble();
+double OUR_MAX_SPEED = ZSS::ZParamManager::instance()->value("CGotoPositionV2/MNormalSpeed",QVariant(300*10)).toDouble();
+double OUR_MAX_ACC = ZSS::ZParamManager::instance()->value("CGotoPositionV2/MNormalAcc",QVariant(450*10)).toDouble();
+double OUR_MAX_DEC = ZSS::ZParamManager::instance()->value("CGotoPositionV2/MNormalDec",QVariant(450*10)).toDouble();
 bool DISPLAY_ROTATION_LIMIT = ZSS::ZParamManager::instance()->value("Debug/RotationLimit",QVariant(false)).toBool();//true;
 bool DEBUG_TIME = ZSS::ZParamManager::instance()->value("Debug/TimePredict", QVariant(false)).toBool();
 bool addComp = true;
@@ -60,13 +60,13 @@ void compute_motion_1d(double x0, double v0, double v1,
                        double &traj_accel, double &traj_time, double &traj_time_acc, double &traj_time_dec, double &traj_time_flat, planType pT, nonZeroMode mode) {
     if (x0 == 0. && v0 == v1) {
         traj_accel = 0;
-        if(DEBUG_TIME) GDebugEngine::Instance()->gui_debug_msg(CGeoPoint(-380 * isX, -270 + (timeItor++) * 20), QString("R1").toLatin1(), timeDebugColor);
+        if(DEBUG_TIME) GDebugEngine::Instance()->gui_debug_msg(CGeoPoint(-380*10 * isX, -270*10 + (timeItor++) * 20*10), QString("R1").toLatin1(), timeDebugColor);
         return;
     }
 
     if(!finite(x0) || !finite(v0) || !finite(v1)) {
         traj_accel = 0;
-        if(DEBUG_TIME) GDebugEngine::Instance()->gui_debug_msg(CGeoPoint(-380 * isX, -270 + (timeItor++) * 20), QString("R2").toLatin1(), timeDebugColor);
+        if(DEBUG_TIME) GDebugEngine::Instance()->gui_debug_msg(CGeoPoint(-380*10 * isX, -270*10 + (timeItor++) * 20*10), QString("R2").toLatin1(), timeDebugColor);
         return;
     }
     if(pT == MOVE_X && fabs(v1) > 1e-8
@@ -94,16 +94,16 @@ void compute_motion_1d(double x0, double v0, double v1,
     else
         period = 1 / 40.0;
 
-    if(a_max > 600 && pT != MOVE_Y) {
-        if(fabs(v0) > 150)
+    if(a_max > 600*10 && pT != MOVE_Y) {
+        if(fabs(v0) > 150*10)
             period = 1 / 15.0;
-        else if(fabs(v0) > 50)
+        else if(fabs(v0) > 50*10)
             period = 1 / 20.0;
     }
-    else if(a_max > 480 && pT != MOVE_Y) {
-        if(fabs(v0) > 150)
+    else if(a_max > 480*10 && pT != MOVE_Y) {
+        if(fabs(v0) > 150*10)
             period = 1 / 25.0;
-        else if(fabs(v0) > 50)
+        else if(fabs(v0) > 50*10)
             period = 1 / 30.0;
     }
 
@@ -115,7 +115,7 @@ void compute_motion_1d(double x0, double v0, double v1,
         compute_motion_1d(x0 + copysign(x_to_accel, v1), v0, 0, a_max * a_factor, d_max *  a_factor,
                           v_max, a_factor, vel_factor, traj_accel, traj_time, traj_time_acc, traj_time_dec, traj_time_flat, pT, mode);
         traj_time += time_to_accel;
-        if(DEBUG_TIME) GDebugEngine::Instance()->gui_debug_msg(CGeoPoint(-380 * isX, -270 + (timeItor++) * 20), QString("R3").toLatin1(), timeDebugColor);
+        if(DEBUG_TIME) GDebugEngine::Instance()->gui_debug_msg(CGeoPoint(-380*10 * isX, -270*10 + (timeItor++) * 20*10), QString("R3").toLatin1(), timeDebugColor);
 
         return;
     }
@@ -133,7 +133,7 @@ void compute_motion_1d(double x0, double v0, double v1,
             compute_motion_1d(x0 + copysign(x_to_accel, v1), v0, 0, a_max * a_factor, d_max * a_factor,
                               v_max, a_factor, vel_factor, traj_accel, traj_time, traj_time_acc, traj_time_dec, traj_time_flat, pT, mode);
             traj_time += time_to_accel;
-            if(DEBUG_TIME) GDebugEngine::Instance()->gui_debug_msg(CGeoPoint(-380 * isX, -270 + (timeItor++) * 20), QString("R4").toLatin1(), timeDebugColor);
+            if(DEBUG_TIME) GDebugEngine::Instance()->gui_debug_msg(CGeoPoint(-380*10 * isX, -270*10 + (timeItor++) * 20*10), QString("R4").toLatin1(), timeDebugColor);
             return;
         }
         else {
@@ -151,16 +151,16 @@ void compute_motion_1d(double x0, double v0, double v1,
             else {
                 traj_accel = - copysign(decFactor * d_max * a_factor, v0);
             }
-            if(DEBUG_TIME) GDebugEngine::Instance()->gui_debug_msg(CGeoPoint(-380 * isX, -270 + (timeItor++) * 20), QString("R5").toLatin1(), timeDebugColor);
+            if(DEBUG_TIME) GDebugEngine::Instance()->gui_debug_msg(CGeoPoint(-380*10 * isX, -270*10 + (timeItor++) * 20*10), QString("R5").toLatin1(), timeDebugColor);
             return;
         }
     }
 
-    if (accel_dist_to_v1 > fabs(x0) && v0 < v1) {
+    if (accel_dist_to_v1 > fabs(x0) && fabs(v0) < fabs(v1)) {
         traj_time_acc = (sqrt(2 * a_max * fabs(x0) + v0 * v0) - fabs(v0)) / a_max;
         traj_time_flat = 0;
         traj_time_dec = 0;
-    } else if (decel_dist_to_v1 > fabs(x0) && v0 > v1) {
+    } else if (decel_dist_to_v1 > fabs(x0) && fabs(v0) > fabs(v1)) {
         traj_time_acc = 0;
         traj_time_flat = 0;
         traj_time_dec = (fabs(v0) - sqrt(v0 * v0 - 2 * d_max * fabs(x0))) / d_max;
@@ -184,7 +184,7 @@ void compute_motion_1d(double x0, double v0, double v1,
     if (t_to_v1_at_x0 < period && a_to_v1_at_x0 < a_max) {
         traj_accel = - copysign(a_to_v1_at_x0, v0);
         traj_time += t_to_v1_at_x0;
-        if(DEBUG_TIME) GDebugEngine::Instance()->gui_debug_msg(CGeoPoint(-380 * isX, -270 + (timeItor++) * 20), QString("R6").toLatin1(), timeDebugColor);
+        if(DEBUG_TIME) GDebugEngine::Instance()->gui_debug_msg(CGeoPoint(-380*10 * isX, -270*10 + (timeItor++) * 20*10), QString("R6").toLatin1(), timeDebugColor);
         return;
     }
 
@@ -201,7 +201,7 @@ void compute_motion_1d(double x0, double v0, double v1,
         traj_accel =  copysign(a_max * a_factor, -x0);
     }
 
-    if(DEBUG_TIME) GDebugEngine::Instance()->gui_debug_msg(CGeoPoint(-380 * isX, -270 + (timeItor++) * 20), QString("R7").toLatin1(), timeDebugColor);
+    if(DEBUG_TIME) GDebugEngine::Instance()->gui_debug_msg(CGeoPoint(-380*10 * isX, -270*10 + (timeItor++) * 20*10), QString("R7").toLatin1(), timeDebugColor);
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -273,11 +273,11 @@ void compute_motion_2d(CVector x0, CVector v0, CVector v1,
     }
     if(v1.mod() > 0 && DEBUG_NO_ZERO_VEL) {
         GDebugEngine::Instance()->gui_debug_msg(CGeoPoint(0.0, 0.0), QString("xVel: %1").arg(v0.x()).toLatin1());
-        GDebugEngine::Instance()->gui_debug_msg(CGeoPoint(0.0, 20.0), QString("xVelFinal: %1").arg(v0.x() + traj_accel_x * FRAME_PERIOD).toLatin1());
-        GDebugEngine::Instance()->gui_debug_msg(CGeoPoint(0.0, 40.0), QString("targetVel:  %1").arg(v1.mod()).toLatin1());
-        GDebugEngine::Instance()->gui_debug_msg(CGeoPoint(0.0, 60.0), QString("yVel: %1").arg(v0.y()).toLatin1());
-        GDebugEngine::Instance()->gui_debug_msg(CGeoPoint(0.0, 80.0), QString("yVelFinal: %1").arg(v0.y() + traj_accel_y * FRAME_PERIOD).toLatin1());
-        GDebugEngine::Instance()->gui_debug_msg(CGeoPoint(0.0, 100.0), QString("v_max: %1").arg(v_max).toLatin1());
+        GDebugEngine::Instance()->gui_debug_msg(CGeoPoint(0.0, 20.0*10), QString("xVelFinal: %1").arg(v0.x() + traj_accel_x * FRAME_PERIOD).toLatin1());
+        GDebugEngine::Instance()->gui_debug_msg(CGeoPoint(0.0, 40.0*10), QString("targetVel:  %1").arg(v1.mod()).toLatin1());
+        GDebugEngine::Instance()->gui_debug_msg(CGeoPoint(0.0, 60.0*10), QString("yVel: %1").arg(v0.y()).toLatin1());
+        GDebugEngine::Instance()->gui_debug_msg(CGeoPoint(0.0, 80.0*10), QString("yVelFinal: %1").arg(v0.y() + traj_accel_y * FRAME_PERIOD).toLatin1());
+        GDebugEngine::Instance()->gui_debug_msg(CGeoPoint(0.0, 100.0*10), QString("v_max: %1").arg(v_max).toLatin1());
     }
 
     traj_accel = CVector(traj_accel_x, traj_accel_y);
@@ -286,13 +286,13 @@ void compute_motion_2d(CVector x0, CVector v0, CVector v1,
     if(time_x < 1e-5 || time_x > 50) time_x = 0;
     if(time_y < 1e-5 || time_y > 50) time_y = 0;
     if(time_x < time_y) {
-        if(DEBUG_TIME) GDebugEngine::Instance()->gui_debug_msg(CGeoPoint(320 , -270), QString("this").toLatin1());
+        if(DEBUG_TIME) GDebugEngine::Instance()->gui_debug_msg(CGeoPoint(320*10 , -270*10), QString("this").toLatin1());
         time = time_y;
         time_acc = time_y_acc;
         time_dec = time_y_dec;
         time_flat = time_y_flat;
     } else {
-        if(DEBUG_TIME) GDebugEngine::Instance()->gui_debug_msg(CGeoPoint(-320 , -270), QString("this").toLatin1());
+        if(DEBUG_TIME) GDebugEngine::Instance()->gui_debug_msg(CGeoPoint(-320*10 , -270*10), QString("this").toLatin1());
         time = time_x;
         time_acc = time_x_acc;
         time_dec = time_x_dec;
@@ -391,10 +391,10 @@ void goto_point_omni( const PlayerPoseT& start,
     compute_motion_1d(ang, ang_v, 0.0, max_angle_accel, max_angle_decel, max_angle_speed, angle_accel_factor, 1.0, ang_a, time_a, time_a_acc, time_a_dec, time_a_flat, ROTATE, mode);
 
     if(DISPLAY_ROTATION_LIMIT){
-        GDebugEngine::Instance()->gui_debug_msg(target_pos+CVector(0,-40), QString("maxRotateAcc:   %1").arg(max_angle_accel).toLatin1());
-        GDebugEngine::Instance()->gui_debug_msg(target_pos+CVector(0,-20), QString("maxRotateSpeed: %1").arg(max_angle_speed).toLatin1());
-        GDebugEngine::Instance()->gui_debug_msg(target_pos+CVector(0,-60), QString("rotateVel:      %1").arg(ang_v).toLatin1());
-        GDebugEngine::Instance()->gui_debug_msg(target_pos+CVector(0,-80), QString("nextRotateVel:  %1").arg(ang_v + ang_a * FRAME_PERIOD).toLatin1());
+        GDebugEngine::Instance()->gui_debug_msg(target_pos+CVector(0,-40*10), QString("maxRotateAcc:   %1").arg(max_angle_accel).toLatin1());
+        GDebugEngine::Instance()->gui_debug_msg(target_pos+CVector(0,-20*10), QString("maxRotateSpeed: %1").arg(max_angle_speed).toLatin1());
+        GDebugEngine::Instance()->gui_debug_msg(target_pos+CVector(0,-60*10), QString("rotateVel:      %1").arg(ang_v).toLatin1());
+        GDebugEngine::Instance()->gui_debug_msg(target_pos+CVector(0,-80*10), QString("nextRotateVel:  %1").arg(ang_v + ang_a * FRAME_PERIOD).toLatin1());
     }
 
     v = v + a * FRAME_PERIOD;
@@ -427,12 +427,12 @@ void goto_point_omni( const PlayerPoseT& start,
         static double lastTimeAcc = time_acc;
         static double lastTimeDec = time_dec;
         static double lastTimeFlat = time_flat;
-        GDebugEngine::Instance()->gui_debug_msg(CGeoPoint(-100, -400), QString("initialVel: %1").arg(start.Vel().mod()).toLatin1(), timeDebugColor);
-        GDebugEngine::Instance()->gui_debug_msg(CGeoPoint(100, -400), QString("finalVel: %1").arg((start.Vel() + a / Param::Vision::FRAME_RATE).mod()).toLatin1(), timeDebugColor);
+        GDebugEngine::Instance()->gui_debug_msg(CGeoPoint(-100*10, -400*10), QString("initialVel: %1").arg(start.Vel().mod()).toLatin1(), timeDebugColor);
+        GDebugEngine::Instance()->gui_debug_msg(CGeoPoint(100*10, -400*10), QString("finalVel: %1").arg((start.Vel() + a / Param::Vision::FRAME_RATE).mod()).toLatin1(), timeDebugColor);
         GDebugEngine::Instance()->gui_debug_msg(CGeoPoint(0.0, 0.0), QString("time: %1").arg((lastTime - time) * 1000.0).toLatin1(), timeDebugColor);
-        GDebugEngine::Instance()->gui_debug_msg(CGeoPoint(0.0, 20), QString("timeAcc: %1").arg(time_acc * 1000.0).toLatin1(), timeDebugColor);
-        GDebugEngine::Instance()->gui_debug_msg(CGeoPoint(0.0, 40), QString("timeDec: %1").arg(time_dec * 1000.0).toLatin1(), timeDebugColor);
-        GDebugEngine::Instance()->gui_debug_msg(CGeoPoint(0.0, 60), QString("timeFlat: %1").arg((lastTimeFlat - time_flat) * 1000.0).toLatin1(), timeDebugColor);
+        GDebugEngine::Instance()->gui_debug_msg(CGeoPoint(0.0, 20*10), QString("timeAcc: %1").arg(time_acc * 1000.0).toLatin1(), timeDebugColor);
+        GDebugEngine::Instance()->gui_debug_msg(CGeoPoint(0.0, 40*10), QString("timeDec: %1").arg(time_dec * 1000.0).toLatin1(), timeDebugColor);
+        GDebugEngine::Instance()->gui_debug_msg(CGeoPoint(0.0, 60*10), QString("timeFlat: %1").arg((lastTimeFlat - time_flat) * 1000.0).toLatin1(), timeDebugColor);
 
         lastTime = time;
         lastTimeAcc = time_acc;
@@ -478,7 +478,7 @@ double expectedCMPathTime(const PlayerPoseT& start, const CGeoPoint& final, doub
 
 double predictedTime(const PlayerVisionT& start, const CGeoPoint & Target, const CVector& targetVel) {
     CVector x = start.Pos() - Target;
-    CVector v = (start.Vel().mod() < 2.5) ? CVector(0, 0) : start.Vel();
+    CVector v = (start.Vel().mod() < 2.5*10) ? CVector(0, 0) : start.Vel();
     double time;
     CVector a;
     double time_acc, time_dec, time_flat;
@@ -498,7 +498,7 @@ double predictedTime(const PlayerVisionT& start, const CGeoPoint & Target, const
 
 double predictedTimeWithRawVel(const PlayerVisionT& start, const CGeoPoint & Target, const CVector& targetVel) {
     CVector x = start.Pos() - Target;
-    CVector v = (start.RawVel().mod() < 2.5) ? CVector(0, 0) : start.RawVel();
+    CVector v = (start.RawVel().mod() < 2.5*10) ? CVector(0, 0) : start.RawVel();
 //    GDebugEngine::Instance()->gui_debug_msg(start.Pos(), QString("vel: (%1, %2)").arg(v.x()).arg(v.y()).toLatin1());
     double time;
     CVector a;
@@ -518,8 +518,8 @@ double predictedTimeWithRawVel(const PlayerVisionT& start, const CGeoPoint & Tar
 }
 
 double predictedTheirTime(const PlayerVisionT& start, const CGeoPoint & Target, const CVector& targetVel) {
-    double max_acc = 500;
-    double max_speed = 350;
+    double max_acc = 500*10;
+    double max_speed = 350*10;
 
     CVector x = start.Pos() - Target;
     CVector v = start.Vel();
@@ -623,9 +623,9 @@ void openSpeedCircle(const PlayerPoseT& start, const double dist2Center, const i
     double rotAcc, rotTime, rotAccTime, rotDecTime, rotFlatTime;
 
     if (rotateMethod == 1 || rotateMethod == 4) {
-        compute_motion_1d(posDirDiff, start.RotVel(), 0, 15, 5, 5, 1.5, 1.0,rotAcc, rotTime, rotAccTime, rotDecTime, rotFlatTime, ROTATE);
+        compute_motion_1d(posDirDiff, start.RotVel(), 0, 15, 5, 5, 1.5, 1.0, rotAcc, rotTime, rotAccTime, rotDecTime, rotFlatTime, ROTATE);
     } else {
-        compute_motion_1d(-posDirDiff, start.RotVel(), 0, 15, 5, 5, 1.5, 1.0,rotAcc, rotTime, rotAccTime, rotDecTime, rotFlatTime, ROTATE);
+        compute_motion_1d(-posDirDiff, start.RotVel(), 0, 15, 5, 5, 1.5, 1.0, rotAcc, rotTime, rotAccTime, rotDecTime, rotFlatTime, ROTATE);
     }
 
     double rotVel = startRotVel + rotAcc / Param::Vision::FRAME_RATE;

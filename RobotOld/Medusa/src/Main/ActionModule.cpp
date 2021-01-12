@@ -34,15 +34,16 @@ CActionModule::~CActionModule(void) {
 
 // 用于当场上有的车号大于5的情况
 
-bool CActionModule::sendAction(unsigned char robotIndex[]) {
+bool CActionModule::sendAction() {
     decision_to_action.Wait();
     /************************************************************************/
     /* 第一步：遍历小车，执行赋予的任务，生成动作指令                       */
     /************************************************************************/
     for (int vecNum = 1; vecNum <= Param::Field::MAX_PLAYER; ++ vecNum) {
         // 获取当前小车任务
-        if (robotIndex[vecNum - 1] < 0 || robotIndex[vecNum - 1] > 17) {
-            cout << "Invalid number in actionmodule : " << int(robotIndex[vecNum - 1]) << endl;
+        auto robotIndex = vecNum;
+        if (robotIndex < 0 || robotIndex > Param::Field::MAX_PLAYER) {
+            cout << "Invalid number in actionmodule : " << int(robotIndex) << endl;
         }
         CPlayerTask* pTask = TaskMediator::Instance()->getPlayerTask(vecNum);
         // 没有任务，跳过
@@ -60,9 +61,9 @@ bool CActionModule::sendAction(unsigned char robotIndex[]) {
         if (pCmd) {
             dribble = pCmd->dribble() > 0;
             // 下发运动 <vx vy w>
-            pCmd->execute(robotIndex[vecNum - 1]); //this by Wang
+            pCmd->execute(robotIndex); //this by Wang
             // 记录指令
-            _pVision->SetPlayerCommand(pCmd->number(), pCmd);
+            _pVision->setPlayerCommand(pCmd->number(), pCmd);
         }
 
         // 踢：有效的踢控指令
@@ -77,14 +78,14 @@ bool CActionModule::sendAction(unsigned char robotIndex[]) {
             // 涉及到平/挑射分档，这里只关系相关参数，实际分档请关注 CommandSender
             CPlayerKickV2 kickCmd(vecNum, kickPower, chipkickDist, passdist, dribble);
             // 机构动作 <kick dribble>
-            kickCmd.execute(robotIndex[vecNum - 1]);
+            kickCmd.execute(robotIndex);
         } else {
             CPlayerKickV2 kickCmd(vecNum, 0, 0, 0, dribble);
-            kickCmd.execute(robotIndex[vecNum - 1]);
+            kickCmd.execute(robotIndex);
         }
 
         // 记录命令
-        BallStatus::Instance()->setCommand(vecNum, kickPower, chipkickDist, dribble, _pVision->Cycle());
+        BallStatus::Instance()->setCommand(vecNum, kickPower, chipkickDist, dribble, _pVision->getCycle());
     }
 
     /************************************************************************/
@@ -103,14 +104,15 @@ bool CActionModule::sendAction(unsigned char robotIndex[]) {
     return true;
 }
 
-bool CActionModule::sendNoAction(unsigned char robotIndex[]) {
+bool CActionModule::sendNoAction() {
     for (int vecNum = 1; vecNum <= Param::Field::MAX_PLAYER; ++ vecNum) {
         // 生成停止命令
         CPlayerCommand *pCmd = CmdFactory::Instance()->newCommand(CPlayerSpeedV2(vecNum, 0, 0, 0, 0));
         // 执行且下发
-        pCmd->execute(robotIndex[vecNum - 1]);
+        auto robotIndex = vecNum;
+        pCmd->execute(robotIndex);
         // 记录指令
-        _pVision->SetPlayerCommand(pCmd->number(), pCmd);
+        _pVision->setPlayerCommand(pCmd->number(), pCmd);
     }
 
     return true;
@@ -123,7 +125,7 @@ void CActionModule::stopAll() {
         // 执行且下发
         pCmd->execute(vecNum);
         // 指令记录
-        _pVision->SetPlayerCommand(pCmd->number(), pCmd);
+        _pVision->setPlayerCommand(pCmd->number(), pCmd);
     }
     return ;
 }

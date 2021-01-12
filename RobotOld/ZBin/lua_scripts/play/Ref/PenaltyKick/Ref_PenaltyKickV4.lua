@@ -42,8 +42,8 @@ local function generateKickDirection()
 	local theirGoalieNum = skillUtils:getTheirGoalie()
 	local goalieY=enemy.posY(theirGoalieNum)
 	--local goalieVelY=enemy.vel(theirGoalieNum):y()*2
-	local lastGoalieY = vision:TheirPlayer(vision:LastCycle(),theirGoalieNum):Y()
-	local lastLastGoalieY = vision:TheirPlayer(vision:LastCycle()-1,theirGoalieNum):Y()
+	local lastGoalieY = vision:theirPlayer(vision:getLastCycle(),theirGoalieNum):Y()
+	local lastLastGoalieY = vision:theirPlayer(vision:getLastCycle()-1,theirGoalieNum):Y()
 	local lastGoalieVelY=goalieY-lastGoalieY
 	local lastLastGoalieVelY=lastGoalieY-lastLastGoalieY
 	local acc = lastGoalieVelY-lastLastGoalieVelY

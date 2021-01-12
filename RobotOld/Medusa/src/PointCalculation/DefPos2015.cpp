@@ -99,10 +99,10 @@ void CDefPos2015::generatePos(const CVisionModule* pVision) {
     _RmiddlegoalDir = RmiddlegoalVector.dir();
     double RgudgeDir = Utils::Normalize(_RmiddlegoalDir + PI);
 
-    CGeoPoint RballPos = reversePoint(pVision->Ball().Pos());
-    double RBallPosX = (-1)*pVision->Ball().Pos().x();
+    CGeoPoint RballPos = reversePoint(pVision->ball().Pos());
+    double RBallPosX = (-1)*pVision->ball().Pos().x();
 //    double RBallPosY = (-1)*pVision->Ball().Pos().y();
-    const MobileVisionT& ball = pVision->Ball();
+    const MobileVisionT& ball = pVision->ball();
 
     if (posSide::POS_SIDE_MIDDLE == RtargetSide) {
         if (RgudgeDir < 0 && RgudgeDir > RgudgeRightDir + gudgeBuffer)
@@ -122,7 +122,7 @@ void CDefPos2015::generatePos(const CVisionModule* pVision) {
     int rightBack = TaskMediator::Instance()->rightBack();
     int singleBack = TaskMediator::Instance()->singleBack();
     if (leftBack != 0 && rightBack != 0) {
-        if (Utils::InOurPenaltyArea(pVision->Ball().RawPos(), Param::Vehicle::V2::PLAYER_SIZE/2)) {
+        if (Utils::InOurPenaltyArea(pVision->ball().RawPos(), Param::Vehicle::V2::PLAYER_SIZE/2)) {
             // left,right防破防的车
             if (RBallPosX > PITCH_LENGTH/2 - PENALTY_AREA_DEPTH/2 - PLAYER_SIZE) {
                 switch (RtargetSide) {
@@ -196,10 +196,10 @@ void CDefPos2015::generatePos(const CVisionModule* pVision) {
         }
 
         // 若左右后卫距离较远，守门员防主朝向
-        if ((pVision->OurPlayer(leftBack).Valid() == false
-          || pVision->OurPlayer(rightBack).Valid() == false
-          || pVision->OurPlayer(leftBack).Pos().dist(reversePoint(RleftPoint)) > 25
-          || pVision->OurPlayer(rightBack).Pos().dist(reversePoint(RrightPoint)) > 25)) {
+        if ((pVision->ourPlayer(leftBack).Valid() == false
+          || pVision->ourPlayer(rightBack).Valid() == false
+          || pVision->ourPlayer(leftBack).Pos().dist(reversePoint(RleftPoint)) > 25
+          || pVision->ourPlayer(rightBack).Pos().dist(reversePoint(RrightPoint)) > 25)) {
             switch (RtargetSide) {
                 case posSide::POS_SIDE_MIDDLE:
                     RgoaliePoint = calcGoaliePointV3(_RdefendTarget, _RdefendDir, posSide::POS_SIDE_MIDDLE, _laststoredgoaliePoint, 0);
@@ -257,8 +257,8 @@ void CDefPos2015::generatePos(const CVisionModule* pVision) {
             RrightPoint = calcDefenderPointV3(_RdefendTarget,_RmiddlegoalDir,posSide::POS_SIDE_RIGHT,0);
 
             // 判断守门员和后卫谁先到各自的点
-            double goalieOKdist = pVision->OurPlayer(PlayInterface::Instance()->getNumbByRealIndex(TaskMediator::Instance()->goalie())).Pos().dist(reversePoint(RgoaliePoint));
-            double defOKdist = pVision->OurPlayer(TaskMediator::Instance()->singleBack()).Pos().dist(reversePoint(RsinglePoint));
+            double goalieOKdist = pVision->ourPlayer(TaskMediator::Instance()->goalie()).Pos().dist(reversePoint(RgoaliePoint));
+            double defOKdist = pVision->ourPlayer(TaskMediator::Instance()->singleBack()).Pos().dist(reversePoint(RsinglePoint));
             if (defOKdist > goalieOKdist + 2)
                 goalieFirst = true;
             else if (goalieOKdist > defOKdist + 5)
@@ -306,9 +306,9 @@ void CDefPos2015::generatePos(const CVisionModule* pVision) {
                 }
                 bool enemyPass = getEnemyPass();
                 if (enemyPass){
-                    if (pVision->Ball().VelY() > 100){
+                    if (pVision->ball().VelY() > 100){
                         RsinglePoint = calcDefenderPointV3(_RdefendTarget,_RdefendDir,posSide::POS_SIDE_RIGHT,0);
-                    }else if (pVision->Ball().VelY()<-100){
+                    }else if (pVision->ball().VelY()<-100){
                         RsinglePoint = calcDefenderPointV3(_RdefendTarget,_RdefendDir,posSide::POS_SIDE_LEFT,0);
                     }
                 }
@@ -416,8 +416,8 @@ void CDefPos2015::generatePos(const CVisionModule* pVision) {
     int oppnum = ZSkillUtils::instance()->getTheirBestPlayer();
     if (TaskMediator::Instance()->leftBack() != 0
               && TaskMediator::Instance()->rightBack() != 0
-              && pVision->TheirPlayer(oppnum).Pos().dist(reversePoint(RleftPoint))> 100
-              && pVision->TheirPlayer(oppnum).Pos().dist(reversePoint(RrightPoint))> 100) {
+              && pVision->theirPlayer(oppnum).Pos().dist(reversePoint(RleftPoint))> 100
+              && pVision->theirPlayer(oppnum).Pos().dist(reversePoint(RrightPoint))> 100) {
           double dist1 = checkCollision(TaskMediator::Instance()->leftBack(),reversePoint(RleftPoint),pVision);
           double dist2 = checkCollision(TaskMediator::Instance()->rightBack(),reversePoint(RrightPoint),pVision);
         if (dist1 > 0 && dist2 > 0){
@@ -452,10 +452,10 @@ void CDefPos2015::generatePos(const CVisionModule* pVision) {
     const CGeoPoint LEFT_POST(-PITCH_LENGTH/2, -PITCH_WIDTH/2);
     const CGeoPoint RIGHT_POST(-PITCH_LENGTH/2, PITCH_WIDTH/2);
     if (ball.Vel().dir() < (LEFT_POST - ball.Pos()).dir() || ball.Vel().dir() > (RIGHT_POST - ball.Pos()).dir()) {
-      if (TaskMediator::Instance()->leftBack() != 0 && pVision->OurPlayer(TaskMediator::Instance()->leftBack()).X() > -300
-          || TaskMediator::Instance()->rightBack() != 0 && pVision->OurPlayer(TaskMediator::Instance()->rightBack()).X() > -300) {
-        const CGeoPoint& leftBackPos = pVision->OurPlayer(TaskMediator::Instance()->leftBack()).Pos();
-        const CGeoPoint& rightBackPos = pVision->OurPlayer(TaskMediator::Instance()->rightBack()).Pos();
+      if (TaskMediator::Instance()->leftBack() != 0 && pVision->ourPlayer(TaskMediator::Instance()->leftBack()).X() > -300
+          || TaskMediator::Instance()->rightBack() != 0 && pVision->ourPlayer(TaskMediator::Instance()->rightBack()).X() > -300) {
+        const CGeoPoint& leftBackPos = pVision->ourPlayer(TaskMediator::Instance()->leftBack()).Pos();
+        const CGeoPoint& rightBackPos = pVision->ourPlayer(TaskMediator::Instance()->rightBack()).Pos();
         const CGeoPoint& defendTarget = reversePoint(_RdefendTarget);
         const CGeoPoint* realLeftBackPos = &leftBackPos;
         const CGeoPoint* realRightBackPos = &rightBackPos;
@@ -496,7 +496,7 @@ void CDefPos2015::generatePos(const CVisionModule* pVision) {
     const double leftToGoalDist = RleftPoint.dist(RGOAL_CENTRE_POS);
     const double rightToGoalDist = RrightPoint.dist(RGOAL_CENTRE_POS);
     for (int i = 1; i <= MAX_PLAYER; ++i) {
-        const PlayerVisionT& enemy = pVision->TheirPlayer(i);
+        const PlayerVisionT& enemy = pVision->theirPlayer(i);
         const CGeoPoint& enemyPos = enemy.Pos();
         double enemyToGoalDist = enemyPos.dist(OUR_GOAL_CENTER);
         double goalToLeftDir = (reversePoint(RleftPoint) - OUR_GOAL_CENTER).dir();
@@ -577,10 +577,10 @@ void CDefPos2015::generatePos(const CVisionModule* pVision) {
 
 Defend2015 CDefPos2015::getDefPos2015(const CVisionModule* pVision)
 {
-    if (pVision->Cycle() == _lastCycle) {
+    if (pVision->getCycle() == _lastCycle) {
         return _defendPoints;
     } else {
-        _lastCycle = pVision->Cycle();
+        _lastCycle = pVision->getCycle();
     }
     generatePos(pVision);
     return _defendPoints;
@@ -596,10 +596,10 @@ double CDefPos2015::checkCollision(int myself, CGeoPoint targetPoint, const CVis
           && i!= TaskMediator::Instance()->leftBack()
           && i!= TaskMediator::Instance()->rightBack()
           && i!=TaskMediator::Instance()->sideBack()
-          && vision->OurPlayer(i).Pos().dist(targetPoint)< 20){
+          && vision->ourPlayer(i).Pos().dist(targetPoint)< 20){
             result = true;
             //cout<<"i is "<<i<<endl;
-            double temp = vision->OurPlayer(i).Pos().dist(targetPoint);
+            double temp = vision->ourPlayer(i).Pos().dist(targetPoint);
             if (temp<dist ){
                 dist = temp;
             }

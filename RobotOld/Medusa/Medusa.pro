@@ -220,7 +220,7 @@ unix:!macx{
         QMAKE_LIBDIR += $$CUDA_DIR/lib64/
         #CUDA_INC = $$join(INCLUDEPATH,'" -I"','-I"','"')
 
-        CUDA_LIBS = -L$$CUDA_DIR/lib64 -lcuda -lcudart
+        CUDA_LIBS = -L$$CUDA_DIR/lib64 -lcudart
 
         NVCC_LIBS = $$join(CUDA_LIBS,' -l','-l', '')
 

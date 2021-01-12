@@ -25,9 +25,9 @@ CBallModel::CBallModel() {
     bool isSimulation;
     ZSS::ZParamManager::instance()->loadParam(isSimulation, "Alert/IsSimulation", false);
     if(isSimulation)
-        ZSS::ZParamManager::instance()->loadParam(ROLL_FRICTION, "AlertParam/Friction4Sim", 152.0);
+        ZSS::ZParamManager::instance()->loadParam(ROLL_FRICTION, "AlertParam/Friction4Sim", 1520.0);
     else
-        ZSS::ZParamManager::instance()->loadParam(ROLL_FRICTION, "AlertParam/Friction4Real", 80.0);
+        ZSS::ZParamManager::instance()->loadParam(ROLL_FRICTION, "AlertParam/Friction4Real", 800.0);
     SLIDE_FRICTION = SLIDE_FACTOR * ROLL_FRICTION;
     SLIDE_BALL_ACC = SLIDE_FRICTION / 2.0;
     ROLL_BALL_ACC = ROLL_FRICTION / 2.0;
@@ -112,14 +112,14 @@ CGeoPoint CBallModel::flatPos(CGeoPoint currentPos, CVector startVel, double t) 
 }
 
 double CBallModel::chipToTargetTime(double chipPower, double distToTarget) {
-    double chipLength1 = chipPower / 100.0; //cm->m
+    double chipLength1 = chipPower / 1000.0; //mm->m
     double chipTime1 = sqrt(2.0 * chipLength1 * tan(CHIP_FIRST_ANGLE) / G);
     double chipLength2 = chipSecondJumpDist(chipLength1);
     double chipTime2 = sqrt(2.0 * chipLength2 * tan(CHIP_SECOND_ANGLE) / G);
     chipLength1 *= 100.0;
     chipLength2 *= 100.0;
     double rollDist = distToTarget - chipLength1 - chipLength2;
-    double rollVel = pow(chipTime1 * 100 * G / (2 * sin(CHIP_FIRST_ANGLE)), 2) * CHIP_VEL_RATIO / 980;;
+    double rollVel = pow(chipTime1 * 1000 * G / (2 * sin(CHIP_FIRST_ANGLE)), 2) * CHIP_VEL_RATIO / 980;;
     double time = chipTime1 + chipTime2;
     if(rollDist > 0) {
         double velLeft = pow(rollVel, 2) - 2.0 * ROLL_BALL_ACC * rollDist;
@@ -136,7 +136,7 @@ double CBallModel::chipSecondJumpDist(double chipPower) {
 }
 
 double CBallModel::chipJumpTime(double chipPower) {
-    double chipLength1 = chipPower / 100.0; //cm->m
+    double chipLength1 = chipPower / 1000.0; //mm->m
     double chipTime1 = sqrt(2.0 * chipLength1 * tan(CHIP_FIRST_ANGLE) / G);
     double chipLength2 = chipSecondJumpDist(chipLength1);
     double chipTime2 = sqrt(2.0 * chipLength2 * tan(CHIP_SECOND_ANGLE) / G);
@@ -145,31 +145,31 @@ double CBallModel::chipJumpTime(double chipPower) {
 
 double CBallModel::flatPassVel(const CVisionModule *pVision, CGeoPoint passPos, int receiver, double bufferTime, double angleError){
     double passVel = 0;
-    CGeoPoint ballPos = pVision->Ball().Pos();
+    CGeoPoint ballPos = pVision->ball().Pos();
     CVector passLine = passPos - ballPos;
     double distance = ballPos.dist(passPos);
     CGeoPoint abnormalPos1 = ballPos + Utils::Polar2Vector(distance, passLine.dir() + angleError*Param::Math::PI/180);
     CGeoPoint abnormalPos2 = ballPos + Utils::Polar2Vector(distance, passLine.dir() - angleError*Param::Math::PI/180);
-    double abnormalTime = std::max(predictedTime(pVision->OurPlayer(receiver+1), abnormalPos1), predictedTime(pVision->OurPlayer(receiver+1), abnormalPos2));
-    double predictTime = std::max(predictedTime(pVision->OurPlayer(receiver+1), passPos), abnormalTime);
+    double abnormalTime = std::max(predictedTime(pVision->ourPlayer(receiver+1), abnormalPos1), predictedTime(pVision->ourPlayer(receiver+1), abnormalPos2));
+    double predictTime = std::max(predictedTime(pVision->ourPlayer(receiver+1), passPos), abnormalTime);
     double arriveTime = predictTime + bufferTime;
     arriveTime = std::max(arriveTime, 0.4);
     double minPassVel = sqrt(ROLL_FRICTION*distance);
     passVel = std::max((distance + 1/2* ROLL_BALL_ACC * pow(arriveTime, 2))/arriveTime, minPassVel);
     passVel /= FLAT_ROLL_RATIO;
-    passVel = std::min(passVel, 500.0);
-    passVel = std::max(passVel, 200.0);
+    passVel = std::min(passVel, 5000.0);
+    passVel = std::max(passVel, 2000.0);
     return passVel;
 }
 
 double CBallModel::chipPassVel(const CVisionModule *pVision, CGeoPoint passPos){
     static const double CHIP_DIST_RATIO = 0.8;
     double passVel = 0;
-    CGeoPoint ballPos = pVision->Ball().Pos();
+    CGeoPoint ballPos = pVision->ball().Pos();
     double distance = ballPos.dist(passPos);
     double chipDist = distance * CHIP_DIST_RATIO;
     passVel = chipDist / CHIP_LENGTH_RATIO;
-    passVel = std::min(passVel, 400.0);
-    passVel = std::max(passVel, 50.0);
+    passVel = std::min(passVel, 4000.0);
+    passVel = std::max(passVel, 500.0);
     return passVel;
 }

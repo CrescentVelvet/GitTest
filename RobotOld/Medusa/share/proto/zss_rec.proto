@@ -31,25 +31,18 @@ message MaintainVision {
 }
 
 message TeamRobotMsg {
-	required int32 size      = 1;
-	repeated Robot4Rec robot = 2;
+	repeated Robot4Rec robot = 1;
 }
 
 message Robot4Rec {
-	optional int32 id     = 1;
-	required double posX  = 2;
-	required double posY  = 3;
-	required double angle = 4;
-	optional bool valid =   5;
+	required double posX  = 1;
+	required double posY  = 2;
+	required double angle = 3;
+	required bool   valid = 4;
 }
 
 message Balls4Rec {
-	required int32 size    = 1;
-	repeated Ball4Rec ball = 2;
-}
-
-message Ball4Rec {
-	required double posX = 1;
-	required double posY = 2;
-	optional bool valid  = 3;
+	required int32 size = 1;
+	repeated Point ball = 2;
+	required bool valid = 3;
 }

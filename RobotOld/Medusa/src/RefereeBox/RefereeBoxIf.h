@@ -4,6 +4,7 @@
 #include <MultiThread.h>
 #include <singleton.h>
 #include <QMutex>
+#include "geometry.h"
 /*
  *	CRefereeBoxInterface.
  *  和RefereeBox的接口
@@ -21,8 +22,8 @@ public:
     inline int getRemainTime(){refereeMutex.lock(); int result = _remainTime;refereeMutex.unlock();return result;}
     inline int getBlueGoalie(){refereeMutex.lock(); int result = _blueGoalie;refereeMutex.unlock();return result;}
     inline int getYellowGoalie(){refereeMutex.lock(); int result = _yellowGoalie;refereeMutex.unlock();return result;}
-    inline float getBallPlacementPosX(){ refereeMutex.lock();float result = ballPlacementX;refereeMutex.unlock();return result;}
-    inline float getBallPlacementPosY(){ refereeMutex.lock();float result = ballPlacementY;refereeMutex.unlock();return result;}
+    inline double getBallPlacementPosX(){ refereeMutex.lock();double result = _ballPlacementX;refereeMutex.unlock();return result;}
+    inline double getBallPlacementPosY(){ refereeMutex.lock();double result = _ballPlacementY;refereeMutex.unlock();return result;}
 protected:
 	void receivingLoop();
 private:
@@ -43,7 +44,7 @@ private:
 	// 黄方守门员车号
 	int _yellowGoalie;
     // Ball Placement Position
-    float ballPlacementX,ballPlacementY;
+    double _ballPlacementX, _ballPlacementY;
     QMutex refereeMutex;
 };
 typedef NormalSingleton<CRefereeBoxInterface> RefereeBoxInterface;

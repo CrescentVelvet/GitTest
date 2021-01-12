@@ -17,7 +17,7 @@ void CSpeed::plan(const CVisionModule* pVision)
 CPlayerCommand* CSpeed::execute(const CVisionModule* pVision)
 {
 	int myNum = task().executor;
-	double myDir = pVision->OurPlayer(myNum).Dir();
+	double myDir = pVision->ourPlayer(myNum).Dir();
 	double speed_x = task().player.speed_x; // x方向平动速度
 	double speed_y = task().player.speed_y; // y方向平动速度
 	double rotSpeed = task().player.rotate_speed; // 转动速度

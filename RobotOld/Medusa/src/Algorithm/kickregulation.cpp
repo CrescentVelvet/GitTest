@@ -28,8 +28,8 @@ CKickRegulation::CKickRegulation()
 
 bool CKickRegulation::regulate(int player, const CGeoPoint& target, double& needBallVel, double& playerDir, bool isChip) {
     CVisionModule* pVision = vision;
-    const MobileVisionT& ball = pVision->Ball();
-    const PlayerVisionT& kicker = pVision->OurPlayer(player);
+    const MobileVisionT& ball = pVision->ball();
+    const PlayerVisionT& kicker = pVision->ourPlayer(player);
 
     if (fabs(kicker.Dir() - playerDir) > Param::Math::PI / 2 ) {
         return false;
@@ -57,8 +57,7 @@ bool CKickRegulation::regulate(int player, const CGeoPoint& target, double& need
     GDebugEngine::Instance()->gui_debug_line(kicker.Pos(), kicker.Pos() + originDirVector, COLOR_WHITE);
     //速度合成
     //1. 切向补偿
-    double tanVelCompensate = 9999.0;
-    tanVelCompensate = (tanVel2Target + ballRotVel);
+    double tanVelCompensate = (tanVel2Target + ballRotVel);
     if (isChip && !IS_SIMULATION) {
         tanVelCompensate *= 1;
     }
@@ -68,8 +67,8 @@ bool CKickRegulation::regulate(int player, const CGeoPoint& target, double& need
         paralVel2Target = 0;
     } else {
         if (isChip) {
-            needBallVel = std::sqrt(980 * needBallVel/ (2 * std::tan(50 * Param::Math::PI / 180)));//挑球需要把距离换算为x方向速度
-            needBallVel = (-paralVel2Target + std::sqrt(paralVel2Target * paralVel2Target + 2 * originVel * 980 / std::tan(DRIBBLE_CHIP_DIR))) / 2;//利用补偿前后vy = vx*tan50不变来计算t，根据路程(originVel)计算补偿后的vx，一元二次方程中，两个根一正一负，取正值
+            needBallVel = std::sqrt(9800 * needBallVel/ (2 * std::tan(50 * Param::Math::PI / 180)));//挑球需要把距离换算为x方向速度
+            needBallVel = (-paralVel2Target + std::sqrt(paralVel2Target * paralVel2Target + 2 * originVel * 9800 / std::tan(DRIBBLE_CHIP_DIR))) / 2;//利用补偿前后vy = vx*tan50不变来计算t，根据路程(originVel)计算补偿后的vx，一元二次方程中，两个根一正一负，取正值
         }
         else {
             needBallVel -= paralVel2Target;
@@ -91,21 +90,21 @@ bool CKickRegulation::regulate(int player, const CGeoPoint& target, double& need
         needBallVel *= DRIBBLE_POWER_RADIO;
     }
     if (isChip) {
-        needBallVel = 2 * std::pow(needBallVel, 2) * std::tan(50 * Param::Math::PI / 180) / 980;
+        needBallVel = 2 * std::pow(needBallVel, 2) * std::tan(50 * Param::Math::PI / 180) / 9800;
     }
 
-    needBallVel = needBallVel > 600 ? 600 : needBallVel;
+    needBallVel = needBallVel > 6000 ? 6000 : needBallVel;
     //射门时力度特例
     if (Utils::InTheirPenaltyArea(target, 0)) {
-        needBallVel = std::max(650.0, needBallVel);
+        needBallVel = std::max(6500.0, needBallVel);
     }
 
     if (KICK_DEBUG) {
-        GDebugEngine::Instance()->gui_debug_line(kicker.Pos(), kicker.Pos() + CVector(500,0).rotate(kicker.Dir()));
-        GDebugEngine::Instance()->gui_debug_line(kicker.Pos(), kicker.Pos() + CVector(500,0).rotate(kicker.Dir() + 3 * Param::Math::PI / 180), COLOR_GRAY);
-        GDebugEngine::Instance()->gui_debug_line(kicker.Pos(), kicker.Pos() + CVector(500,0).rotate(kicker.Dir() - 3 * Param::Math::PI / 180), COLOR_GRAY);
-        GDebugEngine::Instance()->gui_debug_msg(CGeoPoint(-500, -350) * (IS_RIGHT ? -1 : 1), QString("vy: %1  vx: %2  rotV: %3  v: %4").arg(paralVel2Target).arg(tanVel2Target).arg(kicker.RotVel()).arg(vel2targetDir).toLatin1(),COLOR_ORANGE);
-        GDebugEngine::Instance()->gui_debug_msg(CGeoPoint(-500, -330) * (IS_RIGHT ? -1 : 1), QString("oV: %1   V: %2").arg(originVel).arg(needBallVel).toLatin1(),COLOR_ORANGE);
+        GDebugEngine::Instance()->gui_debug_line(kicker.Pos(), kicker.Pos() + CVector(5000,0).rotate(kicker.Dir()));
+        GDebugEngine::Instance()->gui_debug_line(kicker.Pos(), kicker.Pos() + CVector(5000,0).rotate(kicker.Dir() + 3 * Param::Math::PI / 180), COLOR_GRAY);
+        GDebugEngine::Instance()->gui_debug_line(kicker.Pos(), kicker.Pos() + CVector(5000,0).rotate(kicker.Dir() - 3 * Param::Math::PI / 180), COLOR_GRAY);
+        GDebugEngine::Instance()->gui_debug_msg(CGeoPoint(-5000, -3500) * (IS_RIGHT ? -1 : 1), QString("vy: %1  vx: %2  rotV: %3  v: %4").arg(paralVel2Target).arg(tanVel2Target).arg(kicker.RotVel()).arg(vel2targetDir).toLatin1(),COLOR_ORANGE);
+        GDebugEngine::Instance()->gui_debug_msg(CGeoPoint(-5000, -3300) * (IS_RIGHT ? -1 : 1), QString("oV: %1   V: %2").arg(originVel).arg(needBallVel).toLatin1(),COLOR_ORANGE);
         CVector dirVector = CVector(needBallVel,0).rotate(playerDir);
         GDebugEngine::Instance()->gui_debug_line(kicker.Pos(), kicker.Pos() + dirVector, COLOR_YELLOW);//调整后角度方向
         CVector tanVel2TargetVector = CVector(tanVelCompensate,0).rotate(originDirVector.dir()-Param::Math::PI/2.0);// (target - kicker.Pos()).rotate(-Param::Math::PI/2.0) / (target - kicker.Pos()).mod() * tanVelCompensate;

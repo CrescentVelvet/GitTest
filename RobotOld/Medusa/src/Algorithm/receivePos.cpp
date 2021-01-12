@@ -40,9 +40,9 @@ ReceivePos::ReceivePos()
     bool IS_SIMULATION;
     ZSS::ZParamManager::instance()->loadParam(IS_SIMULATION,"Alert/IsSimulation",false);
     if (IS_SIMULATION)
-        ZSS::ZParamManager::instance()->loadParam(FRICTION,"AlertParam/Friction4Sim", 40);
+        ZSS::ZParamManager::instance()->loadParam(FRICTION,"AlertParam/Friction4Sim", 400);
     else
-        ZSS::ZParamManager::instance()->loadParam(FRICTION,"AlertParam/Friction4Real", 40);
+        ZSS::ZParamManager::instance()->loadParam(FRICTION,"AlertParam/Friction4Real", 400);
 
     powerRatio = IS_SIMULATION ? 1.4 : 1.7;
     const double areaLength = 100;
@@ -68,7 +68,7 @@ ReceivePos::ReceivePos()
 //注意，图像信息中的车号是从1开始的，所以接受到的车号要加1
 void ReceivePos::generatePassPos(const CVisionModule *pVision, const int leader)
 {
-    const MobileVisionT& ball = pVision->Ball();
+    const MobileVisionT& ball = pVision->ball();
     const int minPassDist = 150;
     std::vector <CGeoPoint> tempPoint;
     std::vector <CGeoPoint> receivePoint;
@@ -80,7 +80,7 @@ void ReceivePos::generatePassPos(const CVisionModule *pVision, const int leader)
             continue;
         bool canSafePass = true;
         pointCount = 0;
-        const PlayerVisionT& me = pVision->OurPlayer(i);
+        const PlayerVisionT& me = pVision->ourPlayer(i);
         if (me.Valid()){
             for (auto area : areas) {
                 bool bestToPoint = true;
@@ -89,7 +89,7 @@ void ReceivePos::generatePassPos(const CVisionModule *pVision, const int leader)
                 for(int k = 1; k <= Param::Field::MAX_PLAYER; k++){
                     if (k == leader + 1)
                         continue;
-                    const PlayerVisionT& teamMate = pVision->OurPlayer(k);
+                    const PlayerVisionT& teamMate = pVision->ourPlayer(k);
                     double teamMateDist = teamMate.Pos().dist(area.targetPos);
                     if (teamMateDist < myDist){
                         bestToPoint = false;
@@ -99,7 +99,7 @@ void ReceivePos::generatePassPos(const CVisionModule *pVision, const int leader)
                 if (bestToPoint){
                     double minAnemyTime = 9999;// = ZSkillUtils::instance()->getTheirBestInterTime();
                     for (int k = 1; k <= Param::Field::MAX_PLAYER; k++) {
-                        const PlayerVisionT& anemy = pVision->TheirPlayer(k);
+                        const PlayerVisionT& anemy = pVision->theirPlayer(k);
                         if (anemy.Valid()) {
                             double anemyTime = predictedTime(anemy, area.targetPos);
                             if (anemyTime < minAnemyTime)
@@ -144,7 +144,7 @@ void ReceivePos::generatePassPos(const CVisionModule *pVision, const int leader)
                 double ballPassDist = me.Pos().dist(ball.Pos());
                 double playerScore = pointCount * 10 - meToTheirGoal * 2 / 3 - ballPassDist * 2 / 4.5;
                 if (playerScore > maxPlayerScore) {
-                    if (ball.Pos().dist(pVision->OurPlayer(i).Pos()) > minPassDist) {
+                    if (ball.Pos().dist(pVision->ourPlayer(i).Pos()) > minPassDist) {
                         receivePoint = tempPoint;
                         _receiver = i;
                         maxPlayerScore = playerScore;
@@ -160,7 +160,7 @@ void ReceivePos::generatePassPos(const CVisionModule *pVision, const int leader)
         runPos[receiver - 1] = receiveBallPointCompute(pVision, receiver, receivePoint);
         passPos = runPos[receiver - 1];
         GDebugEngine::Instance()->gui_debug_msg(passPos, "D", COLOR_BLUE);
-        double myTime = predictedTime(pVision->OurPlayer(_receiver), passPos);
+        double myTime = predictedTime(pVision->ourPlayer(_receiver), passPos);
         double ball2Target = ball.Pos().dist(passPos);
         double ballPassTime = myTime + slack;
         double acc = (-FRICTION) / 2;
@@ -177,7 +177,7 @@ void ReceivePos::generatePassPos(const CVisionModule *pVision, const int leader)
         for (int i = 2; i<=Param::Field::MAX_PLAYER; i++) {
             if (i == leader + 1)
                 continue;
-            double leader2Other = pVision->OurPlayer(i).Pos().dist2(pVision->OurPlayer(leader + 1).Pos());
+            double leader2Other = pVision->ourPlayer(i).Pos().dist2(pVision->ourPlayer(leader + 1).Pos());
             if (leader2Other < minLeader2Other) {
                 minLeader2Other = leader2Other;
                 _bestReceiver = i - 1;
@@ -191,8 +191,8 @@ void ReceivePos::generatePassPos(const CVisionModule *pVision, const int leader)
 CGeoPoint ReceivePos::receiveBallPointCompute(const CVisionModule *pVision, int number, const std::vector<CGeoPoint> &targetPoint)
 {
     if (targetPoint.size() == 0) return CGeoPoint(600, 0);
-    const PlayerVisionT& me = pVision->OurPlayer(number);
-    const MobileVisionT& ball = pVision->Ball();
+    const PlayerVisionT& me = pVision->ourPlayer(number);
+    const MobileVisionT& ball = pVision->ball();
     CGeoPoint bestPoint;
     double maxPointScore = -0xffff;
     for (auto target : targetPoint) {
@@ -221,20 +221,20 @@ CGeoPoint ReceivePos::receiveBallPointCompute(const CVisionModule *pVision, int 
         enemy2PointDist = enemy2MeDist = enemy2ShootLineDist = enemy2PassLineDist = 9999;
         CGeoLine shootLine(target, kick_dir);
         for (int j = 1; j <= Param::Field::MAX_PLAYER; j++) {
-            if (pVision->TheirPlayer(j).Valid()) {
-                dist = pVision->TheirPlayer(j).Pos().dist(target);
+            if (pVision->theirPlayer(j).Valid()) {
+                dist = pVision->theirPlayer(j).Pos().dist(target);
                 if (dist < enemy2PointDist)  enemy2PointDist = dist;//敌方到点距离
-                dist = me.Pos().dist(pVision->TheirPlayer(j).Pos());
+                dist = me.Pos().dist(pVision->theirPlayer(j).Pos());
                 if (dist < enemy2MeDist) {
                     enemy2MeDist = dist;//敌方到我的距离
                 }
-                dist = pVision->TheirPlayer(j).Pos().dist(shootLine.projection(pVision->TheirPlayer(j).Pos()));
+                dist = pVision->theirPlayer(j).Pos().dist(shootLine.projection(pVision->theirPlayer(j).Pos()));
                 if (dist < enemy2ShootLineDist) {
                     enemy2ShootLineDist = dist;//敌方到射门线的距离
                 }
                 CGeoSegment passLine = CGeoSegment(ball.Pos(), target);
-                if (passLine.IsPointOnLineOnSegment(passLine.projection(pVision->TheirPlayer(j).Pos()))) {
-                    dist = pVision->TheirPlayer(j).Pos().dist(passLine.projection(pVision->TheirPlayer(j).Pos()));
+                if (passLine.IsPointOnLineOnSegment(passLine.projection(pVision->theirPlayer(j).Pos()))) {
+                    dist = pVision->theirPlayer(j).Pos().dist(passLine.projection(pVision->theirPlayer(j).Pos()));
                     if (dist < enemy2PassLineDist)
                         enemy2PassLineDist = dist;//敌方到传球线的距离
                 }
@@ -274,7 +274,7 @@ void ReceivePos::generateRandomTestPos(const CVisionModule *pVision)
     double bestDist = 9999;
     int bestNum = 999;
     for (int i=1; i<=Param::Field::MAX_PLAYER; i++) {
-        const PlayerVisionT& player = pVision->OurPlayer(i);
+        const PlayerVisionT& player = pVision->ourPlayer(i);
         if (player.Valid()){
             double dist = (_bestPassPoint - player.Pos()).mod();
             if (dist < bestDist){

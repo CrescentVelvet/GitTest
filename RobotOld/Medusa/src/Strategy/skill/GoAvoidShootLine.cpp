@@ -22,16 +22,16 @@ CGoAvoidShootLine::CGoAvoidShootLine()
 
 void CGoAvoidShootLine::plan(const CVisionModule* pVision)
 {
-	if ( pVision->Cycle() - _lastCycle > Param::Vision::FRAME_RATE * 0.1 ){
+	if ( pVision->getCycle() - _lastCycle > Param::Vision::FRAME_RATE * 0.1 ){
 		setState(BEGINNING);
 		_stateCouter=0;
 		mediumPos=CGeoPoint(9999,9999);
 	}
-	const MobileVisionT& ball = pVision->Ball();
+	const MobileVisionT& ball = pVision->ball();
 	const int robotNum = task().executor;
-	const PlayerVisionT& me = pVision->OurPlayer(robotNum);
+	const PlayerVisionT& me = pVision->ourPlayer(robotNum);
 //	const int playerFlag = task().player.flag;
-	const PlayerVisionT& shooter=pVision->OurPlayer(task().ball.Sender);
+	const PlayerVisionT& shooter=pVision->ourPlayer(task().ball.Sender);
 	const CGeoPoint avoidPos=shooter.Pos();
 	const CGeoPoint targetPos=task().player.pos;
 //	const double arriveAngle=task().player.angle;

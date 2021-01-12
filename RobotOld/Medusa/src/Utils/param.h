@@ -18,10 +18,10 @@ namespace Param{
 		const int POS_SIDE_RIGHT = -1;
         const int MAX_PLAYER = 16;
         const int MAX_PLAYER_NUM = 16;
-        const int MAX_BALL_SPEED = 630;
+        const int MAX_BALL_SPEED = 6300;
 		/* 长度单位均为厘米,时间单位均为秒,质量单位为克,角度单位为弧度 */
 		/* Ball */
-		const double BALL_SIZE	= 2.15; // 半径
+        const double BALL_SIZE	= 21.5; // 半径
 		const double BALL_DECAY = -0.8; // 阻力对球的加速度和速度成正比,单位为 /s
 		/* Player */
 		const double MAX_PLAYER_SIZE = 18;
@@ -45,6 +45,9 @@ namespace Param{
         extern double GOAL_POST_THICKNESS;
 		extern double FREE_KICK_AVOID_BALL_DIST; // 开任意球的时候,对方必须离球这么远
 		extern double RATIO;				//what's this?
+        extern double GATE_DEPTH;
+        extern double GATE_WIDTH;
+        extern double GATE_THICK;
 	}
 	namespace Physics {
 		const double G = 9.8;
@@ -74,7 +77,7 @@ namespace Param{
 		extern const double FRAME_RATE; // 每秒桢数
 	}
 	namespace Latency{ 
-        extern float TOTAL_LATED_FRAME; // 延迟的周期数,四舍五入
+        extern double TOTAL_LATED_FRAME; // 延迟的周期数,四舍五入
 	}
 	namespace Rule{
 		extern const int Version; // 规则的版本

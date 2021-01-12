@@ -820,14 +820,14 @@ namespace Utils{
 	bool canGo(const CVisionModule* pVision, const int vecNumber, const CGeoPoint& target, const int flags, const double avoidBuffer)//判断是否可以直接到达目标点
 	{
 		static bool _canGo = true;
-		const CGeoPoint& vecPos = pVision->OurPlayer(vecNumber).Pos();
+		const CGeoPoint& vecPos = pVision->ourPlayer(vecNumber).Pos();
 		CGeoSegment moving_seg(vecPos, target);
 		const double minBlockDist2 = (Param::Field::MAX_PLAYER_SIZE/2 + avoidBuffer) * (Param::Field::MAX_PLAYER_SIZE/2 + avoidBuffer);
 		for( int i=1; i<=Param::Field::MAX_PLAYER * 2; ++i ){ // 看路线上有没有人
-			if( i == vecNumber || !pVision->AllPlayer(i).Valid()){
+			if( i == vecNumber || !pVision->allPlayer(i).Valid()){
 				continue;
 			}
-			const CGeoPoint& obs_pos = pVision->AllPlayer(i).Pos();
+			const CGeoPoint& obs_pos = pVision->allPlayer(i).Pos();
 			if( (obs_pos - target).mod2() < minBlockDist2 ){
 				_canGo = false;
 				return _canGo;
@@ -842,7 +842,7 @@ namespace Utils{
 			}
 		}
 		if( _canGo && (flags & PlayerStatus::DODGE_BALL) ){ // 躲避球
-			const CGeoPoint& obs_pos = pVision->Ball().Pos();
+			const CGeoPoint& obs_pos = pVision->ball().Pos();
 			CGeoPoint prj_point = moving_seg.projection(obs_pos);
 			if( obs_pos.dist(prj_point) < avoidBuffer + Param::Field::BALL_SIZE && moving_seg.IsPointOnLineOnSegment(prj_point) ){
 				_canGo = false;
@@ -933,10 +933,10 @@ namespace Utils{
             CVector passLine = end - start;
             double passDir = passLine.dir();
             for (int i = 0; i < Param::Field::MAX_PLAYER_NUM; ++i) {
-                if(pVision->TheirPlayer(i+1).Valid()){
-                    if(ignoreCloseEnemy && pVision->TheirPlayer(i+1).Pos().dist(start) < CLOSE_ENEMY_DIST) continue;
-                    if(ignoreTheirGuard && Utils::InTheirPenaltyArea(pVision->TheirPlayer(i+1).Pos(), 30)) continue;
-                    CGeoPoint enemyPos = pVision->TheirPlayer(i+1).Pos();
+                if(pVision->theirPlayer(i+1).Valid()){
+                    if(ignoreCloseEnemy && pVision->theirPlayer(i+1).Pos().dist(start) < CLOSE_ENEMY_DIST) continue;
+                    if(ignoreTheirGuard && Utils::InTheirPenaltyArea(pVision->theirPlayer(i+1).Pos(), 30)) continue;
+                    CGeoPoint enemyPos = pVision->theirPlayer(i+1).Pos();
                     CVector enemyLine = enemyPos - start;
                     double enemyDir = enemyLine.dir();
                     // 计算敌方车与传球线路的差角
@@ -958,10 +958,10 @@ namespace Utils{
         // 使用平行线进行计算，解决近距离扇形计算不准问题
         CGeoSegment BallLine(start, end);
             for(int i = 0; i < Param::Field::MAX_PLAYER_NUM; i++) {
-                if(!pVision->TheirPlayer(i + 1).Valid()) continue;
-                if(ignoreCloseEnemy && pVision->TheirPlayer(i+1).Pos().dist(start) < CLOSE_ENEMY_DIST) continue;
-                if(ignoreTheirGuard && Utils::InTheirPenaltyArea(pVision->TheirPlayer(i+1).Pos(), 30)) continue;
-                CGeoPoint targetPos = pVision->TheirPlayer(i + 1).Pos();
+                if(!pVision->theirPlayer(i + 1).Valid()) continue;
+                if(ignoreCloseEnemy && pVision->theirPlayer(i+1).Pos().dist(start) < CLOSE_ENEMY_DIST) continue;
+                if(ignoreTheirGuard && Utils::InTheirPenaltyArea(pVision->theirPlayer(i+1).Pos(), 30)) continue;
+                CGeoPoint targetPos = pVision->theirPlayer(i + 1).Pos();
                 double dist = BallLine.dist2Point(targetPos);
                 if(dist < THEIR_ROBOT_INTER_THREADHOLD){
                     valid = false;
@@ -983,8 +983,8 @@ namespace Utils{
         CVector passLine = end - start;
         double passDir = passLine.dir();
         for (int i = 0; i < Param::Field::MAX_PLAYER_NUM; ++i) {
-            if(pVision->TheirPlayer(i+1).Valid()){
-                CGeoPoint enemyPos = pVision->TheirPlayer(i+1).Pos();
+            if(pVision->theirPlayer(i+1).Valid()){
+                CGeoPoint enemyPos = pVision->theirPlayer(i+1).Pos();
                 CVector enemyLine = enemyPos - start;
                 double enemyDir = enemyLine.dir();
                 // 计算敌方车与传球线路的差角

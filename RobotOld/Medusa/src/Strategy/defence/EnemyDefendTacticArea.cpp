@@ -146,9 +146,9 @@ bool CEnemyDefendTacticArea::isInAnnulus(CGeoPoint & enemyCarPos)
 
 bool CEnemyDefendTacticArea::isMarkingOurCar(int enemyCarNum,const CVisionModule* pVision)
 {
-	const PlayerVisionT& theirCar = pVision->TheirPlayer(enemyCarNum);
-	const PlayerVisionT& ourCar =pVision->OurPlayer(ourCarNum);
-	const MobileVisionT& ball =pVision->Ball();
+	const PlayerVisionT& theirCar = pVision->theirPlayer(enemyCarNum);
+	const PlayerVisionT& ourCar =pVision->ourPlayer(ourCarNum);
+	const MobileVisionT& ball =pVision->ball();
 	double me2oppDir =Utils::Normalize( (theirCar.Pos() - ourCar.Pos()).dir());
 	double me2Goal =Utils::Normalize((theirGoal - ourCar.Pos()).dir());
 	double me2Ball = Utils::Normalize((ball.Pos() - ourCar.Pos()).dir());
@@ -160,8 +160,8 @@ bool CEnemyDefendTacticArea::isMarkingOurCar(int enemyCarNum,const CVisionModule
 
 bool CEnemyDefendTacticArea::isOnBallHalf(int enemyCarNum,const CVisionModule* pVision)
 {
-	const MobileVisionT& ball = pVision->Ball();
-	const PlayerVisionT & theirCar =pVision->TheirPlayer(enemyCarNum);
+	const MobileVisionT& ball = pVision->ball();
+	const PlayerVisionT & theirCar =pVision->theirPlayer(enemyCarNum);
 	if (ball.Pos().x() > 0)
 	{
 		return theirCar.Pos().x() >0;

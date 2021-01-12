@@ -22,7 +22,6 @@ class CMaintain {
     void StateMachine();
     double getpredict_x();
     double getpredict_y();
-    int robotIndex[PARAM::TEAMS][PARAM::ROBOTMAXID];
 
   private:
     QFile file;

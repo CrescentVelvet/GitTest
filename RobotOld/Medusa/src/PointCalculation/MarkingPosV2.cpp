@@ -152,7 +152,7 @@ CGeoPoint CMarkingPosV2::getMarkingPosByNum(const CVisionModule* pVision , const
 void CMarkingPosV2::checkAllMarkingPos(const CVisionModule *pVision)
 {
 	//让防区域内的车不挤
-	if (pVision->Cycle() > _logCycle){
+	if (pVision->getCycle() > _logCycle){
 		int attackCnt = DefenceInfo::Instance()->getAttackNum();
 		areaList.clear();
 		for (int i = 0;i<attackCnt;i++){
@@ -175,11 +175,11 @@ void CMarkingPosV2::checkAllMarkingPos(const CVisionModule *pVision)
 		if (areaList.size() > 1){
 			std::sort(areaList.begin(),areaList.end());
 			for (ir = areaList.begin();ir!= areaList.end();ir++){
-				markingPoint[*ir] = markingPoint[*ir]+Utils::Polar2Vector(20*cnt,(ourGoal - pVision->TheirPlayer(*ir).Pos()).dir());
+				markingPoint[*ir] = markingPoint[*ir]+Utils::Polar2Vector(20*cnt,(ourGoal - pVision->theirPlayer(*ir).Pos()).dir());
 				cnt = cnt+1;
 			}
 		}
-		_logCycle = pVision->Cycle();
+		_logCycle = pVision->getCycle();
 	}
 }
 
@@ -188,18 +188,18 @@ bool CMarkingPosV2::isNearestBallReceiverBeDenied(const CVisionModule* pVision)
 	double minDist = 1000;
 	int receiverNum = 0;
 	int attackNum = DefenceInfo::Instance()->getAttackNum();
-	if (pVision->Ball().Vel().mod() > NO_ADVANCE_BALL_VEL)
+	if (pVision->ball().Vel().mod() > NO_ADVANCE_BALL_VEL)
 	{
 		if (debug)
 		{
-			cout<<"ball vel mod is  "<<pVision->Ball().Vel().mod()<<endl;
+			cout<<"ball vel mod is  "<<pVision->ball().Vel().mod()<<endl;
 		}
 		for (int i = 0;i < attackNum;++i)
 		{
 			int oppNum = DefenceInfo::Instance()->getAttackOppNumByPri(i);
 			if (DefenceInfo::Instance()->getOppPlayerByNum(oppNum)->isTheRole("RReceiver"))
 			{
-				double dist_opp_ball = pVision->TheirPlayer(oppNum).Pos().dist(pVision->Ball().Pos());
+				double dist_opp_ball = pVision->theirPlayer(oppNum).Pos().dist(pVision->ball().Pos());
 				if (dist_opp_ball < minDist)
 				{
 					minDist = dist_opp_ball;
@@ -225,11 +225,11 @@ bool CMarkingPosV2::isNearestBallReceiverBeDenied(const CVisionModule* pVision)
 
 CGeoPoint CMarkingPosV2::generatePos(const CVisionModule* pVision)
 {	
-	if (pVision->TheirPlayer(oppNum).Valid() && 0 != oppNum)//存在且车号不为0
+	if (pVision->theirPlayer(oppNum).Valid() && 0 != oppNum)//存在且车号不为0
 	{
 		const int defenderNum = DefenceInfo::Instance()->getOurMarkDenfender(oppNum);
-		const PlayerVisionT& opp = pVision->TheirPlayer(oppNum);
-		const MobileVisionT& ball = pVision->Ball();
+		const PlayerVisionT& opp = pVision->theirPlayer(oppNum);
+		const MobileVisionT& ball = pVision->ball();
 		const CGeoPoint oppPos = opp.Pos();
 		const CVector oppVel = opp.Vel();
 		CVector opp2ourGoalVector = CVector(ourGoal - oppPos);
@@ -246,9 +246,9 @@ CGeoPoint CMarkingPosV2::generatePos(const CVisionModule* pVision)
 		{		
 			if (DefenceInfo::Instance()->getOppPlayerByNum(oppNum)->getAttributeValue("AChaseAbility") > CHASE_JUDGE_VALUE)
 			{
-				bool defenderOK = (defenderNum != 0) && pVision->OurPlayer(defenderNum).Valid();
+				bool defenderOK = (defenderNum != 0) && pVision->ourPlayer(defenderNum).Valid();
 				CGeoPoint preOppPos = oppPos + Utils::Polar2Vector(oppVel.mod()*predictTime,oppVel.dir());//专对于ImmortalKick，不需要根据对手速度朝向修改predictTime
-				bool oppFrontMe = preOppPos.dist(ourGoal) - Param::Vehicle::V2::PLAYER_SIZE > pVision->OurPlayer(defenderNum).Pos().dist(ourGoal);
+				bool oppFrontMe = preOppPos.dist(ourGoal) - Param::Vehicle::V2::PLAYER_SIZE > pVision->ourPlayer(defenderNum).Pos().dist(ourGoal);
 				if (defenderOK && !oppFrontMe)//对方chaseKicker不在我前面
 				{
 					markBuffer = CHASE_MARK_BUFFER;
@@ -287,7 +287,7 @@ CGeoPoint CMarkingPosV2::generatePos(const CVisionModule* pVision)
 						//超严格条件：采取绕前行动之前的位置条件，要求已经达到原防守点才能绕前
 						CGeoPoint tempPos = oppPos + Utils::Polar2Vector(2*Param::Vehicle::V2::PLAYER_SIZE,opp2ourGoalVector.dir());
 						bool dist1OK = opp2ballVelLineProj.dist(oppPos) < DENY_DIST_LIMIT_1;
-						bool dist2OK = tempPos.dist(pVision->OurPlayer(defenderNum).Pos()) < DENY_DIST_LIMIT_2;
+						bool dist2OK = tempPos.dist(pVision->ourPlayer(defenderNum).Pos()) < DENY_DIST_LIMIT_2;
 						bool ballVelOK = ball.Vel().mod() < 500;
 						if (debug)
 						{
@@ -360,9 +360,9 @@ CGeoPoint CMarkingPosV2::generatePos(const CVisionModule* pVision)
 				markBuffer += (ENEMY_SIN_MARK_BUFFER * sinPre * oppVel.mod() / 135.0);
 			}
 			//因为PUSH_ENEMY_BUFFER == 0所以相当没有使用，需要的时候再使用
-			if (pVision->OurPlayer(defenderNum).Valid())
+			if (pVision->ourPlayer(defenderNum).Valid())
 			{
-				const PlayerVisionT& defender = pVision->OurPlayer(defenderNum);
+				const PlayerVisionT& defender = pVision->ourPlayer(defenderNum);
 				double def2enemy_goal2enemy_Angle = fabs(Utils::Normalize(oppPre2ourGoal.dir() - (defender.Pos() - oppPrePos).dir()));
 				if (def2enemy_goal2enemy_Angle < Param::Math::PI / 2.0)
 				{
@@ -453,7 +453,7 @@ CGeoPoint CMarkingPosV2::generatePos(const CVisionModule* pVision)
 		for (ir = fieldList.begin();ir!= fieldList.end(); ir++){
 			if (DefenceInfo::Instance()->checkInRecArea(oppNum,pVision,*ir)){
 				CGeoRectangle rect = CGeoRectangle((*ir)._upLeft,(*ir)._downRight);
-				CGeoLine line = CGeoLine(pVision->TheirPlayer(oppNum).Pos(),ourGoal);
+				CGeoLine line = CGeoLine(pVision->theirPlayer(oppNum).Pos(),ourGoal);
 				CGeoLineRectangleIntersection intersect = CGeoLineRectangleIntersection(line,rect);
 				if (intersect.intersectant()){
 					CGeoPoint tmpPoint;
@@ -487,8 +487,8 @@ bool CMarkingPosV2::isInSpecialAreaBackLineMode(const CVisionModule *pVision,con
 	static bool theResult[Param::Field::MAX_PLAYER+1] = {false,false,false,false,false,false,false};
 	static int theLogCycle[Param::Field::MAX_PLAYER+1] = {0,0,0,0,0,0,0};
 	static int theBallLogCycle = 0;
-	static CGeoPoint logBallPos = pVision->Ball().Pos(); 
-	if (pVision->Cycle() > theLogCycle[num])
+	static CGeoPoint logBallPos = pVision->ball().Pos(); 
+	if (pVision->getCycle() > theLogCycle[num])
 	{
 		theResult[num] = false;
 		if (true == SPECIAL_AREA_BACK_LINE_MODE)
@@ -496,23 +496,23 @@ bool CMarkingPosV2::isInSpecialAreaBackLineMode(const CVisionModule *pVision,con
 			const string refMsg = WorldModel::Instance()->CurrentRefereeMsg();
 			if ("TheirIndirectKick" == refMsg || "TheirDirectKick" == refMsg || "GameStop" == refMsg)//条件:裁判盒方面
 			{
-				if (pVision->Cycle() > theBallLogCycle)
+				if (pVision->getCycle() > theBallLogCycle)
 				{
-					if (logBallPos.dist(pVision->Ball().Pos()) > 5)
+					if (logBallPos.dist(pVision->ball().Pos()) > 5)
 					{
-						logBallPos = pVision->Ball().Pos();
+						logBallPos = pVision->ball().Pos();
 					}
-					theBallLogCycle = pVision->Cycle();
+					theBallLogCycle = pVision->getCycle();
 				}
 				if (logBallPos.x() < -Param::Field::PITCH_LENGTH / 2 + Param::Field::PENALTY_AREA_DEPTH + 10)//条件：我方角球
 				{
-					const PlayerVisionT& opp = pVision->TheirPlayer(num);
+					const PlayerVisionT& opp = pVision->theirPlayer(num);
 					CGeoPoint oppPrePos = opp.Pos() + Utils::Polar2Vector(opp.Vel().mod() * SPECIAL_AREA_PRE_TIME,opp.Vel().dir());
 					theResult[num] = checkInSpecialArea_A(oppPrePos,logBallPos);
 				}
 			}
 		}
-		theLogCycle[num] = pVision->Cycle();
+		theLogCycle[num] = pVision->getCycle();
 	}
 	return theResult[num];
 }

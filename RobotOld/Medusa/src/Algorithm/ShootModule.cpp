@@ -24,8 +24,8 @@ CShootModule::CShootModule( )
     Shoot2Goal = CGeoPoint(Param::Field::PITCH_LENGTH / 2, 0);
     ZSS::ZParamManager::instance()->loadParam(TEST_PASS, "Messi/NoShoot", false);
     ZSS::ZParamManager::instance()->loadParam(FORCE_SHOOT, "Messi/FORCE_SHOOT", true);
-    ZSS::ZParamManager::instance()->loadParam(_needBallVel, "KickLimit/FlatKickMax", 630.0);
-    ZSS::ZParamManager::instance()->loadParam(tolerance, "Shoot/Tolerance", 20);    //有待提升，即应该根据kicker位置，自适应tolerance
+    ZSS::ZParamManager::instance()->loadParam(_needBallVel, "KickLimit/FlatKickMax", 6300.0);
+    ZSS::ZParamManager::instance()->loadParam(tolerance, "Shoot/Tolerance", 200);    //有待提升，即应该根据kicker位置，自适应tolerance
     ZSS::ZParamManager::instance()->loadParam(stepSize, "Shoot/StepSize", 1);
     ZSS::ZParamManager::instance()->loadParam(responseTime, "Shoot/ResponseTime", 0);
     stepSize = stepSize / 180 * Param::Math::PI;    //转换为弧度制
@@ -69,8 +69,8 @@ bool CShootModule::generateShootDir(const int player)
     //进行重置
     reset();
     CVisionModule* pVision = vision;
-    const MobileVisionT & ball = pVision->Ball();
-    const PlayerVisionT & kicker = pVision->OurPlayer(player);
+    const MobileVisionT & ball = pVision->ball();
+    const PlayerVisionT & kicker = pVision->ourPlayer(player);
     const CGeoPoint & ballPos = ball.Pos();
     const CGeoPoint & kickerPos = kicker.Valid() ? kicker.RawPos() : kicker.Pos();
     CGeoPoint bestTarget;
@@ -102,14 +102,14 @@ bool CShootModule::generateShootDir(const int player)
         //吸的时间较短，查表方式补偿
         double ballspeed = ball.Vel().mod();
 
-        double tempdir = (Utils::Normalize(Utils::Normalize(pVision->Ball().Vel().dir()+Param::Math::PI)-(_kick_target - pVision->OurPlayer(player).Pos()).dir()))*180/Param::Math::PI;
+        double tempdir = (Utils::Normalize(Utils::Normalize(pVision->ball().Vel().dir()+Param::Math::PI)-(_kick_target - pVision->ourPlayer(player).Pos()).dir()))*180/Param::Math::PI;
         int ratio = 0;
         if (tempdir>0){
             ratio = 1;
         }else{
             ratio = -1;
         }
-        rawdir=abs((Utils::Normalize(Utils::Normalize(pVision->Ball().Vel().dir()+Param::Math::PI)-(_kick_target - pVision->OurPlayer(player).Pos()).dir()))*180/Param::Math::PI);
+        rawdir=abs((Utils::Normalize(Utils::Normalize(pVision->ball().Vel().dir()+Param::Math::PI)-(_kick_target - pVision->ourPlayer(player).Pos()).dir()))*180/Param::Math::PI);
         // cout << rawdir << endl;
         if (rawdir > 70 && rawdir < 110){
             rawdir = 80;
@@ -120,11 +120,11 @@ bool CShootModule::generateShootDir(const int player)
 
         _compensate_value = Compensate::Instance()->checkCompensate(ballspeed,rawdir);
 
-        if (pVision->Ball().Vel().mod()<50){
+        if (pVision->ball().Vel().mod()<500){
             _compensate_value = 0;
         }
         _real_kick_dir= Utils::Normalize(Utils::Normalize(ratio*_compensate_value*Param::Math::PI/180)+_raw_kick_dir);
-        if(pVision->Ball().Vel().mod()<50){
+        if(pVision->ball().Vel().mod()<500){
             _real_kick_dir = _raw_kick_dir;
         }
         compensateType = 2;
@@ -139,13 +139,13 @@ bool CShootModule::validShootPos(const CVisionModule *pVision, CGeoPoint shootPo
     double FRICTION;
     ZSS::ZParamManager::instance()->loadParam(isSimulation, "Alert/IsSimulation", false);
     if(isSimulation)
-        ZSS::ZParamManager::instance()->loadParam(FRICTION, "AlertParam/Friction4Sim", 152.0);
+        ZSS::ZParamManager::instance()->loadParam(FRICTION, "AlertParam/Friction4Sim", 1520.0);
     else
-        ZSS::ZParamManager::instance()->loadParam(FRICTION, "AlertParam/Friction4Real", 80.0);
+        ZSS::ZParamManager::instance()->loadParam(FRICTION, "AlertParam/Friction4Real", 800.0);
     static const double BALL_ACC = FRICTION / 2;
     constexpr double BALL_VEL_DECAY = 5.0 / 7.0;
     double AVOID_DIST = 4 * Param::Vehicle::V2::PLAYER_SIZE;
-    const double DELTA_T = 5.0/75;
+    const double DELTA_T = 5.0/Param::Vision::FRAME_RATE;
     if (Utils::InTheirPenaltyArea(target, 0)) AVOID_DIST = 2 * Param::Vehicle::V2::PLAYER_SIZE;
 
     const CVector passLine = target - shootPos;
@@ -156,7 +156,7 @@ bool CShootModule::validShootPos(const CVisionModule *pVision, CGeoPoint shootPo
 
     interTime = 999999;
     for(int robotNum = 1; robotNum <= Param::Field::MAX_PLAYER_NUM; robotNum++) {
-        const PlayerVisionT& enemy = pVision->TheirPlayer(robotNum);//获得车（敌方车）
+        const PlayerVisionT& enemy = pVision->theirPlayer(robotNum);//获得车（敌方车）
         bool isGoalie = Utils::InTheirPenaltyArea(enemy.Pos(), 0);
         if (!enemy.Valid()) continue;
         // 忽略距离近的防守车
@@ -170,7 +170,7 @@ bool CShootModule::validShootPos(const CVisionModule *pVision, CGeoPoint shootPo
         // 忽略对面的守门员
         if(ignoreTheirGoalie && Utils::InTheirPenaltyArea(enemy.Pos(), 0)) continue;
         // 忽略对面的后卫
-        if(ignoreTheirGuard && Utils::InTheirPenaltyArea(enemy.Pos(), 30)) continue;
+        if(ignoreTheirGuard && Utils::InTheirPenaltyArea(enemy.Pos(), 300)) continue;
         // 初始化球速、加速度、球移动的距离、球初始位置
         CGeoPoint ballPos = shootPos;
         double ballVel = originVel;
@@ -234,8 +234,8 @@ bool CShootModule::canShoot(const CVisionModule *pVision, CGeoPoint shootPos)
 bool CShootModule::generateBestTarget(const CVisionModule *pVision, CGeoPoint &bestTarget, const CGeoPoint pos)
 {
     CGeoPoint startPos;
-    if (std::abs(pos.x()) > 1600) {
-        startPos = pVision->Ball().Pos();
+    if (std::abs(pos.x()) > 16000) {
+        startPos = pVision->ball().Pos();
     }else {
         startPos = pos;
     }
@@ -250,13 +250,13 @@ bool CShootModule::generateBestTarget(const CVisionModule *pVision, CGeoPoint &b
     CGeoPoint lastTarget = leftPost;
     for(int i = 0;  i * stepSize <= AngleRange; i++) {
         double tempDir = leftPostAngle + (leftPostAngle > rightPostAngle ? - i * stepSize : i * stepSize);
-        CGeoLine tempLine = CGeoLine(startPos, startPos + Utils::Polar2Vector(1000, tempDir));
+        CGeoLine tempLine = CGeoLine(startPos, startPos + Utils::Polar2Vector(10000, tempDir));
         CGeoLineLineIntersection intersect = CGeoLineLineIntersection(tempLine,bottomLine);
         if(intersect.Intersectant()) {
             CGeoPoint tempTarget = intersect.IntersectPoint();
             double interTime, interTime1, interTime2;
-            validShootPos(pVision, startPos, 600, lastTarget, interTime1, responseTime);
-            validShootPos(pVision, startPos, 600, tempTarget, interTime2, responseTime);
+            validShootPos(pVision, startPos, 6000, lastTarget, interTime1, responseTime);
+            validShootPos(pVision, startPos, 6000, tempTarget, interTime2, responseTime);
                 interTime = (interTime1 + interTime2) / 2;
                 if(isDebug) {
                     GDebugEngine::Instance()->gui_debug_x(tempTarget, COLOR_BLACK);

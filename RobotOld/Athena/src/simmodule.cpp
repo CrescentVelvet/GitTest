@@ -17,7 +17,7 @@ bool trans_dribble(double dribble) {
     return dribble>1;
 }
 double trans_length(double v) {
-    return v / 100.0;
+    return v / 1000.0;
 }
 double trans_vr(double v) {
     return v;/// 40.0; from angel to 1/40 rad
@@ -160,7 +160,7 @@ void SimModule::sendSim(int t, ZSS::Protocol::Robots_Command& command) {
         auto id = commands.robot_id();
         grsim_robots[id]->set_id(id);
         grsim_robots[id]->set_wheelsspeed(false);
-        //set flatkick or chipk    ick
+        //set flatkick or chipkick
         if (!commands.kick()) {
             grsim_robots[id]->set_kickspeedz(0);
             grsim_robots[id]->set_kickspeedx(trans_length(commands.power()));
@@ -176,7 +176,7 @@ void SimModule::sendSim(int t, ZSS::Protocol::Robots_Command& command) {
         double vy = commands.velocity_y();
         double vr = commands.velocity_r();
         double dt = 1. / Athena::FRAME_RATE;
-        double theta = - vr * dt;
+        double theta = vr * dt;
         CVector v(vx, vy);
         v = v.rotate(theta);
         if (fabs(theta) > 0.00001) {
@@ -188,8 +188,8 @@ void SimModule::sendSim(int t, ZSS::Protocol::Robots_Command& command) {
         }
 
         grsim_robots[id]->set_veltangent(trans_length(vx));
-        grsim_robots[id]->set_velnormal(-trans_length(vy));
-        grsim_robots[id]->set_velangular(-trans_vr(vr));
+        grsim_robots[id]->set_velnormal(trans_length(vy));
+        grsim_robots[id]->set_velangular(trans_vr(vr));
         grsim_robots[id]->set_spinner(trans_dribble(commands.dribbler_spin()));
     }
     int size = grsim_packet.ByteSize();

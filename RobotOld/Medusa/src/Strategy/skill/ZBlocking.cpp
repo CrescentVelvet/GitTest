@@ -19,7 +19,7 @@ CZBlocking::CZBlocking(){
 void CZBlocking::plan(const CVisionModule* pVision){
     static bool is_first = true;
     //内部状态进行重置
-    if ( pVision->Cycle() - _lastCycle > Param::Vision::FRAME_RATE * 0.1 )
+    if ( pVision->getCycle() - _lastCycle > Param::Vision::FRAME_RATE * 0.1 )
         setState(BEGINNING);
 
     int vecNumber = task().executor;
@@ -27,16 +27,16 @@ void CZBlocking::plan(const CVisionModule* pVision){
     CGeoPoint defPos = task().player.pos; //要防守的目标点
 
 //    CGeoPoint defPos = ZSkillUtils::instance()->getTheirInterPoint(enemyNum);
-    const PlayerVisionT& me = pVision->OurPlayer(vecNumber);
-    const PlayerVisionT& enemy = pVision->TheirPlayer(enemyNum);
-    const MobileVisionT& ball = pVision->Ball();
+    const PlayerVisionT& me = pVision->ourPlayer(vecNumber);
+    const PlayerVisionT& enemy = pVision->theirPlayer(enemyNum);
+    const MobileVisionT& ball = pVision->ball();
     CGeoPoint enemyPos = enemy.Pos();
     CGeoPoint mePos = me.RawPos();
 //    CVector me2enemy = enemyPos - mePos;
 
     TaskT BlockingTask(task());
 
-    BlockingTask.player.pos = ZSkillUtils::instance()->getMarkingPoint(enemyPos, enemy.Vel(), 450, 450, 450, 300, defPos);
+    BlockingTask.player.pos = ZSkillUtils::instance()->getMarkingPoint(enemyPos, enemy.Vel(), 450*10, 450*10, 450, 300*10, defPos);
     BlockingTask.player.angle = (ball.RawPos() - me.RawPos()).dir();//me2enemy.dir();//CVector(CGeoPoint(Param::Field::PITCH_LENGTH/2.0,0) - me.Pos()).dir();
     BlockingTask.player.is_specify_ctrl_method = true;
     BlockingTask.player.specified_ctrl_method = CMU_TRAJ;
@@ -47,7 +47,7 @@ void CZBlocking::plan(const CVisionModule* pVision){
 
     setSubTask(TaskFactoryV2::Instance()->SmartGotoPosition(BlockingTask));
 
-    _lastCycle = pVision->Cycle();
+    _lastCycle = pVision->getCycle();
     CStatedTask::plan(pVision);
 }
 

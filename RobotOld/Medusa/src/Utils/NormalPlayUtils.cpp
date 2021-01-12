@@ -75,10 +75,10 @@ namespace NormalPlayUtils{
 		CGeoSegment seg = CGeoSegment(ball,passPos);
 		for (int i=1;i<=Param::Field::MAX_PLAYER;i++)
 		{
-			if (pVision->TheirPlayer(i).Valid())
+			if (pVision->theirPlayer(i).Valid())
 			{
-				CGeoPoint interPoint=seg.projection(pVision->TheirPlayer(i).Pos());
-				if (interPoint.dist(pVision->TheirPlayer(i).Pos())<range && seg.IsPointOnLineOnSegment(interPoint))
+				CGeoPoint interPoint=seg.projection(pVision->theirPlayer(i).Pos());
+				if (interPoint.dist(pVision->theirPlayer(i).Pos())<range && seg.IsPointOnLineOnSegment(interPoint))
 				{
 					return false;
 				}
@@ -88,9 +88,9 @@ namespace NormalPlayUtils{
 	}
 
 	bool canPassBetweenTwoPos(const CVisionModule* pVision,CGeoPoint passPos,const int meNum){
-		const MobileVisionT ball=pVision->Ball();
-		const PlayerVisionT me=pVision->OurPlayer(meNum);
-		const double ballToHeDist=pVision->TheirPlayer(ZSkillUtils::instance()->getTheirBestPlayer()).Pos().dist(ball.Pos());
+		const MobileVisionT ball=pVision->ball();
+		const PlayerVisionT me=pVision->ourPlayer(meNum);
+		const double ballToHeDist=pVision->theirPlayer(ZSkillUtils::instance()->getTheirBestPlayer()).Pos().dist(ball.Pos());
 		const double ballToMeDist=me.Pos().dist(ball.Pos());
 		const double balltoMeDir=(me.Pos()-ball.Pos()).dir();
 		const double passDir=(passPos-ball.Pos()).dir();
@@ -116,10 +116,10 @@ namespace NormalPlayUtils{
 		CGeoSegment seg = CGeoSegment(ball,ball+Utils::Polar2Vector(range,shootDir));
 		for (int i=1;i<=Param::Field::MAX_PLAYER;i++)
 		{
-			if (vision->TheirPlayer(i).Valid())
+			if (vision->theirPlayer(i).Valid())
 			{
-				CGeoPoint interPoint=seg.projection(vision->TheirPlayer(i).Pos());
-				if (interPoint.dist(vision->TheirPlayer(i).Pos())<20&&seg.IsPointOnLineOnSegment(interPoint))
+				CGeoPoint interPoint=seg.projection(vision->theirPlayer(i).Pos());
+				if (interPoint.dist(vision->theirPlayer(i).Pos())<20&&seg.IsPointOnLineOnSegment(interPoint))
 				{
 					return true;
 				}
@@ -217,11 +217,11 @@ namespace NormalPlayUtils{
 		CGeoSegment shootSeg(receiver,receiver+Utils::Polar2Vector(180,shootDir));
 		for (int i=1;i<=Param::Field::MAX_PLAYER;i++)
 		{
-			if (pVision->TheirPlayer(i).Valid())
+			if (pVision->theirPlayer(i).Valid())
 			{
-				CGeoPoint proj=shootSeg.projection(pVision->TheirPlayer(i).Pos());
-				if (pVision->TheirPlayer(i).Pos().dist(receiver)<range 
-					|| shootSeg.IsPointOnLineOnSegment(proj)&&proj.dist(pVision->TheirPlayer(i).Pos())<35)
+				CGeoPoint proj=shootSeg.projection(pVision->theirPlayer(i).Pos());
+				if (pVision->theirPlayer(i).Pos().dist(receiver)<range 
+					|| shootSeg.IsPointOnLineOnSegment(proj)&&proj.dist(pVision->theirPlayer(i).Pos())<35)
 				{
 					return true;
 				}
@@ -233,12 +233,12 @@ namespace NormalPlayUtils{
 	bool isReceiverCloseToPassPos(const CVisionModule* pVision,CGeoPoint passPos,double range){
 		for (int i=1;i<=Param::Field::MAX_PLAYER;i++)
 		{
-			if (pVision->OurPlayer(i).Valid())
+			if (pVision->ourPlayer(i).Valid())
 			{
-				//cout<<i<<" "<<pVision->OurPlayer(i).Vel().mod()<<endl;
-				if (pVision->OurPlayer(i).Pos().dist(passPos)<range&&i!=TaskMediator::Instance()->leftBack()
-					&&i!=TaskMediator::Instance()->rightBack()&&i!=PlayInterface::Instance()->getNumbByRealIndex(TaskMediator::Instance()->goalie())
-					&&pVision->OurPlayer(i).Vel().mod()<80)
+				//cout<<i<<" "<<pVision->ourPlayer(i).Vel().mod()<<endl;
+				if (pVision->ourPlayer(i).Pos().dist(passPos)<range&&i!=TaskMediator::Instance()->leftBack()
+					&&i!=TaskMediator::Instance()->rightBack()&&i!=TaskMediator::Instance()->goalie()
+					&&pVision->ourPlayer(i).Vel().mod()<80)
 				{
 					return true;
 				}
@@ -252,11 +252,11 @@ namespace NormalPlayUtils{
 		int num=0;
 		for (int i=1;i<=Param::Field::MAX_PLAYER;i++)
 		{
-			if (pVision->OurPlayer(i).Valid())
+			if (pVision->ourPlayer(i).Valid())
 			{
-				if (pVision->OurPlayer(i).Pos().dist(pos)<dist&&i!=PlayInterface::Instance()->getNumbByRealIndex(TaskMediator::Instance()->goalie()))
+				if (pVision->ourPlayer(i).Pos().dist(pos)<dist&&i!=TaskMediator::Instance()->goalie())
 				{
-					dist =pVision->OurPlayer(i).Pos().dist(pos);
+					dist =pVision->ourPlayer(i).Pos().dist(pos);
 					num=i;
 				}
 			}
@@ -269,11 +269,11 @@ namespace NormalPlayUtils{
 		int num=0;
 		for (int i=1;i<=Param::Field::MAX_PLAYER;i++)
 		{
-			if (pVision->TheirPlayer(i).Valid())
+			if (pVision->theirPlayer(i).Valid())
 			{
-				if (pVision->TheirPlayer(i).Pos().dist(pos)<dist)
+				if (pVision->theirPlayer(i).Pos().dist(pos)<dist)
 				{
-					dist =pVision->TheirPlayer(i).Pos().dist(pos);
+					dist =pVision->theirPlayer(i).Pos().dist(pos);
 					num=i;
 				}
 			}
@@ -282,13 +282,13 @@ namespace NormalPlayUtils{
 	}
 
 	bool isEnemyFrontToBall(const CVisionModule* pVision,double range){
-		const MobileVisionT ball=pVision->Ball();
+		const MobileVisionT ball=pVision->ball();
 		CGeoSegment ballVelSeg=CGeoSegment(ball.Pos()+Utils::Polar2Vector(-range,ball.Vel().dir()),ball.Pos()+Utils::Polar2Vector(500,ball.Vel().dir()));
 		for (int i=1;i<=Param::Field::MAX_PLAYER;i++)
 		{
-			if (pVision->TheirPlayer(i).Valid())
+			if (pVision->theirPlayer(i).Valid())
 			{
-				CGeoPoint seg=ballVelSeg.projection(pVision->TheirPlayer(i).Pos());
+				CGeoPoint seg=ballVelSeg.projection(pVision->theirPlayer(i).Pos());
 				if (ballVelSeg.IsPointOnLineOnSegment(seg)){
 					return true;
 				}
@@ -298,7 +298,7 @@ namespace NormalPlayUtils{
 	}
 
 	bool ballMoveToOurDefendArea(const CVisionModule* pVision){
-		const MobileVisionT ball=pVision->Ball();
+		const MobileVisionT ball=pVision->ball();
 		CGeoLine ballMovingLine = CGeoLine(ball.Pos(),ball.Pos()+Utils::Polar2Vector(1000,ball.Vel().dir()));
 		CGeoLine defendLine=CGeoSegment(CGeoPoint(-Param::Field::PITCH_LENGTH/2,-(Param::Field::GOAL_WIDTH+20)),CGeoPoint(-Param::Field::PITCH_LENGTH/2,Param::Field::GOAL_WIDTH+20));
 		CGeoSegment defendSeg=CGeoSegment(CGeoPoint(-Param::Field::PITCH_LENGTH/2,-(Param::Field::GOAL_WIDTH+20)),CGeoPoint(-Param::Field::PITCH_LENGTH/2,Param::Field::GOAL_WIDTH+20));	
@@ -316,16 +316,16 @@ namespace NormalPlayUtils{
 		return false;
 	}
 	double generateKickAtEnemyDir(const CVisionModule* pVision,const PlayerVisionT& me){
-		const MobileVisionT ball=pVision->Ball();
+		const MobileVisionT ball=pVision->ball();
 		double shootDir=KickDirection::Instance()->getRealKickDir();
 		CGeoSegment shootSeg=CGeoSegment(ball.Pos(),ball.Pos()+Utils::Polar2Vector(200,shootDir));
 		for (int i=1;i<=Param::Field::MAX_PLAYER;i++)
 		{
 
-			if (pVision->TheirPlayer(i).Valid())
+			if (pVision->theirPlayer(i).Valid())
 			{
-				CGeoPoint proj=shootSeg.projection(pVision->TheirPlayer(i).Pos());
-				if (shootSeg.IsPointOnLineOnSegment(proj)&&pVision->TheirPlayer(i).Pos().dist(proj)<10){
+				CGeoPoint proj=shootSeg.projection(pVision->theirPlayer(i).Pos());
+				if (shootSeg.IsPointOnLineOnSegment(proj)&&pVision->theirPlayer(i).Pos().dist(proj)<10){
 					
 				}
 			}
@@ -334,14 +334,14 @@ namespace NormalPlayUtils{
 	}
 
 	int  patchForBestPlayer(const CVisionModule* pVision,int lastAdvancerNum){
-		const MobileVisionT ball=pVision->Ball();
+		const MobileVisionT ball=pVision->ball();
 		double distRange=60;
 		int advancerNum[Param::Field::MAX_PLAYER]={0,0,0,0,0,0};
 		for (int i=1;i<=Param::Field::MAX_PLAYER;i++)
 		{
-			if (pVision->OurPlayer(i).Valid())
+			if (pVision->ourPlayer(i).Valid())
 			{
-				if (pVision->OurPlayer(i).Pos().dist(ball.Pos())<distRange&&i!=PlayInterface::Instance()->getNumbByRealIndex(TaskMediator::Instance()->goalie()))
+				if (pVision->ourPlayer(i).Pos().dist(ball.Pos())<distRange&&i!=TaskMediator::Instance()->goalie())
 				{
 					advancerNum[i-1]=1;
 				}
@@ -355,8 +355,8 @@ namespace NormalPlayUtils{
 		for (int i=1;i<=Param::Field::MAX_PLAYER;i++)
 		{
 			if (advancerNum[i-1]!=0){
-				double metoGoalDir=(theirGoal-pVision->OurPlayer(i).Pos()).dir();
-				double metoBallDir=(ball.Pos()-pVision->OurPlayer(i).Pos()).dir();
+				double metoGoalDir=(theirGoal-pVision->ourPlayer(i).Pos()).dir();
+				double metoBallDir=(ball.Pos()-pVision->ourPlayer(i).Pos()).dir();
 				double diff=fabs(Utils::Normalize(metoBallDir-metoGoalDir));
 				if (diff<tempAngle){
 					tempAngle=fabs(Utils::Normalize(metoBallDir-metoGoalDir));
@@ -372,9 +372,9 @@ namespace NormalPlayUtils{
 	}
 
 	double generateTandemCond(const CVisionModule* pVision,CGeoPoint& tandemPos,int meNum){
-		const PlayerVisionT me=pVision->OurPlayer(meNum);
-		const PlayerVisionT he=pVision->TheirPlayer(ZSkillUtils::instance()->getTheirBestPlayer());
-		const MobileVisionT ball=pVision->Ball();
+		const PlayerVisionT me=pVision->ourPlayer(meNum);
+		const PlayerVisionT he=pVision->theirPlayer(ZSkillUtils::instance()->getTheirBestPlayer());
+		const MobileVisionT ball=pVision->ball();
 		const CGeoPoint ballPos=ball.Pos();
 		const CGeoPoint ourGoalPos=CGeoPoint(-Param::Field::PITCH_LENGTH/2,0);
 		const double balltoOurGoalDir=(ourGoalPos-ballPos).dir();
@@ -504,15 +504,15 @@ namespace NormalPlayUtils{
 
 
 	bool faceTheirGoal(const CVisionModule* pVision, const int executor,const double pre) {
-		double dist = Param::Field::PITCH_LENGTH / 2 - pVision->OurPlayer(executor).Pos().x();
+		double dist = Param::Field::PITCH_LENGTH / 2 - pVision->ourPlayer(executor).Pos().x();
 		double buffer = 0;
 		double bufferDir=pre;
 		const CGeoPoint theirLeft = CGeoPoint(Param::Field::PITCH_LENGTH / 2, -Param::Field::GOAL_WIDTH / 2 - buffer);
 		const CGeoPoint theirRight = CGeoPoint(Param::Field::PITCH_LENGTH / 2, Param::Field::GOAL_WIDTH / 2 + buffer);
-		double leftAngle = Utils::Normalize((theirLeft - pVision->OurPlayer(executor).Pos()).dir());
-		double rightAngle = Utils::Normalize((theirRight - pVision->OurPlayer(executor).Pos()).dir());
-		double myDir = pVision->OurPlayer(executor).Dir();
-		double myX=pVision->OurPlayer(executor).Pos().x();
+		double leftAngle = Utils::Normalize((theirLeft - pVision->ourPlayer(executor).Pos()).dir());
+		double rightAngle = Utils::Normalize((theirRight - pVision->ourPlayer(executor).Pos()).dir());
+		double myDir = pVision->ourPlayer(executor).Dir();
+		double myX=pVision->ourPlayer(executor).Pos().x();
 		if (myX<270) // 已修改为Brazil zhyaic
 		{
 			bufferDir=Param::Math::PI*1/180;
@@ -522,21 +522,21 @@ namespace NormalPlayUtils{
 		//	return true;
 		//}
 
-		double rawLeftAngle = Utils::Normalize((theirLeft - pVision->OurPlayer(executor).RawPos()).dir());
-		double rawRifhtAngle = Utils::Normalize((theirRight - pVision->OurPlayer(executor).RawPos()).dir());
-		double myRawDir = pVision->OurRawPlayer(executor).dir;
+		double rawLeftAngle = Utils::Normalize((theirLeft - pVision->ourPlayer(executor).RawPos()).dir());
+		double rawRifhtAngle = Utils::Normalize((theirRight - pVision->ourPlayer(executor).RawPos()).dir());
+		double myRawDir = pVision->ourRawPlayer(executor).dir;
 
 		bool isToTheirGoal = ((myDir > Utils::Normalize(leftAngle-bufferDir)) && (myDir < Utils::Normalize(rightAngle+bufferDir)));
 		bool isRawToTheirGoal = ((myRawDir > Utils::Normalize(rawLeftAngle-bufferDir)) && (myRawDir < Utils::Normalize(rawRifhtAngle+bufferDir)));
 
 //		if (true) {
-//			GDebugEngine::Instance()->gui_debug_line(theirLeft, pVision->OurPlayer(executor).Pos());
-//			GDebugEngine::Instance()->gui_debug_line(theirRight, pVision->OurPlayer(executor).Pos());
-//			GDebugEngine::Instance()->gui_debug_line(pVision->OurPlayer(executor).Pos() + Utils::Polar2Vector(500, myDir), pVision->OurPlayer(executor).Pos());
+//			GDebugEngine::Instance()->gui_debug_line(theirLeft, pVision->ourPlayer(executor).Pos());
+//			GDebugEngine::Instance()->gui_debug_line(theirRight, pVision->ourPlayer(executor).Pos());
+//			GDebugEngine::Instance()->gui_debug_line(pVision->ourPlayer(executor).Pos() + Utils::Polar2Vector(500, myDir), pVision->ourPlayer(executor).Pos());
 
-			//GDebugEngine::Instance()->gui_debug_line(theirLeft, pVision->OurPlayer(executor).RawPos());
-			//GDebugEngine::Instance()->gui_debug_line(theirRight, pVision->OurPlayer(executor).RawPos());
-			//GDebugEngine::Instance()->gui_debug_line(pVision->OurPlayer(executor).RawPos() + Utils::Polar2Vector(100, myRawDir), pVision->OurPlayer(executor).RawPos());
+			//GDebugEngine::Instance()->gui_debug_line(theirLeft, pVision->ourPlayer(executor).RawPos());
+			//GDebugEngine::Instance()->gui_debug_line(theirRight, pVision->ourPlayer(executor).RawPos());
+			//GDebugEngine::Instance()->gui_debug_line(pVision->ourPlayer(executor).RawPos() + Utils::Polar2Vector(100, myRawDir), pVision->ourPlayer(executor).RawPos());
 //		}
 		return (isToTheirGoal || isRawToTheirGoal);
 	}
@@ -545,9 +545,9 @@ namespace NormalPlayUtils{
 		const CGeoPoint sideBackPos=DefPos2015::Instance()->getDefPos2015(pVision).getSidePos();
 		for (int i=1;i<=Param::Field::MAX_PLAYER;i++)
 		{
-			if (pVision->OurPlayer(i).Valid())
+			if (pVision->ourPlayer(i).Valid())
 			{
-				if (pVision->OurPlayer(i).Pos().y()/sideBackPos.y()>0 && i!=PlayInterface::Instance()->getNumbByRealIndex(TaskMediator::Instance()->goalie())
+				if (pVision->ourPlayer(i).Pos().y()/sideBackPos.y()>0 && i!=TaskMediator::Instance()->goalie()
 					&& i!=TaskMediator::Instance()->leftBack() && i!=TaskMediator::Instance()->rightBack()
 					&& i!=TaskMediator::Instance()->defendMiddle())
 				{

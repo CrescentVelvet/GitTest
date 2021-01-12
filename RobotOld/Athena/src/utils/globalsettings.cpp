@@ -54,6 +54,6 @@ void CGlobalSettings::resetSelectCarArea() {
     selectCarMinY = 0;
     selectCarMaxY = 0;
 }
-void CGlobalSettings::setOldLogFlag(bool old) {
-    oldLogFlag = old ? -1 : 1;
-}
+//void CGlobalSettings::setOldLogFlag(bool old) {
+//    oldLogFlag = old ? -1 : 1;
+//}

@@ -26,7 +26,7 @@ int CWorldModel::OurRobotNum()
 {
 	int validNum = 0;
 	for (int i = 1; i <= Param::Field::MAX_PLAYER; i++) {		
-		if (_pVision->OurPlayer(i).Valid()) {	
+        if (_pVision->ourPlayer(i).Valid()) {
 			validNum++;
 		}
 	}
@@ -34,19 +34,19 @@ int CWorldModel::OurRobotNum()
 	return validNum;
 }
 
-int CWorldModel::GetRealNum(int num)
-{
-	return PlayInterface::Instance()->getRealIndexByNum(num);
-}
+//int CWorldModel::GetRealNum(int num)
+//{
+//	return PlayInterface::Instance()->getRealIndexByNum(num);
+//}
 
 int CWorldModel::GetTacticNum(int num)
 {
-	return PlayInterface::Instance()->getNumbByRealIndex(num);
+	return num;
 }
 
 bool CWorldModel::IsBallKicked(int num)
 {
-	KickStatus::Instance()->updateForceClose(this->vision()->Cycle());
+	KickStatus::Instance()->updateForceClose(this->vision()->getCycle());
 	if(KickStatus::Instance()->isForceClosed()){
 		return false;
 	}
@@ -65,7 +65,7 @@ int CWorldModel::InfraredOffCount(int num){
 }
 
 double CWorldModel::timeToTarget(int player, const CGeoPoint target) {
-    return predictedTimeWithRawVel(_pVision->OurPlayer(player), target);
+    return predictedTimeWithRawVel(_pVision->ourPlayer(player), target);
 }
 
 bool CWorldModel::CanDefenceExit()
@@ -85,12 +85,12 @@ bool CWorldModel::NeedExitAttackDef(CGeoPoint leftUp, CGeoPoint rightDown, int m
 	if (mode == 1){
 		//纵向截球，如果球不向这个区域内或者球的y值已经越过markingTouch的车，则需要退出
 		int markTouchNum = DefenceInfo::Instance()->getMarkingTouchNum(leftUp,rightDown);
-		if (_pVision->OurPlayer(markTouchNum).Y()<0 && markTouchNum!=0){
-			if (_pVision->Ball().Y()<_pVision->OurPlayer(markTouchNum).Y()-5){
+        if (_pVision->ourPlayer(markTouchNum).Y()<0 && markTouchNum!=0){
+            if (_pVision->ball().Y()<_pVision->ourPlayer(markTouchNum).Y()-5){
 				result = true;
 			}
-		}else if (_pVision->OurPlayer(markTouchNum).Y()>0 && markTouchNum!=0){
-			if (_pVision->Ball().Y()>_pVision->OurPlayer(markTouchNum).Y()+5){
+        }else if (_pVision->ourPlayer(markTouchNum).Y()>0 && markTouchNum!=0){
+            if (_pVision->ball().Y()>_pVision->ourPlayer(markTouchNum).Y()+5){
 				result = true;
 			}
 		}else if (markTouchNum == 0){
@@ -123,7 +123,7 @@ bool CWorldModel::NeedExitAttackDef(CGeoPoint leftUp, CGeoPoint rightDown, int m
 		//}
 	}else if (mode == 2){
 		int markTouchNum = DefenceInfo::Instance()->getMarkingTouchNum(leftUp,rightDown);
-		if (markTouchNum!= 0 && _pVision->OurPlayer(markTouchNum).X()>_pVision->Ball().X()){
+        if (markTouchNum!= 0 && _pVision->ourPlayer(markTouchNum).X()>_pVision->ball().X()){
 			result = true;
 		}else if (markTouchNum == 0){
 			result = true;
@@ -141,7 +141,7 @@ bool CWorldModel::ball2MarkingTouch(CGeoPoint leftUp, CGeoPoint rightDown)
 	bool result =false;
 	int markTouchNum =  DefenceInfo::Instance()->getMarkingTouchNum(leftUp,rightDown);
 	if (markTouchNum!=0){
-		dist = vision()->Ball().RawPos().dist(vision()->OurPlayer(markTouchNum).Pos());
+        dist = vision()->ball().RawPos().dist(vision()->ourPlayer(markTouchNum).Pos());
 		if (dist <100){
 			result = true;
 		}
@@ -166,7 +166,7 @@ bool CWorldModel::isMarkingFrontValid(CGeoPoint checkPos, double checkDir)
 	vector<int> frontList;
 	for(vector<int>::iterator ir =markFrontList.begin();ir!=markFrontList.end();ir++){
 		//cout<<markFrontList.size()<<" "<<*ir<<" "<<fabs(Utils::Normalize(checkDir - (vision()->TheirPlayer(*ir).Pos() - checkPos).dir()))<<endl;
-		double cmpDir = fabs(Utils::Normalize(checkDir - (vision()->TheirPlayer(*ir).Pos() - checkPos).dir()));
+        double cmpDir = fabs(Utils::Normalize(checkDir - (vision()->theirPlayer(*ir).Pos() - checkPos).dir()));
 		if (cmpDir < Param::Math::PI/6){
 			frontList.push_back(*ir);
 			result = true;
@@ -175,7 +175,7 @@ bool CWorldModel::isMarkingFrontValid(CGeoPoint checkPos, double checkDir)
 				toMeNum = DefenceInfo::Instance()->getOurMarkDenfender(*ir);
 			}
 			GDebugEngine::Instance()->gui_debug_line(checkPos,checkPos+Utils::Polar2Vector(300,checkDir),COLOR_WHITE);
-			GDebugEngine::Instance()->gui_debug_line(checkPos,vision()->TheirPlayer(*ir).Pos(),COLOR_WHITE);
+            GDebugEngine::Instance()->gui_debug_line(checkPos,vision()->theirPlayer(*ir).Pos(),COLOR_WHITE);
 		}
 	}
 	//DefenceInfo::Instance()->setMarkFrontNum(0);
@@ -186,10 +186,10 @@ bool CWorldModel::isMarkingFrontValid(CGeoPoint checkPos, double checkDir)
 	int crossCouter = 0;
 	for (int i=0;i<frontList.size();i++)
 	{
-		double ball2EnemyDir = (vision()->Ball().Pos() - vision()->TheirPlayer(frontList[i]).Pos()).dir();
+        double ball2EnemyDir = (vision()->ball().Pos() - vision()->theirPlayer(frontList[i]).Pos()).dir();
 		int me =  DefenceInfo::Instance()->getOurMarkDenfender(frontList[i]);
-		double ball2MeDir = (vision()->Ball().Pos() -vision()->OurPlayer(me).Pos()).dir();
-		if (fabs(Utils::Normalize(ball2EnemyDir - ball2MeDir))<Param::Math::PI/12 && vision()->OurPlayer(me).Pos().dist(vision()->Ball().Pos())> vision()->TheirPlayer(frontList[i]).Pos().dist(vision()->Ball().Pos())
+        double ball2MeDir = (vision()->ball().Pos() -vision()->ourPlayer(me).Pos()).dir();
+        if (fabs(Utils::Normalize(ball2EnemyDir - ball2MeDir))<Param::Math::PI/12 && vision()->ourPlayer(me).Pos().dist(vision()->ball().Pos())> vision()->theirPlayer(frontList[i]).Pos().dist(vision()->ball().Pos())
 			&& fabs(Utils::Normalize(ball2MeDir - Utils::Normalize(checkDir+Param::Math::PI)))<Param::Math::PI/6){
 			crossCouter++;
 			//return false;
@@ -202,7 +202,7 @@ bool CWorldModel::isMarkingFrontValid(CGeoPoint checkPos, double checkDir)
 		cout<<"in change"<<endl;
 	}
 	//如果球过了markingFront中截球的一辆车同时这辆车在后场则跳出markingFront
-	if (vision()->RawBall().X() < vision()->OurPlayer(toMeNum).X() && vision()->OurPlayer(toMeNum).X()<0){
+    if (vision()->rawBall().X() < vision()->ourPlayer(toMeNum).X() && vision()->ourPlayer(toMeNum).X()<0){
 		cout<<"out"<<endl;
 		return false;
 	}
@@ -213,26 +213,26 @@ bool CWorldModel::isMarkingFrontValid(CGeoPoint checkPos, double checkDir)
 //每帧只调用一次
 int CWorldModel::getEnemyKickOffNum()
 {
-	const string refMsg = vision()->GetCurrentRefereeMsg();
+	const string refMsg = vision()->getCurrentRefereeMsg();
 	int kickOffNum = 0;
 	vector<int> kickOffList;
 	static int lastKickOffNum = 1;
 	static int keepCnt = 0;
 	static int lastCycle = 0;
 	static int retVal = 0;
-	if (vision()->Cycle() - lastCycle >6){
+	if (vision()->getCycle() - lastCycle >6){
 		lastKickOffNum = 1;
 		keepCnt = 0;
 	}
-	if (lastCycle == vision()->Cycle()){
+	if (lastCycle == vision()->getCycle()){
 		return retVal;
 	}
 	kickOffList.clear();
 	//暂且用区域内的车的数量判断敌方开球车数量
 	if ("TheirIndirectKick" == refMsg || "TheirDirectKick" == refMsg){
-		CGeoCirlce kickOffArea = CGeoCirlce(vision()->Ball().Pos(),Param::AvoidDist::DEFENDKICK_MARKING_DIST);
+        CGeoCirlce kickOffArea = CGeoCirlce(vision()->ball().Pos(),Param::AvoidDist::DEFENDKICK_MARKING_DIST);
 		for (int i =1;i<=Param::Field::MAX_PLAYER;i++){
-			if (kickOffArea.HasPoint(vision()->TheirPlayer(i).Pos())){
+            if (kickOffArea.HasPoint(vision()->theirPlayer(i).Pos())){
 				kickOffNum++;
 				//cout<<i<<" might be kicking"<<endl;
 				kickOffList.push_back(i);
@@ -252,7 +252,7 @@ int CWorldModel::getEnemyKickOffNum()
 		double minToBallDist = 1000;
 		int minNum = 0;
 		for (vector<int>::iterator ir = kickOffList.begin();ir!=kickOffList.end();ir++){
-			double check =vision()->TheirPlayer(*ir).Pos().dist(vision()->Ball().Pos());
+            double check =vision()->theirPlayer(*ir).Pos().dist(vision()->ball().Pos());
 			//cout<<*ir<<" "<<check<<endl;
 			if (check<minToBallDist){
 				minNum = *ir;
@@ -270,7 +270,7 @@ int CWorldModel::getEnemyKickOffNum()
 		DefenceInfo::Instance()->resetMarkingInfo();
 	}
 
-	lastCycle = vision()->Cycle();
+	lastCycle = vision()->getCycle();
 
 	if (keepCnt>=3 && kickOffNum>=2){
 		retVal = kickOffNum;
@@ -286,7 +286,7 @@ bool CWorldModel::checkEnemyKickOffNumChanged()
 	static int lastKickOffNum = 1;
 	static int lastCycle = 0;
 	static bool result = false;
-	if (vision()->Cycle() == lastCycle){
+	if (vision()->getCycle() == lastCycle){
 		return result;
 	}
 	int kickOffNum = getEnemyKickOffNum();
@@ -294,7 +294,7 @@ bool CWorldModel::checkEnemyKickOffNumChanged()
 		lastKickOffNum = kickOffNum;
 		result =true;
 	}
-	lastCycle = vision()->Cycle();
+	lastCycle = vision()->getCycle();
 	return result;
 }
 
@@ -302,7 +302,7 @@ int CWorldModel::getMarkingTouchArea(CGeoPoint leftPos1,CGeoPoint leftPos2,CGeoP
 {
 	int leftNum = DefenceInfo::Instance()->getMarkingTouchNum(leftPos1,leftPos2);
 	int rightNum = DefenceInfo::Instance()->getMarkingTouchNum(rightPos1,rightPos2);
-	if (vision()->OurPlayer(leftNum).X()>vision()->OurPlayer(rightNum).X()){
+    if (vision()->ourPlayer(leftNum).X()>vision()->ourPlayer(rightNum).X()){
 		//cout<<"choose 1"<<endl;
 		return 1;
 	}else{
@@ -339,7 +339,7 @@ void CWorldModel::SPlayFSMSwitchClearAll(bool clear_flag)
 	}
 
 	// 暂时只有清理 球被提出的状态
-	KickStatus::Instance()->resetKick2ForceClose(true,this->vision()->Cycle());
+	KickStatus::Instance()->resetKick2ForceClose(true,this->vision()->getCycle());
 	BallStatus::Instance()->clearKickCmd();
 	BufferCounter::Instance()->clear();
 	// To be added if needed
@@ -394,9 +394,9 @@ bool CWorldModel::canProtectBall(int current_cycle){
 	static bool _canProtectBall;
 
 	if (last_cycle < current_cycle) {
-		const MobileVisionT ball=_pVision->Ball();
-		const PlayerVisionT he=_pVision->TheirPlayer(ZSkillUtils::instance()->getTheirBestPlayer());
-		const PlayerVisionT me=_pVision->OurPlayer(ZSkillUtils::instance()->getOurBestPlayer());
+        const MobileVisionT ball=_pVision->ball();
+        const PlayerVisionT he=_pVision->theirPlayer(ZSkillUtils::instance()->getTheirBestPlayer());
+        const PlayerVisionT me=_pVision->ourPlayer(ZSkillUtils::instance()->getOurBestPlayer());
 		CGeoPoint predictBallPos=BallSpeedModel::Instance()->posForTime(30,_pVision);
 		const CVector self2rawball=ball.Pos()-me.Pos();
 		if (IsOurBallByAutoReferee()&&ball.Vel().mod()>150&&Utils::OutOfField(predictBallPos,-10)&&fabs(ball.Vel().dir())>Param::Math::PI/1.5
@@ -426,7 +426,7 @@ bool CWorldModel::canShootOnBallPos(int current_cycle, int myNum) {
 			}
 		}
 		_canshootonballpos = false;
-		CShootRangeList shootRangeList(_pVision, myNum, _pVision->Ball().Pos());
+        CShootRangeList shootRangeList(_pVision, myNum, _pVision->ball().Pos());
         const CValueRange* bestRange = nullptr;
 		const CValueRangeList& shootRange = shootRangeList.getShootRange();
 		if (shootRange.size() > 0) {
@@ -456,7 +456,7 @@ bool CWorldModel::canShootOnBallPos(int current_cycle, int myNum) {
 //		}
 ////		const MobileVisionT ball=_pVision->Ball();
 ////		const PlayerVisionT he=_pVision->TheirPlayer(ZSkillUtils::instance()->getTheirBestPlayer());
-////		const PlayerVisionT me=_pVision->OurPlayer(myNum);
+////		const PlayerVisionT me=_pVision->ourPlayer(myNum);
 //		CGeoPoint passPosOne,passPosTwo;
 
 ////        CGeoPoint predictBall=BallSpeedModel::Instance()->posForTime(Param::Vision::FRAME_RATE,_pVision);
@@ -493,9 +493,9 @@ bool CWorldModel::canKickAtEnemy(int current_cycle,CGeoPoint& kickDir, int myNum
 			}
 		}
 
-		const MobileVisionT ball=_pVision->Ball();
-		const PlayerVisionT me=_pVision->OurPlayer(myNum);
-		const PlayerVisionT he=_pVision->TheirPlayer(ZSkillUtils::instance()->getTheirBestPlayer());
+        const MobileVisionT ball=_pVision->ball();
+        const PlayerVisionT me=_pVision->ourPlayer(myNum);
+        const PlayerVisionT he=_pVision->theirPlayer(ZSkillUtils::instance()->getTheirBestPlayer());
 		const double shootDir=KickDirection::Instance()->getRealKickDir();
 		kickDir.setX(shootDir);
 		if (fabs(shootDir)<Param::Math::PI/90){

@@ -12,9 +12,9 @@ CPlayerCommand* CStopRobotV2::execute(const CVisionModule* pVision)
 {
 	// 慢慢停下来
 	const int vecNumber = task().executor;
-	const PlayerVisionT& self = pVision->OurPlayer(vecNumber);
+	const PlayerVisionT& self = pVision->ourPlayer(vecNumber);
 	// 获得机器人的能力
-	const CRobotCapability* robotCap = RobotCapFactory::Instance()->getRobotCap(pVision->Side(), vecNumber);
+	const CRobotCapability* robotCap = RobotCapFactory::Instance()->getRobotCap(pVision->getSide(), vecNumber);
 	const double maxDeccel = 1.0*robotCap->maxAcceleration(self.Vel(), 0);
 	const double vecSpeed = self.Vel().mod();
 

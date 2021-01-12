@@ -68,8 +68,8 @@ void CCommandInterface::setKick(int num, double kp, double cp) {
 void CCommandInterface::sendCommands() {
 //    GDebugEngine::Instance()->gui_debug_msg(CGeoPoint(-400,-200),"COMMAND_VALID : ",COLOR_GRAY);
     for (int i = 0; i < Param::Field::MAX_PLAYER; i++) {
-//        GDebugEngine::Instance()->gui_debug_msg(CGeoPoint(-216+i*13,-200),VisionModule::Instance()->OurPlayer(i+1).Valid()?"1":"0",COLOR_GRAY);
-        if(!VisionModule::Instance()->OurPlayer(i+1).Valid()){
+//        GDebugEngine::Instance()->gui_debug_msg(CGeoPoint(-216+i*13,-200),VisionModule::Instance()->ourPlayer(i+1).Valid()?"1":"0",COLOR_GRAY);
+        if(!VisionModule::Instance()->ourPlayer(i+1).Valid()){
             continue;
         }
         auto robot_command = robots_command.add_command();
@@ -79,7 +79,7 @@ void CCommandInterface::sendCommands() {
         robot_command->set_velocity_r(commands[i].velocity_r);
         robot_command->set_dribbler_spin(commands[i].dribble_spin);
         if(commands[i].dribble_spin >=1){
-            GDebugEngine::Instance()->gui_debug_arc(VisionModule::Instance()->OurPlayer(i+1).RawPos(),5,0,360,COLOR_BLACK);
+            GDebugEngine::Instance()->gui_debug_arc(VisionModule::Instance()->ourPlayer(i+1).RawPos(),5,0,360,COLOR_BLACK);
         }
         if(commands[i].chip_kick < 0.001) { //flat kick
             robot_command->set_kick(false);

@@ -31,12 +31,12 @@ function RunMultiPos(task)
 			mdir = task.dir
 		end
 
-		lastCycle = vision:Cycle()
+		lastCycle = vision:getCycle()
 		return CGoCmuRush(runner, mpos[curIndex]:x(), mpos[curIndex]:y(), mdir, mflag, msender, macc)
 	end
 
 	matchPos = function()
-		if vision:Cycle() - lastCycle > 6 then
+		if vision:getCycle() - lastCycle > 6 then
 			curIndex = 1
 		end
 		for i=1, table.getn(task.pos) do

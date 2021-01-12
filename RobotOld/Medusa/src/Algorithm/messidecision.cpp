@@ -14,9 +14,10 @@
 #include "Global.h"
 #include "ballmodel.h"
 #include "ShootModule.h"
-#include "self_pass.h"
+#include "RefereeBoxIf.h"
 #ifdef USE_CUDA_MODULE
 #include "CUDAModule/CUDAModule.h"
+#include <stdlib.h>
 Semaphore messi_to_cuda(0);
 #endif
 
@@ -40,7 +41,7 @@ enum Field {
     BackField = 3
 };
 // 判断leader拿着球的距离
-const int HOLDBALL_DIST = 20;
+const int HOLDBALL_DIST = 200;
 //避免射门后马上改变leader
 const int MIN_CHANGE_LEADER_INTERVEL = 10;
 //改变接球车的最小间隔
@@ -81,10 +82,10 @@ double PASS_ANGLE_ERROR = 2;
 //重算的条件
 QString recomputeCondition = "";
 //传球点距离太近重算
-const int RECOMPUTE_DIST = 150;
+const int RECOMPUTE_DIST = 1500;
 const int SELFPASS_RECOMPUTE_DIST = static_cast<int>(2*Param::Vehicle::V2::PLAYER_SIZE);
 //是否忽略近处的车
-const double IGNORE_CLOSE_ENEMY_DIST = 100;
+const double IGNORE_CLOSE_ENEMY_DIST = 1000;
 bool IGNORE_THEIR_GUARD = true;
 //无效传球点保持的最大帧数
 const int MAX_INVALID_CNT = 30;
@@ -113,10 +114,10 @@ CMessiDecision::CMessiDecision()
     , _leaderState("PASS")
     , _passPos(CGeoPoint(Param::Field::PITCH_LENGTH/2, 0))
     , _receiverPos(STATIC_POS[0])
-    , _flatPassPos(CGeoPoint(Param::Field::PITCH_LENGTH/2 - Param::Field::PENALTY_AREA_DEPTH - 20, 0))
-    , _flatShootPos(CGeoPoint(Param::Field::PITCH_LENGTH/2 - Param::Field::PENALTY_AREA_DEPTH - 20, 0))
-    , _chipPassPos(CGeoPoint(Param::Field::PITCH_LENGTH/2 - Param::Field::PENALTY_AREA_DEPTH - 20, 0))
-    , _chipShootPos(CGeoPoint(Param::Field::PITCH_LENGTH/2 - Param::Field::PENALTY_AREA_DEPTH - 20, 0))
+    , _flatPassPos(CGeoPoint(Param::Field::PITCH_LENGTH/2 - Param::Field::PENALTY_AREA_DEPTH - 200, 0))
+    , _flatShootPos(CGeoPoint(Param::Field::PITCH_LENGTH/2 - Param::Field::PENALTY_AREA_DEPTH - 200, 0))
+    , _chipPassPos(CGeoPoint(Param::Field::PITCH_LENGTH/2 - Param::Field::PENALTY_AREA_DEPTH - 200, 0))
+    , _chipShootPos(CGeoPoint(Param::Field::PITCH_LENGTH/2 - Param::Field::PENALTY_AREA_DEPTH - 200, 0))
     , _pVision(nullptr) {
     ZSS::ZParamManager::instance()->loadParam(TEST_PASS, "Messi/NoShoot", false);
     ZSS::ZParamManager::instance()->loadParam(SELF_PASS, "Messi/SelfPass", false);
@@ -149,7 +150,7 @@ CMessiDecision::CMessiDecision()
 void CMessiDecision::generateAttackDecision(const CVisionModule* pVision) {
     //更新图像信息
     _pVision = pVision;
-    _cycle = pVision->Cycle();
+    _cycle = pVision->getCycle();
 
     //Ball state
     judgeBallState();
@@ -163,9 +164,6 @@ void CMessiDecision::generateAttackDecision(const CVisionModule* pVision) {
     //确定leader
     if (confirmLeader())
         _lastChangeLeaderCycle = _cycle;
-
-    //判断是否自传
-    judge_selfpass();
 
     //计算leader的截球点
     generateLeaderPos();
@@ -181,24 +179,25 @@ void CMessiDecision::generateAttackDecision(const CVisionModule* pVision) {
         generateOtherRunPos();
     }
 
+    std::srand((unsigned)time(nullptr));
+    //_otherPos[0] = CGeoPoint(std::rand()%2000+2000,std::rand()%6000-3000);
+    _otherPos[0] = CGeoPoint(std::rand()%1000+3000,std::rand()%1000-2000);
+    //qDebug()<<_otherPos[0].x();
+
     // DEBUG INFO
     if(MESSI_DEBUG) {
         GDebugEngine::Instance()->gui_debug_msg(_passPos, QString("PPPPPP").toLatin1(), _isFlat ? COLOR_GREEN : COLOR_ORANGE);
-        GDebugEngine::Instance()->gui_debug_msg(CGeoPoint(-580, 260) * (IS_RIGHT ? -1 : 1), _state.c_str() + QString("    Self Pass: %1").arg(PASS::selfPass).toLatin1() + QString("    leader: %1  receiver: %2  Cycle: %3").arg(_leader).arg(_receiver).arg(_lastChangeLeaderCycle).toLatin1(), COLOR_ORANGE);
-        GDebugEngine::Instance()->gui_debug_msg(CGeoPoint(-580, 280) * (IS_RIGHT ? -1 : 1), QString("canshoot: %1  shootRange: %2  valid %3 %4 %5  BallVel: %6").arg(ShootModule::Instance()->canShoot(_pVision, _leaderPos)).arg(SHOOT::shootAngle).arg(SHOOT::leftShoot).arg(SHOOT::middleShoot).arg(SHOOT::rightShoot).arg(_pVision->Ball().Vel().mod()).toLatin1(), COLOR_ORANGE);
-        GDebugEngine::Instance()->gui_debug_msg(CGeoPoint(-580, 300) * (IS_RIGHT ? -1 : 1), QString("passMode: %1 PassScore: %2 ShootScore: %3").arg(PASS::passMode ? "Pass" : "Shoot").arg(PASS::maxPassScore).arg(PASS::maxShootScore).toLatin1(), COLOR_ORANGE);
-        GDebugEngine::Instance()->gui_debug_msg(CGeoPoint(-580, 320) * (IS_RIGHT ? -1 : 1), QString("isFlat: %1  canKick: %2  Flat: %3  Chip: %4").arg(_isFlat).arg(_canKick).arg(PASS::flatPassQ).arg(PASS::chipPassQ).toLatin1(), COLOR_ORANGE);
-        GDebugEngine::Instance()->gui_debug_msg(CGeoPoint(-580, 340) * (IS_RIGHT ? -1 : 1), (QString("recompute cycle: %1 %2  ").arg(_lastRecomputeCycle).arg(inValidCnt) + QString("condition: ").append(RECALCULATE::recomputeCondition)).toLatin1(), COLOR_ORANGE);
-        GDebugEngine::Instance()->gui_debug_msg(CGeoPoint(-580, 360) * (IS_RIGHT ? -1 : 1), QString("leaderState: ").toLatin1() + _leaderState.c_str() + QString("  noKick: %1").arg(PASS::NO_KICK_CNT).toLatin1(), COLOR_ORANGE);
+        GDebugEngine::Instance()->gui_debug_msg(CGeoPoint(-5800, 2600) * (IS_RIGHT ? -1 : 1), _state.c_str() + QString("    Self Pass: %1").arg(PASS::selfPass).toLatin1() + QString("    leader: %1  receiver: %2  Cycle: %3").arg(_leader).arg(_receiver).arg(_lastChangeLeaderCycle).toLatin1(), COLOR_ORANGE);
+        GDebugEngine::Instance()->gui_debug_msg(CGeoPoint(-5800, 2800) * (IS_RIGHT ? -1 : 1), QString("canshoot: %1  shootRange: %2  valid %3 %4 %5  BallVel: %6").arg(ShootModule::Instance()->canShoot(_pVision, _leaderPos)).arg(SHOOT::shootAngle).arg(SHOOT::leftShoot).arg(SHOOT::middleShoot).arg(SHOOT::rightShoot).arg(_pVision->ball().Vel().mod()).toLatin1(), COLOR_ORANGE);
+        GDebugEngine::Instance()->gui_debug_msg(CGeoPoint(-5800, 3000) * (IS_RIGHT ? -1 : 1), QString("passMode: %1 PassScore: %2 ShootScore: %3").arg(PASS::passMode ? "Pass" : "Shoot").arg(PASS::maxPassScore).arg(PASS::maxShootScore).toLatin1(), COLOR_ORANGE);
+        GDebugEngine::Instance()->gui_debug_msg(CGeoPoint(-5800, 3200) * (IS_RIGHT ? -1 : 1), QString("isFlat: %1  canKick: %2  Flat: %3  Chip: %4").arg(_isFlat).arg(_canKick).arg(PASS::flatPassQ).arg(PASS::chipPassQ).toLatin1(), COLOR_ORANGE);
+        GDebugEngine::Instance()->gui_debug_msg(CGeoPoint(-5800, 3400) * (IS_RIGHT ? -1 : 1), (QString("recompute cycle: %1 %2  ").arg(_lastRecomputeCycle).arg(inValidCnt) + QString("condition: ").append(RECALCULATE::recomputeCondition)).toLatin1(), COLOR_ORANGE);
+        GDebugEngine::Instance()->gui_debug_msg(CGeoPoint(-5800, 3600) * (IS_RIGHT ? -1 : 1), QString("leaderState: ").toLatin1() + _leaderState.c_str() + QString("  noKick: %1").arg(PASS::NO_KICK_CNT).toLatin1(), COLOR_ORANGE);
         GDebugEngine::Instance()->gui_debug_msg(_leaderPos, QString("LeaderPos").toLatin1(), COLOR_CYAN);
-        GDebugEngine::Instance()->gui_debug_msg(_leaderWaitPos, QString("WaitPos").toLatin1(), COLOR_CYAN);     
+        GDebugEngine::Instance()->gui_debug_msg(_leaderWaitPos, QString("WaitPos").toLatin1(), COLOR_CYAN);
     }
-    // SELF PASS
-    SelfPass::Instance()->draw_selfpassMsg(_pVision, _leader);
-    GDebugEngine::Instance()->gui_debug_msg(CGeoPoint(-580, 340) * (IS_RIGHT ? -1 : 1), (QString("recompute cycle: %1 %2  ").arg(_lastRecomputeCycle).arg(inValidCnt) + QString("condition: ").append(RECALCULATE::recomputeCondition)).toLatin1(), COLOR_ORANGE);
-    GDebugEngine::Instance()->gui_debug_x(_passPos, _isFlat ? COLOR_GREEN : COLOR_ORANGE);
     if(SHOW_PASSLINE){
-        GDebugEngine::Instance()->gui_debug_line(_pVision->OurPlayer(_leader+1).Pos(), _passPos, _isFlat ? COLOR_GREEN : COLOR_ORANGE);
+        GDebugEngine::Instance()->gui_debug_line(_pVision->ourPlayer(_leader+1).Pos(), _passPos, _isFlat ? COLOR_GREEN : COLOR_ORANGE);
         GDebugEngine::Instance()->gui_debug_x(_passPos, _isFlat ? COLOR_GREEN : COLOR_ORANGE);
     }
     //获得laststate方便计算点的判断
@@ -218,7 +217,7 @@ void CMessiDecision::judgeState() {
     static int fixBuf = 0;
     // 解决传球失败时错误的匹配
     if ((_state == "Pass"/* || _state == "fix"*/) && ZSkillUtils::instance()->getOurInterTime(_leader+1) - ZSkillUtils::instance()->getOurBestInterTime() > WRONG_LEADER_INTERTIME
-             && !Utils::InOurPenaltyArea(_pVision->OurPlayer(ZSkillUtils::instance()->getOurBestPlayer()).Pos(), 50) ) {
+             && !Utils::InOurPenaltyArea(_pVision->ourPlayer(ZSkillUtils::instance()->getOurBestPlayer()).Pos(), 500) ) {
         _state = "GetBall";
         return;
     }
@@ -240,10 +239,10 @@ void CMessiDecision::judgeState() {
         static string lastTemp = "GetBall";
         string temp = "GetBall";
         //所有状态机的判断
-        const PlayerVisionT& enemy = _pVision->TheirPlayer(ZSkillUtils::instance()->getTheirBestPlayer());
-        bool enemyHoldBall = (enemy.Pos() + Utils::Polar2Vector(Param::Vehicle::V2::PLAYER_SIZE, enemy.Dir())).dist(_pVision->Ball().Pos()) < HOLDBALL_DIST;
-        const PlayerVisionT& leader = _pVision->OurPlayer(_leader+1);
-        bool leaderHoldBall = (leader.Pos() + Utils::Polar2Vector(Param::Vehicle::V2::PLAYER_SIZE, leader.Dir())).dist(_pVision->Ball().Pos()) < HOLDBALL_DIST;
+        const PlayerVisionT& enemy = _pVision->theirPlayer(ZSkillUtils::instance()->getTheirBestPlayer());
+        bool enemyHoldBall = (enemy.Pos() + Utils::Polar2Vector(Param::Vehicle::V2::PLAYER_SIZE, enemy.Dir())).dist(_pVision->ball().Pos()) < HOLDBALL_DIST;
+        const PlayerVisionT& leader = _pVision->ourPlayer(_leader+1);
+        bool leaderHoldBall = (leader.Pos() + Utils::Polar2Vector(Param::Vehicle::V2::PLAYER_SIZE, leader.Dir())).dist(_pVision->ball().Pos()) < HOLDBALL_DIST;
         bool leaderInfrared = RobotSensor::Instance()->IsInfraredOn(_leader+1);
         if(_ourBall || (leaderHoldBall && !enemyHoldBall) || leaderInfrared) {
             temp = "Pass";
@@ -307,10 +306,10 @@ void CMessiDecision::judgeAttackerAmount() {
     }
     _attacker.clear();
     while (enemyNumVec.size()) {
-        double bestDist = 9999;
+        double bestDist = 99999;
         int bestEnemy = -9999;
         for (auto enemyNum : enemyNumVec) {
-            double newDist = _pVision->TheirPlayer(enemyNum).Pos().dist(OUR_GOAL);
+            double newDist = _pVision->theirPlayer(enemyNum).Pos().dist(OUR_GOAL);
             if(newDist < bestDist){
                 bestDist = newDist;
                 bestEnemy = enemyNum;
@@ -326,16 +325,16 @@ void CMessiDecision::judgeAttackerAmount() {
 void CMessiDecision::generateLeaderPos() {
     // fix状态使用的截球点
     static int ballStopCnt = 0;
-    ballStopCnt = (_pVision->Ball().Vel().mod() < 15 && _pVision->OurPlayer(_leader+1).Pos().dist(_pVision->Ball().Pos()) > 150) ? ballStopCnt + 1 : 0;
+    ballStopCnt = (_pVision->ball().Vel().mod() < 15 && _pVision->ourPlayer(_leader+1).Pos().dist(_pVision->ball().Pos()) > 1500) ? ballStopCnt + 1 : 0;
     /*if (!IS_SIMULATION && _state == "fix")
         _leaderWaitPos = _pVision->Ball().ChipPredictPos();
     else */if(ballStopCnt >= 5)
-        _leaderWaitPos = _pVision->Ball().Pos();
+        _leaderWaitPos = _pVision->ball().Pos();
     else if(_cycle == _lastChangeLeaderCycle && _laststate != "fix")
         _leaderWaitPos = _receiverPos;
     // CUDA计算使用的leader的位置
-    if(_pVision->OurPlayer(_leader+1).Pos().dist(_pVision->Ball().Pos()) < 50)
-        _leaderPos = _pVision->Ball().Pos();
+    if(_pVision->ourPlayer(_leader+1).Pos().dist(_pVision->ball().Pos()) < 500)
+        _leaderPos = _pVision->ball().Pos();
     else if(_cycle == _lastChangeLeaderCycle && _laststate != "fix")
         _leaderPos = _receiverPos;
     else
@@ -349,19 +348,19 @@ bool CMessiDecision::confirmLeader() {
         //选择最快拦截球的车作为leader,而不是单纯使用距离
         int bestInterPlayer = _leader + 1;
         double bestInterTime = ZSkillUtils::instance()->getOurInterTime(bestInterPlayer) - 0.3; //避免leader狂跳
-        double bestInterDist = _pVision->OurPlayer(bestInterPlayer).Pos().dist(_pVision->Ball().Pos()) - 30;
+        double bestInterDist = _pVision->ourPlayer(bestInterPlayer).Pos().dist(_pVision->ball().Pos()) - 300;
         // kickout时change leader
         if (BallStatus::Instance()->IsBallKickedOut(_leader + 1) && !Utils::InTheirPenaltyArea(_passPos, 0)) {
             _leader = _receiver;
             return true;
         }
         // 状态跳转、Getball状态、Pass时球接近静止时，选择最快截球车
-        else if ((_state != _laststate || _state == "GetBall" || (_state == "Pass" && _pVision->Ball().Vel().mod() < 30)) && _state != "fix"){
+        else if ((_state != _laststate || _state == "GetBall" || (_state == "Pass" && _pVision->ball().Vel().mod() < 300)) && _state != "fix"){
             for (int i = 1; i <= Param::Field::MAX_PLAYER; i++) {
                 // 不选择我们的后卫
-                if(_pVision->OurPlayer(i).Valid() && !Utils::InOurPenaltyArea(_pVision->OurPlayer(i).Pos(), 6*Param::Vehicle::V2::PLAYER_SIZE)){
+                if(_pVision->ourPlayer(i).Valid() && !Utils::InOurPenaltyArea(_pVision->ourPlayer(i).Pos(), 6*Param::Vehicle::V2::PLAYER_SIZE)){
                     double interTime = ZSkillUtils::instance()->getOurInterTime(i);
-                    double newInterDist = _pVision->OurPlayer(i).Pos().dist(_pVision->Ball().Pos());
+                    double newInterDist = _pVision->ourPlayer(i).Pos().dist(_pVision->ball().Pos());
                     if(interTime < bestInterTime && newInterDist < bestInterDist) {
                         bestInterPlayer = i;
                         bestInterTime = interTime;
@@ -379,8 +378,9 @@ bool CMessiDecision::confirmLeader() {
 
 // 判断是否需要重算
 bool CMessiDecision::needReceivePos() {
-    CGeoPoint leaderPosition = _pVision->OurPlayer(_leader + 1).Pos() + Utils::Polar2Vector(Param::Vehicle::V2::PLAYER_SIZE, _pVision->OurPlayer(_leader+1).Dir());
-    CGeoPoint ballPosition = _pVision->Ball().Pos();
+    CGeoPoint leaderPosition = _pVision->ourPlayer(_leader + 1).Pos() + Utils::Polar2Vector(Param::Vehicle::V2::PLAYER_SIZE, _pVision->ourPlayer(_leader+1).Dir());
+    CGeoPoint ballPosition = _pVision->ball().Pos();
+
     //增加条件时写出调用哪个函数时使用，方便分辨条件之间的与或关系
 /*    if (_state == "Pass" && _laststate == "GetBall") {// Change state to Pass
         RECALCULATE::recomputeCondition = "CHANGE STATE";
@@ -412,18 +412,13 @@ bool CMessiDecision::needReceivePos() {
         return true;
     }
     // 极端条件:receiver被拿下去,receiver在禁区
-    else if ((!Utils::InTheirPenaltyArea(_passPos, 0) && !_pVision->OurPlayer(_receiver+1).Valid()) || Utils::InOurPenaltyArea(_pVision->OurPlayer(_receiver+1).Pos(),0)) {
+    else if ((!Utils::InTheirPenaltyArea(_passPos, 0) && !_pVision->ourPlayer(_receiver+1).Valid()) || Utils::InOurPenaltyArea(_pVision->ourPlayer(_receiver+1).Pos(),0)) {
         RECALCULATE::recomputeCondition = "INVALID RECEIVER";
         return true;
     }
     // 极端条件:leader接球时传球点已经在后面
     else if (leaderPosition.dist(ballPosition) < HOLDBALL_DIST && leaderPosition.x() < Param::Field::PITCH_LENGTH/6 && _passPos.x() < leaderPosition.x()) {
         RECALCULATE::recomputeCondition = "PASS TO BACK";
-        return true;
-    }
-    // 自传
-    else if(SELF_PASS && PASS::selfPass){
-        RECALCULATE::recomputeCondition = "SELF PASS TIME";
         return true;
     }
     return false;
@@ -457,7 +452,7 @@ void CMessiDecision::generateReceiverAndPos() {
         _lastRecomputeCycle = _cycle;
         ZCUDAModule::instance()->setLeader(_leader);
         ZCUDAModule::instance()->setLeaderPos(_leaderPos);
-        if(_cycle - _lastChangeReceiverCycle > MIN_CHANGE_RECEIVER_INTERVAL || _leader == _receiver || !_pVision->OurPlayer(_receiver+1).Valid())
+        if(_cycle - _lastChangeReceiverCycle > MIN_CHANGE_RECEIVER_INTERVAL || _leader == _receiver || !_pVision->ourPlayer(_receiver+1).Valid())
             ZCUDAModule::instance()->setReceiver(-1);
         else
             ZCUDAModule::instance()->setReceiver(_receiver);
@@ -474,23 +469,23 @@ void CMessiDecision::generateReceiverAndPos() {
 #endif
     // 意外情况处理:拿不到点时leader还在上一个receiverPos
     static int inValidPosCnt = 0;
-    static const double CLOSE_DIST = 100;
-    inValidPosCnt = _receiverPos.dist(_pVision->OurPlayer(_leader+1).Pos()) < CLOSE_DIST ? inValidPosCnt + 1 : 0;
+    static const double CLOSE_DIST = 1000;
+    inValidPosCnt = _receiverPos.dist(_pVision->ourPlayer(_leader+1).Pos()) < CLOSE_DIST ? inValidPosCnt + 1 : 0;
     if(inValidPosCnt > 3*Param::Vision::FRAME_RATE){
-        double dist1 = STATIC_POS[0].dist(_pVision->OurPlayer(_leader+1).Pos());
-        double dist2 = STATIC_POS[1].dist(_pVision->OurPlayer(_leader+1).Pos());
+        double dist1 = STATIC_POS[0].dist(_pVision->ourPlayer(_leader+1).Pos());
+        double dist2 = STATIC_POS[1].dist(_pVision->ourPlayer(_leader+1).Pos());
         if(dist1 > CLOSE_DIST && dist2 > CLOSE_DIST)
             _receiverPos = dist1 < dist2 ? STATIC_POS[0] : STATIC_POS[1];
         else
             _receiverPos = dist1 > CLOSE_DIST ? STATIC_POS[0] : STATIC_POS[1];
     }
     // 判断能不能射门
-    if (ShootModule::Instance()->canShoot(_pVision, _leaderPos) && !PASS::selfPass) {
+    if (ShootModule::Instance()->canShoot(_pVision, _leaderPos)) {
         _passPos = CGeoPoint(Param::Field::PITCH_LENGTH / 2.0, 0);
-        _passVel = 650;
+        _passVel = 6500;
         _isFlat = true;
         //receiver应该跑的点，避免挡住射门路线
-        _receiverPos = _pVision->OurPlayer(_leader+1).Pos().y() < 0 ? STATIC_POS[0] : STATIC_POS[1];
+        _receiverPos = _pVision->ourPlayer(_leader+1).Pos().y() < 0 ? STATIC_POS[0] : STATIC_POS[1];
     }
 }
 
@@ -503,7 +498,7 @@ void CMessiDecision::getPassPos() {
     if(ONLY_PASSPOS){
         PASS::passMode = true;
     }
-    else if (ONLY_SHOOTPOS || Utils::InTheirPenaltyArea(_pVision->OurPlayer(_leader+1).Pos(), 100)){
+    else if (ONLY_SHOOTPOS || Utils::InTheirPenaltyArea(_pVision->ourPlayer(_leader+1).Pos(), 1000)){
         PASS::passMode = false;
     }
     else{
@@ -556,7 +551,7 @@ void CMessiDecision::getPassPos() {
 //    else {
 //        noReceivePos++;
 //        // 直接往前场挑一脚
-//        if(noReceivePos >= MAX_NO_RECEIVEPOS_CNT && _pVision->OurPlayer(_leader+1).X() < 0/*-Param::Field::PITCH_LENGTH/8*/){
+//        if(noReceivePos >= MAX_NO_RECEIVEPOS_CNT && _pVision->ourPlayer(_leader+1).X() < 0/*-Param::Field::PITCH_LENGTH/8*/){
 //            _passPos = _receiverPos = CGeoPoint(Param::Field::PITCH_LENGTH/2 - Param::Field::PENALTY_AREA_DEPTH - 20, 0);
 //            _isFlat = false;
 //            inValidCnt = 0;
@@ -573,14 +568,8 @@ void CMessiDecision::getPassPos() {
         PASS::selfPass = false;
 #else
     ReceivePosModule::Instance()->generatePassPos(_pVision, _leader);
-    SelfPass::Instance()->cal_variousPoint(_pVision, _leader);
     _receiver = ReceivePosModule::Instance()->bestReceiver();
-    if(PASS::selfPass){
-        _passPos = _receiverPos = SelfPass::Instance()->orientatePoint();
-    }
-    else{
-        _passPos = _receiverPos = ReceivePosModule::Instance()->bestPassPoint();
-    }
+    _passPos = _receiverPos = ReceivePosModule::Instance()->bestPassPoint();
     _isFlat = true;
 #endif
 }
@@ -603,19 +592,19 @@ void CMessiDecision::reset() {
 bool CMessiDecision::canShootGuard() {
     bool valid = false;
     static const double COMPENSATE_RATIO = 1.1;
-    if(_pVision->OurPlayer(_leader+1).Pos().x() > Param::Field::PITCH_LENGTH/2 - Param::Field::PENALTY_AREA_DEPTH){
+    if(_pVision->ourPlayer(_leader+1).Pos().x() > Param::Field::PITCH_LENGTH/2 - Param::Field::PENALTY_AREA_DEPTH){
         for (int i=1; i<Param::Field::MAX_PLAYER_NUM; i++) {
-            const PlayerVisionT& enemy = _pVision->TheirPlayer(i);
+            const PlayerVisionT& enemy = _pVision->theirPlayer(i);
             if(!enemy.Valid()) continue;
             if(!Utils::InTheirPenaltyArea(enemy.Pos(), 0) && Utils::InTheirPenaltyArea(enemy.Pos(), Param::Vehicle::V2::PLAYER_SIZE*2)){
 //                qDebug() << "their guard:" << i;
                 valid = true;
-                CVector enemyToMe = _pVision->OurPlayer(_leader+1).Pos() - enemy.Pos();
+                CVector enemyToMe = _pVision->ourPlayer(_leader+1).Pos() - enemy.Pos();
                 CVector enemyToGoal = CGeoPoint(Param::Field::PITCH_LENGTH/2, 0) - enemy.Pos();
                 double compensateAngle = Utils::Normalize(enemyToGoal.dir()  - enemyToMe.dir()) / (1 + COMPENSATE_RATIO);
                 double finalAngle = enemyToMe.dir() + compensateAngle;
                 _passPos = enemy.Pos() + Utils::Polar2Vector(Param::Vehicle::V2::PLAYER_SIZE, finalAngle);
-                _passVel = 500;
+                _passVel = 5000;
                 _isFlat = true;
                 _canKick = true;
                 break;
@@ -627,10 +616,10 @@ bool CMessiDecision::canShootGuard() {
 
 // 门将开大脚时的传球点
 CGeoPoint CMessiDecision::goaliePassPos() {
-    CGeoPoint leaderPos = _pVision->OurPlayer(_leader + 1).Pos();
+    CGeoPoint leaderPos = _pVision->ourPlayer(_leader + 1).Pos();
     // leader在前场时传leader
     if(leaderPos.x() > 0)
-        return leaderPos + CVector(50, 0);
+        return leaderPos + CVector(500, 0);
     // 否则传到对方禁区前沿制造混乱
     else
         return CGeoPoint(Param::Field::PITCH_LENGTH / 2, 0);
@@ -639,9 +628,8 @@ CGeoPoint CMessiDecision::goaliePassPos() {
 // 判断leader状态
 void CMessiDecision::judgeLeaderState() {
     //计算传球力度
-//    PASS::selfPass = true;
     if(Utils::InTheirPenaltyArea(_passPos, 0))
-        _passVel = 600;
+        _passVel = 6000;
     else if(_isFlat)
         _passVel = BallModel::instance()->flatPassVel(_pVision, _passPos, _receiver, PASS::bufferTime, RECALCULATE::PASS_ANGLE_ERROR);
     else
@@ -655,23 +643,22 @@ void CMessiDecision::judgeLeaderState() {
         _leaderState = "PASS";
 
     //判断leader能否传球
-    CGeoPoint leaderPosition = _pVision->OurPlayer(_leader + 1).Pos() + Utils::Polar2Vector(Param::Vehicle::V2::PLAYER_SIZE, _pVision->OurPlayer(_leader+1).Dir());
-    CGeoPoint ballPosition = _pVision->Ball().Pos();
+    CGeoPoint leaderPosition = _pVision->ourPlayer(_leader + 1).Pos() + Utils::Polar2Vector(Param::Vehicle::V2::PLAYER_SIZE, _pVision->ourPlayer(_leader+1).Dir());
+    CGeoPoint ballPosition = _pVision->ball().Pos();
     CVector passLine = _passPos - ballPosition;
     CGeoPoint abnormalPos1 = ballPosition + Utils::Polar2Vector(ballPosition.dist(_passPos), passLine.dir() + RECALCULATE::PASS_ANGLE_ERROR*Param::Math::PI/180);
     CGeoPoint abnormalPos2 = ballPosition + Utils::Polar2Vector(ballPosition.dist(_passPos), passLine.dir() - RECALCULATE::PASS_ANGLE_ERROR*Param::Math::PI/180);
     _canKick = false;
     //射门
-    if(/*Utils::InTheirPenaltyArea(_passPos, 0)*/false){
+    if(Utils::InTheirPenaltyArea(_passPos, 0)){
         if(ShootModule::Instance()->canShoot(_pVision, _leaderPos) || (Utils::InTheirPenaltyArea(leaderPosition, 10*Param::Vehicle::V2::PLAYER_SIZE) && leaderPosition.x() <= Param::Field::PITCH_LENGTH/2 - Param::Field::PENALTY_AREA_DEPTH)) _canKick = true;
     }
     //传球
-    else if(/*_cycle > _timeToGetResult*/true){
-//        qDebug()<<SelfPass::Instance()->is_selfpassPoint(_pVision, _leader);
+    else if(_cycle > _timeToGetResult){
         const double riskPosX = Param::Field::PITCH_LENGTH/2 - Param::Field::PENALTY_AREA_DEPTH - 4*Param::Vehicle::V2::PLAYER_SIZE;
         const double riskPassX = Param::Field::PITCH_LENGTH/2 - Param::Field::PENALTY_AREA_DEPTH - 10*Param::Vehicle::V2::PLAYER_SIZE;
         //特殊情况放宽条件:禁区附近
-        if(!_isFlat && Utils::InTheirPenaltyArea(_passPos, 100) && _passPos.x() > riskPosX && leaderPosition.x() > riskPassX){
+        if(!_isFlat && Utils::InTheirPenaltyArea(_passPos, 1000) && _passPos.x() > riskPosX && leaderPosition.x() > riskPassX){
             _canKick = true;
         }
         //非自传的平射点
@@ -679,10 +666,7 @@ void CMessiDecision::judgeLeaderState() {
             _canKick = true;
         }
         //自传的平射点
-//        else if(_isFlat && PASS::selfPass && ZSkillUtils::instance()->validShootPos(_pVision, leaderPosition, _passVel, _passPos, 0.6, -9999) && ZSkillUtils::instance()->validShootPos(_pVision, leaderPosition, _passVel, abnormalPos1, 0.6, -9999) && ZSkillUtils::instance()->validShootPos(_pVision, leaderPosition, _passVel, abnormalPos2, 0.6, -9999)){
-//            _canKick = true;
-//        }
-        else if(_isFlat && PASS::selfPass && SelfPass::Instance()->is_selfpassPoint(_pVision, _leader)){
+        else if(_isFlat && PASS::selfPass && ZSkillUtils::instance()->validShootPos(_pVision, leaderPosition, _passVel, _passPos, 0.6, -9999) && ZSkillUtils::instance()->validShootPos(_pVision, leaderPosition, _passVel, abnormalPos1, 0.6, -9999) && ZSkillUtils::instance()->validShootPos(_pVision, leaderPosition, _passVel, abnormalPos2, 0.6, -9999)){
             _canKick = true;
         }
         //挑射点
@@ -718,17 +702,17 @@ void CMessiDecision::judgeLeaderState() {
     }
 
     // 当receiver离挑球点比较近的时候踢出
-    if((!_isFlat && !PASS::selfPass && _pVision->OurPlayer(_receiver+1).Pos().dist(_passPos) > 150) || (_isFlat && !PASS::selfPass && !Utils::InTheirPenaltyArea(_passPos, 0) && predictedTime(_pVision->OurPlayer(_receiver+1), _passPos) > 1))
+    if((!_isFlat && !PASS::selfPass && _pVision->ourPlayer(_receiver+1).Pos().dist(_passPos) > 1500) || (_isFlat && !PASS::selfPass && !Utils::InTheirPenaltyArea(_passPos, 0) && predictedTime(_pVision->ourPlayer(_receiver+1), _passPos) > 1))
         _canKick = false;
     // 后场没点时强行挑射
-//    if(!_isFlat && _pVision->OurPlayer(_leader+1).X() < /*-Param::Field::PITCH_LENGTH/8*/0 && Utils::InTheirPenaltyArea(_passPos, 50))
+//    if(!_isFlat && _pVision->ourPlayer(_leader+1).X() < /*-Param::Field::PITCH_LENGTH/8*/0 && Utils::InTheirPenaltyArea(_passPos, 50))
 //        _canKick = true;
 
     // NO KICK计数
     if ((leaderPosition.dist(ballPosition) < HOLDBALL_DIST || RobotSensor::Instance()->IsInfraredOn(_leader+1)) && !_canKick) PASS::NO_KICK_CNT = PASS::NO_KICK_CNT < static_cast<int>(Param::Vision::FRAME_RATE * PASS::MAX_NO_KICK) ? PASS::NO_KICK_CNT + 1 : static_cast<int>(Param::Vision::FRAME_RATE * PASS::MAX_NO_KICK);
     else PASS::NO_KICK_CNT = 0;
     if (PASS::NO_KICK_CNT >= static_cast<int>(Param::Vision::FRAME_RATE * PASS::MAX_NO_KICK) || leaderPosition.x() <= -Param::Field::PITCH_LENGTH/3){
-        _passPos = _receiverPos = CGeoPoint(Param::Field::PITCH_LENGTH/2 - Param::Field::PENALTY_AREA_DEPTH - 20, 0);
+        _passPos = _receiverPos = CGeoPoint(Param::Field::PITCH_LENGTH/2 - Param::Field::PENALTY_AREA_DEPTH - 200, 0);
         _passVel = BallModel::instance()->chipPassVel(_pVision, _passPos);
         _isFlat = false;
         _canKick = true;
@@ -744,12 +728,12 @@ CGeoPoint CMessiDecision::freeKickPos() {
 CGeoPoint CMessiDecision::freeKickWaitPos() {
     CGeoPoint waitPos;
     CGeoPoint ballPos;
-    if(vision->GetCurrentRefereeMsg() == "OurBallPlacement") {
-        ballPos = vision->getBallPlacementPosition();
+    if(vision->getCurrentRefereeMsg() == "OurBallPlacement") {
+        ballPos.fill(RefereeBoxInterface::Instance()->getBallPlacementPosX(), RefereeBoxInterface::Instance()->getBallPlacementPosY());
     } else {
-        ballPos = vision->Ball().Pos();
+        ballPos = vision->ball().Pos();
     }
-    waitPos.fill(ballPos.x() > 400 ? (ballPos.x() - 100) : ballPos.x() / 2 + Param::Field::PITCH_LENGTH / 4, //(ballPos.x() * 3.0 / 4.0 + Param::Field::PITCH_LENGTH / 8)
+    waitPos.fill(ballPos.x() > Param::Field::PITCH_LENGTH / 3 ? (ballPos.x() - Param::Field::PITCH_LENGTH / 12) : ballPos.x() / 2 + Param::Field::PITCH_LENGTH / 4, //(ballPos.x() * 3.0 / 4.0 + Param::Field::PITCH_LENGTH / 8)
                  std::fabs(ballPos.y()) < Param::Field::PENALTY_AREA_WIDTH / 2 ? 0 :
                  ballPos.y() > 0 ? Param::Field::PITCH_WIDTH / 4 : -Param::Field::PITCH_WIDTH / 4);
     RunPosModule::Instance()->generateRunPos(vision, waitPos);
@@ -758,17 +742,13 @@ CGeoPoint CMessiDecision::freeKickWaitPos() {
 
 bool CMessiDecision::canDirectKick() {
     CGeoPoint ballPos;
-    if(vision->GetCurrentRefereeMsg() == "OurBallPlacement") {
+    if(vision->getCurrentRefereeMsg() == "OurBallPlacement") {
         ballPos = vision->getBallPlacementPosition();
     } else {
-        ballPos = vision->Ball().Pos();
+        ballPos = vision->ball().Pos();
     }
     std::vector<int> enemyNumVec;
     return (WorldModel::Instance()->getEnemyAmountInArea(Param::Field::PITCH_LENGTH / 2 - Param::Field::PENALTY_AREA_DEPTH, Param::Field::PITCH_LENGTH / 2, - Param::Field::PENALTY_AREA_WIDTH / 2, Param::Field::PENALTY_AREA_WIDTH / 2, enemyNumVec) > 1)
         && std::fabs(ballPos.y()) < Param::Field::PITCH_WIDTH / 4
         && std::fabs(ballPos.x()) > Param::Field::PITCH_LENGTH / 4;
-}
-
-void CMessiDecision::judge_selfpass() {
-    PASS::selfPass = SelfPass::Instance()->is_selfpass();
 }

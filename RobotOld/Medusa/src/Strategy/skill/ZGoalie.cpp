@@ -62,7 +62,7 @@ CZGoalie::CZGoalie():_state(NOTHING){
     ZSS::ZParamManager::instance()->loadParam(GOALIE_CAPABILITY.maxAngularDec   ,"CGotoPositionV2/RotationAcc"  ,15 );
 }
 void CZGoalie::plan(const CVisionModule* pVision){
-    if (pVision->Cycle() - _lastCycle > Param::Vision::FRAME_RATE * 0.1) {
+    if (pVision->getCycle() - _lastCycle > Param::Vision::FRAME_RATE * 0.1) {
         _state = CZGoalie::NOTHING;
     }
     int player = task().executor;
@@ -79,18 +79,18 @@ void CZGoalie::plan(const CVisionModule* pVision){
         fraredOff = fraredOff >= maxFrared ? maxFrared : fraredOff + 1;
     }
 
-    auto ball_valid = pVision->Ball().Valid();
-    auto ball = ball_valid ? pVision->Ball().RawPos() : pVision->Ball().Pos();
+    auto ball_valid = pVision->ball().Valid();
+    auto ball = ball_valid ? pVision->ball().RawPos() : pVision->ball().Pos();
 
-    auto ball_vel = pVision->Ball().Vel().mod();
-    auto ball_vel_dir = pVision->Ball().Vel().dir();
+    auto ball_vel = pVision->ball().Vel().mod();
+    auto ball_vel_dir = pVision->ball().Vel().dir();
     CGeoSegment ball_line(ball,BallSpeedModel::Instance()->posForTime(9999,pVision));
     if(DEBUG) GDebugEngine::Instance()->gui_debug_line(ball_line.start(),ball_line.end(),COLOR_GREEN);
-    auto& self = pVision->OurPlayer(player);
+    auto& self = pVision->ourPlayer(player);
     auto& self_pos = self.Valid() ? self.RawPos() : self.Pos();
 
     // fix ball missing in clear_ball
-    if(!ball_valid && in_our_penalty(self_pos,14) && fraredOn>4 && _state == CLEAR){
+    if(!ball_valid && in_our_penalty(self_pos,14*10) && fraredOn>4 && _state == CLEAR){
         ball = self_pos + Utils::Polar2Vector(Param::Vehicle::V2::PLAYER_CENTER_TO_BALL_CENTER,self.Dir());
     }
 
@@ -138,25 +138,25 @@ void CZGoalie::plan(const CVisionModule* pVision){
 
     CGeoLineLineIntersection danger_intersection(ball_line,GOAL_LINE);
     bool danger_to_our_goal = danger_intersection.Intersectant() && ball_line.IsPointOnLineOnSegment(danger_intersection.IntersectPoint()) && GOAL_LINE.IsPointOnLineOnSegment(danger_intersection.IntersectPoint()) && (ball_vel_dir - (danger_intersection.IntersectPoint() - ball).dir()) < Param::Math::PI/18;
-    bool need_clear = in_our_penalty(ball,-16) && (ball_vel < 50 || _state == CLEAR);
+    bool need_clear = in_our_penalty(ball,-16*10) && (ball_vel < 50*10 || _state == CLEAR);
     bool need_dribble_back;
-    if(in_our_penalty(ball,15)&&!in_our_penalty(ball,25)){
+    if(in_our_penalty(ball,15*10)&&!in_our_penalty(ball,25*10)){
         need_dribble_back = lastNeedDribbleBack;
     }else {
-        need_dribble_back = in_our_penalty(ball,-16) && !in_our_penalty(ball,20);
+        need_dribble_back = in_our_penalty(ball,-16*10) && !in_our_penalty(ball,20*10);
     }
     lastNeedDribbleBack = need_dribble_back;
-    const auto& enemy = pVision->TheirPlayer(ZSkillUtils::instance()->getTheirBestPlayer());
+    const auto& enemy = pVision->theirPlayer(ZSkillUtils::instance()->getTheirBestPlayer());
     const auto& enemy_projection = ball_line.projection(enemy.Pos());
     const auto& enemy_dist_to_ball = (enemy_projection - enemy.Pos()).mod();
     bool enemy_danger = ball_line.IsPointOnLineOnSegment(enemy_projection);
-    bool need_defense = enemy_danger && in_our_penalty(enemy.Pos(),-100) && !danger_to_our_goal && ball_vel > 50;
-    bool need_attack = in_our_penalty(enemy.Pos(),-100) && ball_vel <= 50 && (ball - enemy.Pos()).mod() < 50;
+    bool need_defense = enemy_danger && in_our_penalty(enemy.Pos(),-100*10) && !danger_to_our_goal && ball_vel > 50*10;
+    bool need_attack = in_our_penalty(enemy.Pos(),-100*10) && ball_vel <= 50*10 && (ball - enemy.Pos()).mod() < 50*10;
     bool need_stand_closer = need_defense || need_attack;
 //    const auto& enemy_inter_point = ZSkillUtils::instance()->predictedTheirInterPoint(enemy.Pos(), ball);
 //    need_stand_closer = in_our_penalty(enemy_inter_point,-100);//test
     const auto& enemy_inter_point =ZSkillUtils::instance()->getTheirInterPoint(ZSkillUtils::instance()->getTheirBestPlayer());
-    CGeoLineRectangleIntersection attack_intersection(CGeoLine(in_our_penalty(enemy_inter_point,-100) ? enemy_inter_point : enemy.Pos(),get_defence_direction(in_our_penalty(enemy_inter_point,-100) ? enemy_inter_point : enemy.Pos())),ATTACK_RECTANGLE);
+    CGeoLineRectangleIntersection attack_intersection(CGeoLine(in_our_penalty(enemy_inter_point,-100*10) ? enemy_inter_point : enemy.Pos(),get_defence_direction(in_our_penalty(enemy_inter_point,-100*10) ? enemy_inter_point : enemy.Pos())),ATTACK_RECTANGLE);
     CGeoPoint attack_pos;
 //    GDebugEngine::Instance()->gui_debug_arc(ZSkillUtils::instance()->getTheirInterPoint(ZSkillUtils::instance()->getTheirBestPlayer()), 20 ,0, 360);
     if(attack_intersection.intersectant()){
@@ -171,7 +171,7 @@ void CZGoalie::plan(const CVisionModule* pVision){
 
     const CVector ball2self = (self_pos - ball);
     const CVector ball2point = ((ball.y()>0 ? RIGHT_PENALTY_CENTER : LEFT_PENALTY_CENTER)-ball);
-    const CGeoPoint dribble_pos(ball+ball2self.unit()*(Param::Vehicle::V2::PLAYER_FRONT_TO_CENTER-2));
+    const CGeoPoint dribble_pos(ball+ball2self.unit()*(Param::Vehicle::V2::PLAYER_FRONT_TO_CENTER-2*10));
     const CGeoPoint dribble_back_pos(ball+ball2point.unit()*30);
 
     const double dribble_back_dir = ball.x()<DRIBBLE_TARGET_X ? ball2point.dir() : Utils::Normalize(ball2point.dir()+Param::Math::PI);
@@ -189,25 +189,25 @@ void CZGoalie::plan(const CVisionModule* pVision){
     // clear ball
     if(need_clear){
         _state = CZGoalie::CLEAR;
-        if(DEBUG) GDebugEngine::Instance()->gui_debug_msg(CGeoPoint(-500,-160),"CLEAR_BALL",0);
+        if(DEBUG) GDebugEngine::Instance()->gui_debug_msg(CGeoPoint(-500*10,-160*10),"CLEAR_BALL",0);
         if(need_dribble_back){
             if(DEBUG){
-                GDebugEngine::Instance()->gui_debug_msg(CGeoPoint(-500,-140),QString("DRIBBLE_BACK : %1").arg(frared).toLatin1(),0);
+                GDebugEngine::Instance()->gui_debug_msg(CGeoPoint(-500*10,-140*10),QString("DRIBBLE_BACK : %1").arg(frared).toLatin1(),0);
             }
             DribbleStatus::Instance()->setDribbleCommand(player, 3);
             if(fraredOn>4){DribbleStatus::Instance()->setDribbleCommand(player, 3);
-                setSubTask(PlayerRole::makeItGoto(player,dribble_back_pos,dribble_back_dir,CVector(0,0),0,200,15,50,5,flag));
+                setSubTask(PlayerRole::makeItGoto(player,dribble_back_pos,dribble_back_dir,CVector(0,0),0,200*10,15,50*10,5,flag));
             }else{
-                setSubTask(PlayerRole::makeItGoto(player,dribble_pos,Utils::Normalize(ball2self.dir()+Param::Math::PI),CVector(0,0),0,300,50,200,30,flag));
+                setSubTask(PlayerRole::makeItGoto(player,dribble_pos,Utils::Normalize(ball2self.dir()+Param::Math::PI),CVector(0,0),0,300*10,50,200*10,30,flag));
             }
         }else{
-            setSubTask(PlayerRole::makeItGetBallV4(player,kick_flag,pos,CGeoPoint(-9999,-9999),int(power)));
+            setSubTask(PlayerRole::makeItGetBallV4(player,kick_flag,pos,CGeoPoint(-9999*10,-9999*10),int(power)));
         }
     }
     // zero velocity to inter the ball
     else if(can_inter && !collision){
         _state = CZGoalie::INTER;
-        if(DEBUG) GDebugEngine::Instance()->gui_debug_msg(CGeoPoint(-500,-160),"ZERO_INTER",0);
+        if(DEBUG) GDebugEngine::Instance()->gui_debug_msg(CGeoPoint(-500*10,-160*10),"ZERO_INTER",0);
         target_dir = ball_vel_dir + Param::Math::PI;
         setSubTask(PlayerRole::makeItGoto(player,target_pos,target_dir,flag));
     }
@@ -216,20 +216,20 @@ void CZGoalie::plan(const CVisionModule* pVision){
         _state = CZGoalie::DANDER;
         if(DEBUG) {
             GDebugEngine::Instance()->gui_debug_x(danger_intersection.IntersectPoint(),3);
-            GDebugEngine::Instance()->gui_debug_msg(CGeoPoint(-500,-160),"NONE_ZERO_SAVE",0);
+            GDebugEngine::Instance()->gui_debug_msg(CGeoPoint(-500*10,-160*10),"NONE_ZERO_SAVE",0);
         }
         setSubTask(PlayerRole::makeItGoto(player,target_pos,target_dir,target_vel,0,flag));
     }
     // attack stand
     else if(need_stand_closer){
         _state = CZGoalie::CLOSER;
-        if(DEBUG) GDebugEngine::Instance()->gui_debug_msg(CGeoPoint(-500,-160),"ATTACK_STAND",0);
+        if(DEBUG) GDebugEngine::Instance()->gui_debug_msg(CGeoPoint(-500*10,-160*10),"ATTACK_STAND",0);
         setSubTask(PlayerRole::makeItGoto(player,attack_pos,attack_dir,flag));
     }
     // normal stand
     else{
         _state = CZGoalie::NORMAL;
-        if(DEBUG) GDebugEngine::Instance()->gui_debug_msg(CGeoPoint(-500,-160),"NORMAL_STAND",0);
+        if(DEBUG) GDebugEngine::Instance()->gui_debug_msg(CGeoPoint(-500*10,-160*10),"NORMAL_STAND",0);
         setSubTask(PlayerRole::makeItGoto(player,stand_pos,stand_dir,flag));
     }
 
@@ -237,7 +237,7 @@ void CZGoalie::plan(const CVisionModule* pVision){
         DribbleStatus::Instance()->setDribbleCommand(player, 3);
     }
 
-    _lastCycle = pVision->Cycle();
+    _lastCycle = pVision->getCycle();
     CStatedTask::plan(pVision);
 }
 CPlayerCommand* CZGoalie::execute(const CVisionModule* pVision){
@@ -265,13 +265,13 @@ double get_defence_direction(const CGeoPoint & pos){
 //}
 // avoid reflict from our defender's ass
 bool checkOneCollision(const PlayerVisionT& test_robot,const CGeoSegment& ballLine){
-    if(test_robot.Valid() && in_our_penalty(test_robot.Pos(),-100)){
+    if(test_robot.Valid() && in_our_penalty(test_robot.Pos(),-100*10)){
         if(DEBUG) GDebugEngine::Instance()->gui_debug_robot(test_robot.RawPos(),test_robot.RawDir(),COLOR_CYAN);
         auto projection = ballLine.projection(test_robot.Pos());
         auto distance = (projection-test_robot.Pos()).mod();
-        if(distance < Param::Vehicle::V2::PLAYER_SIZE+2){
+        if(distance < Param::Vehicle::V2::PLAYER_SIZE+2*10){
             if(DEBUG){
-                GDebugEngine::Instance()->gui_debug_msg(CGeoPoint(-500,-120),"CAN_INTER but COLLISION",COLOR_RED);
+                GDebugEngine::Instance()->gui_debug_msg(CGeoPoint(-500*10,-120*10),"CAN_INTER but COLLISION",COLOR_RED);
                 GDebugEngine::Instance()->gui_debug_robot(test_robot.RawPos(),test_robot.RawDir(),COLOR_GREEN);
                 GDebugEngine::Instance()->gui_debug_line(test_robot.RawPos(),projection,COLOR_GREEN);
             }
@@ -282,10 +282,10 @@ bool checkOneCollision(const PlayerVisionT& test_robot,const CGeoSegment& ballLi
 }
 bool checkCollision(const CVisionModule* pVision,int goalie,const CGeoSegment& ballLine){
     for(int i = 1; i <= Param::Field::MAX_PLAYER; i++){
-        if(checkOneCollision(pVision->TheirPlayer(i),ballLine)){
+        if(checkOneCollision(pVision->theirPlayer(i),ballLine)){
             return true;
         }
-        if(i!= goalie && checkOneCollision(pVision->OurPlayer(i),ballLine)){
+        if(i!= goalie && checkOneCollision(pVision->ourPlayer(i),ballLine)){
             return true;
         }
     }

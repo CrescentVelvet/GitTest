@@ -48,19 +48,24 @@ public:
     // 全局更新接口
     void Update(const CVisionModule* pVision){
         static const int MAX_FRARED = 999;
+        static const double DEBUG_X = -Param::Field::PITCH_LENGTH / 12;
+        static const double DEBUG_TEXT_LENGTH = 200.0;
+        static const double DEBUG_X_STEP = Param::Field::PITCH_LENGTH / 30;
+        static const double DEBUG_Y = -Param::Field::PITCH_WIDTH / 10;
+        static const double DEBUG_Y_STEP = Param::Field::PITCH_WIDTH / 60;
         if(DEBUG_DEVICE){
-            GDebugEngine::Instance()->gui_debug_msg(CGeoPoint(-100,160),"INFRARED : ",COLOR_YELLOW);
-            GDebugEngine::Instance()->gui_debug_msg(CGeoPoint(-100,175),"FLATKICK : ",COLOR_YELLOW);
-            GDebugEngine::Instance()->gui_debug_msg(CGeoPoint(-100,190),"CHIPKICK : ",COLOR_YELLOW);
-            GDebugEngine::Instance()->gui_debug_msg(CGeoPoint(-100,205),"FRAREDON : ",COLOR_YELLOW);
-            GDebugEngine::Instance()->gui_debug_msg(CGeoPoint(-100,220),"FRAREDOFF: ",COLOR_YELLOW);
+            GDebugEngine::Instance()->gui_debug_msg(CGeoPoint(DEBUG_X, DEBUG_Y + DEBUG_Y_STEP * 0),"INFRARED : ",COLOR_YELLOW);
+            GDebugEngine::Instance()->gui_debug_msg(CGeoPoint(DEBUG_X, DEBUG_Y + DEBUG_Y_STEP * 1),"FLATKICK : ",COLOR_YELLOW);
+            GDebugEngine::Instance()->gui_debug_msg(CGeoPoint(DEBUG_X, DEBUG_Y + DEBUG_Y_STEP * 2),"CHIPKICK : ",COLOR_YELLOW);
+            GDebugEngine::Instance()->gui_debug_msg(CGeoPoint(DEBUG_X, DEBUG_Y + DEBUG_Y_STEP * 3),"FRAREDON : ",COLOR_YELLOW);
+            GDebugEngine::Instance()->gui_debug_msg(CGeoPoint(DEBUG_X, DEBUG_Y + DEBUG_Y_STEP * 4),"FRAREDOFF: ",COLOR_YELLOW);
             for(int i=0;i<Param::Field::MAX_PLAYER_NUM;i++){
                 robotMsg[i]._mutex.lock();
-                GDebugEngine::Instance()->gui_debug_msg(CGeoPoint(40*i+20,160),robotMsg[i].infrared  ? "1" : "0",COLOR_YELLOW);
-                GDebugEngine::Instance()->gui_debug_msg(CGeoPoint(40*i+20,175),robotMsg[i].flat_kick ? "1" : "0",COLOR_YELLOW);
-                GDebugEngine::Instance()->gui_debug_msg(CGeoPoint(40*i+20,190),robotMsg[i].chip_kick ? "1" : "0",COLOR_YELLOW);
-                GDebugEngine::Instance()->gui_debug_msg(CGeoPoint(40*i+20,205),QString::number(robotMsg[i].fraredOn).toLatin1(),COLOR_YELLOW);
-                GDebugEngine::Instance()->gui_debug_msg(CGeoPoint(40*i+20,220),QString::number(robotMsg[i].fraredOff).toLatin1(),COLOR_YELLOW);
+                GDebugEngine::Instance()->gui_debug_msg(CGeoPoint(DEBUG_TEXT_LENGTH + DEBUG_X_STEP * i, DEBUG_Y + DEBUG_Y_STEP * 0),robotMsg[i].infrared  ? "1" : "0",COLOR_YELLOW);
+                GDebugEngine::Instance()->gui_debug_msg(CGeoPoint(DEBUG_TEXT_LENGTH + DEBUG_X_STEP * i, DEBUG_Y + DEBUG_Y_STEP * 1),robotMsg[i].flat_kick ? "1" : "0",COLOR_YELLOW);
+                GDebugEngine::Instance()->gui_debug_msg(CGeoPoint(DEBUG_TEXT_LENGTH + DEBUG_X_STEP * i, DEBUG_Y + DEBUG_Y_STEP * 2),robotMsg[i].chip_kick ? "1" : "0",COLOR_YELLOW);
+                GDebugEngine::Instance()->gui_debug_msg(CGeoPoint(DEBUG_TEXT_LENGTH + DEBUG_X_STEP * i, DEBUG_Y + DEBUG_Y_STEP * 3),QString::number(robotMsg[i].fraredOn).toLatin1(),COLOR_YELLOW);
+                GDebugEngine::Instance()->gui_debug_msg(CGeoPoint(DEBUG_TEXT_LENGTH + DEBUG_X_STEP * i, DEBUG_Y + DEBUG_Y_STEP * 4),QString::number(robotMsg[i].fraredOff).toLatin1(),COLOR_YELLOW);
                 robotMsg[i]._mutex.unlock();
             }
         }
@@ -71,7 +76,7 @@ public:
             if(robotMsg[i].flat_kick > 0)
                 robotMsg[i].flat_kick--;
             if(robotMsg[i].infrared){
-                if(robotMsg[i].fraredOff != 0) robotMsg[i].dribblePoint = pVision->OurPlayer(i+1).Pos();
+                if(robotMsg[i].fraredOff != 0) robotMsg[i].dribblePoint = pVision->ourPlayer(i+1).Pos();
                 robotMsg[i].fraredOn = robotMsg[i].fraredOn >= MAX_FRARED ? MAX_FRARED : robotMsg[i].fraredOn + 1;
                 robotMsg[i].fraredOff = 0;
             }

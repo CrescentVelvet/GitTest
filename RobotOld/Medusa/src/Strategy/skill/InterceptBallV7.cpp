@@ -25,10 +25,10 @@ CInterceptBallV7::~CInterceptBallV7()
 
 void CInterceptBallV7::plan(const CVisionModule * pVision)
 {
-	const MobileVisionT& ball = pVision->Ball();
+	const MobileVisionT& ball = pVision->ball();
 	const int robotNum = task().executor;
 	const double finalAngel = task().player.angle;//角度
-	const PlayerVisionT& me = pVision->OurPlayer(robotNum);
+	const PlayerVisionT& me = pVision->ourPlayer(robotNum);
 	const int ifshoot = task().player.flag;//是否射门
 	double kickpower = task().player.kickpower;//射门力度
 	const bool ifChip = task().player.ischipkick;//true 代表chip， flase代表flat
@@ -181,9 +181,9 @@ CPlayerCommand* CInterceptBallV7::execute(const CVisionModule* pVision)
 
 int CInterceptBallV7::getStaticDir(const CVisionModule * pVision, int staticDir)
 {
-	const MobileVisionT& ball = pVision->Ball();
+	const MobileVisionT& ball = pVision->ball();
 	const int robotNum = task().executor;
-	const PlayerVisionT& me = pVision->OurPlayer(robotNum);
+	const PlayerVisionT& me = pVision->ourPlayer(robotNum);
 
 	double ball2MeDir = (me.Pos() - ball.Pos()).dir();
 	double finalDir = task().player.angle;
