@@ -4,32 +4,39 @@
 #include "messages_robocup_ssl_wrapper.pb.h"
 #include "messages_robocup_ssl_detection.pb.h"
 
+//修改cpp文件无需编译，直接运行
+
 AnalyEsthetics::AnalyEsthetics(){
     current_frame = 0;
     whole_frame = 0;
     e_ball.setX(-99999);
     e_ball.setY(-99999);
+    //初始化小车位置
     for(int i = 0; i < PARAM::ROBOTNUM; i++){
         blue_robot[i].setX(-99999);
         blue_robot[i].setY(-99999);
         yellow_robot[i].setX(-99999);
         yellow_robot[i].setY(-99999);
     }
+    //初始化分析参数
     teamname = nullptr;
     analy_status = ANALY::Halt;
     analy_holdMsg = ANALY::Null;
     analy_blueside = ANALY::LEFT;
     analy_yellowside = ANALY::RIGHT;
+    //初始化车数
     for(int i = 0; i < 6; i++){
         our_carnum[i] = 0;
         their_carnum[i] = 0;
     }
+    //初始化帧数
     for(int i = 0; i < 3; i++){
         real_ourframe[i] = 0;
         real_theirframe[i] = 0;
     }
 }
 
+// 分析log主函数
 void AnalyEsthetics::analy_frame(void * ptr, int size){
     static SSL_WrapperPacket packet;
 //    static int k;
@@ -39,6 +46,7 @@ void AnalyEsthetics::analy_frame(void * ptr, int size){
         int ballSize = detection.balls_size();
         int blueSize = detection.robots_blue_size();
         int yellowSize = detection.robots_yellow_size();
+        // 读取球坐标，若球数不为0，取读到的第一个球为球坐标
         if(ballSize != 0){
             const SSL_DetectionBall& ball = detection.balls(0);
             e_ball.setX(ball.x());
@@ -46,19 +54,23 @@ void AnalyEsthetics::analy_frame(void * ptr, int size){
         }
         else{
         }
+        // 读取蓝车坐标
         for(int i = 0; i < blueSize; i++){
             const SSL_DetectionRobot& robot = detection.robots_blue(i);
             blue_robot[i].setX(robot.x());
             blue_robot[i].setY(robot.y());
         }
+        // 读取黄车坐标
         for(int i = 0; i < yellowSize; i++){
             const SSL_DetectionRobot& robot = detection.robots_yellow(i);
             yellow_robot[i].setX(robot.x());
             yellow_robot[i].setY(robot.y());
         }
-
+        // 判断蓝车左边还是右边
         judgeSide(blue_robot, blueSize);
+        // 计算持球信息（即哪一方持球）
         cal_holdMsg();
+        // 计算我方敌方帧数车数等详细信息
         if(analy_status != ANALY::Halt || analy_status != ANALY::Stop){
             cal_extrovert();
         }
@@ -67,22 +79,32 @@ void AnalyEsthetics::analy_frame(void * ptr, int size){
     }
     else{
     }
+    // 读取到倒数第二帧时结束
     if((current_frame+1) == whole_frame){
         qDebug() << "";
+        // 帧数为0时要赋值1，车数均值等于车数除以己方帧数
         for(int i = 0; i < 6; i++) {
             if(real_ourframe[i/2] == 0){real_ourframe[i/2]=1;}
             if(real_theirframe[i/2] == 0){real_theirframe[i/2]=1;}
             our_carnum[i] = our_carnum[i] / real_ourframe[i/2];
             their_carnum[i] = their_carnum[i] / real_theirframe[i/2];
         }
-        //保存队伍进攻性
-        FILE *fp = fopen("../../log_data.txt","a");
-        fprintf(fp,"%f\t",our_carnum[0]);
-        fprintf(fp,"%s\n",teamname);
-        fprintf(fp,"%f\n",our_carnum[2]);
-        fprintf(fp,"%f\n",their_carnum[0]);
-        fprintf(fp,"%f\n",their_carnum[2]);
+        //将队伍进攻性参数输出为log_data.txt文本
+        FILE *fp = fopen("../../log_data000.txt","a");
+        // 检查文件是否打开
+        if( (fp = fopen("../../log_data000.txt","a")) == NULL){
+            printf("Fail to open file!\n");
+            exit(0);
+        }
+        // fprintf(fp,"%f\t",our_carnum[0]);
+        // fprintf(fp,"%s\n",teamname);
+        // fprintf(fp,"%f\n",our_carnum[2]);
+        // fprintf(fp,"%f\n",their_carnum[0]);
+        // fprintf(fp,"%f\n",their_carnum[2]);
+        fprintf(fp,"hahaha");
         fclose(fp);
+        //将GNN训练所需数据输出为gnn_data.txt文本
+
 //        qDebug() << "x1 =" << our_carnum[0];
 //        qDebug() << "y1 =" << our_carnum[2];
 //        qDebug() << "x2 =" << their_carnum[0];
@@ -97,6 +119,7 @@ void AnalyEsthetics::analy_frame(void * ptr, int size){
     }
 }
 
+// 读取帧数
 void AnalyEsthetics::readFrame(int frac, int fraw, QString name){
     current_frame = frac;
     whole_frame = fraw;
@@ -109,6 +132,7 @@ void AnalyEsthetics::readFrame(int frac, int fraw, QString name){
     }
 }
 
+// 读取裁判盒信息
 void AnalyEsthetics::readReferee(void * ptr, int size){
     static SSL_Referee referee;
     referee.ParseFromArray(ptr, size);
@@ -147,26 +171,30 @@ void AnalyEsthetics::readReferee(void * ptr, int size){
 //    }
 }
 
+// 判断点在球场内
 bool AnalyEsthetics::atPresent(CGeoPoint point){
     return (point.x() >= minX && point.x() <= maxX && point.y() >= minY && point.y() <= maxY);
 }
 
+// 极坐标转换直角坐标
 CVector AnalyEsthetics::Polar2Vector(double m,double angle){
     return CVector(m*std::cos(angle), m*std::sin(angle));
 }
 
+// 分析
 CGeoPoint AnalyEsthetics::analy_InterPoint(CGeoPoint enemy, CGeoPoint ball){
     double FRICTION = 80.0;//simmodule = 152
     static const double ballAcc = FRICTION / 2;//球减速度
-    constexpr double carAcc = 400;
-    constexpr double maxBallSpeed = 650;
-    double dist = (enemy - ball).mod();
+    constexpr double carAcc = 400;//车加速度
+    constexpr double maxBallSpeed = 650;//球最大速度
+    double dist = (enemy - ball).mod();//敌人到球的距离
     double delta = maxBallSpeed * maxBallSpeed + 2 * (carAcc - ballAcc) * dist;
     double t = (std::sqrt(delta) - maxBallSpeed) / (carAcc - ballAcc);
     double enemy2point = 0.5 * carAcc * t * t;
     return enemy + Polar2Vector(enemy2point, (ball - enemy).dir());
 }
 
+// 判断黄车与蓝车在左右哪边
 void AnalyEsthetics::judgeSide(CGeoPoint blue_car[], int blue_side){
     for(int i = 0; i < blue_side; i++){
         if(blue_car[i].x() < -ANALY::FIELD_WIDTH + ANALY::PENALTY_WIDTH
@@ -187,6 +215,7 @@ void AnalyEsthetics::judgeSide(CGeoPoint blue_car[], int blue_side){
 //    qDebug() << "error in judgeSide";
 }
 
+// 确定我方
 bool AnalyEsthetics::analy_marking(int team, int num){
     int side = ANALY::LEFT;
     int obside = ANALY::YELLOW;
@@ -234,6 +263,7 @@ bool AnalyEsthetics::analy_marking(int team, int num){
     return false;
 }
 
+// 确定我方防守车
 bool AnalyEsthetics::analy_guarding(int team, int num){
     int side = ANALY::LEFT;
     CGeoPoint me[PARAM::ROBOTNUM];
@@ -268,6 +298,7 @@ bool AnalyEsthetics::analy_guarding(int team, int num){
     return false;
 }
 
+// 确定我方持球车
 bool AnalyEsthetics::analy_goalkeeping(int team, int num){
     int side = ANALY::LEFT;
     CGeoPoint me[PARAM::ROBOTNUM];
@@ -306,6 +337,7 @@ bool AnalyEsthetics::analy_goalkeeping(int team, int num){
     return false;
 }
 
+// 计算
 int AnalyEsthetics::cal_nearest(int team){
     int side = ANALY::LEFT;
     CGeoPoint ball = e_ball;
@@ -344,6 +376,7 @@ int AnalyEsthetics::cal_nearest(int team){
     return nearest_num;
 }
 
+// 计算当前持球状态
 void AnalyEsthetics::cal_holdMsg(){
     int side = ANALY::LEFT;
     int obside = ANALY::YELLOW;
@@ -408,14 +441,16 @@ void AnalyEsthetics::cal_holdMsg(){
     }
 }
 
+// 计算
 void AnalyEsthetics::cal_extrovert(){
     int side = ANALY::LEFT;
-    int obside = ANALY::YELLOW;
+    int obside = ANALY::RIGHT;
     int team = ANALY::BLUE;
     int obteam = ANALY::YELLOW;
     CGeoPoint ball = e_ball;
     CGeoPoint me[PARAM::ROBOTNUM];
     CGeoPoint enemy[PARAM::ROBOTNUM];
+    // 若为蓝队，则将蓝车设置为我车，黄车设置为敌车
     if(team == ANALY::BLUE){
         for(int i = 0; i < PARAM::ROBOTNUM; i++){
             me[i] = blue_robot[i];
@@ -424,6 +459,7 @@ void AnalyEsthetics::cal_extrovert(){
         side = analy_blueside;
         obside = analy_yellowside;
     }
+    // 若为黄队，则将黄车设置为我车，蓝车设置为敌车
     else if(team == ANALY::YELLOW){
         for(int i = 0; i < PARAM::ROBOTNUM; i++){
             me[i] = yellow_robot[i];
@@ -438,41 +474,51 @@ void AnalyEsthetics::cal_extrovert(){
     if(me[0].x() > -99999 && me[0].y() > -99999
             && enemy[0].x() > -99999 && enemy[0].y() > -99999){
         for(int i = 0; me[i].x() > -99999 && me[i].y() > -99999; i++){
+            // 如果我方持球，增加我方帧数[0]
             if(analy_holdMsg == ANALY::OurHolding){
                 real_ourframe[0]++;
+                // 如果我方一车到球的距离小于持球距离，判断为持球，增加我方车数[0]
                 if(me[i].dist(ball) < ANALY::HAS_BALL){
                     our_carnum[0]++;
                 }
+                // 如果我方一车为盯人或后卫或守门，增加我方车数[1]
                 else if(analy_marking(team, i)
                         || analy_guarding(team, i)
                         || analy_goalkeeping(team, i)){
                     our_carnum[1]++;
                 }
+                // 其余我方一车，增加我方车数[0]
                 else{
                     our_carnum[0]++;
                 }
             }
+            // 如果敌方持球，增加我方帧数[1]
             else if(analy_holdMsg == ANALY::TheirHolding){
                 real_ourframe[1]++;
+                // 如果我方一车为盯人或后卫或守门，增加我方车数[3]
                 if(analy_marking(team, i)
                         || analy_guarding(team, i)
                         || analy_goalkeeping(team, i)){
                     our_carnum[3]++;
                 }
+                // 其余我方一车，增加我方车数[2]
                 else{
                     our_carnum[2]++;
                 }
             }
+            // 如果我方持球或敌方持球或双方持球，增加我方帧数[2]
             else if(analy_holdMsg == ANALY::Our
                     || analy_holdMsg == ANALY::Their
                     || analy_holdMsg == ANALY::Both
                     || analy_holdMsg == ANALY::BothHolding){
                 real_ourframe[2]++;
+                // 如果我方一车为盯人或后卫或守门，增加我方车数[5]
                 if(analy_marking(team, i)
                         || analy_guarding(team, i)
                         || analy_goalkeeping(team, i)){
                     our_carnum[5]++;
                 }
+                // 其余我方一车，增加我方车数[4]
                 else{
                     our_carnum[4]++;
                 }
