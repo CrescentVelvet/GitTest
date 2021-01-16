@@ -1,0 +1,13 @@
+syntax = "proto3";
+import "messages_robocup_ssl_detection.proto";
+
+message Log_Frame
+{
+    SSL_DetectionFrame frame = 1;
+    string refbox_cmd = 2;
+}
+
+message Refbox_Log
+{
+    repeated Log_Frame log = 1;
+}

@@ -1,0 +1,25 @@
+syntax = "proto3";
+
+package ZSS.Protocol;
+
+message TrainControl{
+	enum State{
+		READY = 0;
+		RUN = 1;
+		CALC_REWARD = 2;
+		RESET = 3;
+	}
+	State state = 1;
+}
+
+message MessiInput{
+	int32 enemy = 1;
+	float dist = 2;
+	float angel = 3;
+}
+
+message MessiOutput{
+	float vel_x = 1;
+	float vel_y = 2;
+	float vel_w = 3;
+}
