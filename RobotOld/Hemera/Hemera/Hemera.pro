@@ -45,7 +45,16 @@ SOURCES += main.cpp \
     share/proto/cpp/vision_detection.pb.cc \
     share/proto/cpp/zss_cmd.pb.cc \
     share/proto/cpp/zss_debug.pb.cc \
-    share/proto/cpp/zss_train.pb.cc
+    share/proto/cpp/zss_train.pb.cc \
+    converter/analy_log.cpp \
+    analyser/out_event.cpp \
+    analyser/utils.cpp \
+    analyser/param.cpp \
+    analyser/aimlesskick.cpp \
+    analyser/collision.cpp \
+    analyser/overspeed.cpp \
+    analyser/ref_event.cpp \
+    analyser/referee.cpp
 
 INCLUDEPATH += \
     $$PWD/../logreader \
@@ -105,7 +114,20 @@ HEADERS += \
     share/proto/cpp/vision_detection.pb.h \
     share/proto/cpp/zss_cmd.pb.h \
     share/proto/cpp/zss_debug.pb.h \
-    share/proto/cpp/zss_train.pb.h
+    share/proto/cpp/zss_train.pb.h \
+    converter/analy_log.h \
+    analyser/out_event.h \
+    analyser/utils.h \
+    analyser/param.h \
+    analyser/vmdata.h \
+    analyser/aimlesskick.h \
+    analyser/collision.h \
+    analyser/overspeed.h \
+    analyser/ref_event.h \
+    analyser/referee.h \
+    semaphore.h \
+    converter/semaphore.h \
+    converter/Semaphore.h
 
 # Third party library dir
 win32 {
