@@ -1,4 +1,4 @@
-syntax = "proto2";
+syntax = "proto3";
 
 import "ssl_game_controller_common.proto";
 import "ssl_game_event_2019.proto";
@@ -6,20 +6,20 @@ import "ssl_game_event_2019.proto";
 // AutoRefRegistration is the first message that a client must send to the controller to identify itself
 message AutoRefRegistration {
     // identifier is a unique name of the client
-    required string identifier = 1;
+    string identifier = 1;
     // signature can optionally be specified to enable secure communication
-    optional Signature signature = 2;
+    Signature signature = 2;
 }
 
 // AutoRefToController is the wrapper message for all subsequent messages from the autoRef to the controller
 message AutoRefToController {
     // signature can optionally be specified to enable secure communication
-    optional Signature signature = 1;
-    // game_event is an optional event that the autoRef detected during the game
-    optional GameEvent game_event = 2;
-    // auto_ref_message is an optional message that describes the current state or situation of the game/autoRef
+    Signature signature = 1;
+    // game_event is an event that the autoRef detected during the game
+    GameEvent game_event = 2;
+    // auto_ref_message is an message that describes the current state or situation of the game/autoRef
     // it is not and never was processed by the GC and is this marked deprecated
-    optional AutoRefMessage auto_ref_message = 3 [deprecated = true];
+    AutoRefMessage auto_ref_message = 3 [deprecated = true];
 }
 
 // ControllerToAutoRef is the wrapper message for all messages from controller to autoRef
@@ -47,9 +47,9 @@ message AutoRefMessage {
 
         message Violator {
             // the id of the violator
-            required BotId bot_id = 1;
+            BotId bot_id = 1;
             // the distance to the next valid position
-            required float distance = 2;
+            float distance = 2;
         }
     }
 }

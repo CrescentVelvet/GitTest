@@ -1,4 +1,4 @@
-syntax = "proto2";
+syntax = "proto3";
 
 import "ssl_game_event_2019.proto";
 import "ssl_game_controller_common.proto";
@@ -6,15 +6,15 @@ import "ssl_game_controller_common.proto";
 // a registration that must be send by teams and autoRefs to the controller as the very first message
 message TeamRegistration {
     // the exact team name as published by the game-controller
-    required string team_name = 1;
+    string team_name = 1;
     // signature can optionally be specified to enable secure communication
-    optional Signature signature = 2;
+    Signature signature = 2;
 }
 
 // wrapper for all messages from a team's computer to the controller
 message TeamToController {
     // signature can optionally be specified to enable secure communication
-    optional Signature signature = 1;
+    Signature signature = 1;
 
     oneof msg {
         // request a new desired keeper id
@@ -53,13 +53,13 @@ message ControllerToTeam {
 // information about the advantage choice that is offered to a team
 message AdvantageChoice {
     // the type of foul that occurred
-    required Foul foul = 1;
+    Foul foul = 1;
     // the bot crash event that was the source for this advantage choice
-    optional GameEvent.BotCrashUnique bot_crash_unique = 2;
+    GameEvent.BotCrashUnique bot_crash_unique = 2;
     // the bot push event that was the source for this advantage choice
-    optional GameEvent.BotPushedBot bot_pushed_bot = 3;
+    GameEvent.BotPushedBot bot_pushed_bot = 3;
     // the bot push event that was the source for this advantage choice
-    optional GameEvent.AttackerTouchedOpponentInDefenseArea attacker_touched_opponent_in_defense_area = 4;
+    GameEvent.AttackerTouchedOpponentInDefenseArea attacker_touched_opponent_in_defense_area = 4;
 
     enum Foul {
         // default value when not set
