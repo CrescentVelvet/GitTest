@@ -116,6 +116,7 @@ HEADERS += \
     share/proto/cpp/zss_debug.pb.h \
     share/proto/cpp/zss_train.pb.h \
     converter/analy_log.h \
+    converter/param.h \
     analyser/out_event.h \
     analyser/utils.h \
     analyser/param.h \

@@ -30,7 +30,7 @@ struct Ball {
     int cameraID;
     CVector velocity;
     Ball(): pos(), height(0) {}
-    bool  fill(double x, double y, double height = 0, int id = -1) {
+    bool fill(double x, double y, double height = 0, int id = -1) {
         this->pos.setX(x);
         this->pos.setY(y);
         this->height = height;
@@ -59,6 +59,7 @@ struct Robot {
     double angle;
     CVector velocity;
     double rotateVel;
+    bool valid;
     Robot(): id(-1) {}
     Robot(double _x, double _y, double _angle, double _id = -1) {
         pos.setX(_x);

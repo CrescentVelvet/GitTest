@@ -1,4 +1,4 @@
-#include <QCoreApplication>
+﻿#include <QCoreApplication>
 #include <iostream>
 #include <QCommandLineParser>
 #include <QDir>
@@ -6,12 +6,16 @@
 #include <QStringList>
 #include "parammanager.h"
 #include "visionmodule.h"
+#include "Windows.h"
 #include "log_slider.h"
 #include "logreader_global.h"
 #include "netreceive.h"
 #include "netreceive_global.h"
-#include "Windows.h"
 #include "staticparams.h"
+#include "netsend.h"
+#include "analyser/referee.h"
+#include "time.h"
+#include "analy_log.h"
 
 int main(int argc, char *argv[])
 {
@@ -45,7 +49,10 @@ int main(int argc, char *argv[])
 //    qDebug() << parser.value(outFileName);
 //    qDebug() << parser.value(cameraNumber);
 
+    // log读取
     VisionModule vm;
+    // log分析
+    AnalyEsthetics vv;
     if(parser.value(inputOption) == "nr") qDebug() << "Vision port is" << parser.value(visionPort).toInt();
     vm.vision_port = parser.value(visionPort).toInt();
 
@@ -75,7 +82,7 @@ int main(int argc, char *argv[])
             if (m_logfile.size() == 0)
                 qDebug() << "Can not find \"logclip.ini\" or \"logclip.ini\" is empty.";
             cycle1 = m_logfile.size();
-            for (int i=0 ;i<cycle1 ;i++) {
+            for (int i=0; i<cycle1; i++) {
                 QStringList allKeys = ZSS::LParamManager::instance()->allKeys(m_logfile[i]);
                 cycle2[i] = allKeys.size()/2;
                 for (int j=0; j<cycle2[i]; j++) {
@@ -116,7 +123,7 @@ int main(int argc, char *argv[])
                 if (vm.flag == 0) {
                     QString outFileName = m_logfile.at(i);
                     int a = outFileName.lastIndexOf("/");
-                        outFileName.replace(0, a+1, parser.value(outFileDir));
+                    outFileName.replace(0, a+1, parser.value(outFileDir));
                     if (parser.isSet(logFileClip)) {
                         QString strj = QString::number(j);
                         vm.lw_v.setFileName(outFileName.replace(".log.gz", "_bp_" + strj + ".zlog"));
@@ -128,6 +135,7 @@ int main(int argc, char *argv[])
                 }
                 int m_currentFrame = parser.isSet(logFileClip) ? startIndex[j] : 0;
                 int size = parser.isSet(logFileClip) ? duration[j] + m_currentFrame : ls.m_player.packets.size();
+                m_currentFrame = 0；
                 while (++m_currentFrame < size) {
                     Frame* packet = ls.m_player.packets.at(m_currentFrame);
                     if (packet->type == MESSAGE_BLANK) {
@@ -135,19 +143,27 @@ int main(int argc, char *argv[])
                     } else if (packet->type == MESSAGE_UNKNOWN) {
                         std::cout << "Error unsupported or corrupt packet found in log file!" << std::endl;
                     } else if (packet->type == MESSAGE_SSL_VISION_2010 || packet->type == MESSAGE_SSL_VISION_2014) {
-                        vm.parse((void *)packet->data.data(), packet->data.size());
+//                        vm.parse((void *)packet->data.data(), packet->data.size());
+//                        加入log分析
+                        vv.readFrame(m_currentFrame, size, m_logfile.at(i));
+                        vv.analy_frame((void *)packet->data.data(), packet->data.size());
                     } else if (packet->type == MESSAGE_SSL_REFBOX_2013) {
-                        if (vm.flag == 0) {
-                            QByteArray buffer;
-                            buffer.append(packet->time);
-                            buffer.append(packet->data.data());
-                            vm.lw_rfb.write(buffer);
+//                        if (vm.flag == 0) {
+//                            QByteArray buffer;
+//                            buffer.append(packet->time);
+//                            buffer.append(packet->data.data());
+//                            vm.lw_rfb.write(buffer);
                         }
+//                        加入log分析
+                        if (vm.flag == 0) {
+                            vv.readReferee(packet->data.data(), packet->data.size());
+                        }
+                        RefInfo::instance()->receiveRef((void*)packet->data.data() , packet->data.size());
                     } else {
                         std::cout << "Error unsupported message type found in log file!" << std::endl;
                     }
                     if (parser.value(outputOption) == "ns") {
-                        Sleep(1000/60);
+//                        Sleep(1000/60);
                     }
                     std::cout << m_currentFrame + 1 << "/" << size << "\r";
                 }
@@ -157,10 +173,10 @@ int main(int argc, char *argv[])
         qDebug() << "All tasks finished, please find results in" << parser.value(outFileDir);
     } else if (parser.value(inputOption) == "nr") {
         qDebug() << "The input device is netreceive.";
-        NetReceive nr;
+        NetReceive nr(parser.value(visionPort).toInt());
         if (vm.flag == 0) {
 //            此处有bug，无法将QString赋值给QString&，难以解决，注释掉
-//            vm.lw_v.setFileName(parser.value(outFileName));
+            vm.lw_v.setFileName(parser.value(outFileName));
 //            裁判盒信息
 //            vm.lw_rfb.setFileName(parser.value(outFileName).replace(".zlog", "_rfb.zlog"));
             std::cout << "I cannot solve this problem." << "\r";
@@ -173,7 +189,7 @@ int main(int argc, char *argv[])
                 vm.parse((void*)datagram.data(), datagram.size());
                 std::cout << "Some data was gotten from UDP." << "\r";
             }
-            Sleep(5);
+            QThread::msleep(5);
             std::cout << "Nothing from UDP." << "\r";
         }
     } else {

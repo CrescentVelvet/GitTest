@@ -4,7 +4,7 @@
 #include "messages_robocup_ssl_wrapper.pb.h"
 #include "messages_robocup_ssl_detection.pb.h"
 
-//修改cpp文件无需编译，直接运行
+//修改cpp文件需要编译，再运行
 
 AnalyEsthetics::AnalyEsthetics(){
     current_frame = 0;
