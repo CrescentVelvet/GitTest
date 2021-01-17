@@ -4,6 +4,8 @@
 #include <QDir>
 #include <QFileInfoList>
 #include <QStringList>
+#include <QElapsedTimer>
+#include <QThread>
 #include "parammanager.h"
 #include "visionmodule.h"
 #include "Windows.h"
@@ -135,7 +137,7 @@ int main(int argc, char *argv[])
                 }
                 int m_currentFrame = parser.isSet(logFileClip) ? startIndex[j] : 0;
                 int size = parser.isSet(logFileClip) ? duration[j] + m_currentFrame : ls.m_player.packets.size();
-                m_currentFrame = 0；
+                m_currentFrame = 0;
                 while (++m_currentFrame < size) {
                     Frame* packet = ls.m_player.packets.at(m_currentFrame);
                     if (packet->type == MESSAGE_BLANK) {
@@ -153,7 +155,7 @@ int main(int argc, char *argv[])
 //                            buffer.append(packet->time);
 //                            buffer.append(packet->data.data());
 //                            vm.lw_rfb.write(buffer);
-                        }
+//                        }
 //                        加入log分析
                         if (vm.flag == 0) {
                             vv.readReferee(packet->data.data(), packet->data.size());
@@ -164,6 +166,7 @@ int main(int argc, char *argv[])
                     }
                     if (parser.value(outputOption) == "ns") {
 //                        Sleep(1000/60);
+                        QThread::msleep(1000/60);
                     }
                     std::cout << m_currentFrame + 1 << "/" << size << "\r";
                 }
@@ -173,10 +176,11 @@ int main(int argc, char *argv[])
         qDebug() << "All tasks finished, please find results in" << parser.value(outFileDir);
     } else if (parser.value(inputOption) == "nr") {
         qDebug() << "The input device is netreceive.";
-        NetReceive nr(parser.value(visionPort).toInt());
+//        NetReceive nr(parser.value(visionPort).toInt());
+        NetReceive nr;
         if (vm.flag == 0) {
 //            此处有bug，无法将QString赋值给QString&，难以解决，注释掉
-            vm.lw_v.setFileName(parser.value(outFileName));
+//            vm.lw_v.setFileName(parser.value(outFileName));
 //            裁判盒信息
 //            vm.lw_rfb.setFileName(parser.value(outFileName).replace(".zlog", "_rfb.zlog"));
             std::cout << "I cannot solve this problem." << "\r";
@@ -189,6 +193,7 @@ int main(int argc, char *argv[])
                 vm.parse((void*)datagram.data(), datagram.size());
                 std::cout << "Some data was gotten from UDP." << "\r";
             }
+//            Sleep(5);
             QThread::msleep(5);
             std::cout << "Nothing from UDP." << "\r";
         }
