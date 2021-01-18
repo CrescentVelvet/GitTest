@@ -47,6 +47,7 @@ private:
     int cal_nearest(int team);
     void cal_holdMsg();
     void cal_extrovert();
+    void gnn_dataAnaly();
     int current_frame;
     int whole_frame;
     int minX = -ANALY::FIELD_WIDTH/2;

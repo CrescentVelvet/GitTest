@@ -4,96 +4,121 @@
 #include "messages_robocup_ssl_wrapper.pb.h"
 #include "messages_robocup_ssl_detection.pb.h"
 
-//修改cpp文件需要编译，再运行
+//修改pro文件后qmake
+//修改cpp文件后构建项目
+//再运行.\Hemera\bin\Hemera.exe -i=lr --if=E:\\ProgramFilesBig\HeraLOG\2019-07-03_14-09_ER-Force-vs-TIGERs_Mannheim.log -o=ns
 
 AnalyEsthetics::AnalyEsthetics(){
+//    初始化当前帧与全部帧数
     current_frame = 0;
     whole_frame = 0;
+//    初始化小球位置
     e_ball.setX(-99999);
     e_ball.setY(-99999);
-    //初始化小车位置
-    for(int i = 0; i < PARAM::ROBOTNUM; i++){
+//    初始化小车位置
+    for(int i = 0; i < PARAM::ROBOTNUM; i++)
+    {
         blue_robot[i].setX(-99999);
         blue_robot[i].setY(-99999);
         yellow_robot[i].setX(-99999);
         yellow_robot[i].setY(-99999);
     }
-    //初始化分析参数
+//    初始化小车数量
+    for(int i = 0; i < 6; i++)
+    {
+        our_carnum[i] = 0;
+        their_carnum[i] = 0;
+    }
+//    初始化分析参数
     teamname = nullptr;
     analy_status = ANALY::Halt;
     analy_holdMsg = ANALY::Null;
     analy_blueside = ANALY::LEFT;
     analy_yellowside = ANALY::RIGHT;
-    //初始化车数
-    for(int i = 0; i < 6; i++){
-        our_carnum[i] = 0;
-        their_carnum[i] = 0;
-    }
-    //初始化帧数
-    for(int i = 0; i < 3; i++){
+//    初始化我方与敌方的帧数
+    for(int i = 0; i < 3; i++)
+    {
         real_ourframe[i] = 0;
         real_theirframe[i] = 0;
     }
 }
 
-// 分析log主函数
+//分析log主函数
 void AnalyEsthetics::analy_frame(void * ptr, int size){
     static SSL_WrapperPacket packet;
-//    static int k;
     packet.ParseFromArray(ptr, size);
-    if(packet.has_detection()){
+//    检测到包信息，进行分析
+    if(packet.has_detection())
+    {
         const SSL_DetectionFrame& detection = packet.detection();
+//        读取球数量，黄车数量，蓝车数量
         int ballSize = detection.balls_size();
         int blueSize = detection.robots_blue_size();
         int yellowSize = detection.robots_yellow_size();
-        // 读取球坐标，若球数不为0，取读到的第一个球为球坐标
-        if(ballSize != 0){
+//        读取球坐标，若球数不为0，取读到的第一个球为球坐标
+        if(ballSize != 0)
+        {
             const SSL_DetectionBall& ball = detection.balls(0);
             e_ball.setX(ball.x());
             e_ball.setY(ball.y());
         }
-        else{
+        else
+        {
+//            qDebug() << QString::fromLocal8Bit("球数为0。");
         }
-        // 读取蓝车坐标
-        for(int i = 0; i < blueSize; i++){
+//        读取蓝车坐标
+        for(int i = 0; i < blueSize; i++)
+        {
             const SSL_DetectionRobot& robot = detection.robots_blue(i);
             blue_robot[i].setX(robot.x());
             blue_robot[i].setY(robot.y());
         }
-        // 读取黄车坐标
-        for(int i = 0; i < yellowSize; i++){
+//        读取黄车坐标
+        for(int i = 0; i < yellowSize; i++)
+        {
             const SSL_DetectionRobot& robot = detection.robots_yellow(i);
             yellow_robot[i].setX(robot.x());
             yellow_robot[i].setY(robot.y());
         }
-        // 判断蓝车左边还是右边
+//        判断蓝车左边还是右边
         judgeSide(blue_robot, blueSize);
-        // 计算持球信息（即哪一方持球）
+//        计算持球信息（即哪一方持球）
         cal_holdMsg();
-        // 计算我方敌方帧数车数等详细信息
-        if(analy_status != ANALY::Halt || analy_status != ANALY::Stop){
-            cal_extrovert();
+//        当前状态不是暂停与停止时，开始计算
+        if(analy_status != ANALY::Halt || analy_status != ANALY::Stop)
+        {
+//            计算我方敌方帧数车数等详细信息
+//            cal_extrovert();
+//            计算GNN所需要的图信息
+            gnn_dataAnaly();
+
         }
-//        k++;
-//        if(k%10000==0){qDebug()<<k;}
     }
-    else{
+    else
+    {
+//        qDebug() << QString::fromLocal8Bit("没有包信息。");
     }
-    // 读取到倒数第二帧时结束
-    if((current_frame+1) == whole_frame){
-        qDebug() << "";
-        // 帧数为0时要赋值1，车数均值等于车数除以己方帧数
-        for(int i = 0; i < 6; i++) {
-            if(real_ourframe[i/2] == 0){real_ourframe[i/2]=1;}
-            if(real_theirframe[i/2] == 0){real_theirframe[i/2]=1;}
-            our_carnum[i] = our_carnum[i] / real_ourframe[i/2];
-            their_carnum[i] = their_carnum[i] / real_theirframe[i/2];
-        }
-        //将队伍进攻性参数输出为log_data.txt文本
-        FILE *fp = fopen("../../log_data000.txt","a");
-        // 检查文件是否打开
-        if( (fp = fopen("../../log_data000.txt","a")) == NULL){
-            printf("Fail to open file!\n");
+//    读取到倒数第二帧时结束
+    if((current_frame+1) == whole_frame)
+    {
+        qDebug() << QString::fromLocal8Bit("---数据读取完毕---");
+//        将车数除以帧数求得比例，以表示进攻性
+//        for(int i = 0; i < 6; i++)
+//        {
+////            帧数为0时要赋值1
+//            if(real_ourframe[i/2] == 0){real_ourframe[i/2]=1;}
+//            if(real_theirframe[i/2] == 0){real_theirframe[i/2]=1;}
+////            车数均值等于车数除以己方帧数
+//            our_carnum[i] = our_carnum[i] / real_ourframe[i/2];
+//            their_carnum[i] = their_carnum[i] / real_theirframe[i/2];
+//        }
+//        将队伍进攻性参数输出为log_data.txt文本
+//        将寻找到的GNN训练集数据输出为log_gnn_data.txt文本
+        FILE *fp = fopen("../../log_gnn_data.txt","a");
+//        检查文件是否打开
+        if((fp = fopen("../../log_gnn_data.txt","a")) == NULL)
+        {
+            qDebug() << QString::fromLocal8Bit("打开文件失败。");
             exit(0);
         }
         // fprintf(fp,"%f\t",our_carnum[0]);
@@ -103,7 +128,7 @@ void AnalyEsthetics::analy_frame(void * ptr, int size){
         // fprintf(fp,"%f\n",their_carnum[2]);
         fprintf(fp,"hahaha");
         fclose(fp);
-        //将GNN训练所需数据输出为gnn_data.txt文本
+//        将GNN训练所需数据输出为gnn_data.txt文本
 
 //        qDebug() << "x1 =" << our_carnum[0];
 //        qDebug() << "y1 =" << our_carnum[2];
@@ -115,11 +140,11 @@ void AnalyEsthetics::analy_frame(void * ptr, int size){
 //        qDebug() << "our defense in theirball =" << our_carnum[3] << "| their defense in ourball   =" << their_carnum[3];
 //        qDebug() << "our attack in bothball   =" << our_carnum[4] << "| their attack in bothball   =" << their_carnum[4];
 //        qDebug() << "our defense in bothball  =" << our_carnum[5] << "| their defense in bothball  =" << their_carnum[5];
-        qDebug() << "~~~analy~finish~~~";
+        qDebug() << QString::fromLocal8Bit("~~~数据分析完毕~~~");
     }
 }
 
-// 读取帧数
+//读取帧数
 void AnalyEsthetics::readFrame(int frac, int fraw, QString name){
     current_frame = frac;
     whole_frame = fraw;
@@ -132,7 +157,7 @@ void AnalyEsthetics::readFrame(int frac, int fraw, QString name){
     }
 }
 
-// 读取裁判盒信息
+//读取裁判盒信息
 void AnalyEsthetics::readReferee(void * ptr, int size){
     static SSL_Referee referee;
     referee.ParseFromArray(ptr, size);
@@ -171,17 +196,17 @@ void AnalyEsthetics::readReferee(void * ptr, int size){
 //    }
 }
 
-// 判断点在球场内
+//判断点在球场内
 bool AnalyEsthetics::atPresent(CGeoPoint point){
     return (point.x() >= minX && point.x() <= maxX && point.y() >= minY && point.y() <= maxY);
 }
 
-// 极坐标转换直角坐标
+//极坐标转换直角坐标
 CVector AnalyEsthetics::Polar2Vector(double m,double angle){
     return CVector(m*std::cos(angle), m*std::sin(angle));
 }
 
-// 分析
+//分析
 CGeoPoint AnalyEsthetics::analy_InterPoint(CGeoPoint enemy, CGeoPoint ball){
     double FRICTION = 80.0;//simmodule = 152
     static const double ballAcc = FRICTION / 2;//球减速度
@@ -194,7 +219,7 @@ CGeoPoint AnalyEsthetics::analy_InterPoint(CGeoPoint enemy, CGeoPoint ball){
     return enemy + Polar2Vector(enemy2point, (ball - enemy).dir());
 }
 
-// 判断黄车与蓝车在左右哪边
+//判断黄车与蓝车在左右哪边
 void AnalyEsthetics::judgeSide(CGeoPoint blue_car[], int blue_side){
     for(int i = 0; i < blue_side; i++){
         if(blue_car[i].x() < -ANALY::FIELD_WIDTH + ANALY::PENALTY_WIDTH
@@ -215,7 +240,7 @@ void AnalyEsthetics::judgeSide(CGeoPoint blue_car[], int blue_side){
 //    qDebug() << "error in judgeSide";
 }
 
-// 确定我方
+//确定我方
 bool AnalyEsthetics::analy_marking(int team, int num){
     int side = ANALY::LEFT;
     int obside = ANALY::YELLOW;
@@ -263,7 +288,7 @@ bool AnalyEsthetics::analy_marking(int team, int num){
     return false;
 }
 
-// 确定我方防守车
+//确定我方防守车
 bool AnalyEsthetics::analy_guarding(int team, int num){
     int side = ANALY::LEFT;
     CGeoPoint me[PARAM::ROBOTNUM];
@@ -298,7 +323,7 @@ bool AnalyEsthetics::analy_guarding(int team, int num){
     return false;
 }
 
-// 确定我方持球车
+//确定我方持球车
 bool AnalyEsthetics::analy_goalkeeping(int team, int num){
     int side = ANALY::LEFT;
     CGeoPoint me[PARAM::ROBOTNUM];
@@ -318,10 +343,12 @@ bool AnalyEsthetics::analy_goalkeeping(int team, int num){
         qDebug() << "error in analy_goalkeeping : initialize";
         return false;
     }
-    if(me[num].x() > -99999 && me[num].y() > -99999){
+    if(me[num].x() > -99999 && me[num].y() > -99999)
+    {
         if(side == ANALY::LEFT
                 && me[num].x() < -ANALY::FIELD_WIDTH/2 + ANALY::PENALTY_WIDTH
-                && std::fabs(me[num].y()) < ANALY::PENALTY_LENGTH/2){
+                && std::fabs(me[num].y()) < ANALY::PENALTY_LENGTH/2)
+        {
             return true;
         }
         else if(side == ANALY::RIGHT
@@ -330,53 +357,63 @@ bool AnalyEsthetics::analy_goalkeeping(int team, int num){
             return true;
         }
     }
-    else{
+    else
+    {
         qDebug() << "error in analy_goalkeeping : analysis";
         return false;
     }
     return false;
 }
 
-// 计算
+//计算
 int AnalyEsthetics::cal_nearest(int team){
     int side = ANALY::LEFT;
     CGeoPoint ball = e_ball;
     CGeoPoint me[PARAM::ROBOTNUM];
-    if(team == ANALY::BLUE){
-        for(int i = 0; i < PARAM::ROBOTNUM; i++){
+    if(team == ANALY::BLUE)
+    {
+        for(int i = 0; i < PARAM::ROBOTNUM; i++)
+        {
             me[i] = blue_robot[i];
         }
         side = analy_blueside;
     }
-    else if(team == ANALY::YELLOW){
-        for(int i = 0; i < PARAM::ROBOTNUM; i++){
+    else if(team == ANALY::YELLOW)
+    {
+        for(int i = 0; i < PARAM::ROBOTNUM; i++)
+        {
             me[i] = yellow_robot[i];
         }
         side = analy_yellowside;
     }
-    else{
+    else
+    {
         qDebug() << "error in cal_nearest : initialize";
         return -1;
     }
     int nearest_num = 0;
     double nearest_dis = me[nearest_num].dist(ball);
     double temp_nearest_dis;
-    if(me[0].x() > -99999 && me[0].y() > -99999){
-        for(int i = 0; me[i].x() < -99999; i++){
+    if(me[0].x() > -99999 && me[0].y() > -99999)
+    {
+        for(int i = 0; me[i].x() < -99999; i++)
+        {
             temp_nearest_dis = me[i].dist(ball);
-            if(temp_nearest_dis < nearest_dis){
+            if(temp_nearest_dis < nearest_dis)
+            {
                 nearest_num = i;
                 nearest_dis = temp_nearest_dis;
             }
         }
     }
-    else{
+    else
+    {
         qDebug() << "error in cal_nearest : analysis";
     }
     return nearest_num;
 }
 
-// 计算当前持球状态
+//计算当前持球状态
 void AnalyEsthetics::cal_holdMsg(){
     int side = ANALY::LEFT;
     int obside = ANALY::YELLOW;
@@ -386,62 +423,75 @@ void AnalyEsthetics::cal_holdMsg(){
     CGeoPoint me[PARAM::ROBOTNUM];
     CGeoPoint enemy[PARAM::ROBOTNUM];
     if(team == ANALY::BLUE){
-        for(int i = 0; i < PARAM::ROBOTNUM; i++){
+        for(int i = 0; i < PARAM::ROBOTNUM; i++)
+        {
             me[i] = blue_robot[i];
             enemy[i] = yellow_robot[i];
         }
         side = analy_blueside;
         obside = analy_yellowside;
     }
-    else if(team == ANALY::YELLOW){
-        for(int i = 0; i < PARAM::ROBOTNUM; i++){
+    else if(team == ANALY::YELLOW)
+    {
+        for(int i = 0; i < PARAM::ROBOTNUM; i++)
+        {
             me[i] = yellow_robot[i];
             enemy[i] = blue_robot[i];
         }
         side = analy_yellowside;
         obside = analy_blueside;
     }
-    else{
+    else
+    {
         qDebug() << "error in cal_holdMsg : initialize";
     }
     if(me[0].x() > -99999 && me[0].y() > -99999
-            && enemy[0].x() > -99999 && enemy[0].y() > -99999){
+            && enemy[0].x() > -99999 && enemy[0].y() > -99999)
+    {
         double our_nearest = me[cal_nearest(team)].dist(ball);
         double their_nearest = enemy[cal_nearest(opteam)].dist(ball);
-        if(our_nearest < 150 && their_nearest > 200){
+        if(our_nearest < 150 && their_nearest > 200)
+        {
             analy_holdMsg = ANALY::OurHolding;
 //            qDebug() << "OurHolding";
         }
-        else if(our_nearest > 200 && their_nearest < 150){
+        else if(our_nearest > 200 && their_nearest < 150)
+        {
             analy_holdMsg = ANALY::TheirHolding;
 //            qDebug() << "TheirHolding";
         }
-        else if(our_nearest < 150 || their_nearest < 150){
+        else if(our_nearest < 150 || their_nearest < 150)
+        {
             analy_holdMsg = ANALY::BothHolding;
 //            qDebug() << "BothHolding";
         }
-        else{
-            if(our_nearest - their_nearest < -200){
+        else
+        {
+            if(our_nearest - their_nearest < -200)
+            {
                 analy_holdMsg = ANALY::Our;
 //                qDebug() << "Our";
             }
-            else if(our_nearest - their_nearest > 200){
+            else if(our_nearest - their_nearest > 200)
+            {
                 analy_holdMsg = ANALY::Their;
 //                qDebug() << "Their";
             }
-            else{
+            else
+            {
                 analy_holdMsg = ANALY::Both;
 //                qDebug() << "Both";
             }
         }
     }
-    else{
+    else
+    {
         analy_holdMsg = ANALY::Null;
         qDebug() << "error in cal_holdMsg : analysis";
     }
 }
 
-// 计算
+//计算我方敌方帧数车数等详细信息
 void AnalyEsthetics::cal_extrovert(){
     int side = ANALY::LEFT;
     int obside = ANALY::RIGHT;
@@ -450,127 +500,212 @@ void AnalyEsthetics::cal_extrovert(){
     CGeoPoint ball = e_ball;
     CGeoPoint me[PARAM::ROBOTNUM];
     CGeoPoint enemy[PARAM::ROBOTNUM];
-    // 若为蓝队，则将蓝车设置为我车，黄车设置为敌车
-    if(team == ANALY::BLUE){
-        for(int i = 0; i < PARAM::ROBOTNUM; i++){
+//    若为蓝队，则将蓝车设置为我车，黄车设置为敌车
+    if(team == ANALY::BLUE)
+    {
+        for(int i = 0; i < PARAM::ROBOTNUM; i++)
+        {
             me[i] = blue_robot[i];
             enemy[i] = yellow_robot[i];
         }
         side = analy_blueside;
         obside = analy_yellowside;
     }
-    // 若为黄队，则将黄车设置为我车，蓝车设置为敌车
-    else if(team == ANALY::YELLOW){
-        for(int i = 0; i < PARAM::ROBOTNUM; i++){
+//    若为黄队，则将黄车设置为我车，蓝车设置为敌车
+    else if(team == ANALY::YELLOW)
+    {
+        for(int i = 0; i < PARAM::ROBOTNUM; i++)
+        {
             me[i] = yellow_robot[i];
             enemy[i] = blue_robot[i];
         }
         side = analy_yellowside;
         obside = analy_blueside;
     }
-    else{
+    else
+    {
         qDebug() << "error in cal_extrovert : initialize";
     }
     if(me[0].x() > -99999 && me[0].y() > -99999
-            && enemy[0].x() > -99999 && enemy[0].y() > -99999){
-        for(int i = 0; me[i].x() > -99999 && me[i].y() > -99999; i++){
-            // 如果我方持球，增加我方帧数[0]
-            if(analy_holdMsg == ANALY::OurHolding){
+            && enemy[0].x() > -99999 && enemy[0].y() > -99999)
+    {
+        for(int i = 0; me[i].x() > -99999 && me[i].y() > -99999; i++)
+        {
+//            如果我方持球，增加我方帧数[0]
+            if(analy_holdMsg == ANALY::OurHolding)
+            {
                 real_ourframe[0]++;
-                // 如果我方一车到球的距离小于持球距离，判断为持球，增加我方车数[0]
-                if(me[i].dist(ball) < ANALY::HAS_BALL){
+//                如果我方一车到球的距离小于持球距离，判断为持球，增加我方车数[0]
+                if(me[i].dist(ball) < ANALY::HAS_BALL)
+                {
                     our_carnum[0]++;
                 }
-                // 如果我方一车为盯人或后卫或守门，增加我方车数[1]
+//                如果我方一车为盯人或后卫或守门，增加我方车数[1]
                 else if(analy_marking(team, i)
                         || analy_guarding(team, i)
-                        || analy_goalkeeping(team, i)){
+                        || analy_goalkeeping(team, i))
+                {
                     our_carnum[1]++;
                 }
-                // 其余我方一车，增加我方车数[0]
-                else{
+//                其余我方一车，增加我方车数[0]
+                else
+                {
                     our_carnum[0]++;
                 }
             }
-            // 如果敌方持球，增加我方帧数[1]
-            else if(analy_holdMsg == ANALY::TheirHolding){
+//            如果敌方持球，增加我方帧数[1]
+            else if(analy_holdMsg == ANALY::TheirHolding)
+            {
                 real_ourframe[1]++;
-                // 如果我方一车为盯人或后卫或守门，增加我方车数[3]
+//                如果我方一车为盯人或后卫或守门，增加我方车数[3]
                 if(analy_marking(team, i)
                         || analy_guarding(team, i)
-                        || analy_goalkeeping(team, i)){
+                        || analy_goalkeeping(team, i))
+                {
                     our_carnum[3]++;
                 }
-                // 其余我方一车，增加我方车数[2]
-                else{
+//                其余我方一车，增加我方车数[2]
+                else
+                {
                     our_carnum[2]++;
                 }
             }
-            // 如果我方持球或敌方持球或双方持球，增加我方帧数[2]
+//            如果我方持球或敌方持球或双方持球，增加我方帧数[2]
             else if(analy_holdMsg == ANALY::Our
                     || analy_holdMsg == ANALY::Their
                     || analy_holdMsg == ANALY::Both
-                    || analy_holdMsg == ANALY::BothHolding){
+                    || analy_holdMsg == ANALY::BothHolding)
+            {
                 real_ourframe[2]++;
-                // 如果我方一车为盯人或后卫或守门，增加我方车数[5]
+//                如果我方一车为盯人或后卫或守门，增加我方车数[5]
                 if(analy_marking(team, i)
                         || analy_guarding(team, i)
-                        || analy_goalkeeping(team, i)){
+                        || analy_goalkeeping(team, i))
+                {
                     our_carnum[5]++;
                 }
-                // 其余我方一车，增加我方车数[4]
-                else{
+//                其余我方一车，增加我方车数[4]
+                else
+                {
                     our_carnum[4]++;
                 }
             }
-            else{
+            else
+            {
             }
         }
-        for(int i = 0; enemy[i].x() > -99999 && enemy[i].y() > -99999; i++){
-            if(analy_holdMsg == ANALY::TheirHolding){
+        for(int i = 0; enemy[i].x() > -99999 && enemy[i].y() > -99999; i++)
+        {
+            if(analy_holdMsg == ANALY::TheirHolding)
+            {
                 real_theirframe[0]++;
-                if(enemy[i].dist(ball) < ANALY::HAS_BALL){
+                if(enemy[i].dist(ball) < ANALY::HAS_BALL)
+                {
                     their_carnum[0]++;
                 }
                 else if(analy_marking(obteam, i)
                         || analy_guarding(obteam, i)
-                        || analy_goalkeeping(obteam, i)){
+                        || analy_goalkeeping(obteam, i))
+                {
                     their_carnum[1]++;
                 }
-                else{
+                else
+                {
                     their_carnum[0]++;
                 }
             }
-            else if(analy_holdMsg == ANALY::OurHolding){
+            else if(analy_holdMsg == ANALY::OurHolding)
+            {
                 real_theirframe[1]++;
                 if(analy_marking(obteam, i)
                         || analy_guarding(obteam, i)
-                        || analy_goalkeeping(obteam, i)){
+                        || analy_goalkeeping(obteam, i))
+                {
                     their_carnum[3]++;
                 }
-                else{
+                else
+                {
                     their_carnum[2]++;
                 }
             }
             else if(analy_holdMsg == ANALY::Our
                     || analy_holdMsg == ANALY::Their
                     || analy_holdMsg == ANALY::Both
-                    || analy_holdMsg == ANALY::BothHolding){
+                    || analy_holdMsg == ANALY::BothHolding)
+            {
                 real_theirframe[2]++;
                 if(analy_marking(obteam, i)
                         || analy_guarding(obteam, i)
-                        || analy_goalkeeping(obteam, i)){
+                        || analy_goalkeeping(obteam, i))
+                {
                     their_carnum[5]++;
                 }
-                else{
+                else
+                {
                     their_carnum[4]++;
                 }
             }
-            else{
+            else
+            {
             }
         }
     }
-    else{
+    else
+    {
         qDebug() << "error in cal_extrovert : analysis";
+    }
+}
+
+
+//计算GNN所需要的图信息
+void AnalyEsthetics::cal_extrovert(){
+    int side = ANALY::LEFT;
+    int obside = ANALY::RIGHT;
+    int team = ANALY::BLUE;
+    int obteam = ANALY::YELLOW;
+    CGeoPoint ball = e_ball;
+    CGeoPoint me[PARAM::ROBOTNUM];
+    CGeoPoint enemy[PARAM::ROBOTNUM];
+//    若为蓝队，则将蓝车设置为我车，黄车设置为敌车
+    if(team == ANALY::BLUE)
+    {
+        for(int i = 0; i < PARAM::ROBOTNUM; i++)
+        {
+            me[i] = blue_robot[i];
+            enemy[i] = yellow_robot[i];
+        }
+        side = analy_blueside;
+        obside = analy_yellowside;
+    }
+//    若为黄队，则将黄车设置为我车，蓝车设置为敌车
+    else if(team == ANALY::YELLOW)
+    {
+        for(int i = 0; i < PARAM::ROBOTNUM; i++)
+        {
+            me[i] = yellow_robot[i];
+            enemy[i] = blue_robot[i];
+        }
+        side = analy_yellowside;
+        obside = analy_blueside;
+    }
+    else
+    {
+        qDebug() << QString::fromLocal8Bit("错误发生在cal_extrovert函数的初始化中。");
+    }
+    if(me[0].x() > -99999 && me[0].y() > -99999
+            && enemy[0].x() > -99999 && enemy[0].y() > -99999)
+    {
+        for(int i = 0; me[i].x() > -99999 && me[i].y() > -99999; i++)
+        {
+
+        }
+        for(int i = 0; enemy[i].x() > -99999 && enemy[i].y() > -99999; i++)
+        {
+
+        }
+    }
+    else
+    {
+        qDebug() << QString::fromLocal8Bit("错误发生在cal_extrovert函数的分析中。");
     }
 }
