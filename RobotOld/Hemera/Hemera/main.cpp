@@ -141,13 +141,14 @@ int main(int argc, char *argv[])
             QString m_realLogfile = m_logfile.at(i);
 //            将文件路径恢复正常
             m_realLogfile.replace("...", "/");
+            qDebug() << QString::fromLocal8Bit(("文件路径为：")) << m_logfile.at(i);
             if (ls.loadFile(m_realLogfile))
             {
-                qDebug() << QString::fromLocal8Bit("读取成功！已读取文件：") << m_logfile.at(i);
+                qDebug() << QString::fromLocal8Bit("main程序读取文件成功！已读取文件：") << m_logfile.at(i);
             }
             else
             {
-                qDebug() << QString::fromLocal8Bit("读取失败！请检查文件名和目录。");
+                qDebug() << QString::fromLocal8Bit("main程序读取文件失败！请检查文件名和目录。");
                 break;
             }
 //            剪切后j从cycle2[i]开始

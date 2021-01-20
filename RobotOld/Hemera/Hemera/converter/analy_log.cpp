@@ -89,7 +89,7 @@ void AnalyEsthetics::analy_frame(void * ptr, int size){
         {
 //            计算我方敌方帧数车数等详细信息
 //            cal_extrovert();
-//            计算GNN所需要的图信息
+//            计算GNN所需要的图神经网络信息
             gnn_dataAnaly();
 
         }
@@ -114,20 +114,20 @@ void AnalyEsthetics::analy_frame(void * ptr, int size){
 //        }
 //        将队伍进攻性参数输出为log_data.txt文本
 //        将寻找到的GNN训练集数据输出为log_gnn_data.txt文本
-        FILE *fp = fopen("../../log_gnn_data.txt","a");
+//        FILE *fp = fopen("../../log_data.txt","a");
 //        检查文件是否打开
-        if((fp = fopen("../../log_gnn_data.txt","a")) == NULL)
-        {
-            qDebug() << QString::fromLocal8Bit("打开文件失败。");
-            exit(0);
-        }
+//        if((fp = fopen("../../log_data.txt","a")) == NULL)
+//        {
+//            qDebug() << QString::fromLocal8Bit("打开文件失败。");
+//            exit(0);
+//        }
         // fprintf(fp,"%f\t",our_carnum[0]);
         // fprintf(fp,"%s\n",teamname);
         // fprintf(fp,"%f\n",our_carnum[2]);
         // fprintf(fp,"%f\n",their_carnum[0]);
         // fprintf(fp,"%f\n",their_carnum[2]);
-        fprintf(fp,"hahaha");
-        fclose(fp);
+//        fprintf(fp,"hahaha");
+//        fclose(fp);
 //        将GNN训练所需数据输出为gnn_data.txt文本
 
 //        qDebug() << "x1 =" << our_carnum[0];
@@ -658,7 +658,7 @@ void AnalyEsthetics::cal_extrovert(){
 
 
 //计算GNN所需要的图信息
-void AnalyEsthetics::cal_extrovert(){
+void AnalyEsthetics::gnn_dataAnaly(){
     int side = ANALY::LEFT;
     int obside = ANALY::RIGHT;
     int team = ANALY::BLUE;
@@ -666,6 +666,7 @@ void AnalyEsthetics::cal_extrovert(){
     CGeoPoint ball = e_ball;
     CGeoPoint me[PARAM::ROBOTNUM];
     CGeoPoint enemy[PARAM::ROBOTNUM];
+///初始化阶段
 //    若为蓝队，则将蓝车设置为我车，黄车设置为敌车
     if(team == ANALY::BLUE)
     {
@@ -690,22 +691,47 @@ void AnalyEsthetics::cal_extrovert(){
     }
     else
     {
-        qDebug() << QString::fromLocal8Bit("错误发生在cal_extrovert函数的初始化中。");
+        qDebug() << QString::fromLocal8Bit("错误发生在gnn_dataAnaly函数的初始化阶段中。");
+        exit(0);
     }
+
+///打开文件阶段
+    FILE *fp = fopen("log_gnn_data.txt","a");
+    if(fp == NULL)
+    {
+        qDebug() << QString::fromLocal8Bit("错误发生在gnn_dataAnaly函数的打开文件阶段中。");
+        exit(0);
+    }
+
+///数据分析阶段
     if(me[0].x() > -99999 && me[0].y() > -99999
             && enemy[0].x() > -99999 && enemy[0].y() > -99999)
     {
+//        fprintf(fp,"ball---");
+        fprintf(fp,"%f\t",ball.x());
+        fprintf(fp,"%f\t",ball.y());
+//        每一帧有七个我方小车的信息
         for(int i = 0; me[i].x() > -99999 && me[i].y() > -99999; i++)
         {
-
+//            fprintf(fp,"me-----");
+//            fprintf(fp,"%d\n",i);
+            fprintf(fp,"%f\t",me[i].x());
+            fprintf(fp,"%f\t",me[i].y());
         }
+//        每一帧有七个敌方小车的信息
         for(int i = 0; enemy[i].x() > -99999 && enemy[i].y() > -99999; i++)
         {
-
+//            fprintf(fp,"enemy--");
+//            fprintf(fp,"%d\n",i);
+            fprintf(fp,"%f\t",enemy[i].x());
+            fprintf(fp,"%f\t",enemy[i].y());
         }
+        fprintf(fp,"\n");
     }
     else
     {
-        qDebug() << QString::fromLocal8Bit("错误发生在cal_extrovert函数的分析中。");
+        qDebug() << QString::fromLocal8Bit("错误发生在gnn_dataAnaly函数的数据分析阶段中。");
+        exit(0);
     }
+    fclose(fp);
 }

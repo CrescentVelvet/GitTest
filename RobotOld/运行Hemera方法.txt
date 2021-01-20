@@ -4,4 +4,5 @@
 使用起来就是：
  .\Hera\bin\Hera.exe -i=lr --if=E:\\ProgramFilesBig\HeraLOG\2019-07-03_14-09_ER-Force-vs-TIGERs_Mannheim.log -o=ns 
 现在将Hera改成了Hemera，使用如下：
- .\Hemera\bin\Hemera.exe -i=lr --if=E:\\ProgramFilesBig\HeraLOG\2019-07-03_14-09_ER-Force-vs-TIGERs_Mannheim.log -o=ns 
+ .\Hemera\bin\Hemera.exe -i=lr --if=E:\\ProgramFilesBig\HeraLOG\2019-07-03_14-09_ER-Force-vs-TIGERs_Mannheim.log -o=ns
+使用录制的小LOG失败，只能读取官方LOG。
