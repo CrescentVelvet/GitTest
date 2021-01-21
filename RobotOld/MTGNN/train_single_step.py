@@ -10,8 +10,10 @@ import importlib
 
 from util import *
 from trainer import Optim
+import os 
+os.environ['CUDA_VISIBLE_DEVICES'] = '0'
 
-
+# 估计函数
 def evaluate(data, X, Y, model, evaluateL2, evaluateL1, batch_size):
     model.eval()
     total_loss = 0
@@ -54,7 +56,7 @@ def evaluate(data, X, Y, model, evaluateL2, evaluateL1, batch_size):
     correlation = (correlation[index]).mean()
     return rse, rae, correlation
 
-
+# 训练函数
 def train(data, X, Y, model, criterion, optim, batch_size):
     model.train()
     total_loss = 0
@@ -87,16 +89,21 @@ def train(data, X, Y, model, criterion, optim, batch_size):
             grad_norm = optim.step()
 
         if iter%100==0:
+            # 输出损失误差
             print('iter:{:3d} | loss: {:.3f}'.format(iter,loss.item()/(output.size(0) * data.m)))
         iter += 1
     return total_loss / n_samples
 
-
+# 创建解析器——ArgumentParser对象，该对象包含将命令行解析成Python数据类型所需的全部信息
 parser = argparse.ArgumentParser(description='PyTorch Time series forecasting')
+# 添加参数：参数名称，type=参数类型，default=参数默认值，help=参数说明
+# 数据地址
 parser.add_argument('--data', type=str, default='./data/solar_AL.txt',
                     help='location of the data file')
+# 时间间隔
 parser.add_argument('--log_interval', type=int, default=2000, metavar='N',
                     help='report interval')
+# 最终模型保存路径
 parser.add_argument('--save', type=str, default='model/model.pt',
                     help='path to save the final model')
 parser.add_argument('--optim', type=str, default='adam')
@@ -120,27 +127,26 @@ parser.add_argument('--seq_in_len',type=int,default=24*7,help='input sequence le
 parser.add_argument('--seq_out_len',type=int,default=1,help='output sequence length')
 parser.add_argument('--horizon', type=int, default=3)
 parser.add_argument('--layers',type=int,default=5,help='number of layers')
-
 parser.add_argument('--batch_size',type=int,default=32,help='batch size')
 parser.add_argument('--lr',type=float,default=0.0001,help='learning rate')
 parser.add_argument('--weight_decay',type=float,default=0.00001,help='weight decay rate')
-
 parser.add_argument('--clip',type=int,default=5,help='clip')
-
 parser.add_argument('--propalpha',type=float,default=0.05,help='prop alpha')
 parser.add_argument('--tanhalpha',type=float,default=3,help='tanh alpha')
-
 parser.add_argument('--epochs',type=int,default=1,help='')
 parser.add_argument('--num_split',type=int,default=1,help='number of splits for graphs')
 parser.add_argument('--step_size',type=int,default=100,help='step_size')
-
-
+# 解析参数
 args = parser.parse_args()
+# 设置GPU设备
 device = torch.device(args.device)
+device = torch.device('cuda' if torch.cuda.is_available() else 'cpu' )
+# 设置线程数量
 torch.set_num_threads(3)
 
+# 主函数
 def main():
-
+    # 读取数据
     Data = DataLoaderS(args.data, 0.6, 0.2, device, args.horizon, args.seq_in_len, args.normalize)
 
     model = gtnet(args.gcn_true, args.buildA_true, args.gcn_depth, args.num_nodes,

@@ -5,6 +5,8 @@ import time
 from util import *
 from trainer import Trainer
 from net import gtnet
+import os 
+os.environ['CUDA_VISIBLE_DEVICES'] = '0'
 
 def str_to_bool(value):
     if isinstance(value, bool):
@@ -79,6 +81,7 @@ def main(runid):
     # np.random.seed(args.seed)
     #load data
     device = torch.device(args.device)
+    device = torch.device('cuda' if torch.cuda.is_available() else 'cpu' )
     dataloader = load_dataset(args.data, args.batch_size, args.batch_size, args.batch_size)
     scaler = dataloader['scaler']
 

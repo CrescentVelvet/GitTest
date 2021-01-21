@@ -113,3 +113,7 @@ Hera/logreader/*.pro.user
 Hera/logwriter/*.pro.user
 Hera/netreceive/*.pro.user
 Hera/netsend/*.pro.user
+log_gnn_data.txt
+# MTGNN
+RobotOld/MTGNN/data/2019-07-03_14-09_ER-Force-vs-TIGERs_Mannheim_data.txt
+RobotOld/MTGNN/data/2019-07-04_12-15_ZJUNlict-vs-RoboTeam_Twente_data.txt

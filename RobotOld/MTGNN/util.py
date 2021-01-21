@@ -10,6 +10,7 @@ def normal_std(x):
     return x.std() * np.sqrt((len(x) - 1.)/(len(x)))
 
 class DataLoaderS(object):
+    # train和valid是训练集和验证集的比率，test = 1 - train - valid
     # train and valid is the ratio of training set and validation set. test = 1 - train - valid
     def __init__(self, file_name, train, valid, device, horizon, window, normalize=2):
         self.P = window
@@ -35,6 +36,7 @@ class DataLoaderS(object):
         self.device = device
 
     def _normalized(self, normalize):
+        # 通过整个矩阵的最大值进行归一化。
         # normalized by the maximum value of entire matrix.
 
         if (normalize == 0):
@@ -43,6 +45,7 @@ class DataLoaderS(object):
         if (normalize == 1):
             self.dat = self.rawdat / np.max(self.rawdat)
 
+        # 通过每行（传感器）的最大值进行标准化。
         # normlized by the maximum value of each row(sensor).
         if (normalize == 2):
             for i in range(self.m):
