@@ -1,0 +1,52 @@
+创建文件夹
+mkdir -p data/METR-LA
+mkdir -p data/PEMS-BAY
+下载相关包
+pip install pandas
+pip install tables
+安装tables需要安装HDF5
+在https://support.hdfgroup.org/ftp/HDF5/releases/hdf5-1.10/hdf5-1.10.7/bin/下载hdf5.msi文件
+安装hdf5在E盘
+Windows下使用命令行set "HDF5_DIR=所对应的位置"
+Ubuntu下使用命令行export HDF5_DIR=所对应的位置
+注意hdf5安装路径不能有空格，也就是set "HDF5_DIR=E:\ProgramFilesBig\HDF_Group\HDF5\1.10.7"
+关闭终端再打开，让set生效
+再次
+pip install tables
+
+注意python and python3的命令区别
+
+在终端里输入python查看npz数据集
+>>> import numpy as np
+>>> test_data = np.load('test.npz')
+>>> test_data.files
+['x', 'y', 'x_offsets', 'y_offsets']
+>>> x = test_data['x']
+>>> x
+array([[[[ 63.77777778,   0.13541667],
+         [ 65.77777778,   0.13541667],
+         [ 69.11111111,   0.13541667],
+         ..., 
+         [ 57.88888889,   0.13541667],
+         [ 64.11111111,   0.13541667],
+         [ 61.88888889,   0.13541667]],
+......
+
+cuda 找不到路径:
+终端:
+gedit ~/.bashrc
+添加:
+export CUDA_HOME=/usr/local/cuda 
+export PATH=$PATH:$CUDA_HOME/bin 
+export LD_LIBRARY_PATH=/usr/local/cuda-10.2/lib64${LD_LIBRARY_PATH:+:${LD_LIBRARY_PATH}}
+终端:
+source ~/.bashrc
+
+No CUDA GPUs are available:
+在train_single_step.py文件第13行添加：
+import os 
+os.environ['CUDA_VISIBLE_DEVICES'] = '0'
+在train_single_step.py文件第143行添加：
+device = torch.device('cuda' if torch.cuda.is_available() else 'cpu' )
+搞定。
+

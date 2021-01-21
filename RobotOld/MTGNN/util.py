@@ -72,11 +72,14 @@ class DataLoaderS(object):
             Y[i, :] = torch.from_numpy(self.dat[idx_set[i], :])
         return [X, Y]
 
+    # 解析数据获取batch
     def get_batches(self, inputs, targets, batch_size, shuffle=True):
         length = len(inputs)
         if shuffle:
+            # 返回一个长度为length的取值随机0到length-1分布的数组
             index = torch.randperm(length)
         else:
+            # 长tensor是64位整型数据，tensor是32位浮点型数据
             index = torch.LongTensor(range(length))
         start_idx = 0
         while (start_idx < length):

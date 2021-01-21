@@ -21,22 +21,28 @@ def evaluate(data, X, Y, model, evaluateL2, evaluateL1, batch_size):
     n_samples = 0
     predict = None
     test = None
-
+    # 加载数据生成batch
     for X, Y in data.get_batches(X, Y, batch_size, False):
+        # 扩充数据维度，从dim位置增加一个维度
         X = torch.unsqueeze(X,dim=1)
+        # 高维数据的矩阵转置，交换2和3号坐标轴
         X = X.transpose(2,3)
+        # 设置不计算梯度gradient，加速计算
         with torch.no_grad():
             output = model(X)
+        # 压缩数据维度，从dim位置减去一个维度
         output = torch.squeeze(output)
+        # 如果输出长度为1，则增加维度
         if len(output.shape)==1:
             output = output.unsqueeze(dim=0)
+        # 如果预测为无，令其等于输出
         if predict is None:
             predict = output
             test = Y
+        # 否则令预测等于预测和输出的拼接
         else:
             predict = torch.cat((predict, output))
             test = torch.cat((test, Y))
-
         scale = data.scale.expand(output.size(0), data.m)
         total_loss += evaluateL2(output * scale, Y * scale).item()
         total_loss_l1 += evaluateL1(output * scale, Y * scale).item()
@@ -62,14 +68,16 @@ def train(data, X, Y, model, criterion, optim, batch_size):
     total_loss = 0
     n_samples = 0
     iter = 0
+    # 加载数据生成batch
     for X, Y in data.get_batches(X, Y, batch_size, True):
+        # 设置模型的梯度参数为0
         model.zero_grad()
         X = torch.unsqueeze(X,dim=1)
         X = X.transpose(2,3)
         if iter % args.step_size == 0:
+            # 对0到range(args.num_nodes)的顺序数字进行随机排序生成数列
             perm = np.random.permutation(range(args.num_nodes))
         num_sub = int(args.num_nodes / args.num_split)
-
         for j in range(args.num_split):
             if j != args.num_split - 1:
                 id = perm[j * num_sub:(j + 1) * num_sub]
@@ -87,7 +95,6 @@ def train(data, X, Y, model, criterion, optim, batch_size):
             total_loss += loss.item()
             n_samples += (output.size(0) * data.m)
             grad_norm = optim.step()
-
         if iter%100==0:
             # 输出损失误差
             print('iter:{:3d} | loss: {:.3f}'.format(iter,loss.item()/(output.size(0) * data.m)))
@@ -96,14 +103,14 @@ def train(data, X, Y, model, criterion, optim, batch_size):
 
 # 创建解析器——ArgumentParser对象，该对象包含将命令行解析成Python数据类型所需的全部信息
 parser = argparse.ArgumentParser(description='PyTorch Time series forecasting')
-# 添加参数：参数名称，type=参数类型，default=参数默认值，help=参数说明
+# 添加参数：--可选参数名称，type=参数类型，default=参数默认值，help=参数说明
 # 数据地址
 parser.add_argument('--data', type=str, default='./data/solar_AL.txt',
                     help='location of the data file')
 # 时间间隔
 parser.add_argument('--log_interval', type=int, default=2000, metavar='N',
                     help='report interval')
-# 最终模型保存路径
+# 模型保存路径
 parser.add_argument('--save', type=str, default='model/model.pt',
                     help='path to save the final model')
 parser.add_argument('--optim', type=str, default='adam')
@@ -136,7 +143,7 @@ parser.add_argument('--tanhalpha',type=float,default=3,help='tanh alpha')
 parser.add_argument('--epochs',type=int,default=1,help='')
 parser.add_argument('--num_split',type=int,default=1,help='number of splits for graphs')
 parser.add_argument('--step_size',type=int,default=100,help='step_size')
-# 解析参数
+# 解析参数，返回args实例
 args = parser.parse_args()
 # 设置GPU设备
 device = torch.device(args.device)
@@ -148,7 +155,7 @@ torch.set_num_threads(3)
 def main():
     # 读取数据
     Data = DataLoaderS(args.data, 0.6, 0.2, device, args.horizon, args.seq_in_len, args.normalize)
-
+    # 生成神经网络模型
     model = gtnet(args.gcn_true, args.buildA_true, args.gcn_depth, args.num_nodes,
                   device, dropout=args.dropout, subgraph_size=args.subgraph_size,
                   node_dim=args.node_dim, dilation_exponential=args.dilation_exponential,
@@ -156,8 +163,9 @@ def main():
                   skip_channels=args.skip_channels, end_channels= args.end_channels,
                   seq_length=args.seq_in_len, in_dim=args.in_dim, out_dim=args.seq_out_len,
                   layers=args.layers, propalpha=args.propalpha, tanhalpha=args.tanhalpha, layer_norm_affline=False)
+    # 将生成模型加载到相应设备中
     model = model.to(device)
-
+    # 输出模型args实例
     print(args)
     print('The recpetive field size is', model.receptive_field)
     nParams = sum([p.nelement() for p in model.parameters()])
@@ -170,46 +178,39 @@ def main():
     evaluateL2 = nn.MSELoss(size_average=False).to(device)
     evaluateL1 = nn.L1Loss(size_average=False).to(device)
 
-
     best_val = 10000000
     optim = Optim(
         model.parameters(), args.optim, args.lr, args.clip, lr_decay=args.weight_decay
     )
 
-    # At any point you can hit Ctrl + C to break out of training early.
+    # 在任何时刻都可以按下Ctrl + C来提前停止训练
     try:
         print('begin training')
         for epoch in range(1, args.epochs + 1):
             epoch_start_time = time.time()
             train_loss = train(Data, Data.train[0], Data.train[1], model, criterion, optim, args.batch_size)
-            val_loss, val_rae, val_corr = evaluate(Data, Data.valid[0], Data.valid[1], model, evaluateL2, evaluateL1,
-                                               args.batch_size)
-            print(
-                '| end of epoch {:3d} | time: {:5.2f}s | train_loss {:5.4f} | valid rse {:5.4f} | valid rae {:5.4f} | valid corr  {:5.4f}'.format(
+            val_loss, val_rae, val_corr = evaluate(Data, Data.valid[0], Data.valid[1], model, evaluateL2, evaluateL1, args.batch_size)
+            print('| end of epoch {:3d} | time: {:5.2f}s | train_loss {:5.4f} | valid rse {:5.4f} | valid rae {:5.4f} | valid corr  {:5.4f}'.format(
                     epoch, (time.time() - epoch_start_time), train_loss, val_loss, val_rae, val_corr), flush=True)
-            # Save the model if the validation loss is the best we've seen so far.
-
+            # 如果损失是目前为止看到过的最好的，请及时保存模型
             if val_loss < best_val:
                 with open(args.save, 'wb') as f:
                     torch.save(model, f)
                 best_val = val_loss
             if epoch % 5 == 0:
-                test_acc, test_rae, test_corr = evaluate(Data, Data.test[0], Data.test[1], model, evaluateL2, evaluateL1,
-                                                     args.batch_size)
+                test_acc, test_rae, test_corr = evaluate(Data, Data.test[0], Data.test[1], model, evaluateL2, evaluateL1, args.batch_size)
                 print("test rse {:5.4f} | test rae {:5.4f} | test corr {:5.4f}".format(test_acc, test_rae, test_corr), flush=True)
 
     except KeyboardInterrupt:
         print('-' * 89)
         print('Exiting from training early')
 
-    # Load the best saved model.
+    # 加载保存最好的模型
     with open(args.save, 'rb') as f:
         model = torch.load(f)
 
-    vtest_acc, vtest_rae, vtest_corr = evaluate(Data, Data.valid[0], Data.valid[1], model, evaluateL2, evaluateL1,
-                                         args.batch_size)
-    test_acc, test_rae, test_corr = evaluate(Data, Data.test[0], Data.test[1], model, evaluateL2, evaluateL1,
-                                         args.batch_size)
+    vtest_acc, vtest_rae, vtest_corr = evaluate(Data, Data.valid[0], Data.valid[1], model, evaluateL2, evaluateL1, args.batch_size)
+    test_acc, test_rae, test_corr = evaluate(Data, Data.test[0], Data.test[1], model, evaluateL2, evaluateL1, args.batch_size)
     print("final test rse {:5.4f} | test rae {:5.4f} | test corr {:5.4f}".format(test_acc, test_rae, test_corr))
     return vtest_acc, vtest_rae, vtest_corr, test_acc, test_rae, test_corr
 
@@ -238,4 +239,3 @@ if __name__ == "__main__":
     print("test\trse\trae\tcorr")
     print("mean\t{:5.4f}\t{:5.4f}\t{:5.4f}".format(np.mean(acc), np.mean(rae), np.mean(corr)))
     print("std\t{:5.4f}\t{:5.4f}\t{:5.4f}".format(np.std(acc), np.std(rae), np.std(corr)))
-
