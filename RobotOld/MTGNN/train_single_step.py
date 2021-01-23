@@ -1,19 +1,18 @@
 import argparse
 import math
 import time
-
 import torch
 import torch.nn as nn
 from net import gtnet
 import numpy as np
 import importlib
-
 from util import *
 from trainer import Optim
 import os 
 os.environ['CUDA_VISIBLE_DEVICES'] = '0'
 
-# 估计函数
+# 评价函数
+# 跑多次验证数据集valid，跑一次测试数据集test
 def evaluate(data, X, Y, model, evaluateL2, evaluateL1, batch_size):
     model.eval()
     total_loss = 0
@@ -39,7 +38,7 @@ def evaluate(data, X, Y, model, evaluateL2, evaluateL1, batch_size):
         if predict is None:
             predict = output
             test = Y
-        # 否则令预测等于预测和输出的拼接
+        # 否则令预测等于预测和输出的拼接cat
         else:
             predict = torch.cat((predict, output))
             test = torch.cat((test, Y))
@@ -67,6 +66,7 @@ def evaluate(data, X, Y, model, evaluateL2, evaluateL1, batch_size):
     return rse, rae, correlation
 
 # 训练函数
+# 跑训练数据集train，生成机器学习参数模型
 def train(data, X, Y, model, criterion, optim, batch_size):
     model.train()
     total_loss = 0
@@ -125,11 +125,13 @@ parser.add_argument('--save', type=str, default='model/model.pt',
 parser.add_argument('--optim', type=str, default='adam')
 parser.add_argument('--L1Loss', type=bool, default=True)
 parser.add_argument('--normalize', type=int, default=2)
+# 运行设备GPU与CPU
 parser.add_argument('--device',type=str,default='cuda:1',help='')
 parser.add_argument('--gcn_true', type=bool, default=True, help='whether to add graph convolution layer')
 parser.add_argument('--buildA_true', type=bool, default=True, help='whether to construct adaptive adjacency matrix')
 parser.add_argument('--gcn_depth',type=int,default=2,help='graph convolution depth')
 parser.add_argument('--num_nodes',type=int,default=137,help='number of nodes/variables')
+# 删除多余神经元，防止过拟合
 parser.add_argument('--dropout',type=float,default=0.3,help='dropout rate')
 parser.add_argument('--subgraph_size',type=int,default=20,help='k')
 parser.add_argument('--node_dim',type=int,default=40,help='dim of nodes')
@@ -143,12 +145,15 @@ parser.add_argument('--seq_in_len',type=int,default=24*7,help='input sequence le
 parser.add_argument('--seq_out_len',type=int,default=1,help='output sequence length')
 parser.add_argument('--horizon', type=int, default=3)
 parser.add_argument('--layers',type=int,default=5,help='number of layers')
+# 一次训练选取的样本数（受GPU内存限制）
 parser.add_argument('--batch_size',type=int,default=32,help='batch size')
 parser.add_argument('--lr',type=float,default=0.0001,help='learning rate')
+# 权重衰减，防止过拟合（又被称为L2正则化）
 parser.add_argument('--weight_decay',type=float,default=0.00001,help='weight decay rate')
 parser.add_argument('--clip',type=int,default=5,help='clip')
 parser.add_argument('--propalpha',type=float,default=0.05,help='prop alpha')
 parser.add_argument('--tanhalpha',type=float,default=3,help='tanh alpha')
+# 一次训练迭代次数（次数越多，损失函数越小，准确度越高）
 parser.add_argument('--epochs',type=int,default=1,help='')
 parser.add_argument('--num_split',type=int,default=1,help='number of splits for graphs')
 parser.add_argument('--step_size',type=int,default=100,help='step_size')
@@ -162,7 +167,7 @@ torch.set_num_threads(3)
 
 # 主函数
 def main():
-    # 读取数据
+    # 读取数据与参数
     Data = DataLoaderS(args.data, 0.6, 0.2, device, args.horizon, args.seq_in_len, args.normalize)
     # 生成神经网络模型
     model = gtnet(args.gcn_true, args.buildA_true, args.gcn_depth, args.num_nodes,
@@ -180,44 +185,50 @@ def main():
     nParams = sum([p.nelement() for p in model.parameters()])
     print('Number of model parameters is', nParams, flush=True)
 
+    # 计算损失函数
     if args.L1Loss:
         criterion = nn.L1Loss(size_average=False).to(device)
     else:
         criterion = nn.MSELoss(size_average=False).to(device)
+    # 计算预测值和真实值之差的平方的平均数
     evaluateL2 = nn.MSELoss(size_average=False).to(device)
+    # 计算预测值和真实值之差的绝对值的平均数
     evaluateL1 = nn.L1Loss(size_average=False).to(device)
 
     best_val = 10000000
-    optim = Optim(
-        model.parameters(), args.optim, args.lr, args.clip, lr_decay=args.weight_decay
-    )
+    optim = Optim(model.parameters(), args.optim, args.lr, args.clip, lr_decay=args.weight_decay)
 
     # 在任何时刻都可以按下Ctrl + C来提前停止训练
     try:
         print('begin training')
+        # epoch为一次训练迭代次数
         for epoch in range(1, args.epochs + 1):
             epoch_start_time = time.time()
+            # 计算训练函数train对于训练数据集train的误差
             train_loss = train(Data, Data.train[0], Data.train[1], model, criterion, optim, args.batch_size)
+            # 计算评价函数evaluate对于验证数据集valid的误差
             val_loss, val_rae, val_corr = evaluate(Data, Data.valid[0], Data.valid[1], model, evaluateL2, evaluateL1, args.batch_size)
             print('| end of epoch {:3d} | time: {:5.2f}s | train_loss {:5.4f} | valid rse {:5.4f} | valid rae {:5.4f} | valid corr  {:5.4f}'.format(
                     epoch, (time.time() - epoch_start_time), train_loss, val_loss, val_rae, val_corr), flush=True)
-            # 如果损失是目前为止看到过的最好的，请及时保存模型
+            # 保存最小损失的最优模型
             if val_loss < best_val:
                 with open(args.save, 'wb') as f:
                     torch.save(model, f)
                 best_val = val_loss
+            # 每迭代5次输出一下误差系数
             if epoch % 5 == 0:
                 test_acc, test_rae, test_corr = evaluate(Data, Data.test[0], Data.test[1], model, evaluateL2, evaluateL1, args.batch_size)
                 print("test rse {:5.4f} | test rae {:5.4f} | test corr {:5.4f}".format(test_acc, test_rae, test_corr), flush=True)
 
     except KeyboardInterrupt:
+        # 键盘按下Ctrl + C时，输出一堆‘-’
         print('-' * 89)
         print('Exiting from training early')
 
-    # 加载保存最好的模型
+    # 加载保存的最优模型
     with open(args.save, 'rb') as f:
         model = torch.load(f)
-
+    # 计算评价函数evaluate对于验证数据集valid和测试数据集test的误差
     vtest_acc, vtest_rae, vtest_corr = evaluate(Data, Data.valid[0], Data.valid[1], model, evaluateL2, evaluateL1, args.batch_size)
     test_acc, test_rae, test_corr = evaluate(Data, Data.test[0], Data.test[1], model, evaluateL2, evaluateL1, args.batch_size)
     print("final test rse {:5.4f} | test rae {:5.4f} | test corr {:5.4f}".format(test_acc, test_rae, test_corr))
@@ -233,11 +244,13 @@ if __name__ == "__main__":
     # 经验相关系数，越大越好
     corr = []
     for i in range(10):
-        # 主函数计算各种参数
+        # 主函数计算各种误差参数
         val_acc, val_rae, val_corr, test_acc, test_rae, test_corr = main()
+        # 在验证数据集valid上的验证误差系数
         vacc.append(val_acc)
         vrae.append(val_rae)
         vcorr.append(val_corr)
+        # 在测试数据集test上的测试误差系数
         acc.append(test_acc)
         rae.append(test_rae)
         corr.append(test_corr)
@@ -245,9 +258,13 @@ if __name__ == "__main__":
     print('10 runs average')
     print('\n\n')
     print("valid\trse\trae\tcorr")
+    # 输出验证误差的算术平均值
     print("mean\t{:5.4f}\t{:5.4f}\t{:5.4f}".format(np.mean(vacc), np.mean(vrae), np.mean(vcorr)))
+    # 输出验证误差的标准偏差（分布范围）
     print("std\t{:5.4f}\t{:5.4f}\t{:5.4f}".format(np.std(vacc), np.std(vrae), np.std(vcorr)))
     print('\n\n')
     print("test\trse\trae\tcorr")
+    # 输出测试误差的算术平均值
     print("mean\t{:5.4f}\t{:5.4f}\t{:5.4f}".format(np.mean(acc), np.mean(rae), np.mean(corr)))
+    # 输出测试误差的标准偏差（分布范围）
     print("std\t{:5.4f}\t{:5.4f}\t{:5.4f}".format(np.std(acc), np.std(rae), np.std(corr)))

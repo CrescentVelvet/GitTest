@@ -50,8 +50,11 @@ class DataLoaderS(object):
         train_set = range(self.P + self.h - 1, train)
         valid_set = range(train, valid)
         test_set = range(valid, self.n)
+        # 训练集——（教辅书籍）
         self.train = self._batchify(train_set, self.h)
+        # 验证集——（模拟考试，能考多遍）
         self.valid = self._batchify(valid_set, self.h)
+        # 测试集——（正式考试，能考一遍）
         self.test = self._batchify(test_set, self.h)
 
     def _batchify(self, idx_set, horizon):
