@@ -23,25 +23,19 @@ class DataLoaderS(object):
         self.scale = np.ones(self.m)
         self._normalized(normalize)
         self._split(int(train * self.n), int((train + valid) * self.n), self.n)
-
         self.scale = torch.from_numpy(self.scale).float()
         tmp = self.test[1] * self.scale.expand(self.test[1].size(0), self.m)
-
         self.scale = self.scale.to(device)
         self.scale = Variable(self.scale)
-
         self.rse = normal_std(tmp)
         self.rae = torch.mean(torch.abs(tmp - torch.mean(tmp)))
-
         self.device = device
 
     def _normalized(self, normalize):
         # 通过整个矩阵的最大值进行归一化。
         # normalized by the maximum value of entire matrix.
-
         if (normalize == 0):
             self.dat = self.rawdat
-
         if (normalize == 1):
             self.dat = self.rawdat / np.max(self.rawdat)
 
@@ -53,7 +47,6 @@ class DataLoaderS(object):
                 self.dat[:, i] = self.rawdat[:, i] / np.max(np.abs(self.rawdat[:, i]))
 
     def _split(self, train, valid, test):
-
         train_set = range(self.P + self.h - 1, train)
         valid_set = range(train, valid)
         test_set = range(valid, self.n)
@@ -129,7 +122,6 @@ class DataLoaderM(object):
                 y_i = self.ys[start_ind: end_ind, ...]
                 yield (x_i, y_i)
                 self.current_ind += 1
-
         return _wrapper()
 
 class StandardScaler():

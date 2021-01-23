@@ -27,7 +27,7 @@ def evaluate(data, X, Y, model, evaluateL2, evaluateL1, batch_size):
         X = torch.unsqueeze(X,dim=1)
         # 高维数据的矩阵转置，交换2和3号坐标轴
         X = X.transpose(2,3)
-        # 设置不计算梯度gradient，加速计算
+        # 设置梯度gradient归零，加速计算
         with torch.no_grad():
             output = model(X)
         # 压缩数据维度，从dim位置减去一个维度
@@ -48,9 +48,13 @@ def evaluate(data, X, Y, model, evaluateL2, evaluateL1, batch_size):
         total_loss_l1 += evaluateL1(output * scale, Y * scale).item()
         n_samples += (output.size(0) * data.m)
 
+    # 相对平方误差
+    # a的值减去a平均值的差的平方和，与b的值减去b平均值的差的平方和，作商。可以比较不同单位的误差。
     rse = math.sqrt(total_loss / n_samples) / data.rse
+    # 相对绝对误差
+    # a的值减去a平均值的差的绝对值和，与b的值减去b平均值的差的绝对值和，作商。可以比较不同单位的误差。
     rae = (total_loss_l1 / n_samples) / data.rae
-
+    # 预测模型
     predict = predict.data.cpu().numpy()
     Ytest = test.data.cpu().numpy()
     sigma_p = (predict).std(axis=0)
@@ -70,9 +74,11 @@ def train(data, X, Y, model, criterion, optim, batch_size):
     iter = 0
     # 加载数据生成batch
     for X, Y in data.get_batches(X, Y, batch_size, True):
-        # 设置模型的梯度参数为0
+        # 梯度归零
         model.zero_grad()
+        # 扩充维度
         X = torch.unsqueeze(X,dim=1)
+        # 坐标转置
         X = X.transpose(2,3)
         if iter % args.step_size == 0:
             # 对0到range(args.num_nodes)的顺序数字进行随机排序生成数列
@@ -86,14 +92,17 @@ def train(data, X, Y, model, criterion, optim, batch_size):
             id = torch.tensor(id).to(device)
             tx = X[:, :, id, :]
             ty = Y[:, id]
+            # 前向传播
             output = model(tx,id)
             output = torch.squeeze(output)
             scale = data.scale.expand(output.size(0), data.m)
             scale = scale[:,id]
             loss = criterion(output * scale, ty * scale)
+            # 反向传播
             loss.backward()
             total_loss += loss.item()
             n_samples += (output.size(0) * data.m)
+            # 更新参数
             grad_norm = optim.step()
         if iter%100==0:
             # 输出损失误差
@@ -104,7 +113,7 @@ def train(data, X, Y, model, criterion, optim, batch_size):
 # 创建解析器——ArgumentParser对象，该对象包含将命令行解析成Python数据类型所需的全部信息
 parser = argparse.ArgumentParser(description='PyTorch Time series forecasting')
 # 添加参数：--可选参数名称，type=参数类型，default=参数默认值，help=参数说明
-# 数据地址
+# 数据来源地址
 parser.add_argument('--data', type=str, default='./data/solar_AL.txt',
                     help='location of the data file')
 # 时间间隔
@@ -146,7 +155,7 @@ parser.add_argument('--step_size',type=int,default=100,help='step_size')
 # 解析参数，返回args实例
 args = parser.parse_args()
 # 设置GPU设备
-device = torch.device(args.device)
+# device = torch.device(args.device)
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu' )
 # 设置线程数量
 torch.set_num_threads(3)
@@ -219,9 +228,12 @@ if __name__ == "__main__":
     vrae = []
     vcorr = []
     acc = []
+    # 相对绝对误差
     rae = []
+    # 经验相关系数，越大越好
     corr = []
     for i in range(10):
+        # 主函数计算各种参数
         val_acc, val_rae, val_corr, test_acc, test_rae, test_corr = main()
         vacc.append(val_acc)
         vrae.append(val_rae)
