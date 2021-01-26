@@ -39,7 +39,7 @@ url = "https://hk4e-api.mihoyo.com/event/gacha_info/api/getGachaLog?authkey_ver=
 
 FLAG_WRITE_CSV = 1
 # 是否写入CSV
-FLAG_WRITE_XLS = 0
+FLAG_WRITE_XLS = 1
 # 是否写入EXCEL
 FLAG_SHOW_DETAIL = 0
 # 是否展示详情
@@ -205,9 +205,7 @@ def getGachaList(gachaInfo, gachaTypeId):
 def writeCSV(gachaLists, gachaTypes):
     for id in range(len(gachaTypes)):
         # filename = f"{sys.path[0]}\\gacha{gachaTypes[id]}.csv"
-        # filename = "".format(str(sys.path[0])).format("gecha-").format(str(gachaTypes[id])).format(".csv")
-        filename = "gecha".format(gachaTypes[id])
-        print("gecha".format(str(gachaTypes[id])))
+        filename = "{}".format(str(sys.path[0]))+"\\gecha-{}".format(str(gachaTypes[id]))+".csv"
         f = open(filename, "w", encoding="utf-8-sig")
         # 带BOM防止乱码
         for line in gachaLists[id]:
@@ -222,7 +220,7 @@ def writeXLSX(gachaLists, gachaTypeNames):
 
     t = time.strftime("%Y%m%d%H%M%S", time.localtime())
     # workbook = xlsxwriter.Workbook(f"{sys.path[0]}\\gacha-{t}.xlsx")
-    workbook = xlsxwriter.Workbook("".format(str(sys.path[0]))+"gecha-".format(str(t))+".xlsx")
+    workbook = xlsxwriter.Workbook("{}".format(str(sys.path[0]))+"gecha-{}".format(str(t))+".xlsx")
     for id in range(0, len(gachaTypeNames)):
         gachaList = gachaLists[id]
         gachaTypeName = gachaTypeNames[id]
@@ -232,13 +230,16 @@ def writeXLSX(gachaLists, gachaTypeNames):
         content_css = workbook.add_format({"align": "left", "font_name": "微软雅黑", "border_color": "#c4c2bf", "border": 1})
         title_css = workbook.add_format({"align": "left", "font_name": "微软雅黑", "bg_color": "#ebebeb", "border_color": "#c4c2bf", "border": 1})
         excel_col = ["A", "B", "C", "D", "E", "F", "G"]
+        star_5 = workbook.add_format({"bg_color": "#FFA500"})
+        star_4 = workbook.add_format({"bg_color": "#EE82EE"})
+        star_3 = workbook.add_format({"bg_color": "#87CEFA"})
         excel_header = header.split(",")
         worksheet.set_column("A:A", 22)
         worksheet.set_column("C:C", 14)
         for i in range(len(excel_col)):
             # worksheet.write(f"{excel_col[i]}1", excel_header[i], border)
             # worksheet.write(f"{excel_col[i]}1", excel_header[i], title_css)
-            worksheet.write("".format(str(excel_col[i]))+"1".format(str(excel_header[i])).format(title_css))
+            worksheet.write("{}".format(str(excel_col[i]))+"1", excel_header[i], title_css)
         idx = 0
         pdx = 0
         for i in range(len(gachaList)):
@@ -251,7 +252,7 @@ def writeXLSX(gachaLists, gachaTypeNames):
             for j in range(len(excel_col)):
                 # worksheet.write(f"{excel_col[j]}{i+2}", excel_data[j])
                 # worksheet.write(f"{excel_col[j]}{i+2}", excel_data[j], content_css)
-                worksheet.write("".format(str(excel_col[j])).format(str(i+2)).format(str(excel_data[j])).format(str(content_css)))
+                worksheet.write("{}{}".format(str(excel_col[j]), str(i+2)), excel_data[j], content_css)
             if excel_data[4] == 5:
                 pdx = 0
 
@@ -260,11 +261,11 @@ def writeXLSX(gachaLists, gachaTypeNames):
         star_3 = workbook.add_format({"bg_color": "#ebebeb"})
         # star_3 = workbook.add_format({"bg_color": "#ebebeb", "color": "#35aacc"})
         # worksheet.conditional_format(f"A2:G{len(gachaList)+1}", {"type": "formula", "criteria": "=$E2=5", "format": star_5})
-        worksheet.conditional_format("A2:G".format(str(len(gachaList)+1)), {"type": "formula", "criteria": "=$E2=5", "format": "".format(str(star_5))})
+        worksheet.conditional_format("A2:G{}".format(str(len(gachaList)+1)), {"type": "formula", "criteria": "=$E2=5", "format": star_5})
         # worksheet.conditional_format(f"A2:G{len(gachaList)+1}", {"type": "formula", "criteria": "=$E2=4", "format": star_4})
-        worksheet.conditional_format("A2:G".format(str(len(gachaList)+1)), {"type": "formula", "criteria": "=$E2=4", "format": "".format(str(star_4))})
+        worksheet.conditional_format("A2:G{}".format(str(len(gachaList)+1)), {"type": "formula", "criteria": "=$E2=5", "format": star_4})
         # worksheet.conditional_format(f"A2:G{len(gachaList)+1}", {"type": "formula", "criteria": "=$E2=3", "format": star_3})
-        worksheet.conditional_format("A2:G".format(str(len(gachaList)+1)), {"type": "formula", "criteria": "=$E2=3", "format": "".format(str(star_3))})
+        worksheet.conditional_format("A2:G{}".format(str(len(gachaList)+1)), {"type": "formula", "criteria": "=$E2=5", "format": star_3})
 
     workbook.close()
 
