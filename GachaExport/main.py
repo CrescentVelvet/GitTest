@@ -3,11 +3,43 @@ import requests
 import urllib.parse
 import sys
 
-url = ""
+# url = "https://hk4e-api.mihoyo.com/event/gacha_info/  \
+# api/getGachaLog?authkey_ver=1&sign_type=2&auth_appid= \
+# webview_gacha&init_type=301&gacha_id=2ffa459718702872a\
+# 52867fa0521e32b6843b0&lang=zh-cn&device_type=pc&ext=%7\
+# b%22loc%22%3a%7b%22x%22%3a2233.840576171875%2c%22y%22%\
+# 3a212.8805389404297%2c%22z%22%3a-915.6687622070313%7d%\
+# 2c%22platform%22%3a%22WinST%22%7d&game_version=CNRELWi\
+# n1.2.0_R1771533_S1847412_D1816310&region=cn_gf01&authk\
+# ey=ha5uTCJKQcBhkUyflLcEn6dQPGoMmJqHgTTdR%2fd3jL%2bIlhO\
+# ZcRSaD1Slc2MEy4q3tVlW2lE2d%2fMCoSoZ1PUWkwPKfTy%2f08lcU\
+# h2yRyI071P0OvDjHN57ixrRPdqdYYOWrT8q3pB9ueuw84Oiwuk%2fT\
+# 4Nig7Vftpfl0buzhPMgXhkNrNJsRHx%2fUcuGZqTXJn3WZ%2f%2bsr\
+# xtRHconxGr%2bkd1Gxvwe7AfahdmMzBASSDsvcQaadd8USKRQmQBmj\
+# ZkGRd78DaUc9XugWZTvdlQW20mJCKDYlSuYDNctOOObYYDTJ6DEisL\
+# Xm3eQCc0PAAobMYGc%2bk2TQIB08faBMX9gDOVz4wr6nFY6%2bmtBK\
+# ilU9sdl8Z2Q%2fMAqT%2bT%2bH3feJOFCbbbeO2UEcedt06WcoOyr1\
+# wRHkjz6xt8%2fUwcCl%2fDsD9ORzgzk1BOGdXImd4UuktPxj%2fNbG\
+# p5IBZnpbHLxVt%2bGGC4%2foCIKbiRpBbuG6HVn2rYqnGkXyDg7YpA\
+# f2xcRjTZ%2fD0bfVUEtSaiGLxe8%2blE8VCOHrUzQ1GR7AYZiupyx5\
+# PWudvzeoHnd6sYJjhNtp5Lc7LO74hmORKGvE8TYRKDs%2b%2b3ykCf\
+# VlmkrSu3mfjZTOObMS0fKl3RJn4lVma1McItDfvCUeU4vhv28fPncs\
+# 9SBqT%2btSvE%2fPpF0oV2TEwoMErWyCnrYhsZYFVHNkB4NM9kvRMx\
+# urkBaor9aznkOePq8%2fpwvH5me01aJ9IU%2b8DIcDAlna%2bp7Dpz\
+# ZICy%2bFFLokyNbJFYuo5HydxTU0WB1HbyMiQYVab1x1qS7%2bASqR\
+# dEkJeeL07e1D3Cx8LOzpbosmQ4%2fPBKt4OvfDpTmUrDMrv3oWRZyF\
+# HUwJF%2bIV7YTVuIwVGtTMrugkcI70hkbucbzFXBxDwhjKqVxPPWNn\
+# BiK9nSe3Q5pnvQCMiwDQpZTDZ%2b%2b5HZ03AvLbSAnByC0qk7Mlni\
+# zeKnuqIk321fQGcExXwOvI8K8cSEtqQjXUG2gO%2fd7kV%2bgG%2f6\
+# lYGWZEbRwQeSHJugMEtzy&game_biz=hk4e_cn&gacha_type=301&\
+# page=1&size=6"
 
-FLAG_WRITE_CSV = 0
+url = "https://hk4e-api.mihoyo.com/event/gacha_info/api/getGachaLog?authkey_ver=1&sign_type=2&auth_appid=webview_gacha&init_type=301&gacha_id=2ffa459718702872a52867fa0521e32b6843b0&lang=zh-cn&device_type=pc&ext=%7b%22loc%22%3a%7b%22x%22%3a2233.840576171875%2c%22y%22%3a212.8805389404297%2c%22z%22%3a-915.6687622070313%7d%2c%22platform%22%3a%22WinST%22%7d&game_version=CNRELWin1.2.0_R1771533_S1847412_D1816310&region=cn_gf01&authkey=ha5uTCJKQcBhkUyflLcEn6dQPGoMmJqHgTTdR%2fd3jL%2bIlhOZcRSaD1Slc2MEy4q3tVlW2lE2d%2fMCoSoZ1PUWkwPKfTy%2f08lcUh2yRyI071P0OvDjHN57ixrRPdqdYYOWrT8q3pB9ueuw84Oiwuk%2fT4Nig7Vftpfl0buzhPMgXhkNrNJsRHx%2fUcuGZqTXJn3WZ%2f%2bsrxtRHconxGr%2bkd1Gxvwe7AfahdmMzBASSDsvcQaadd8USKRQmQBmjZkGRd78DaUc9XugWZTvdlQW20mJCKDYlSuYDNctOOObYYDTJ6DEisLXm3eQCc0PAAobMYGc%2bk2TQIB08faBMX9gDOVz4wr6nFY6%2bmtBKilU9sdl8Z2Q%2fMAqT%2bT%2bH3feJOFCbbbeO2UEcedt06WcoOyr1wRHkjz6xt8%2fUwcCl%2fDsD9ORzgzk1BOGdXImd4UuktPxj%2fNbGp5IBZnpbHLxVt%2bGGC4%2foCIKbiRpBbuG6HVn2rYqnGkXyDg7YpAf2xcRjTZ%2fD0bfVUEtSaiGLxe8%2blE8VCOHrUzQ1GR7AYZiupyx5PWudvzeoHnd6sYJjhNtp5Lc7LO74hmORKGvE8TYRKDs%2b%2b3ykCfVlmkrSu3mfjZTOObMS0fKl3RJn4lVma1McItDfvCUeU4vhv28fPncs9SBqT%2btSvE%2fPpF0oV2TEwoMErWyCnrYhsZYFVHNkB4NM9kvRMxurkBaor9aznkOePq8%2fpwvH5me01aJ9IU%2b8DIcDAlna%2bp7DpzZICy%2bFFLokyNbJFYuo5HydxTU0WB1HbyMiQYVab1x1qS7%2bASqRdEkJeeL07e1D3Cx8LOzpbosmQ4%2fPBKt4OvfDpTmUrDMrv3oWRZyFHUwJF%2bIV7YTVuIwVGtTMrugkcI70hkbucbzFXBxDwhjKqVxPPWNnBiK9nSe3Q5pnvQCMiwDQpZTDZ%2b%2b5HZ03AvLbSAnByC0qk7MlnizeKnuqIk321fQGcExXwOvI8K8cSEtqQjXUG2gO%2fd7kV%2bgG%2f6lYGWZEbRwQeSHJugMEtzy&game_biz=hk4e_cn&gacha_type=301&page=1&size=6"
+
+
+FLAG_WRITE_CSV = 1
 # 是否写入CSV
-FLAG_WRITE_XLS = 1
+FLAG_WRITE_XLS = 0
 # 是否写入EXCEL
 FLAG_SHOW_DETAIL = 0
 # 是否展示详情
@@ -172,7 +204,10 @@ def getGachaList(gachaInfo, gachaTypeId):
 
 def writeCSV(gachaLists, gachaTypes):
     for id in range(len(gachaTypes)):
-        filename = f"{sys.path[0]}\\gacha{gachaTypes[id]}.csv"
+        # filename = f"{sys.path[0]}\\gacha{gachaTypes[id]}.csv"
+        # filename = "".format(str(sys.path[0])).format("gecha-").format(str(gachaTypes[id])).format(".csv")
+        filename = "gecha".format(gachaTypes[id])
+        print("gecha".format(str(gachaTypes[id])))
         f = open(filename, "w", encoding="utf-8-sig")
         # 带BOM防止乱码
         for line in gachaLists[id]:
@@ -186,7 +221,8 @@ def writeXLSX(gachaLists, gachaTypeNames):
     import xlsxwriter
 
     t = time.strftime("%Y%m%d%H%M%S", time.localtime())
-    workbook = xlsxwriter.Workbook(f"{sys.path[0]}\\gacha-{t}.xlsx")
+    # workbook = xlsxwriter.Workbook(f"{sys.path[0]}\\gacha-{t}.xlsx")
+    workbook = xlsxwriter.Workbook("".format(str(sys.path[0]))+"gecha-".format(str(t))+".xlsx")
     for id in range(0, len(gachaTypeNames)):
         gachaList = gachaLists[id]
         gachaTypeName = gachaTypeNames[id]
@@ -201,7 +237,8 @@ def writeXLSX(gachaLists, gachaTypeNames):
         worksheet.set_column("C:C", 14)
         for i in range(len(excel_col)):
             # worksheet.write(f"{excel_col[i]}1", excel_header[i], border)
-            worksheet.write(f"{excel_col[i]}1", excel_header[i], title_css)
+            # worksheet.write(f"{excel_col[i]}1", excel_header[i], title_css)
+            worksheet.write("".format(str(excel_col[i]))+"1".format(str(excel_header[i])).format(title_css))
         idx = 0
         pdx = 0
         for i in range(len(gachaList)):
@@ -212,8 +249,9 @@ def writeXLSX(gachaLists, gachaTypeNames):
             excel_data[1] = int(excel_data[1])
             excel_data[4] = int(excel_data[4])
             for j in range(len(excel_col)):
-                worksheet.write(f"{excel_col[j]}{i+2}", excel_data[j], content_css)
                 # worksheet.write(f"{excel_col[j]}{i+2}", excel_data[j])
+                # worksheet.write(f"{excel_col[j]}{i+2}", excel_data[j], content_css)
+                worksheet.write("".format(str(excel_col[j])).format(str(i+2)).format(str(excel_data[j])).format(str(content_css)))
             if excel_data[4] == 5:
                 pdx = 0
 
@@ -221,9 +259,12 @@ def writeXLSX(gachaLists, gachaTypeNames):
         star_4 = workbook.add_format({"bg_color": "#ebebeb", "color": "#a256e1", "bold": True})
         star_3 = workbook.add_format({"bg_color": "#ebebeb"})
         # star_3 = workbook.add_format({"bg_color": "#ebebeb", "color": "#35aacc"})
-        worksheet.conditional_format(f"A2:G{len(gachaList)+1}", {"type": "formula", "criteria": "=$E2=5", "format": star_5})
-        worksheet.conditional_format(f"A2:G{len(gachaList)+1}", {"type": "formula", "criteria": "=$E2=4", "format": star_4})
-        worksheet.conditional_format(f"A2:G{len(gachaList)+1}", {"type": "formula", "criteria": "=$E2=3", "format": star_3})
+        # worksheet.conditional_format(f"A2:G{len(gachaList)+1}", {"type": "formula", "criteria": "=$E2=5", "format": star_5})
+        worksheet.conditional_format("A2:G".format(str(len(gachaList)+1)), {"type": "formula", "criteria": "=$E2=5", "format": "".format(str(star_5))})
+        # worksheet.conditional_format(f"A2:G{len(gachaList)+1}", {"type": "formula", "criteria": "=$E2=4", "format": star_4})
+        worksheet.conditional_format("A2:G".format(str(len(gachaList)+1)), {"type": "formula", "criteria": "=$E2=4", "format": "".format(str(star_4))})
+        # worksheet.conditional_format(f"A2:G{len(gachaList)+1}", {"type": "formula", "criteria": "=$E2=3", "format": star_3})
+        worksheet.conditional_format("A2:G".format(str(len(gachaList)+1)), {"type": "formula", "criteria": "=$E2=3", "format": "".format(str(star_3))})
 
     workbook.close()
 
