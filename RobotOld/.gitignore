@@ -115,4 +115,5 @@ Hera/netreceive/*.pro.user
 Hera/netsend/*.pro.user
 log_gnn_data.txt
 # MTGNN
+MTGNN/*
 MTGNN/data/*

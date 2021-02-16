@@ -6,7 +6,9 @@ import os
 import torch
 from torch.nn import Sequential as Seq, Linear, ReLU
 import torch.nn.functional as F
+from tqdm import tqdm
 from torch_geometric.data import Data
+from torch_geometric.data import InMemoryDataset
 from torch_geometric.nn import MessagePassing, TopKPooling, GraphConv, GatedGraphConv
 from torch_geometric.nn import global_mean_pool as gap, global_max_pool as gmp 
 from torch_geometric.utils import remove_self_loops, add_self_loops
@@ -28,7 +30,7 @@ from sklearn.metrics import roc_auc_score
 # SAGEConv层
 class SAGEConv(MessagePassing):
     def __init__(self, in_channels, out_channels):
-        super(SAGEConv, self).__init__(aggr='max') #  "Max" aggregation.
+        super(SAGEConv, self).__init__(aggr='max') # "Max" aggregation.
         self.lin = torch.nn.Linear(in_channels, out_channels)
         self.act = torch.nn.ReLU()
         self.update_lin = torch.nn.Linear(in_channels + out_channels, in_channels, bias=False)
@@ -72,7 +74,7 @@ class Net(torch.nn.Module):
     def forward(self, data):
         x, edge_index, batch = data.x, data.edge_index, data.batch
         x = self.item_embedding(x)
-        x = x.squeeze(1)        
+        x = x.squeeze(1)
         x = F.relu(self.conv1(x, edge_index))
         x, edge_index, _, batch, _ = self.pool1(x, edge_index, None, batch)
         x1 = torch.cat([gmp(x, batch), gap(x, batch)], dim=1)
@@ -86,7 +88,7 @@ class Net(torch.nn.Module):
         x = self.lin1(x)
         x = self.act1(x)
         x = self.lin2(x)
-        x = self.act2(x)      
+        x = self.act2(x)
         x = F.dropout(x, p=0.5, training=self.training)
         x = torch.sigmoid(self.lin3(x)).squeeze(1)
         return x
@@ -103,7 +105,7 @@ class YooChooseBinaryDataset(InMemoryDataset):
         return []
     @property
     def processed_file_names(self):
-        return ['../input/yoochoose_click_binary_1M_sess.dataset']
+        return ['./yoochoose_click_binary_1M_sess.dataset']
     def download(self):
         pass
     def process(self):
@@ -181,20 +183,21 @@ df = df.loc[df.session_id.isin(sampled_session_id)]
 # print(df.nunique())
 # print(buy_df.nunique())
 # print(df.isna().sum())
-print(df.groupby('session_id')['item_id'].size().mean())
+# print(df.groupby('session_id')['item_id'].size().mean())
 
 # 
 item_encoder = LabelEncoder()
 df['item_id'] = item_encoder.fit_transform(df.item_id)
-print(df.head())
+# print(df.head())
 
 # 检查click数据中的session_id是否出现在buy数据中
 df['label'] = df.session_id.isin(buy_df.session_id)
-print(df.head())
-print(df.drop_duplicates('session_id')['label'].mean())
+# print(df.head())
+# print(df.drop_duplicates('session_id')['label'].mean())
+print("----------预处理完成----------")
 
 ## 数据集构建
-dataset = YooChooseBinaryDataset(root='../')
+dataset = YooChooseBinaryDataset(root='./')
 # 洗牌dataset
 dataset = dataset.shuffle()
 # 划分训练集，验证集，测试集
@@ -204,12 +207,14 @@ test_dataset = dataset[900000:]
 print(len(train_dataset))
 print(len(val_dataset))
 print(len(test_dataset))
+print("----------数据集构建完成----------")
 
 ## 模型构建
 device = torch.device('cuda')
 model = Net().to(device)
 optimizer = torch.optim.Adam(model.parameters(), lr=0.005)
 crit = torch.nn.BCELoss()
+print("----------模型构建完成----------")
 
 ## 计算误差
 for epoch in range(1):
