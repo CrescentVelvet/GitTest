@@ -11,6 +11,7 @@ from torch_geometric.nn import MessagePassing, TopKPooling, GraphConv, GatedGrap
 from torch_geometric.nn import global_mean_pool as gap, global_max_pool as gmp 
 from torch_geometric.utils import remove_self_loops, add_self_loops
 from sklearn.preprocessing import LabelEncoder
+from sklearn.metrics import roc_auc_score
 
 # pandas中的各种函数
 # map运算函数(函数，列表)：   对列表中的每一个元素进行函数运算
@@ -51,6 +52,44 @@ class SAGEConv(MessagePassing):
         return new_embedding
 
 # 神经网络
+class Net(torch.nn.Module):
+    def __init__(self):
+        super(Net, self).__init__()
+        self.conv1 = SAGEConv(embed_dim, 128)
+        self.pool1 = TopKPooling(128, ratio=0.8)
+        self.conv2 = SAGEConv(128, 128)
+        self.pool2 = TopKPooling(128, ratio=0.8)
+        self.conv3 = SAGEConv(128, 128)
+        self.pool3 = TopKPooling(128, ratio=0.8)
+        self.item_embedding = torch.nn.Embedding(num_embeddings=df.item_id.max() +1, embedding_dim=embed_dim)
+        self.lin1 = torch.nn.Linear(256, 128)
+        self.lin2 = torch.nn.Linear(128, 64)
+        self.lin3 = torch.nn.Linear(64, 1)
+        self.bn1 = torch.nn.BatchNorm1d(128)
+        self.bn2 = torch.nn.BatchNorm1d(64)
+        self.act1 = torch.nn.ReLU()
+        self.act2 = torch.nn.ReLU()
+    def forward(self, data):
+        x, edge_index, batch = data.x, data.edge_index, data.batch
+        x = self.item_embedding(x)
+        x = x.squeeze(1)        
+        x = F.relu(self.conv1(x, edge_index))
+        x, edge_index, _, batch, _ = self.pool1(x, edge_index, None, batch)
+        x1 = torch.cat([gmp(x, batch), gap(x, batch)], dim=1)
+        x = F.relu(self.conv2(x, edge_index))
+        x, edge_index, _, batch, _ = self.pool2(x, edge_index, None, batch)
+        x2 = torch.cat([gmp(x, batch), gap(x, batch)], dim=1)
+        x = F.relu(self.conv3(x, edge_index))
+        x, edge_index, _, batch, _ = self.pool3(x, edge_index, None, batch)
+        x3 = torch.cat([gmp(x, batch), gap(x, batch)], dim=1)
+        x = x1 + x2 + x3
+        x = self.lin1(x)
+        x = self.act1(x)
+        x = self.lin2(x)
+        x = self.act2(x)      
+        x = F.dropout(x, p=0.5, training=self.training)
+        x = torch.sigmoid(self.lin3(x)).squeeze(1)
+        return x
 
 # 预处理之后，将数据转换为Dataset数据集对象
 # 将session中的每一个item都视为一个节点，一个session视为一个图
@@ -87,6 +126,37 @@ class YooChooseBinaryDataset(InMemoryDataset):
             data_list.append(data)
         data, slices = self.collate(data_list)
         torch.save((data, slices), self.processed_paths[0])
+
+# 训练函数
+def train():
+    model.train()
+    loss_all = 0
+    for data in train_loader:
+        data = data.to(device)
+        optimizer.zero_grad()
+        output = model(data)
+        label = data.y.to(device)
+        loss = crit(output, label)
+        loss.backward()
+        loss_all += data.num_graphs * loss.item()
+        optimizer.step()
+    return loss_all / len(train_dataset)
+
+# 估计函数
+def evaluate(loader):
+    model.eval()
+    predictions = []
+    labels = []
+    with torch.no_grad():
+        for data in loader:
+            data = data.to(device)
+            pred = model(data).detach().cpu().numpy()
+            label = data.y.detach().cpu().numpy()
+            predictions.append(pred)
+            labels.append(label)
+    predictions = np.hstack(predictions)
+    labels = np.hstack(labels)
+    return roc_auc_score(labels, predictions)
 
 ## 数据预处理
 # 读取数据与标签，并对数据进行预处理
@@ -136,3 +206,16 @@ print(len(val_dataset))
 print(len(test_dataset))
 
 ## 模型构建
+device = torch.device('cuda')
+model = Net().to(device)
+optimizer = torch.optim.Adam(model.parameters(), lr=0.005)
+crit = torch.nn.BCELoss()
+
+## 计算误差
+for epoch in range(1):
+    loss = train()
+    train_acc = evaluate(train_loader)
+    val_acc = evaluate(val_loader)    
+    test_acc = evaluate(test_loader)
+    print('Epoch: {:03d}, Loss: {:.5f}, Train Auc: {:.5f}, Val Auc: {:.5f}, Test Auc: {:.5f}'.
+          format(epoch, loss, train_acc, val_acc, test_acc))
