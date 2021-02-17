@@ -7,14 +7,13 @@ import torch
 from torch.nn import Sequential as Seq, Linear, ReLU
 import torch.nn.functional as F
 from tqdm import tqdm
-from torch_geometric.data import Data
-from torch_geometric.data import InMemoryDataset
+from torch_geometric.data import Data, InMemoryDataset, DataLoader
 from torch_geometric.nn import MessagePassing, TopKPooling, GraphConv, GatedGraphConv
 from torch_geometric.nn import global_mean_pool as gap, global_max_pool as gmp 
 from torch_geometric.utils import remove_self_loops, add_self_loops
 from sklearn.preprocessing import LabelEncoder
 from sklearn.metrics import roc_auc_score
-
+embed_dim = 128
 # pandas中的各种函数
 # map运算函数(函数，列表)：   对列表中的每一个元素进行函数运算
 # lambda匿名函数 x：         表示一个任意变量x
@@ -27,7 +26,7 @@ from sklearn.metrics import roc_auc_score
 # isin过滤函数(字符串)：     返回数据中是否出现该字符串
 # shuffle洗牌函数(列表)：    将列表中的所有元素随机排序
 
-# SAGEConv层
+# 用SAGEConv层代替GraphConv层
 class SAGEConv(MessagePassing):
     def __init__(self, in_channels, out_channels):
         super(SAGEConv, self).__init__(aggr='max') # "Max" aggregation.
@@ -36,24 +35,24 @@ class SAGEConv(MessagePassing):
         self.update_lin = torch.nn.Linear(in_channels + out_channels, in_channels, bias=False)
         self.update_act = torch.nn.ReLU()
     def forward(self, x, edge_index):
-        # x has shape [N, in_channels]
-        # edge_index has shape [2, E]
+        # x的结构是[N, in_channels]
+        # edge_index的结构是[2, E]
         edge_index, _ = remove_self_loops(edge_index)
         edge_index, _ = add_self_loops(edge_index, num_nodes=x.size(0))
         return self.propagate(edge_index, size=(x.size(0), x.size(0)), x=x)
     def message(self, x_j):
-        # x_j has shape [E, in_channels]
+        # x_j的结构是[E, in_channels]
         x_j = self.lin(x_j)
         x_j = self.act(x_j)
         return x_j
     def update(self, aggr_out, x):
-        # aggr_out has shape [N, out_channels]
+        # aggr_out的结构是[N, out_channels]
         new_embedding = torch.cat([aggr_out, x], dim=1)
         new_embedding = self.update_lin(new_embedding)
         new_embedding = self.update_act(new_embedding)
         return new_embedding
 
-# 神经网络
+# 构建神经网络
 class Net(torch.nn.Module):
     def __init__(self):
         super(Net, self).__init__()
@@ -105,6 +104,7 @@ class YooChooseBinaryDataset(InMemoryDataset):
         return []
     @property
     def processed_file_names(self):
+        # 保存在当前目录下
         return ['./yoochoose_click_binary_1M_sess.dataset']
     def download(self):
         pass
@@ -130,6 +130,7 @@ class YooChooseBinaryDataset(InMemoryDataset):
         torch.save((data, slices), self.processed_paths[0])
 
 # 训练函数
+# 将从训练集构造的DataLoader迭代，然后反向传播损失函数
 def train():
     model.train()
     loss_all = 0
@@ -145,6 +146,7 @@ def train():
     return loss_all / len(train_dataset)
 
 # 估计函数
+# 用AUC替代准确度，对任务完成情况进行估计评价
 def evaluate(loader):
     model.eval()
     predictions = []
@@ -197,26 +199,32 @@ df['label'] = df.session_id.isin(buy_df.session_id)
 print("----------预处理完成----------")
 
 ## 数据集构建
-dataset = YooChooseBinaryDataset(root='./')
+dataset = YooChooseBinaryDataset(root='../') # 构建在上级目录下
 # 洗牌dataset
-dataset = dataset.shuffle()
+# dataset = dataset.shuffle()
 # 划分训练集，验证集，测试集
 train_dataset = dataset[:800000]
 val_dataset = dataset[800000:900000]
 test_dataset = dataset[900000:]
-print(len(train_dataset))
-print(len(val_dataset))
-print(len(test_dataset))
+print(len(train_dataset), len(val_dataset), len(test_dataset))
+batch_size = 1024
+train_loader = DataLoader(train_dataset, batch_size=batch_size)
+val_loader = DataLoader(val_dataset, batch_size=batch_size)
+test_loader = DataLoader(test_dataset, batch_size=batch_size)
+num_items = df.item_id.max()+1
+print(num_items)
 print("----------数据集构建完成----------")
 
 ## 模型构建
 device = torch.device('cuda')
 model = Net().to(device)
+# 使用Adam作为优化器，设置学习率0.005
 optimizer = torch.optim.Adam(model.parameters(), lr=0.005)
+# 使用BCE作为损失函数
 crit = torch.nn.BCELoss()
 print("----------模型构建完成----------")
 
-## 计算误差
+## 训练模型与计算误差
 for epoch in range(1):
     loss = train()
     train_acc = evaluate(train_loader)
