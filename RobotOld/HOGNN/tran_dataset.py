@@ -15,16 +15,27 @@ from sklearn.preprocessing import LabelEncoder
 from sklearn.metrics import roc_auc_score
 embed_dim = 128
 # pandas中的各种函数
-# map运算函数(函数，列表)：   对列表中的每一个元素进行函数运算
-# lambda匿名函数 x：         表示一个任意变量x
-# groupby分组函数(标签)：    根据标签对数据分组，相同标签值的数据放到一起
-# loc选取函数[行，列]：      按照行和列的标签选取数据，取出某一行列的数据
-# drop删除函数(标签)：       删除该标签的行，删除列要加个axis=1
-# unique函数()：            返回数据中不同的值
-# nunique函数()：           返回数据中不同值的个数
-# choice选择函数(列表):      返回这个列表的随机一项
-# isin过滤函数(字符串)：     返回数据中是否出现该字符串
-# shuffle洗牌函数(列表)：    将列表中的所有元素随机排序
+# map运算函数(函数，列表):  对列表中的每一个元素进行函数运算
+# lambda匿名函数 x:         表示一个任意变量x
+# groupby标签分组(标签):    根据标签对数据分组，相同标签值的数据放到一起
+# loc定位选取[行，列]:      按照行和列的标签选取数据，取出某一行列的数据
+# drop删除行列(标签):       删除该标签的行，删除列要加个axis=1
+# unique函数():             返回数据中不同的值
+# nunique函数():            返回数据中不同值的个数
+# squeeze压缩函数():        减去一个维度
+# unsqueeze扩充函数():      增加一个维度
+# transpose转置函数(a,b):   高维数据的矩阵转置，交换a和b号坐标轴
+# choice选择函数(列表):     返回这个列表的随机一项
+# isin过滤函数(字符串):     返回数据中是否出现该字符串
+# shuffle洗牌函数(列表):    将列表中的所有元素随机排序
+# reset_index重置索引():                第一列从0开始，原来的index变成第二列，若要删除原来index使用drop=True
+# @property一种装饰器:                  用来修饰函数，创建只读属性，类访问不用加小括号
+# random.permutation随机(a):            对(0,a)的顺序数字进行随机排序生成数列
+# LabelEncoder():                       标准化特征值(连续化+界限化)
+# 将离散的特征值统一转换为range(特征值种类数-1)范围内的整数，例如把[1,3,11,500]变成[0,1,2,3]
+# LabelEncoder().fit(原数据):           获取特征值(标签值)[1,3,11,500]
+# LabelEncoder().tranform(新数据):      将特征值标准化[1,3,11,500,1,3]变成[0,1,2,3,0,1]
+# LabelEncoder().fit_transform(数据):   获取特征值并对特征值标准化
 
 # 用SAGEConv层代替GraphConv层
 class SAGEConv(MessagePassing):
@@ -151,6 +162,7 @@ def evaluate(loader):
     model.eval()
     predictions = []
     labels = []
+    # 设置梯度gradient归零，加速计算
     with torch.no_grad():
         for data in loader:
             data = data.to(device)
