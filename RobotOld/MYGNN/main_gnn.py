@@ -1,7 +1,7 @@
 '''
 Author       : velvet
 Date         : 2021-02-17 23:04:22
-LastEditTime : 2021-02-18 17:37:36
+LastEditTime : 2021-02-19 00:50:16
 LastEditors  : velvet
 Description  : 
 '''
@@ -30,27 +30,38 @@ class MyDataset(InMemoryDataset):
     # 从保存文件夹里读取数据，并创建一个数据对象列表
     def process(self):
         data_list = []
-        # 根据session_id对数据进行分组
-        # grouped = df.groupby('session_id')
-        # for session_id, group in tqdm(grouped):
         for i in df.index:
+            # 获取当前行的元素个数
+            i_number = df.iloc[i].size
             # 判断数据缺失
-            if np.isnan(df.enemy7_y[i]):
-                print('Yes')
-            else:
-                pass
-            # print(len(df[i]))
-            # 边
-            edge_index = torch.tensor([[0, 1, 1, 2],
-                           [1, 0, 2, 1]], dtype=torch.long)
-            # 节点
-            x = torch.tensor([[-1], [0], [1]], dtype=torch.float)
-            # if np.isnan(df.me1_x[i]):
-            #   me1_x = torch.tensor([df.me1_x], dtype=torch.float)
+            # if np.isnan(df.enemy7_y[i]):
+            #     print('Yes')
             # else:
-            #   pass
+            #     pass
+            # 节点，奇偶项依次是x、y坐标
+            # x = torch.tensor([[-1], [0], [1]], dtype=torch.float)
+            # i_x = df[df.columns[::2]]可以吗？
+            i_x = df.iloc[i,[j%2==0 for j in range(len(df.columns))]]
+            print(i_x)
+            i_y = df.iloc[i,[j%2==1 for j in range(len(df.columns))]]
+            print(i_y)
+            x = torch.tenser([i_x], dtype=torch.float)
+            y = torch.tenser([i_y], dtype=torch.float)
+            # 边，考虑球与车之间、车与车之间的联系
+            # edge_index = torch.tensor([[0, 1, 1, 2],
+                        #    [1, 0, 2, 1]], dtype=torch.long)
+            # [0,0,0,0,0,1,1,1,1,1,2,2,2,2,2...]
+            # [1,2,3,4,5,0,2,3,4,5,0,1,3,4,5...]
+            i_list = list(range(i_number))
+            i_source = [a for a in i_list for b in range(i_number)]
+            print(i_source)
+            i_target = []
+            for i in range(i_number):
+                i_target = i_target + i_list.remove(i_number)
+            print(i_target)
+            edge_index = torch.tensor([i_source], [i_target], dtype=torch.long)
             # 节点和边组成数据
-            data = Data(x=x, edge_index=edge_index)
+            data = Data(x=x, edge_index=edge_index, y=y)
             # 数据添加到数据列表
             data_list.append(data)
         # 整理数据对象以增加读取速度，将所有实例连接到一个大数据对象中
@@ -86,4 +97,5 @@ valid_loader = DataLoader(valid_dataset, batch_size=batch_size)
 test_loader  = DataLoader(test_dataset,  batch_size=batch_size)
 # num_items = df.
 print("----------数据集构建完成----------")
+
 print("----------模型构建完成----------")

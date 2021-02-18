@@ -37,11 +37,15 @@ embed_dim = 128
 # df.shape(1)                         获取列数
 # df.columns                          获取标签
 # df.size                             获取全部元素个数
-# gdf.iloc[3].size                    获取第三行元素个数
+# df.iloc[3].size                     获取第三行元素个数
 # df[3].size                          获取第三列元素个数
 # dict(df.iloc[3].value_counts())     读取第三行各种元素出现的次数
 # dict(df[3].value_counts())          读取第三列各种元素出现的次数
-# reset_index重置索引()                第一列从0开始，原来的index变成第二列，若要删除原来index使用drop=True
+# df=df[df.index%2==0]                保留奇数行，删除偶数行
+# df=df[df.index%2==1]                保留偶数行，删除奇数行
+# df=df.iloc[:,[i%2==0 for i in range(len(df.columns))]] 保留奇数列，删除偶数列
+# df=df.iloc[:,[i%2==1 for i in range(len(df.columns))]] 保留偶数列，删除奇数列
+# reset_index重置索引()                第一列从0开始，原来的index变成第二列，若要删除原来的index使用drop=True
 # @property一种装饰器                  用来修饰函数，创建只读属性，类访问不用加小括号
 # random.permutation随机(a)            对(0,a)的顺序数字进行随机排序生成数列
 # LabelEncoder()                       标准化特征值(连续化+界限化)
@@ -49,6 +53,9 @@ embed_dim = 128
 # LabelEncoder().fit(原数据)           获取特征值(标签值)[1,3,11,500]
 # LabelEncoder().tranform(新数据)      将特征值标准化[1,3,11,500,1,3]变成[0,1,2,3,0,1]
 # LabelEncoder().fit_transform(数据)   获取特征值并对特征值标准化
+# a_list=list(range(5))                             生成数组[0, 1, 2, 3, 4]
+# b_list=[a for a in a_list for b in range(3)]      生成数组[0, 0, 0, 1, 1, 1, 2, 2, 2, 3, 3, 3, 4, 4, 4]
+# c_list=a_list.remove(1)                           生成数组[0, 2, 3, 4]
 
 # 用SAGEConv层代替GraphConv层
 class SAGEConv(MessagePassing):
