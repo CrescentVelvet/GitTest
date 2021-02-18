@@ -176,7 +176,6 @@ def evaluate(loader):
 
 ## 数据预处理
 # 读取数据与标签，并对数据进行预处理
-# 对item_id进行编码，确保从0开始
 df = pd.read_csv('yoochoose-data/yoochoose-clicks.dat', header=None)
 df.columns = ['session_id','timestamp','item_id','category']
 buy_df = pd.read_csv('yoochoose-data/yoochoose-buys.dat', header=None)

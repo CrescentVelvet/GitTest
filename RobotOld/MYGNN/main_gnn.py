@@ -1,14 +1,14 @@
 '''
 Author       : velvet
 Date         : 2021-02-17 23:04:22
-LastEditTime : 2021-02-18 13:23:58
+LastEditTime : 2021-02-18 15:14:16
 LastEditors  : velvet
 Description  : 
 '''
 import numpy as np
 import pandas as pd
 import torch
-from torch_geometric.data import InMemoryDataset
+from torch_geometric.data import Data, InMemoryDataset, DataLoader
 from sklearn.preprocessing import LabelEncoder
 
 # 创建自己的数据集dataset
@@ -31,29 +31,14 @@ class MyDataset(InMemoryDataset):
     def process(self):
         data_list = []
         # 根据session_id对数据进行分组
-        grouped = df.groupby('session_id')
-        for session_id, group in tqdm(grouped):
-            # 对item_id标准化
-            sess_item_id = LabelEncoder().fit_transform(group.item_id)
-            # 重置索引
-            group = group.reset_index(drop=True)
-            # 标准化item_id加入数据组
-            group['sess_item_id'] = sess_item_id
-            # 好复杂！！！！！！
-            node_features = group.loc[group.session_id==session_id,['sess_item_id','item_id']].sort_values('sess_item_id').item_id.drop_duplicates().values
-            # 扩充一个维度
-            node_features = torch.LongTensor(node_features).unsqueeze(1)
-            # 终点是item_id第一列
-            target_nodes = group.sess_item_id.values[1:]
-            # 起点是item_id第二列
-            source_nodes = group.sess_item_id.values[:-1]
-            # 边由起点指向终点
-            edge_index = torch.tensor([source_nodes,
-                                   target_nodes], dtype=torch.long)
-            # 节点x为
-            x = node_features
-            # 节点y为0
-            y = torch.FloatTensor([group.label.values[0]])
+        # grouped = df.groupby('session_id')
+        # for session_id, group in tqdm(grouped):
+        for i in df.index:
+            print(i)
+            edge_index = torch.tensor([[0, 1, 1, 2],
+                           [1, 0, 2, 1]], dtype=torch.long)
+            x = torch.tensor([[-1], [0], [1]], dtype=torch.float)
+            y = torch.tensor([[1], [0], [-1]], dtype=torch.float)
             # 节点和边组成数据
             data = Data(x=x, edge_index=edge_index, y=y)
             # 数据添加到数据列表
@@ -65,19 +50,33 @@ class MyDataset(InMemoryDataset):
         torch.save((data, slices), self.processed_paths[0])
 
 df = pd.read_csv('data/2019-07-03_14-09_ER-Force-vs-TIGERs_Mannheim_data.txt',
-	header=None, sep='\t', index_col=False,
-	names=['ball_x','ball_y','me1_x','me1_y','me2_x','me2_y','me3_x','me3_y',
-	'me4_x','me4_y','me5_x','me5_y','me6_x','me6_y','me7_x','me7_y',
-	'enemy1_x','enemy1_y','enemy2_x','enemy2_y','enemy3_x','enemy3_y','enemy4_x',
-	'enemy4_y','enemy5_x','enemy5_y','enemy6_x','enemy6_y','enemy7_x','enemy7_y'])
-df.columns=['ball_x','ball_y','me1_x','me1_y','me2_x','me2_y','me3_x','me3_y',
-	'me4_x','me4_y','me5_x','me5_y','me6_x','me6_y','me7_x','me7_y',
-	'enemy1_x','enemy1_y','enemy2_x','enemy2_y','enemy3_x','enemy3_y','enemy4_x',
-	'enemy4_y','enemy5_x','enemy5_y','enemy6_x','enemy6_y','enemy7_x','enemy7_y']
+    header=None, sep='\t', index_col=False,
+    names=['ball_x','ball_y',
+    'me1_x','me1_y','me2_x','me2_y','me3_x','me3_y','me4_x',
+    'me4_y','me5_x','me5_y','me6_x','me6_y','me7_x','me7_y',
+    'enemy1_x','enemy1_y','enemy2_x','enemy2_y','enemy3_x','enemy3_y','enemy4_x',
+    'enemy4_y','enemy5_x','enemy5_y','enemy6_x','enemy6_y','enemy7_x','enemy7_y'])
+df = df.reset_index()
+df.columns=['index',
+    'ball_x','ball_y',
+    'me1_x','me1_y','me2_x','me2_y','me3_x','me3_y','me4_x',
+    'me4_y','me5_x','me5_y','me6_x','me6_y','me7_x','me7_y',
+    'enemy1_x','enemy1_y','enemy2_x','enemy2_y','enemy3_x','enemy3_y','enemy4_x',
+    'enemy4_y','enemy5_x','enemy5_y','enemy6_x','enemy6_y','enemy7_x','enemy7_y']
 print(df)
 # buy_df = pd.read_csv('yoochoose-data/yoochoose-buys.dat', header=None)
 # buy_df.columns=['session_id','timestamp','item_id','price','quantity']
 # print(buy_df)
 print("----------预处理完成----------")
+dataset = MyDataset(root='../')
+train_dataset = dataset[:2]
+valid_dataset = dataset[2:3]
+test_dataset  = dataset[3:]
+print(len(train_dataset), len(valid_dataset), len(test_dataset))
+batch_size = 1
+train_loader = DataLoader(train_dataset, batch_size=batch_size)
+valid_loader = DataLoader(valid_dataset, batch_size=batch_size)
+test_loader  = DataLoader(test_dataset,  batch_size=batch_size)
+# num_items = df.
 print("----------数据集构建完成----------")
 print("----------模型构建完成----------")
