@@ -199,7 +199,7 @@ df = df.loc[df.session_id.isin(sampled_session_id)]
 # print(df.isna().sum())
 # print(df.groupby('session_id')['item_id'].size().mean())
 
-# 
+# 标签值标准化
 item_encoder = LabelEncoder()
 df['item_id'] = item_encoder.fit_transform(df.item_id)
 # print(df.head())

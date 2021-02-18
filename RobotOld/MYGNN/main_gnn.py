@@ -1,7 +1,7 @@
 '''
 Author       : velvet
 Date         : 2021-02-17 23:04:22
-LastEditTime : 2021-02-18 00:24:24
+LastEditTime : 2021-02-18 13:23:58
 LastEditors  : velvet
 Description  : 
 '''
@@ -63,3 +63,21 @@ class MyDataset(InMemoryDataset):
         data, slices = self.collate(data_list)
         # 将数据对象加载到属性中
         torch.save((data, slices), self.processed_paths[0])
+
+df = pd.read_csv('data/2019-07-03_14-09_ER-Force-vs-TIGERs_Mannheim_data.txt',
+	header=None, sep='\t', index_col=False,
+	names=['ball_x','ball_y','me1_x','me1_y','me2_x','me2_y','me3_x','me3_y',
+	'me4_x','me4_y','me5_x','me5_y','me6_x','me6_y','me7_x','me7_y',
+	'enemy1_x','enemy1_y','enemy2_x','enemy2_y','enemy3_x','enemy3_y','enemy4_x',
+	'enemy4_y','enemy5_x','enemy5_y','enemy6_x','enemy6_y','enemy7_x','enemy7_y'])
+df.columns=['ball_x','ball_y','me1_x','me1_y','me2_x','me2_y','me3_x','me3_y',
+	'me4_x','me4_y','me5_x','me5_y','me6_x','me6_y','me7_x','me7_y',
+	'enemy1_x','enemy1_y','enemy2_x','enemy2_y','enemy3_x','enemy3_y','enemy4_x',
+	'enemy4_y','enemy5_x','enemy5_y','enemy6_x','enemy6_y','enemy7_x','enemy7_y']
+print(df)
+# buy_df = pd.read_csv('yoochoose-data/yoochoose-buys.dat', header=None)
+# buy_df.columns=['session_id','timestamp','item_id','price','quantity']
+# print(buy_df)
+print("----------预处理完成----------")
+print("----------数据集构建完成----------")
+print("----------模型构建完成----------")
