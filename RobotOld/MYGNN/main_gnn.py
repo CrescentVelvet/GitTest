@@ -1,7 +1,7 @@
 '''
 Author       : velvet
 Date         : 2021-02-17 23:04:22
-LastEditTime : 2021-02-19 00:50:16
+LastEditTime : 2021-02-19 13:29:48
 LastEditors  : velvet
 Description  : 
 '''
@@ -31,35 +31,36 @@ class MyDataset(InMemoryDataset):
     def process(self):
         data_list = []
         for i in df.index:
-            # 获取当前行的元素个数
-            i_number = df.iloc[i].size
-            # 判断数据缺失
-            # if np.isnan(df.enemy7_y[i]):
-            #     print('Yes')
-            # else:
-            #     pass
-            # 节点，奇偶项依次是x、y坐标
-            # x = torch.tensor([[-1], [0], [1]], dtype=torch.float)
-            # i_x = df[df.columns[::2]]可以吗？
-            i_x = df.iloc[i,[j%2==0 for j in range(len(df.columns))]]
-            print(i_x)
-            i_y = df.iloc[i,[j%2==1 for j in range(len(df.columns))]]
-            print(i_y)
-            x = torch.tenser([i_x], dtype=torch.float)
-            y = torch.tenser([i_y], dtype=torch.float)
-            # 边，考虑球与车之间、车与车之间的联系
-            # edge_index = torch.tensor([[0, 1, 1, 2],
-                        #    [1, 0, 2, 1]], dtype=torch.long)
+            # 提取奇数偶数项
+            i_x = df.iloc[i,[j%2==1 for j in range(len(df.columns))]]
+            i_y = df.iloc[i,[j%2==0 for j in range(len(df.columns))]]
+            # 删除nan项
+            i_x = [i_x_ for i_x_ in i_x if i_x_ == i_x_]
+            i_y = [i_y_ for i_y_ in i_y if i_y_ == i_y_]
+            # 获取节点个数
+            i_number = len(i_x)
+            # 元素化为子列表
+            i_x = list(map(lambda x:[x], i_x))
+            i_y = list(map(lambda y:[y], i_y))
+            # 节点，奇数偶数项为x、y坐标
+            x = torch.tensor(i_x, dtype=torch.float)
+            y = torch.tensor(i_y, dtype=torch.float)
             # [0,0,0,0,0,1,1,1,1,1,2,2,2,2,2...]
             # [1,2,3,4,5,0,2,3,4,5,0,1,3,4,5...]
+            # 基本顺序数列
             i_list = list(range(i_number))
-            i_source = [a for a in i_list for b in range(i_number)]
-            print(i_source)
+            # 起点是单个元素重复多次的数列
+            i_source = [a_i_list for a_i_list in i_list for b_i_number in range(i_number)]
             i_target = []
-            for i in range(i_number):
-                i_target = i_target + i_list.remove(i_number)
-            print(i_target)
-            edge_index = torch.tensor([i_source], [i_target], dtype=torch.long)
+            for i_number_ in range(i_number):
+                # 复制列表
+                i_list_ = i_list[:]
+                # 移除元素
+                i_list_.remove(i_number_)
+                # 终点是依次移除元素的数列
+                i_target = i_target + i_list_
+            # 边，考虑球与车之间、车与车之间的联系
+            edge_index = torch.tensor(i_source, i_target, dtype=torch.long)
             # 节点和边组成数据
             data = Data(x=x, edge_index=edge_index, y=y)
             # 数据添加到数据列表
