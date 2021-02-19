@@ -1,7 +1,7 @@
 '''
 Author       : velvet
 Date         : 2021-02-17 23:04:22
-LastEditTime : 2021-02-19 13:29:48
+LastEditTime : 2021-02-19 16:35:04
 LastEditors  : velvet
 Description  : 
 '''
@@ -50,17 +50,17 @@ class MyDataset(InMemoryDataset):
             # 基本顺序数列
             i_list = list(range(i_number))
             # 起点是单个元素重复多次的数列
-            i_source = [a_i_list for a_i_list in i_list for b_i_number in range(i_number)]
+            i_source = [a_i_list for a_i_list in i_list for b_i_number in range(i_number-1)]
             i_target = []
             for i_number_ in range(i_number):
                 # 复制列表
-                i_list_ = i_list[:]
+                i_list_ = list(i_list)
                 # 移除元素
                 i_list_.remove(i_number_)
                 # 终点是依次移除元素的数列
                 i_target = i_target + i_list_
             # 边，考虑球与车之间、车与车之间的联系
-            edge_index = torch.tensor(i_source, i_target, dtype=torch.long)
+            edge_index = torch.tensor([i_source, i_target], dtype=torch.long)
             # 节点和边组成数据
             data = Data(x=x, edge_index=edge_index, y=y)
             # 数据添加到数据列表
@@ -71,14 +71,17 @@ class MyDataset(InMemoryDataset):
         # 将数据对象加载到属性中
         torch.save((data, slices), self.processed_paths[0])
 
-df = pd.read_csv('data/2019-07-03_14-09_ER-Force-vs-TIGERs_Mannheim_data.txt',
+df = pd.read_csv('data/data_2019-07-03_14-09_ER-Force-vs-TIGERs_Mannheim.txt', 
+    encoding='ISO-8859-1',
     header=None, sep='\t', index_col=False,
     names=['ball_x','ball_y',
     'me1_x','me1_y','me2_x','me2_y','me3_x','me3_y','me4_x','me4_y','me5_x','me5_y',
     'me6_x','me6_y','me7_x','me7_y','me8_x','me8_y','me9_x','me9_y',
     'enemy1_x','enemy1_y','enemy2_x','enemy2_y','enemy3_x','enemy3_y','enemy4_x',
     'enemy4_y','enemy5_x','enemy5_y','enemy6_x','enemy6_y','enemy7_x','enemy7_y'])
+# 添加序列号
 df = df.reset_index()
+print(df)
 df.columns=['index',
     'ball_x','ball_y',
     'me1_x','me1_y','me2_x','me2_y','me3_x','me3_y','me4_x','me4_y','me5_x','me5_y',
