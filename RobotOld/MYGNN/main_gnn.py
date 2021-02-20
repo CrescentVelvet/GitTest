@@ -1,7 +1,7 @@
 '''
 Author       : velvet
 Date         : 2021-02-17 23:04:22
-LastEditTime : 2021-02-20 17:06:45
+LastEditTime : 2021-02-21 01:42:18
 LastEditors  : velvet
 Description  : 
 '''
@@ -13,6 +13,7 @@ from torch_geometric.nn import MessagePassing, GraphConv, TopKPooling
 from torch_geometric.utils import add_self_loops, remove_self_loops, degree
 from torch_geometric.data import Data, InMemoryDataset, DataLoader
 from sklearn.preprocessing import LabelEncoder
+embed_dim = 128
 
 # 创建GCNConv层
 class GCNConv(MessagePassing):
@@ -73,7 +74,7 @@ class RobotNet(torch.nn.Module):
         self.conv3 = SAGEConv(128, 128)
         self.pool3 = TopKPooling(128, ratio=0.8)
         # 添加嵌入层
-        self.item_embedding = torch.nn.Embedding(num_embeddings=df.item_id.max() +1, embedding_dim=embed_dim)
+        self.item_embedding = torch.nn.Embedding(num_embeddings=df.shape[0]+1, embedding_dim=embed_dim)
         # 添加线性层
         self.lin1 = torch.nn.Linear(256, 128)
         self.lin2 = torch.nn.Linear(128, 64)
@@ -221,10 +222,10 @@ print("----------预处理完成----------")
 # 构建数据集
 dataset = RobotDataset(root='../')
 # 划分训练集，验证集，测试集
-train_dataset = dataset[:100000]
-valid_dataset = dataset[100000:150000]
-test_dataset  = dataset[150000:]
-print(len(train_dataset), len(valid_dataset), len(test_dataset))
+length_df = df.shape[0]
+train_dataset = dataset[:int(length_df/3*2-1)]
+valid_dataset = dataset[int(length_df/3*2):int(length_df/6*5-1)]
+test_dataset  = dataset[int(length_df/6*5):]
 # 设置单批次样本数
 batch_size = 128
 train_loader = DataLoader(train_dataset, batch_size=batch_size)
@@ -232,12 +233,12 @@ valid_loader = DataLoader(valid_dataset, batch_size=batch_size)
 test_loader  = DataLoader(test_dataset,  batch_size=batch_size)
 print("----------数据集构建完成----------")
 # 使用GPU训练模型
-# device = torch.device('cuda')
-# model = Net().to(device)
+device = torch.device('cuda')
+model = RobotNet().to(device)
 # 构造optimizer对象，使用Adam作为优化器，设置学习率0.005
-# optimizer = torch.optim.Adam(model.parameters(), lr=0.005)
+optimizer = torch.optim.Adam(model.parameters(), lr=0.005)
 # 设置二元交叉熵为损失函数Binary Cross Entropy
-# crit = torch.nn.BCELoss()
+crit = torch.nn.BCELoss()
 for epoch in range(1):
     loss = train()
     train_acc = evaluate(train_loader)

@@ -33,8 +33,8 @@ embed_dim = 128
 # shuffle(df)           洗牌，将列表中的所有元素随机排序
 # df.info                             获取数据集信息
 # df.shape                            获取行数和列数
-# df.shape(0)                         获取行数
-# df.shape(1)                         获取列数
+# df.shape[0]                         获取行数
+# df.shape[1]                         获取列数
 # df.columns                          获取标签
 # df.size                             获取全部元素个数
 # df.iloc[3].size                     获取第三行元素个数
