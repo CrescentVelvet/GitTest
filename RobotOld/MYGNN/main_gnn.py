@@ -1,7 +1,7 @@
 '''
 Author       : velvet
 Date         : 2021-02-17 23:04:22
-LastEditTime : 2021-02-20 02:01:13
+LastEditTime : 2021-02-20 17:06:45
 LastEditors  : velvet
 Description  : 
 '''
@@ -9,56 +9,51 @@ import numpy as np
 import pandas as pd
 import torch
 from torch.nn import Sequential as Seq, Linear, ReLU
-from torch_geometric.nn import MessagePassing, GraphConv
-from torch_geometric.utils import add_self_loops, degree
+from torch_geometric.nn import MessagePassing, GraphConv, TopKPooling
+from torch_geometric.utils import add_self_loops, remove_self_loops, degree
 from torch_geometric.data import Data, InMemoryDataset, DataLoader
 from sklearn.preprocessing import LabelEncoder
 
-# 创建GCN层
+# 创建GCNConv层
 class GCNConv(MessagePassing):
     def __init__(self, in_channels, out_channels):
-        super(GCNConv, self).__init__(aggr='add')  # "Add" aggregation (Step 5).
+        super(GCNConv, self).__init__(aggr='add')
         self.lin = torch.nn.Linear(in_channels, out_channels)
     def forward(self, x, edge_index):
-        # x has shape [N, in_channels]
-        # edge_index has shape [2, E]
-        # Step 1: 向邻接矩阵添加自循环
+        # Step 1: 邻接矩阵添加自循环
         edge_index, _ = add_self_loops(edge_index, num_nodes=x.size(0))
-        # Step 2: 将节点特征矩阵线性变换
+        # Step 2: 节点特征矩阵进行线性变换
         x = self.lin(x)
-        # Step 3: 计算标准化系数
+        # Step 3-5: 标准化节点特征，聚合邻接节点信息，得到节点新的embeddings
+        return self.propagate(edge_index, x=x, norm=norm)
+    def message(self, x_j, norm):
+        # Step 3: 标准化节点特征
         row, col = edge_index
         deg = degree(col, x.size(0), dtype=x.dtype)
         deg_inv_sqrt = deg.pow(-0.5)
         norm = deg_inv_sqrt[row] * deg_inv_sqrt[col]
-        # Step 4-5: 开始信息传递
-        return self.propagate(edge_index, x=x, norm=norm)
-    def message(self, x_j, norm):
-        # x_j has shape [E, out_channels]
-        # Step 4: 规范化节点特征
         return norm.view(-1, 1) * x_j
+    def update(self, aggr_out):
+        # Step 5: 得到节点新的embeddings
+        return aggr_out
 
-# 用SAGEConv层代替GraphConv层
+# 创建SAGEConv层
 class SAGEConv(MessagePassing):
     def __init__(self, in_channels, out_channels):
-        super(SAGEConv, self).__init__(aggr='max') # "Max" aggregation.
+        super(SAGEConv, self).__init__(aggr='max')
         self.lin = torch.nn.Linear(in_channels, out_channels)
         self.act = torch.nn.ReLU()
         self.update_lin = torch.nn.Linear(in_channels + out_channels, in_channels, bias=False)
         self.update_act = torch.nn.ReLU()
     def forward(self, x, edge_index):
-        # x的结构是[N, in_channels]
-        # edge_index的结构是[2, E]
         edge_index, _ = remove_self_loops(edge_index)
         edge_index, _ = add_self_loops(edge_index, num_nodes=x.size(0))
         return self.propagate(edge_index, size=(x.size(0), x.size(0)), x=x)
     def message(self, x_j):
-        # x_j的结构是[E, in_channels]
         x_j = self.lin(x_j)
         x_j = self.act(x_j)
         return x_j
     def update(self, aggr_out, x):
-        # aggr_out的结构是[N, out_channels]
         new_embedding = torch.cat([aggr_out, x], dim=1)
         new_embedding = self.update_lin(new_embedding)
         new_embedding = self.update_act(new_embedding)
@@ -67,18 +62,26 @@ class SAGEConv(MessagePassing):
 # 创建自己的神经网络模型
 class RobotNet(torch.nn.Module):
     # 模型结构初始化(隐层、激活函数、层结构等)
-    def __init__(self,
-                 in_feats,
-                 n_hidden,
-                 out_dim,
-                 n_layers,
-                 activation,
-                 dropout,
-                 aggregator_type):
-        # 调用父类的构造函数
+    def __init__(self):
+        # 调用父类的构造函数进行初始化
         super(RobotNet, self).__init__()
-        # 添加层
+        # 添加卷积层与池化层
         self.conv1 = SAGEConv(embed_dim, 128)
+        self.pool1 = TopKPooling(128, ratio=0.8)
+        self.conv2 = SAGEConv(128, 128)
+        self.pool2 = TopKPooling(128, ratio=0.8)
+        self.conv3 = SAGEConv(128, 128)
+        self.pool3 = TopKPooling(128, ratio=0.8)
+        # 添加嵌入层
+        self.item_embedding = torch.nn.Embedding(num_embeddings=df.item_id.max() +1, embedding_dim=embed_dim)
+        # 添加线性层
+        self.lin1 = torch.nn.Linear(256, 128)
+        self.lin2 = torch.nn.Linear(128, 64)
+        self.lin3 = torch.nn.Linear(64, 1)
+        self.bn1 = torch.nn.BatchNorm1d(128)
+        self.bn2 = torch.nn.BatchNorm1d(64)
+        self.act1 = torch.nn.ReLU()
+        self.act2 = torch.nn.ReLU()        
     # 网络前向传递过程，训练、测试过程中使用model(g,features)直接执行
     def forward(self, data):
         x, edge_index, batch = data.x, data.edge_index, data.batch
@@ -108,17 +111,17 @@ class RobotDataset(InMemoryDataset):
         super(RobotDataset, self).__init__(root, transform, pre_transform)
         self.data, self.slices = torch.load(self.processed_paths[0])
     @property
-    # 数据集加载文件夹
+    # 返回未经处理的数据名称列表
     def raw_file_names(self):
         return []
     @property
-    # 数据集保存文件夹
+    # 返回已经处理的数据名称列表
     def processed_file_names(self):
         return ['../20210117/data/my_gnn_data.dataset'] # 保存在data目录下
-    # 从加载文件夹里读取数据
+    # 下载数据到工作目录中
     def download(self):
         pass
-    # 从保存文件夹里读取数据，并创建一个数据对象列表
+    # 整合数据并创建数据集列表
     def process(self):
         data_list = []
         for i in df.index:
@@ -162,6 +165,40 @@ class RobotDataset(InMemoryDataset):
         # 将数据对象加载到属性中
         torch.save((data, slices), self.processed_paths[0])
 
+# 训练函数
+# 将从训练集构造的DataLoader迭代，然后反向传播损失函数
+def train():
+    model.train()
+    loss_all = 0
+    for data in train_loader:
+        data = data.to(device)
+        optimizer.zero_grad()
+        output = model(data)
+        label = data.y.to(device)
+        loss = crit(output, label)
+        loss.backward()
+        loss_all += data.num_graphs * loss.item()
+        optimizer.step()
+    return loss_all / len(train_dataset)
+
+# 估计函数
+# 用AUC替代准确度，对任务完成情况进行估计评价
+def evaluate(loader):
+    model.eval()
+    predictions = []
+    labels = []
+    # 设置梯度gradient归零，加速计算
+    with torch.no_grad():
+        for data in loader:
+            data = data.to(device)
+            pred = model(data).detach().cpu().numpy()
+            label = data.y.detach().cpu().numpy()
+            predictions.append(pred)
+            labels.append(label)
+    predictions = np.hstack(predictions)
+    labels = np.hstack(labels)
+    return roc_auc_score(labels, predictions)
+
 # 读取数据
 df = pd.read_csv('data/medium_2019-07-03_14-09_ER-Force-vs-TIGERs_Mannheim.txt', 
     encoding='ISO-8859-1',
@@ -194,11 +231,20 @@ train_loader = DataLoader(train_dataset, batch_size=batch_size)
 valid_loader = DataLoader(valid_dataset, batch_size=batch_size)
 test_loader  = DataLoader(test_dataset,  batch_size=batch_size)
 print("----------数据集构建完成----------")
+# 使用GPU训练模型
 # device = torch.device('cuda')
 # model = Net().to(device)
 # 构造optimizer对象，使用Adam作为优化器，设置学习率0.005
 # optimizer = torch.optim.Adam(model.parameters(), lr=0.005)
+# 设置二元交叉熵为损失函数Binary Cross Entropy
 # crit = torch.nn.BCELoss()
+for epoch in range(1):
+    loss = train()
+    train_acc = evaluate(train_loader)
+    val_acc = evaluate(val_loader)    
+    test_acc = evaluate(test_loader)
+    print('Epoch: {:03d}, Loss: {:.5f}, Train Auc: {:.5f}, Val Auc: {:.5f}, Test Auc: {:.5f}'.
+          format(epoch, loss, train_acc, val_acc, test_acc))
 print("----------模型训练完成----------")
 
 print("----------误差计算完成----------")

@@ -249,9 +249,9 @@ print("----------数据集构建完成----------")
 ## 模型构建
 device = torch.device('cuda')
 model = Net().to(device)
-# 使用Adam作为优化器，设置学习率0.005
+# 使用Adam作为优化器，设置学习率为0.005
 optimizer = torch.optim.Adam(model.parameters(), lr=0.005)
-# 使用BCE作为损失函数
+# 使用BCE二元交叉熵作为损失函数
 crit = torch.nn.BCELoss()
 print("----------模型构建完成----------")
 
