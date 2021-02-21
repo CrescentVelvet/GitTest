@@ -91,7 +91,7 @@ class CGeoPoint {
         _y = y;    // 2014/2/28 新增 设置y坐标 yys
     }
     bool fill(double x, double y) {
-        _x = x;    //2018/4/14  新增 同时设置 wayne
+        _x = x;    // 2018/4/14  新增 同时设置 wayne
         _y = y;
         return true;
     }

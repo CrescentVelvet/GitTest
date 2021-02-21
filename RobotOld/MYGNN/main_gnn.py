@@ -1,7 +1,7 @@
 '''
 Author       : velvet
 Date         : 2021-02-17 23:04:22
-LastEditTime : 2021-02-21 15:14:47
+LastEditTime : 2021-02-21 22:40:06
 LastEditors  : velvet
 Description  : 
 '''
@@ -127,6 +127,8 @@ class RobotDataset(InMemoryDataset):
     def process(self):
         data_list = []
         for i in df.index:
+            # -99999是初始化数字，要跳过
+            
             # 提取奇数偶数项
             i_x = df.iloc[i,[j%2==1 for j in range(len(df.columns))]]
             i_y = df.iloc[i,[j%2==0 for j in range(len(df.columns))]]

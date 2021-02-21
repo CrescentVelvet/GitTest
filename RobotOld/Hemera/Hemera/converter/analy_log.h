@@ -54,9 +54,18 @@ private:
     int maxX = ANALY::FIELD_WIDTH/2;
     int minY = -ANALY::FIELD_LENGTH/2;
     int maxY = ANALY::FIELD_LENGTH/2;
+//    记录这一帧位置信息
     CGeoPoint e_ball;
     CGeoPoint blue_robot[PARAM::ROBOTNUM];
     CGeoPoint yellow_robot[PARAM::ROBOTNUM];
+//    记录上一帧位置信息
+    CGeoPoint ball_old;
+    CGeoPoint blue_old[PARAM::ROBOTNUM];
+    CGeoPoint yellow_old[PARAM::ROBOTNUM];
+//    记录速度信息
+    CGeoPoint ball_vel;
+    CGeoPoint me_vel[PARAM::ROBOTNUM];
+    CGeoPoint enemy_vel[PARAM::ROBOTNUM];
 //    int analy_team;
     char *teamname;
     int analy_status;

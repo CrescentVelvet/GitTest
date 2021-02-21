@@ -12,16 +12,33 @@ AnalyEsthetics::AnalyEsthetics(){
 //    初始化当前帧与全部帧数
     current_frame = 0;
     whole_frame = 0;
-//    初始化小球位置
+//    初始化这一帧小球位置
     e_ball.setX(-99999);
     e_ball.setY(-99999);
+//    初始化上一帧小球位置
+    ball_old.setX(-99999);
+    ball_old.setY(-99999);
+//    初始化小球速度
+    ball_vel.setX(-99999);
+    ball_vel.setY(-99999);
 //    初始化小车位置
     for(int i = 0; i < PARAM::ROBOTNUM; i++)
     {
+//        初始化这一帧小车位置
         blue_robot[i].setX(-99999);
         blue_robot[i].setY(-99999);
         yellow_robot[i].setX(-99999);
         yellow_robot[i].setY(-99999);
+//        初始化上一帧小车位置
+        blue_old[i].setX(-99999);
+        blue_old[i].setY(-99999);
+        yellow_old[i].setX(-99999);
+        yellow_old[i].setY(-99999);
+//        初始化小车速度
+        me_vel[i].setX(-99999);
+        me_vel[i].setY(-99999);
+        enemy_vel[i].setX(-99999);
+        enemy_vel[i].setY(-99999);
     }
 //    初始化小车数量
     for(int i = 0; i < 6; i++)
@@ -91,7 +108,6 @@ void AnalyEsthetics::analy_frame(void * ptr, int size){
 //            cal_extrovert();
 //            计算GNN所需要的图神经网络信息
             gnn_dataAnaly();
-
         }
     }
     else
@@ -129,7 +145,7 @@ void AnalyEsthetics::analy_frame(void * ptr, int size){
 //        fprintf(fp,"hahaha");
 //        fclose(fp);
 //        将GNN训练所需数据输出为gnn_data.txt文本
-
+// 在gnn_dataAnaly函数内部输出，不在这里输出
 //        qDebug() << "x1 =" << our_carnum[0];
 //        qDebug() << "y1 =" << our_carnum[2];
 //        qDebug() << "x2 =" << their_carnum[0];
@@ -663,17 +679,38 @@ void AnalyEsthetics::gnn_dataAnaly(){
     int obside = ANALY::RIGHT;
     int team = ANALY::BLUE;
     int obteam = ANALY::YELLOW;
+//    记录这一帧位置信息，使用临时变量
     CGeoPoint ball = e_ball;
     CGeoPoint me[PARAM::ROBOTNUM];
     CGeoPoint enemy[PARAM::ROBOTNUM];
 ///初始化阶段
+//    小球速度
+    if(ball_old.x() > -99999 && ball_old.y() > -99999)
+    {
+        ball_vel.setX(ball.x() - ball_old.x());
+        ball_vel.setY(ball.y() - ball_old.y());
+    }
+    ball_old = e_ball;
 //    若为蓝队，则将蓝车设置为我车，黄车设置为敌车
     if(team == ANALY::BLUE)
     {
         for(int i = 0; i < PARAM::ROBOTNUM; i++)
         {
+//            这一帧位置
             me[i] = blue_robot[i];
             enemy[i] = yellow_robot[i];
+//            上一帧位置
+            if(blue_old[i].x() > -99999 && blue_old[i].y() > -99999 && yellow_old[i].x() > -99999 && yellow_old[i].y() > -99999)
+            {
+//                用位置差表示速度
+                me_vel[i].setX(blue_robot[i].x() - blue_old[i].x());
+                me_vel[i].setY(blue_robot[i].y() - blue_old[i].y());
+                enemy_vel[i].setX(yellow_robot[i].x() - yellow_old[i].x());
+                enemy_vel[i].setY(yellow_robot[i].y() - yellow_old[i].y());
+            }
+//            这一帧位置
+            blue_old[i] = blue_robot[i];
+            yellow_old[i] = yellow_robot[i];
         }
         side = analy_blueside;
         obside = analy_yellowside;
@@ -683,8 +720,21 @@ void AnalyEsthetics::gnn_dataAnaly(){
     {
         for(int i = 0; i < PARAM::ROBOTNUM; i++)
         {
+//            这一帧位置
             me[i] = yellow_robot[i];
             enemy[i] = blue_robot[i];
+//            上一帧位置
+            if(blue_old[i].x() > -99999 && blue_old[i].y() > -99999 && yellow_old[i].x() > -99999 && yellow_old[i].y() > -99999)
+            {
+//                用位置差表示速度
+                me_vel[i].setX(yellow_robot[i].x() - yellow_old[i].x());
+                me_vel[i].setY(yellow_robot[i].y() - yellow_old[i].y());
+                enemy_vel[i].setX(blue_robot[i].x() - blue_old[i].x());
+                enemy_vel[i].setY(blue_robot[i].y() - blue_old[i].y());
+            }
+//            这一帧位置
+            blue_old[i] = blue_robot[i];
+            yellow_old[i] = yellow_robot[i];
         }
         side = analy_yellowside;
         obside = analy_blueside;
@@ -710,6 +760,8 @@ void AnalyEsthetics::gnn_dataAnaly(){
 //        fprintf(fp,"ball---");
         fprintf(fp,"%f\t",ball.x());
         fprintf(fp,"%f\t",ball.y());
+        fprintf(fp,"%f\t",ball_vel.x());
+        fprintf(fp,"%f\t",ball_vel.y());
 //        每一帧有七个我方小车的信息
         for(int i = 0; me[i].x() > -99999 && me[i].y() > -99999; i++)
         {
@@ -717,6 +769,8 @@ void AnalyEsthetics::gnn_dataAnaly(){
 //            fprintf(fp,"%d\n",i);
             fprintf(fp,"%f\t",me[i].x());
             fprintf(fp,"%f\t",me[i].y());
+            fprintf(fp,"%f\t",me_vel[i].x());
+            fprintf(fp,"%f\t",me_vel[i].y());
         }
 //        每一帧有七个敌方小车的信息
         for(int i = 0; enemy[i].x() > -99999 && enemy[i].y() > -99999; i++)
@@ -725,6 +779,8 @@ void AnalyEsthetics::gnn_dataAnaly(){
 //            fprintf(fp,"%d\n",i);
             fprintf(fp,"%f\t",enemy[i].x());
             fprintf(fp,"%f\t",enemy[i].y());
+            fprintf(fp,"%f\t",enemy_vel[i].x());
+            fprintf(fp,"%f\t",enemy_vel[i].y());
         }
         fprintf(fp,"\n");
     }
