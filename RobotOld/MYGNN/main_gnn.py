@@ -1,7 +1,7 @@
 '''
 Author       : velvet
 Date         : 2021-02-17 23:04:22
-LastEditTime : 2021-02-21 01:42:18
+LastEditTime : 2021-02-21 15:14:47
 LastEditors  : velvet
 Description  : 
 '''
@@ -14,6 +14,7 @@ from torch_geometric.utils import add_self_loops, remove_self_loops, degree
 from torch_geometric.data import Data, InMemoryDataset, DataLoader
 from sklearn.preprocessing import LabelEncoder
 embed_dim = 128
+
 
 # 创建GCNConv层
 class GCNConv(MessagePassing):
@@ -176,7 +177,7 @@ def train():
         optimizer.zero_grad()
         output = model(data)
         label = data.y.to(device)
-        loss = crit(output, label)
+        loss = criterion(output, label)
         loss.backward()
         loss_all += data.num_graphs * loss.item()
         optimizer.step()
@@ -235,10 +236,12 @@ print("----------数据集构建完成----------")
 # 使用GPU训练模型
 device = torch.device('cuda')
 model = RobotNet().to(device)
-# 构造optimizer对象，使用Adam作为优化器，设置学习率0.005
-optimizer = torch.optim.Adam(model.parameters(), lr=0.005)
-# 设置二元交叉熵为损失函数Binary Cross Entropy
-crit = torch.nn.BCELoss()
+# 设置学习率0.005
+learning_rate = 0.005
+# 构造optimizer对象，使用Adam作为优化器
+optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate)
+# 设置损失函数为二元交叉熵Binary Cross Entropy
+criterion = torch.nn.BCELoss()
 for epoch in range(1):
     loss = train()
     train_acc = evaluate(train_loader)
