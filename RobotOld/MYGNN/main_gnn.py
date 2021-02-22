@@ -1,13 +1,19 @@
 '''
 Author       : velvet
 Date         : 2021-02-17 23:04:22
-LastEditTime : 2021-02-21 22:40:06
+LastEditTime : 2021-02-22 16:36:24
 LastEditors  : velvet
 Description  : 
 '''
 import numpy as np
 import pandas as pd
+import networkx as nx
+import time
 import torch
+import torch.nn.functional as F
+from dgl import DGLGraph
+from dgl.data import citation_graph as citegrh
+from dgl.nn.pytorch import GATConv
 from torch.nn import Sequential as Seq, Linear, ReLU
 from torch_geometric.nn import MessagePassing, GraphConv, TopKPooling
 from torch_geometric.utils import add_self_loops, remove_self_loops, degree
@@ -60,6 +66,74 @@ class SAGEConv(MessagePassing):
         new_embedding = self.update_lin(new_embedding)
         new_embedding = self.update_act(new_embedding)
         return new_embedding
+
+# 创建GAT层
+class GATLayer(torch.nn.Module):
+    def __init__(self, g, in_dim, out_dim):
+        super(GATLayer, self).__init__()
+        self.g = g
+        # equation (1)
+        self.fc = torch.nn.Linear(in_dim, out_dim, bias=False)
+        # equation (2)
+        self.attn_fc = torch.nn.Linear(2 * out_dim, 1, bias=False)
+        self.reset_parameters()
+    def reset_parameters(self):
+        """Reinitialize learnable parameters."""
+        gain = torch.nn.init.calculate_gain('relu')
+        torch.nn.init.xavier_normal_(self.fc.weight, gain=gain)
+        torch.nn.init.xavier_normal_(self.attn_fc.weight, gain=gain)
+    def edge_attention(self, edges):
+        # edge UDF for equation (2)
+        z2 = torch.cat([edges.src['z'], edges.dst['z']], dim=1)
+        a = self.attn_fc(z2)
+        return {'e': torch.nn.functional.leaky_relu(a)}
+    def message_func(self, edges):
+        # message UDF for equation (3) & (4)
+        return {'z': edges.src['z'], 'e': edges.data['e']}
+    def reduce_func(self, nodes):
+        # reduce UDF for equation (3) & (4)
+        # equation (3)
+        alpha = F.softmax(nodes.mailbox['e'], dim=1)
+        # equation (4)
+        h = torch.sum(alpha * nodes.mailbox['z'], dim=1)
+        return {'h': h}
+    def forward(self, h):
+        # equation (1)
+        z = self.fc(h)
+        self.g.ndata['z'] = z
+        # equation (2)
+        self.g.apply_edges(self.edge_attention)
+        # equation (3) & (4)
+        self.g.update_all(self.message_func, self.reduce_func)
+        return self.g.ndata.pop('h')
+
+# 创建多点注意力层
+class MultiHeadGATLayer(torch.nn.Module):
+    def __init__(self, g, in_dim, out_dim, num_heads, merge='cat'):
+        super(MultiHeadGATLayer, self).__init__()
+        self.heads = torch.nn.ModuleList()
+        for i in range(num_heads):
+            self.heads.append(GATLayer(g, in_dim, out_dim))
+        self.merge = merge
+    def forward(self, h):
+        head_outs = [attn_head(h) for attn_head in self.heads]
+        if self.merge == 'cat':
+            return torch.cat(head_outs, dim=1)
+        else:
+            return torch.mean(torch.stack(head_outs))
+
+# 创建GAT模型
+class GAT(torch.nn.Module):
+    def __init__(self, g, in_dim, hidden_dim, out_dim, num_heads):
+        super(GAT, self).__init__()
+        # 输入维度是hidden_dim*num_heads，因为多个输出连接在一起
+        self.layer1 = MultiHeadGATLayer(g, in_dim, hidden_dim, num_heads)
+        self.layer2 = MultiHeadGATLayer(g, hidden_dim * num_heads, out_dim, 1)
+    def forward(self, h):
+        h = self.layer1(h)
+        h = F.elu(h)
+        h = self.layer2(h)
+        return h
 
 # 创建自己的神经网络模型
 class RobotNet(torch.nn.Module):
@@ -203,6 +277,15 @@ def evaluate(loader):
     labels = np.hstack(labels)
     return roc_auc_score(labels, predictions)
 
+# 加载Cora数据集
+def load_cora_data():
+    data = citegrh.load_cora()
+    features = torch.FloatTensor(data.features)
+    labels = torch.LongTensor(data.labels)
+    mask = torch.BoolTensor(data.train_mask)
+    g = DGLGraph(data.graph)
+    return g, features, labels, mask
+
 # 读取数据
 df = pd.read_csv('data/medium_2019-07-03_14-09_ER-Force-vs-TIGERs_Mannheim.txt', 
     encoding='ISO-8859-1',
@@ -236,21 +319,43 @@ valid_loader = DataLoader(valid_dataset, batch_size=batch_size)
 test_loader  = DataLoader(test_dataset,  batch_size=batch_size)
 print("----------数据集构建完成----------")
 # 使用GPU训练模型
-device = torch.device('cuda')
-model = RobotNet().to(device)
-# 设置学习率0.005
-learning_rate = 0.005
-# 构造optimizer对象，使用Adam作为优化器
-optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate)
-# 设置损失函数为二元交叉熵Binary Cross Entropy
-criterion = torch.nn.BCELoss()
-for epoch in range(1):
-    loss = train()
-    train_acc = evaluate(train_loader)
-    val_acc = evaluate(val_loader)    
-    test_acc = evaluate(test_loader)
-    print('Epoch: {:03d}, Loss: {:.5f}, Train Auc: {:.5f}, Val Auc: {:.5f}, Test Auc: {:.5f}'.
-          format(epoch, loss, train_acc, val_acc, test_acc))
+# device = torch.device('cuda')
+# model = RobotNet().to(device)
+# # 设置学习率0.005
+# learning_rate = 0.005
+# # 构造optimizer对象，使用Adam作为优化器
+# optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate)
+# # 设置损失函数为二元交叉熵Binary Cross Entropy
+# criterion = torch.nn.BCELoss()
+# for epoch in range(1):
+#     loss = train()
+#     train_acc = evaluate(train_loader)
+#     val_acc = evaluate(val_loader)    
+#     test_acc = evaluate(test_loader)
+#     print('Epoch: {:03d}, Loss: {:.5f}, Train Auc: {:.5f}, Val Auc: {:.5f}, Test Auc: {:.5f}'.
+#           format(epoch, loss, train_acc, val_acc, test_acc))
+g, features, labels, mask = load_cora_data()
+# create the model, 2 heads, each head has hidden size 8
+net = GAT(g,
+          in_dim=features.size()[1],
+          hidden_dim=8,
+          out_dim=7,
+          num_heads=2)
+optimizer = torch.optim.Adam(net.parameters(), lr=1e-3)
+dur = []
+for epoch in range(30):
+    if epoch >= 3:
+        t0 = time.time()
+    logits = net(features)
+    logp = F.log_softmax(logits, 1)
+    loss = F.nll_loss(logp[mask], labels[mask])
+    optimizer.zero_grad()
+    loss.backward()
+    optimizer.step()
+    if epoch >= 3:
+        dur.append(time.time() - t0)
+    print("Epoch {:05d} | Loss {:.4f} | Time(s) {:.4f}".format(
+        epoch, loss.item(), np.mean(dur)))
 print("----------模型训练完成----------")
 
 print("----------误差计算完成----------")
