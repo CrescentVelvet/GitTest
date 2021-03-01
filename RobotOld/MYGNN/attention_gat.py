@@ -33,11 +33,9 @@ structure-free normalization, in the style of attention.
 #
 # For GCN, a graph convolution operation produces the normalized sum of the node features of neighbors.
 #
-#
 # .. math::
 #
 #   h_i^{(l+1)}=\sigma\left(\sum_{j\in \mathcal{N}(i)} {\frac{1}{c_{ij}} W^{(l)}h^{(l)}_j}\right)
-#
 #
 # where :math:`\mathcal{N}(i)` is the set of its one-hop neighbors (to include
 # :math:`v_i` in the set, simply add a self-loop to each node),
@@ -68,49 +66,39 @@ structure-free normalization, in the style of attention.
 #   h_i^{(l+1)}&=\sigma\left(\sum_{j\in \mathcal{N}(i)} {\alpha^{(l)}_{ij} z^{(l)}_j }\right),&(4)
 #   \end{align}
 #
-#
 # Explanations:
 #
-#
-# * Equation (1) is a linear transformation of the lower layer embedding :math:`h_i^{(l)}`
-#   and :math:`W^{(l)}` is its learnable weight matrix.
+# * Equation (1) is a linear transformation of the lower layer embedding :math:`h_i^{(l)}` and :math:`W^{(l)}` is its learnable weight matrix.
+# equation1是下层嵌入的线性变换，math:`h_i^{(l)}`和math:`W^{(l)}`是其可学习的权重矩阵。
 # * Equation (2) computes a pair-wise *un-normalized* attention score between two neighbors.
-#   Here, it first concatenates the :math:`z` embeddings of the two nodes, where :math:`||`
-#   denotes concatenation, then takes a dot product of it and a learnable weight vector
-#   :math:`\vec a^{(l)}`, and applies a LeakyReLU in the end. This form of attention is
-#   usually called *additive attention*, contrast with the dot-product attention in the
-#   Transformer model.
-# * Equation (3) applies a softmax to normalize the attention scores on each node's
-#   incoming edges.
-# * Equation (4) is similar to GCN. The embeddings from neighbors are aggregated together,
-#   scaled by the attention scores.
-#
+# equation2是计算两个相邻节点之间的成对*非标准化*注意力分数。
+#   Here, it first concatenates the :math:`z` embeddings of the two nodes, where :math:`||` denotes concatenation, then takes a dot product of it and a learnable weight vector :math:`\vec a^{(l)}`, and applies a LeakyReLU in the end. This form of attention is usually called *additive attention*, contrast with the dot-product attention in the Transformer model.
+# 这里，首先连接两个节点的math:`z`嵌入，其中math:`||`表示连接，然后取它的点积和可学习的权重向量math:`\vec a^{(l)}`，并在最后应用LeakyReLU。这种形式的注意通常被称为*additive attention*，与Transformer模型（encoer-decoder架构）中的点积注意力形成对比。
+# * Equation (3) applies a softmax to normalize the attention scores on each node's incoming edges.
+# equation3是应用softmax去规范化每个节点传入边上的注意力系数。
+# * Equation (4) is similar to GCN. The embeddings from neighbors are aggregated together, scaled by the attention scores.
+# equation4是与GCN类似，来自邻居的嵌入被聚集在一起，由注意力分数来衡量。
 # There are other details from the paper, such as dropout and skip connections.
-# For the purpose of simplicity, those details are left out of this tutorial. To see more details, 
-# download the `full example <https://github.com/dmlc/dgl/blob/master/examples/pytorch/gat/gat.py>`_.
-# In its essence, GAT is just a different aggregation function with attention
-# over features of neighbors, instead of a simple mean aggregation.
-#
+# 论文中还有其他细节，比如dropout和skip connection。
+# For the purpose of simplicity, those details are left out of this tutorial. To see more details, download the `full example <https://github.com/dmlc/dgl/blob/master/examples/pytorch/gat/gat.py>`_.
+# 本教程不提供这些细节，要查看更多细节，去github上下载完整实例。
+# In its essence, GAT is just a different aggregation function with attention over features of neighbors, instead of a simple mean aggregation.
+# GAT本质上是一个不同的聚集函数aggregation function，关注邻域的特征，而不是简单的平均聚集。
 # GAT in DGL
 # ----------
-#
-# DGL provides an off-the-shelf implementation of the GAT layer under the ``dgl.nn.<backend>``
-# subpackage. Simply import the ``GATConv`` as the follows.
+# DGL provides an off-the-shelf implementation of the GAT layer under the ``dgl.nn.<backend>`` subpackage. Simply import the ``GATConv`` as the follows.
 
 from dgl.nn.pytorch import GATConv
 
 ###############################################################
-# Readers can skip the following step-by-step explanation of the implementation and
-# jump to the `Put everything together`_ for training and visualization results.
-#
-# To begin, you can get an overall impression about how a ``GATLayer`` module is
-# implemented in DGL. In this section, the four equations above are broken down 
-# one at a time.
+# Readers can skip the following step-by-step explanation of the implementation and jump to the `Put everything together`_ for training and visualization results.
+# To begin, you can get an overall impression about how a ``GATLayer`` module is implemented in DGL. In this section, the four equations above are broken down one at a time.
+
+# 下面是GATLayer在DGL里的实现。四个equation一次解决一个。
 
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-
 
 class GATLayer(nn.Module):
     def __init__(self, g, in_dim, out_dim):
@@ -161,23 +149,19 @@ class GATLayer(nn.Module):
 # ^^^^^^^^^^^^
 #
 # .. math::
-#
 #   z_i^{(l)}=W^{(l)}h_i^{(l)},(1)
 #
-# The first one shows linear transformation. It's common and can be
-# easily implemented in Pytorch using ``torch.nn.Linear``.
+# The first one shows linear transformation. It's common and can be easily implemented in Pytorch using ``torch.nn.Linear``.
+# 第一个是线性变换，这很常见，可以在pytorch中使用torch.nn.Linear。
 #
 # Equation (2)
 # ^^^^^^^^^^^^
 #
 # .. math::
-#
 #   e_{ij}^{(l)}=\text{LeakyReLU}(\vec a^{(l)^T}(z_i^{(l)}|z_j^{(l)})),(2)
 #
-# The un-normalized attention score :math:`e_{ij}` is calculated using the
-# embeddings of adjacent nodes :math:`i` and :math:`j`. This suggests that the
-# attention scores can be viewed as edge data, which can be calculated by the
-# ``apply_edges`` API. The argument to the ``apply_edges`` is an **Edge UDF**,
+# The un-normalized attention score :math:`e_{ij}` is calculated using the embeddings of adjacent nodes :math:`i` and :math:`j`. This suggests that the attention scores can be viewed as edge data, which can be calculated by the ``apply_edges`` API. The argument to the ``apply_edges`` is an **Edge UDF**,
+# 未规范化的注意力得分：`e{ij}`是使用相邻节点的嵌入来计算`i`和`j`。这表明注意力得分可以看作是边缘数据，可以通过“apply\u edges”API来计算，“apply\u edges”的参数是**Edge UDF**，
 # which is defined as below:
 
 def edge_attention(self, edges):

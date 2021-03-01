@@ -1,6 +1,7 @@
 ﻿#include <stdio.h>
 #include "analy_log.h"
 #include "referee.pb.h"
+#include "globaldata.h"
 #include "messages_robocup_ssl_wrapper.pb.h"
 #include "messages_robocup_ssl_detection.pb.h"
 
@@ -63,11 +64,19 @@ AnalyEsthetics::AnalyEsthetics(){
 //分析log主函数
 void AnalyEsthetics::analy_frame(void * ptr, int size){
     static SSL_WrapperPacket packet;
+    ReceiveVisionMessage message;
     packet.ParseFromArray(ptr, size);
 //    检测到包信息，进行分析
     if(packet.has_detection())
     {
         const SSL_DetectionFrame& detection = packet.detection();
+//        读取摄像机ID
+        message.camID = detection.camera_id();
+        if (message.camID >= PARAM::CAMERA || message.camID < 0)
+        {
+            qDebug() << QString::fromLocal8Bit("无效摄像机ID：") << message.camID;
+            message.camID = 0;
+        }
 //        读取球数量，黄车数量，蓝车数量
         int ballSize = detection.balls_size();
         int blueSize = detection.robots_blue_size();
@@ -757,30 +766,31 @@ void AnalyEsthetics::gnn_dataAnaly(){
     if(me[0].x() > -99999 && me[0].y() > -99999
             && enemy[0].x() > -99999 && enemy[0].y() > -99999)
     {
-//        fprintf(fp,"ball---");
-        fprintf(fp,"%f\t",ball.x());
-        fprintf(fp,"%f\t",ball.y());
-        fprintf(fp,"%f\t",ball_vel.x());
-        fprintf(fp,"%f\t",ball_vel.y());
+        fprintf(fp,"ball---");
+//        fprintf(
+//        fprintf(fp,"%f\t",ball.x());
+//        fprintf(fp,"%f\t",ball.y());
+//        fprintf(fp,"%f\t",ball_vel.x());
+//        fprintf(fp,"%f\t",ball_vel.y());
 //        每一帧有七个我方小车的信息
         for(int i = 0; me[i].x() > -99999 && me[i].y() > -99999; i++)
         {
 //            fprintf(fp,"me-----");
 //            fprintf(fp,"%d\n",i);
-            fprintf(fp,"%f\t",me[i].x());
-            fprintf(fp,"%f\t",me[i].y());
-            fprintf(fp,"%f\t",me_vel[i].x());
-            fprintf(fp,"%f\t",me_vel[i].y());
+//            fprintf(fp,"%f\t",me[i].x());
+//            fprintf(fp,"%f\t",me[i].y());
+//            fprintf(fp,"%f\t",me_vel[i].x());
+//            fprintf(fp,"%f\t",me_vel[i].y());
         }
 //        每一帧有七个敌方小车的信息
         for(int i = 0; enemy[i].x() > -99999 && enemy[i].y() > -99999; i++)
         {
 //            fprintf(fp,"enemy--");
 //            fprintf(fp,"%d\n",i);
-            fprintf(fp,"%f\t",enemy[i].x());
-            fprintf(fp,"%f\t",enemy[i].y());
-            fprintf(fp,"%f\t",enemy_vel[i].x());
-            fprintf(fp,"%f\t",enemy_vel[i].y());
+//            fprintf(fp,"%f\t",enemy[i].x());
+//            fprintf(fp,"%f\t",enemy[i].y());
+//            fprintf(fp,"%f\t",enemy_vel[i].x());
+//            fprintf(fp,"%f\t",enemy_vel[i].y());
         }
         fprintf(fp,"\n");
     }

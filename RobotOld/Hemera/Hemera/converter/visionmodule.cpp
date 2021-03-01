@@ -1,4 +1,5 @@
 ﻿#include "visionmodule.h"
+#include "globaldata.h"
 #include "montage.h"
 #include "maintain.h"
 #include "dealball.h"
