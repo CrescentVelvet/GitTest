@@ -1,7 +1,7 @@
 '''
 Author       : velvet
 Date         : 2021-01-09 15:19:57
-LastEditTime : 2021-03-02 17:12:33
+LastEditTime : 2021-03-02 22:35:55
 LastEditors  : velvet
 Description  : 双目视觉云高估计
 '''
@@ -58,14 +58,14 @@ def image_mosaic(img1,img2):
 
 # 图像校正函数
 # def image_correct(ratio):
-#     R_cor = 380
+#     r = 380
 #     # 校正后图片的长宽
-#     w_cor = 3*R_cor
-#     h_cor = 3*R_cor
+#     w = 3*r
+#     h = 3*r
 #     # 校正中心
-#     x0_cor = w_cor/2
-#     y0_cor = h_cor/2
-#     f_cor = 2*R_cor/3.14159
+#     x0 = w/2
+#     y0 = h/2
+#     f = 2*r/3.14159
 
 # 读取彩色图像
 image_sc = cv2.imread('sc.png', cv2.IMREAD_UNCHANGED)
@@ -73,34 +73,57 @@ image_nb = cv2.imread('nb.png', cv2.IMREAD_UNCHANGED)
 
 # 鱼眼畸变校正correct
 # 原图像半径，也是原图像中心
-R_cor = 380
-# 校正后图片的长宽
-w_cor = 3*R_cor
-h_cor = 3*R_cor
-# 校正中心
-x0_cor = w_cor/2
-y0_cor = h_cor/2
-f_cor = 2*R_cor/3.14159
-for u in range(w_cor):
-    for v in range(h_cor):
-        # 求任意一点到校正中心的距离
-        h0 = np.sqrt((u-x0_cor)*(u-x0_cor)+(v-y0_cor)*(v-y0_cor))
-        h1 = f_cor*math.atan2(h0,f_cor)
-        if h0 == 0:
-            x = R_cor
-            y = R_cor
-        else:
-            x = h1*(u-x0_cor)/h0 + R_cor
-            y = h1*(v-y0_cor)/h0 + R_cor
+r = 380
+# 大视角鱼眼镜头——————
+# 校正图像半径
+R = 3*r
+# 鱼眼镜头视角
+xita = math.pi/4
+# 等距投影的距离
+z = R*math.tan(xita)
+for u in range(r):
+    for v in range(r):
+        h = math.sqrt(R*R-u*u-v*v)
+        x = z*u/h
+        y = z*v/h
         x = round(x)
         y = round(y)
-        if x>2*R_cor or y>2*R_cor or x<1 or y<1:
-            continue
-        image_cor = np.zeros((w_cor, h_cor, 4), np.uint8)
-        image_cor[u, v, 0] = image_sc[x, y, 0]
-        image_cor[u, v, 1] = image_sc[x, y, 1]
-        image_cor[u, v, 2] = image_sc[x, y, 2]
-        image_cor[u, v, 3] = 255
+        image_cor = np.zeros((R, R, 4), np.uint8)
+        image_cor[x, y, 0] = image_sc[u, v, 0]
+        image_cor[x, y, 1] = image_sc[u, v, 1]
+        image_cor[x, y, 2] = image_sc[u, v, 2]
+        image_cor[x, y, 3] = image_sc[u, v, 3]
+        print(image_cor[x,y,0])
+# 基于正交投影————————
+# # 校正图像长宽
+# w = 3*r
+# h = 3*r
+# # 校正图像中心
+# x0 = w/2
+# y0 = h/2
+# # 等距投影焦距
+# f = 2*r/math.pi
+# for u in range(w):
+#     for v in range(h):
+#         # 求任意一点到校正中心的距离
+#         h0 = np.sqrt((u-x0)*(u-x0)+(v-y0)*(v-y0))
+#         h1 = f*math.atan2(h0,f)
+#         if h0 == 0:
+#             x = r
+#             y = r
+#         else:
+#             x = h1*(u-x0)/h0 + r
+#             y = h1*(v-y0)/h0 + r
+#         x = round(x)
+#         y = round(y)
+#         if x>2*r or y>2*r or x<1 or y<1:
+#             continue
+#         image_cor = np.zeros((w, h, 4), np.uint8)
+#         image_cor[u, v, 0] = image_sc[x, y, 0]
+#         image_cor[u, v, 1] = image_sc[x, y, 1]
+#         image_cor[u, v, 2] = image_sc[x, y, 2]
+#         image_cor[u, v, 3] = image_sc[x, y, 2]
+#         image_cor = np.uint8(image_cor)
 # 读取灰度图像
 # image_sc_gray = cv2.imread('sc.png', cv2.IMREAD_GRAYSCALE)
 # image_nb_gray = cv2.imread('nb.png', cv2.IMREAD_GRAYSCALE)
