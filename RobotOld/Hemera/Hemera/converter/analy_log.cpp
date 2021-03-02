@@ -74,16 +74,17 @@ void AnalyEsthetics::analy_frame(void * ptr, int size){
         message.camID = detection.camera_id();
         if (message.camID >= PARAM::CAMERA || message.camID < 0)
         {
-            qDebug() << QString::fromLocal8Bit("无效摄像机ID：") << message.camID;
+//            qDebug() << QString::fromLocal8Bit("无效摄像机ID：") << message.camID;
             message.camID = 0;
         }
 //        读取球数量，黄车数量，蓝车数量
         int ballSize = detection.balls_size();
         int blueSize = detection.robots_blue_size();
         int yellowSize = detection.robots_yellow_size();
-//        读取球坐标，若球数不为0，取读到的第一个球为球坐标
+//        读取小球位置信息
         if(ballSize != 0)
         {
+//            若球数不为0，取读到的第一个小球为小球位置信息
             const SSL_DetectionBall& ball = detection.balls(0);
             e_ball.setX(ball.x());
             e_ball.setY(ball.y());
@@ -92,20 +93,29 @@ void AnalyEsthetics::analy_frame(void * ptr, int size){
         {
 //            qDebug() << QString::fromLocal8Bit("球数为0。");
         }
-//        读取蓝车坐标
+//        读取蓝车位置信息
         for(int i = 0; i < blueSize; i++)
         {
             const SSL_DetectionRobot& robot = detection.robots_blue(i);
             blue_robot[i].setX(robot.x());
             blue_robot[i].setY(robot.y());
         }
-//        读取黄车坐标
+//        读取黄车位置信息
         for(int i = 0; i < yellowSize; i++)
         {
             const SSL_DetectionRobot& robot = detection.robots_yellow(i);
             yellow_robot[i].setX(robot.x());
             yellow_robot[i].setY(robot.y());
         }
+//        读取小球位置信息
+//        ReceiveVisionMessage result = GlobalData::instance()->processBall;
+        qDebug() << GlobalData::instance()->processBall;
+//        if (result.ballSize > 0)
+//        {
+//            qDebug() << GlobalData::instance()->maintain[0].ball[0].velocity.x();
+//        }
+//        读取蓝车速度信息
+//        读取黄车速度信息
 //        判断蓝车左边还是右边
         judgeSide(blue_robot, blueSize);
 //        计算持球信息（即哪一方持球）

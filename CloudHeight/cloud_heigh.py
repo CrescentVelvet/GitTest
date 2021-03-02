@@ -1,7 +1,7 @@
 '''
 Author       : velvet
 Date         : 2021-01-09 15:19:57
-LastEditTime : 2021-01-10 23:52:45
+LastEditTime : 2021-03-02 17:12:33
 LastEditors  : velvet
 Description  : 双目视觉云高估计
 '''
@@ -12,7 +12,7 @@ import numpy as np
 import math
 import random
 
-# 彩色图像圆形裁剪函数
+# 图像裁剪函数（圆，R=380）
 def cut_circle(img):
     # 设定裁剪半径
     radius = 380
@@ -51,13 +51,60 @@ def cut_circle(img):
     # 返回裁剪后图像
     return(img_circle)
 
-# 读取彩色图像
-# image_sc = cv2.imread('sc-20201119-1212.png', cv2.IMREAD_UNCHANGED)
-# image_nb = cv2.imread('nb-20201119-1212.png', cv2.IMREAD_UNCHANGED)
+# 图像拼接函数
+def image_mosaic(img1,img2):
+    image_merge = np.hstack((img1, img2))
+    return image_merge
 
+# 图像校正函数
+# def image_correct(ratio):
+#     R_cor = 380
+#     # 校正后图片的长宽
+#     w_cor = 3*R_cor
+#     h_cor = 3*R_cor
+#     # 校正中心
+#     x0_cor = w_cor/2
+#     y0_cor = h_cor/2
+#     f_cor = 2*R_cor/3.14159
+
+# 读取彩色图像
+image_sc = cv2.imread('sc.png', cv2.IMREAD_UNCHANGED)
+image_nb = cv2.imread('nb.png', cv2.IMREAD_UNCHANGED)
+
+# 鱼眼畸变校正correct
+# 原图像半径，也是原图像中心
+R_cor = 380
+# 校正后图片的长宽
+w_cor = 3*R_cor
+h_cor = 3*R_cor
+# 校正中心
+x0_cor = w_cor/2
+y0_cor = h_cor/2
+f_cor = 2*R_cor/3.14159
+for u in range(w_cor):
+    for v in range(h_cor):
+        # 求任意一点到校正中心的距离
+        h0 = np.sqrt((u-x0_cor)*(u-x0_cor)+(v-y0_cor)*(v-y0_cor))
+        h1 = f_cor*math.atan2(h0,f_cor)
+        if h0 == 0:
+            x = R_cor
+            y = R_cor
+        else:
+            x = h1*(u-x0_cor)/h0 + R_cor
+            y = h1*(v-y0_cor)/h0 + R_cor
+        x = round(x)
+        y = round(y)
+        if x>2*R_cor or y>2*R_cor or x<1 or y<1:
+            continue
+        image_cor = np.zeros((w_cor, h_cor, 4), np.uint8)
+        image_cor[u, v, 0] = image_sc[x, y, 0]
+        image_cor[u, v, 1] = image_sc[x, y, 1]
+        image_cor[u, v, 2] = image_sc[x, y, 2]
+        image_cor[u, v, 3] = 255
 # 读取灰度图像
-# image_sc_gray = cv2.imread('sc-20201119-1212.png', cv2.IMREAD_GRAYSCALE)
-# image_nb_gray = cv2.imread('nb-20201119-1212.png', cv2.IMREAD_GRAYSCALE)
+# image_sc_gray = cv2.imread('sc.png', cv2.IMREAD_GRAYSCALE)
+# image_nb_gray = cv2.imread('nb.png', cv2.IMREAD_GRAYSCALE)
+# image_merge = image_mosaic(image_sc_gray, image_nb_gray)
 
 # # 图像阈值处理
 # image_sc_thresh = cv2.threshold(image_sc_gray, 30, 255, cv2.THRESH_TOZERO)[1]
@@ -76,28 +123,28 @@ def cut_circle(img):
 # canny_nb_gray = cv2.Canny(gauss_nb_gray, 50, 20)
 
 # 读取边缘图像
-canny_sc_gray = cv2.imread('sc.png', cv2.IMREAD_GRAYSCALE)
-canny_nb_gray = cv2.imread('nb.png', cv2.IMREAD_GRAYSCALE)
+# canny_sc_gray = cv2.imread('sc.png', cv2.IMREAD_GRAYSCALE)
+# canny_nb_gray = cv2.imread('nb.png', cv2.IMREAD_GRAYSCALE)
 
 # SIFT算法
-sift = cv2.xfeatures2d.SIFT_create()
-kp1, des1 = sift.detectAndCompute(canny_sc_gray,None)   #des是描述子
-kp2, des2 = sift.detectAndCompute(canny_nb_gray,None)  #des是描述子
+# sift = cv2.xfeatures2d.SIFT_create()
+# kp1, des1 = sift.detectAndCompute(canny_sc_gray,None)   #des是描述子
+# kp2, des2 = sift.detectAndCompute(canny_nb_gray,None)  #des是描述子
 # hmerge1 = np.hstack((canny_sc_gray, canny_nb_gray)) #水平拼接
-img1 = cv2.drawKeypoints(canny_sc_gray,kp1,canny_sc_gray,color=(255,0,255)) #画出特征点，并显示为红色圆圈
-img2 = cv2.drawKeypoints(canny_nb_gray,kp2,canny_nb_gray,color=(255,0,255)) #画出特征点，并显示为红色圆圈
+# img1 = cv2.drawKeypoints(canny_sc_gray,kp1,canny_sc_gray,color=(255,0,255)) #画出特征点，并显示为红色圆圈
+# img2 = cv2.drawKeypoints(canny_nb_gray,kp2,canny_nb_gray,color=(255,0,255)) #画出特征点，并显示为红色圆圈
 # hmerge2 = np.hstack((img1, img2)) #水平拼接
 # BFMatcher解决匹配
-bf = cv2.BFMatcher()
-matches = bf.knnMatch(des1,des2, k=2)
+# bf = cv2.BFMatcher()
+# matches = bf.knnMatch(des1,des2, k=2)
 # 调整ratio
-good = []
-for m,n in matches:
-    if m.distance < 0.75*n.distance:
-        good.append([m])
-img3 = cv2.drawMatchesKnn(img1,kp1,img2,kp2,matches,None,flags=2)
+# good = []
+# for m,n in matches:
+    # if m.distance < 0.75*n.distance:
+        # good.append([m])
+# img3 = cv2.drawMatchesKnn(img1,kp1,img2,kp2,matches,None,flags=2)
 
 # 输出图像
 # cv2.imwrite('sc_output.png', hmerge1)
 # cv2.imwrite('nb_output.png', hmerge2)
-cv2.imwrite('nb_output.png', img3)
+cv2.imwrite('output.png', image_cor)
