@@ -1,7 +1,7 @@
 '''
 Author       : velvet
 Date         : 2021-01-09 15:19:57
-LastEditTime : 2021-03-02 22:35:55
+LastEditTime : 2021-03-03 22:33:09
 LastEditors  : velvet
 Description  : 双目视觉云高估计
 '''
@@ -17,30 +17,33 @@ def cut_circle(img):
     # 设定裁剪半径
     radius = 380
     # 获取图像尺寸
-    img_h, img_w = img.shape[:2]
-    img_h = int(img_h)
-    img_w = int(img_w)
+    h_img, w_img = img.shape[:2]
+    h_img = round(h_img)
+    w_img = round(w_img)
     # 生成圆形显示模板
-    circleIn = np.zeros((img_h, img_w, 1), np.uint8)
-    circleIn = cv2.circle(circleIn, (img_h // 2, img_w // 2), radius, (1), -1)
+    circleIn = np.zeros((h_img, w_img, 1), np.uint8)
+    circleIn = cv2.circle(circleIn, (h_img//2, w_img//2), radius, (1), -1)
     # 生成空白图片
-    img_circle = np.zeros((img_h, img_w, 4), np.uint8)
+    img_circle = np.zeros((h_img, w_img, 4), np.uint8)
     # 若为彩色图像
     if (img[1,1]).ndim == 1:
-        #复制前三个通道
-        for y in range(img_w):
-            for x in range(img_h):
-                img_circle[x, y, 0] = np.multiply(img[x, y, 0], circleIn[x, y, 0])
-                img_circle[x, y, 1] = np.multiply(img[x, y, 1], circleIn[x, y, 0])
-                img_circle[x, y, 2] = np.multiply(img[x, y, 2], circleIn[x, y, 0])
-        #设置α通道的不透明部分
+        # 复制前三个通道
+        for y in range(w_img):
+            for x in range(h_img):
+                # 原图像矩阵与圆形模板矩阵相乘，得到圆形图像
+                img_circle[x, y, 0] = np.multiply(img[x, y, 0], circleIn[x, y, 0]) # 蓝色通道
+                img_circle[x, y, 1] = np.multiply(img[x, y, 1], circleIn[x, y, 0]) # 绿色通道
+                img_circle[x, y, 2] = np.multiply(img[x, y, 2], circleIn[x, y, 0]) # 红色通道
+                # 设置α通道全不透明，图像底色为纯黑
+                # img_circle[x,y,3] = 255
+        # 设置α通道圆形部分不透明，图像底色为透明
         circleIn[circleIn == 1] = 255
         img_circle[:, :, 3] = circleIn[:, :, 0]
     # 若为黑白图像
     elif (img[1,1]).ndim == 0:
         # 复制一个通道
-        for y in range(img_w):
-            for x in range(img_h):
+        for y in range(w_img):
+            for x in range(h_img):
                 # x为纵坐标，y为横坐标，原点在左上角
                 img_circle[x, y] = np.multiply(img[x, y], circleIn[x, y])
                 # 去除图像中过亮部分
@@ -72,58 +75,79 @@ image_sc = cv2.imread('sc.png', cv2.IMREAD_UNCHANGED)
 image_nb = cv2.imread('nb.png', cv2.IMREAD_UNCHANGED)
 
 # 鱼眼畸变校正correct
-# 原图像半径，也是原图像中心
+# 原图像半径
 r = 380
-# 大视角鱼眼镜头——————
-# 校正图像半径
-R = 3*r
-# 鱼眼镜头视角
-xita = math.pi/4
-# 等距投影的距离
-z = R*math.tan(xita)
-for u in range(r):
-    for v in range(r):
-        h = math.sqrt(R*R-u*u-v*v)
-        x = z*u/h
-        y = z*v/h
+# 大视角鱼眼镜头————————————————————————————————————————————
+# # 原图像中心
+# u0 = r
+# v0 = r
+# # 鱼眼镜头半视角
+# xita = math.pi/4
+# # 鱼眼镜头球面半径
+# R = r/math.sin(xita)
+# # 等距投影的距离
+# z = R*3
+# # 校正图像半径
+# r_cor = round(z*math.tan(xita))
+# # 校正图像中心
+# x0 = r_cor
+# y0 = r_cor
+#         # 若为彩色通道
+#         # if (img[1,1]).ndim == 1:
+# # 校正图像初始化
+# image_cor = np.zeros((r_cor*2, r_cor*2, 4), np.uint8)
+# for x in range(r_cor*2):
+#     for y in range(r_cor*2):
+#         # 将xyz坐标系从左上角转换到中心
+#         x = x - x0
+#         y = y - y0
+#         # 用xyz计算uv
+#         h = math.sqrt(x*x + y*y + z*z)
+#         # 将xyz和uv坐标系从中心转换到左上角
+#         u = R*x/h + u0
+#         v = R*y/h + v0
+#         x = x + x0
+#         y = y + y0
+#         # 四舍五入取整
+#         u = round(u)
+#         v = round(v)
+#         # 彩色图像三通道
+#         image_cor[x, y, 0] = image_sc[u, v, 0] # 蓝色通道
+#         image_cor[x, y, 1] = image_sc[u, v, 1] # 绿色通道
+#         image_cor[x, y, 2] = image_sc[u, v, 2] # 红色通道
+# # 透明度通道
+# image_cor[:, :, 3] = 255
+# 基于正交投影————————————————————————————————————————————
+# 校正图像长宽
+w = 3*r
+h = 3*r
+# 校正图像中心
+x0 = w/2
+y0 = h/2
+# 等距投影焦距
+f = 2*r/math.pi
+# 校正图像初始化
+image_cor = np.zeros((w, h, 4), np.uint8)
+for u in range(w):
+    for v in range(h):
+        # 求任意一点到校正中心的距离
+        h0 = np.sqrt((u-x0)*(u-x0)+(v-y0)*(v-y0))
+        h1 = f*math.atan2(h0,f)
+        if h0 == 0:
+            x = r
+            y = r
+        else:
+            x = h1*(u-x0)/h0 + r
+            y = h1*(v-y0)/h0 + r
         x = round(x)
         y = round(y)
-        image_cor = np.zeros((R, R, 4), np.uint8)
-        image_cor[x, y, 0] = image_sc[u, v, 0]
-        image_cor[x, y, 1] = image_sc[u, v, 1]
-        image_cor[x, y, 2] = image_sc[u, v, 2]
-        image_cor[x, y, 3] = image_sc[u, v, 3]
-        print(image_cor[x,y,0])
-# 基于正交投影————————
-# # 校正图像长宽
-# w = 3*r
-# h = 3*r
-# # 校正图像中心
-# x0 = w/2
-# y0 = h/2
-# # 等距投影焦距
-# f = 2*r/math.pi
-# for u in range(w):
-#     for v in range(h):
-#         # 求任意一点到校正中心的距离
-#         h0 = np.sqrt((u-x0)*(u-x0)+(v-y0)*(v-y0))
-#         h1 = f*math.atan2(h0,f)
-#         if h0 == 0:
-#             x = r
-#             y = r
-#         else:
-#             x = h1*(u-x0)/h0 + r
-#             y = h1*(v-y0)/h0 + r
-#         x = round(x)
-#         y = round(y)
-#         if x>2*r or y>2*r or x<1 or y<1:
-#             continue
-#         image_cor = np.zeros((w, h, 4), np.uint8)
-#         image_cor[u, v, 0] = image_sc[x, y, 0]
-#         image_cor[u, v, 1] = image_sc[x, y, 1]
-#         image_cor[u, v, 2] = image_sc[x, y, 2]
-#         image_cor[u, v, 3] = image_sc[x, y, 2]
-#         image_cor = np.uint8(image_cor)
+        if x>2*r or y>2*r or x<1 or y<1:
+            continue
+        image_cor[u, v, 0] = image_sc[x, y, 0] # 蓝色通道
+        image_cor[u, v, 1] = image_sc[x, y, 1] # 绿色通道
+        image_cor[u, v, 2] = image_sc[x, y, 2] # 红色通道
+        image_cor[u, v, 3] = 255             # 透明度通道
+        image_cor = np.uint8(image_cor)
 # 读取灰度图像
 # image_sc_gray = cv2.imread('sc.png', cv2.IMREAD_GRAYSCALE)
 # image_nb_gray = cv2.imread('nb.png', cv2.IMREAD_GRAYSCALE)
@@ -132,10 +156,10 @@ for u in range(r):
 # # 图像阈值处理
 # image_sc_thresh = cv2.threshold(image_sc_gray, 30, 255, cv2.THRESH_TOZERO)[1]
 
-# # 图像圆形裁剪
-# image_sc_circle = cut_circle(image_sc_gray)
-# image_nb_circle = cut_circle(image_nb_gray)
-# hmerge = np.hstack((image_sc_circle, image_nb_circle)) #水平拼接
+# 图像圆形裁剪
+# image_sc_circle = cut_circle(image_sc)
+# image_nb_circle = cut_circle(image_nb)
+# image_merge = image_mosaic(image_sc_circle, image_nb_circle) # 水平拼接
 
 # 边缘检测
 # 对灰度图像添加高斯模糊
