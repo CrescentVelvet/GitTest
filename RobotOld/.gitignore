@@ -113,7 +113,18 @@ Hera/logreader/*.pro.user
 Hera/logwriter/*.pro.user
 Hera/netreceive/*.pro.user
 Hera/netsend/*.pro.user
+Hera/Hera/share/proto/cpp/*.pb.h
+Hera/Hera/share/proto/cpp/*.pb.cc
 log_gnn_data.txt
+# Hemera
+Hemera/*build*
+Hemera/Hemera/*.pro.user
+Hemera/logreader/*.pro.user
+Hemera/logwriter/*.pro.user
+Hemera/netreceive/*.pro.user
+Hemera/netsend/*.pro.user
+Hemera/Hemera/share/proto/cpp/*.pb.h
+Hemera/Hemera/share/proto/cpp/*.pb.cc
 # MTGNN
 MTGNN/*
 MTGNN/data/*
