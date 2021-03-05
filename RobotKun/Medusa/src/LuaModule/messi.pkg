@@ -1,0 +1,35 @@
+$#include "VisionModule.h"
+$#include "singleton.h"
+$#include "WorldModel.h"
+$#include "runpos.h"
+$#include "messidecision.h"
+
+class CMessiDecision {
+    CMessiDecision();
+    bool messiRun();
+    string nextState();
+    string leaderState(); 
+    int leaderNum();
+    int receiverNum();
+    CGeoPoint passPos();
+    CGeoPoint flatPassPos();
+    CGeoPoint flatShootPos();
+    CGeoPoint chipPassPos();
+    CGeoPoint chipShootPos();
+    CGeoPoint freeKickPos();
+    CGeoPoint receiverPos(); 
+    CGeoPoint leaderPos();
+    CGeoPoint leaderWaitPos();
+    CGeoPoint otherPos(int i);
+    CGeoPoint goaliePassPos();
+    CGeoPoint freeKickWaitPos();
+    bool isFlat();
+    double passVel();
+    bool needKick();
+    bool needChip();
+    bool canDirectKick();
+    void reset();
+
+    CGeoPoint chipPredictPos();
+    bool chipBallState();
+};

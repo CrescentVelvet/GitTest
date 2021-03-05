@@ -1,0 +1,16 @@
+$#include <geometry.h>
+$#include <parammanager.h>
+class BallModel
+{
+public:
+    BallModel();
+    double flatSlideDist(double startVel);
+    double flatRollDist(double startVel);
+    double flatSlideTime(double startVel);
+    double flatRollTime(double startVel);
+    double flatStopTime(double startVel);
+    CGeoPoint flatPos(CGeoPoint currentPos, CVector startVel, double t);
+    double chipToTargetTime(double chipPower, double distToTarget); //chipPower == first jump dist
+    double chipSecondJumpDist(double chipPower);
+ 	double chipJumpTime(double chipPower);
+};
