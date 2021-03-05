@@ -25,6 +25,7 @@ SOURCES += main.cpp \
     converter/montage.cpp \
     converter/visionmodule.cpp \
     converter/globaldata.cpp \
+    converter/globalsettings.cpp \
     share/geometry.cpp \
     share/globalsettings.cpp \
     share/matrix2d.cpp \
@@ -91,6 +92,7 @@ HEADERS += \
     converter/montage.h \
     converter/visionmodule.h \
     converter/globaldata.h \
+    converter/globalsettings.h \
     share/dataqueue.hpp \
     share/geometry.h \
     share/globalsettings.h \

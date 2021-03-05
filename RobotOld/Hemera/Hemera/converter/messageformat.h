@@ -24,10 +24,10 @@ namespace {
     };
     */
 struct Ball {
-    CGeoPoint pos;
-    CGeoPoint predict_pos;
     double height;
     int cameraID;
+    CGeoPoint pos;
+    CGeoPoint predict_pos;
     CVector velocity;
     Ball(): pos(), height(0) {}
     bool fill(double x, double y, double height = 0, int id = -1) {
@@ -57,8 +57,12 @@ struct Robot {
     CGeoPoint pos;
     CGeoPoint predict_pos;
     double angle;
+    double raw_angle;
     CVector velocity;
+    CVector raw_vel;
+    CVector accelerate;
     double rotateVel;
+    double rawRotateVel;
     bool valid;
     Robot(): id(-1) {}
     Robot(double _x, double _y, double _angle, double _id = -1) {
@@ -120,10 +124,10 @@ const int YELLOW = 1;
 //* VisionMessage use for the final processed vision data.
 class OriginMessage {
   public:
-    unsigned short robotSize[2];
     unsigned short ballSize;
-    Robot robot[2][PARAM::ROBOTNUM];
+    unsigned short robotSize[2];
     Ball ball[PARAM::BALLNUM];
+    Robot robot[2][PARAM::ROBOTNUM];
     int robotIndex[2][PARAM::ROBOTMAXID];
     OriginMessage(): ballSize(0) {
         robotSize[BLUE] = robotSize[YELLOW] = 0;

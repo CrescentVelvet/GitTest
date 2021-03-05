@@ -3,6 +3,7 @@
 #include "referee.pb.h"
 #include "globaldata.h"
 #include "visionmodule.h"
+#include "globalsettings.h"
 #include "messages_robocup_ssl_wrapper.pb.h"
 #include "messages_robocup_ssl_detection.pb.h"
 
@@ -99,8 +100,14 @@ void AnalyEsthetics::analy_frame(void * ptr, int size){
         for(int i = 0; i < blueSize; i++)
         {
             const SSL_DetectionRobot& robot = detection.robots_blue(i);
+            if(GlobalSettings::instance()->inChosenArea(saoConvert(CGeoPoint(robot.x(), robot.y())))
+                    && robot.robot_id() < PARAM::ROBOTMAXID)
+            {
+                message.
+            }
             blue_robot[i].setX(robot.x());
             blue_robot[i].setY(robot.y());
+            qDebug()<<(blue_robot[i].x());
         }
 //        读取黄车位置信息
         for(int i = 0; i < yellowSize; i++)
@@ -110,8 +117,9 @@ void AnalyEsthetics::analy_frame(void * ptr, int size){
             yellow_robot[i].setY(robot.y());
         }
 //        读取小球速度信息
-        ReceiveVisionMessage result = GlobalData::instance()->maintain[0];
-        qDebug() << result.ball[0].velocity.x();
+//        ReceiveVisionMessage result = GlobalData::instance()->maintain[0];
+//        qDebug() << result.ball[0].velocity.y();
+//        qDebug() << result.robot[1][1].velocity.x();
 //        if (result.ballSize > 0)
 //        {
 //            qDebug() << GlobalData::instance()->maintain[0].ball[0].velocity.x();

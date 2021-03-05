@@ -227,7 +227,7 @@ int main(int argc, char *argv[])
 //                        Sleep(1000/60);
                         QThread::msleep(1000/60);
                     }
-                    std::cout << m_currentFrame + 1 << "/" << size << "\r";
+//                    std::cout << m_currentFrame + 1 << "/" << size << "\r";
                 }
                 std::cout << "\nfinished" << std::endl;
             }
