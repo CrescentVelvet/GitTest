@@ -2,12 +2,14 @@
 #include "analy_log.h"
 #include "referee.pb.h"
 #include "globaldata.h"
+#include "visionmodule.h"
 #include "messages_robocup_ssl_wrapper.pb.h"
 #include "messages_robocup_ssl_detection.pb.h"
 
 //修改pro文件后qmake
 //修改cpp文件后构建项目
 //再运行.\Hemera\bin\Hemera.exe -i=lr --if=E:\\ProgramFilesBig\HeraLOG\2019-07-03_14-09_ER-Force-vs-TIGERs_Mannheim.log -o=ns
+//运行小log.\Hemera\bin\Hemera.exe -i=lr --if=E:\\ProgramFilesBig\HeraLOG\little-2019-07-03_14-09_ER-Force-vs-TIGERs_Mannheim.log -o=ns
 
 AnalyEsthetics::AnalyEsthetics(){
 //    初始化当前帧与全部帧数
@@ -107,9 +109,9 @@ void AnalyEsthetics::analy_frame(void * ptr, int size){
             yellow_robot[i].setX(robot.x());
             yellow_robot[i].setY(robot.y());
         }
-//        读取小球位置信息
-//        ReceiveVisionMessage result = GlobalData::instance()->processBall;
-        qDebug() << GlobalData::instance()->processBall;
+//        读取小球速度信息
+        ReceiveVisionMessage result = GlobalData::instance()->maintain[0];
+        qDebug() << result.ball[0].velocity.x();
 //        if (result.ballSize > 0)
 //        {
 //            qDebug() << GlobalData::instance()->maintain[0].ball[0].velocity.x();
@@ -400,7 +402,7 @@ bool AnalyEsthetics::analy_goalkeeping(int team, int num){
     return false;
 }
 
-//计算
+//计算离球最近的我方小车
 int AnalyEsthetics::cal_nearest(int team){
     int side = ANALY::LEFT;
     CGeoPoint ball = e_ball;
@@ -691,7 +693,6 @@ void AnalyEsthetics::cal_extrovert(){
     }
 }
 
-
 //计算GNN所需要的图信息
 void AnalyEsthetics::gnn_dataAnaly(){
     int side = ANALY::LEFT;
@@ -704,12 +705,12 @@ void AnalyEsthetics::gnn_dataAnaly(){
     CGeoPoint enemy[PARAM::ROBOTNUM];
 ///初始化阶段
 //    小球速度
-    if(ball_old.x() > -99999 && ball_old.y() > -99999)
-    {
-        ball_vel.setX(ball.x() - ball_old.x());
-        ball_vel.setY(ball.y() - ball_old.y());
-    }
-    ball_old = e_ball;
+//    if(ball_old.x() > -99999 && ball_old.y() > -99999)
+//    {
+//        ball_vel.setX(ball.x() - ball_old.x());
+//        ball_vel.setY(ball.y() - ball_old.y());
+//    }
+//    ball_old = e_ball;
 //    若为蓝队，则将蓝车设置为我车，黄车设置为敌车
     if(team == ANALY::BLUE)
     {
@@ -719,14 +720,14 @@ void AnalyEsthetics::gnn_dataAnaly(){
             me[i] = blue_robot[i];
             enemy[i] = yellow_robot[i];
 //            上一帧位置
-            if(blue_old[i].x() > -99999 && blue_old[i].y() > -99999 && yellow_old[i].x() > -99999 && yellow_old[i].y() > -99999)
-            {
+//            if(blue_old[i].x() > -99999 && blue_old[i].y() > -99999 && yellow_old[i].x() > -99999 && yellow_old[i].y() > -99999)
+//            {
 //                用位置差表示速度
-                me_vel[i].setX(blue_robot[i].x() - blue_old[i].x());
-                me_vel[i].setY(blue_robot[i].y() - blue_old[i].y());
-                enemy_vel[i].setX(yellow_robot[i].x() - yellow_old[i].x());
-                enemy_vel[i].setY(yellow_robot[i].y() - yellow_old[i].y());
-            }
+//                me_vel[i].setX(blue_robot[i].x() - blue_old[i].x());
+//                me_vel[i].setY(blue_robot[i].y() - blue_old[i].y());
+//                enemy_vel[i].setX(yellow_robot[i].x() - yellow_old[i].x());
+//                enemy_vel[i].setY(yellow_robot[i].y() - yellow_old[i].y());
+//            }
 //            这一帧位置
             blue_old[i] = blue_robot[i];
             yellow_old[i] = yellow_robot[i];
@@ -743,14 +744,14 @@ void AnalyEsthetics::gnn_dataAnaly(){
             me[i] = yellow_robot[i];
             enemy[i] = blue_robot[i];
 //            上一帧位置
-            if(blue_old[i].x() > -99999 && blue_old[i].y() > -99999 && yellow_old[i].x() > -99999 && yellow_old[i].y() > -99999)
-            {
+//            if(blue_old[i].x() > -99999 && blue_old[i].y() > -99999 && yellow_old[i].x() > -99999 && yellow_old[i].y() > -99999)
+//            {
 //                用位置差表示速度
-                me_vel[i].setX(yellow_robot[i].x() - yellow_old[i].x());
-                me_vel[i].setY(yellow_robot[i].y() - yellow_old[i].y());
-                enemy_vel[i].setX(blue_robot[i].x() - blue_old[i].x());
-                enemy_vel[i].setY(blue_robot[i].y() - blue_old[i].y());
-            }
+//                me_vel[i].setX(yellow_robot[i].x() - yellow_old[i].x());
+//                me_vel[i].setY(yellow_robot[i].y() - yellow_old[i].y());
+//                enemy_vel[i].setX(blue_robot[i].x() - blue_old[i].x());
+//                enemy_vel[i].setY(blue_robot[i].y() - blue_old[i].y());
+//            }
 //            这一帧位置
             blue_old[i] = blue_robot[i];
             yellow_old[i] = yellow_robot[i];

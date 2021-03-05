@@ -1,7 +1,7 @@
 '''
 Author       : velvet
 Date         : 2021-01-09 15:19:57
-LastEditTime : 2021-03-04 11:43:18
+LastEditTime : 2021-03-04 17:19:27
 LastEditors  : velvet
 Description  : 双目视觉云高估计
 '''
@@ -60,20 +60,20 @@ def cut_circle(img):
                 # x为纵坐标，y为横坐标，原点在左上角
                 img_circle[x, y] = np.multiply(img[x, y], circleIn[x, y])
                 # 去除图像中过亮部分
-                # if img_circle[x, y][0] > 200:
-                #     img_circle[x, y] = [200, 200, 200, 200]
+                if img_circle[x, y][0] > 200:
+                    img_circle[x, y] = [200, 200, 200, 200]
     else:
         print("图像类型错误")
     # 返回裁剪后图像
     return(img_circle)
 
 # 图像拼接函数
-def image_mosaic(img1,img2):
+def mosaic_image(img1,img2):
     image_merge = np.hstack((img1, img2))
     return image_merge
 
 # 图像校正函数
-def image_correct(img):
+def correct_image(img):
     # 原图像半径
     r = 380
     # 原图像中心
@@ -82,13 +82,15 @@ def image_correct(img):
     # 校正图像大小比例
     cor = 3
     # 校正图像长宽
-    w = r*cor
-    h = r*cor
+    w = cor*r
+    h = cor*r
     # 校正图像中心
     x0 = w/2
     y0 = h/2
+    # 鱼眼镜头半视角
+    xita = math.pi/2
     # 等距投影焦距
-    f = 2*r/math.pi
+    f = r/xita
     # 校正图像初始化
     image_cor = np.zeros((w, h, 4), np.uint8)
     # 若为彩色图像
@@ -131,55 +133,47 @@ def image_correct(img):
                 if u>2*u0 or v>2*v0 or u<1 or v<1:
                     continue
                 image_cor[x, y] = img[u, v] # 灰度通道
+                # 去除图像中过亮部分
+                if image_cor[x, y][0] > 200:
+                    image_cor[x, y] = [200, 200, 200, 200]
     else:
         print("图像类型错误")
     return image_cor
 
-image_sc = read_image('sc.png', 1)
-image_nb = read_image('nb.png', 1)
-sc_cor = image_correct(image_sc)
-nb_cor = image_correct(image_nb)
-image_merge = image_mosaic(sc_cor, nb_cor)
+# 读取图像
+image_sc = read_image('sc.png', 0)
+image_nb = read_image('nb.png', 0)
+# 校正畸变
+# sc_cor = correct_image(image_sc)
+# nb_cor = correct_image(image_nb)
 
-# # 图像阈值处理
-# image_sc_thresh = cv2.threshold(image_sc_gray, 30, 255, cv2.THRESH_TOZERO)[1]
-
-# 图像圆形裁剪
-# image_sc_circle = cut_circle(image_sc)
-# image_nb_circle = cut_circle(image_nb)
-# image_merge = image_mosaic(image_sc_circle, image_nb_circle) # 水平拼接
-
-# 边缘检测
+# 检测边缘
 # 对灰度图像添加高斯模糊
-# gauss_sc_gray = cv2.GaussianBlur(image_sc_circle, (3, 3), 0)
-# gauss_nb_gray = cv2.GaussianBlur(image_nb_circle, (3, 3), 0)
-# canny边缘检测，第三个参数用于检测边缘，第二个参数用于将断续边缘连接起来
-# canny_sc_gray = cv2.Canny(gauss_sc_gray, 30, 10)
-# canny_nb_gray = cv2.Canny(gauss_nb_gray, 50, 20)
-
-# 读取边缘图像
-# canny_sc_gray = cv2.imread('sc.png', cv2.IMREAD_GRAYSCALE)
-# canny_nb_gray = cv2.imread('nb.png', cv2.IMREAD_GRAYSCALE)
+# gauss_sc = cv2.GaussianBlur(sc_cor, (3, 3), 0)
+# gauss_nb = cv2.GaussianBlur(nb_cor, (3, 3), 0)
+# 自适应阈值化，参数(原图像，最大像素，自适应方法，赋值方法，领域大小，阈值常数)
+thr_sc = cv2.adaptiveThreshold(image_sc, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY, 7, -1)
+thr_nb = cv2.adaptiveThreshold(image_nb, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY, 7, -1)
+# canny边缘检测，第二个low阈值用于连接断续边缘，第三个high阈值用于提取边缘
+canny_sc = cv2.Canny(image_sc, 30, 10)
+canny_nb = cv2.Canny(image_nb, 50, 20)
 
 # SIFT算法
-# sift = cv2.xfeatures2d.SIFT_create()
-# kp1, des1 = sift.detectAndCompute(canny_sc_gray,None)   #des是描述子
-# kp2, des2 = sift.detectAndCompute(canny_nb_gray,None)  #des是描述子
-# hmerge1 = np.hstack((canny_sc_gray, canny_nb_gray)) #水平拼接
-# img1 = cv2.drawKeypoints(canny_sc_gray,kp1,canny_sc_gray,color=(255,0,255)) #画出特征点，并显示为红色圆圈
-# img2 = cv2.drawKeypoints(canny_nb_gray,kp2,canny_nb_gray,color=(255,0,255)) #画出特征点，并显示为红色圆圈
-# hmerge2 = np.hstack((img1, img2)) #水平拼接
+sift = cv2.xfeatures2d.SIFT_create()
+kp1, des1 = sift.detectAndCompute(canny_sc,None) # des是描述子
+kp2, des2 = sift.detectAndCompute(canny_nb,None) # des是描述子
+img1 = cv2.drawKeypoints(canny_sc_gray,kp1,canny_sc_gray,color=(255,0,255)) # 画出特征点，并显示为红色圆圈
+img2 = cv2.drawKeypoints(canny_nb_gray,kp2,canny_nb_gray,color=(255,0,255)) # 画出特征点，并显示为红色圆圈
 # BFMatcher解决匹配
-# bf = cv2.BFMatcher()
-# matches = bf.knnMatch(des1,des2, k=2)
+bf = cv2.BFMatcher()
+matches = bf.knnMatch(des1,des2, k=2)
 # 调整ratio
-# good = []
-# for m,n in matches:
-    # if m.distance < 0.75*n.distance:
-        # good.append([m])
-# img3 = cv2.drawMatchesKnn(img1,kp1,img2,kp2,matches,None,flags=2)
+good = []
+for m,n in matches:
+    if m.distance < 0.75*n.distance:
+        good.append([m])
+img3 = cv2.drawMatchesKnn(img1,kp1,img2,kp2,matches,None,flags=2)
 
+# image_merge = mosaic_image(canny_sc, canny_nb)
 # 输出图像
-# cv2.imwrite('sc_output.png', hmerge1)
-# cv2.imwrite('nb_output.png', hmerge2)
-cv2.imwrite('output.png', image_merge)
+cv2.imwrite('cor_output.png', img3)

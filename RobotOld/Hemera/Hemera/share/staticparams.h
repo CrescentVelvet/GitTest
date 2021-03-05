@@ -37,17 +37,26 @@ const int BLUE_STATUS_PORT = 30011;
 const int YELLOW_STATUS_PORT = 30012;
 }
 namespace Athena {
-const int CONTROL_SEND[PARAM::TEAMS] = {10001, 10002};
+const int CONTROL_SEND[PARAM::TEAMS] = {50001, 50002};
 const int CONTROL_BACK_RECEIVE[PARAM::TEAMS] = {60001, 60002};
 const int VISION_SEND[PARAM::TEAMS] = {23333, 23334};
 const int SEND_TO_PYTHON = 41001;
-const int DEBUG_MSG_RECEIVE = 20001;
+const int DEBUG_MSG_RECEIVE[2] = {20001, 20002};
+const int DEBUG_SCORE_RECEIVE[2] = {20003, 20004};
 const int SIM_SEND = 20011;
-const double FRAME_RATE = 61;
+const double FRAME_RATE = 75;
+const double V_SWITCH = 2000;
+const double ACC_SLIDE = -4000;
+const double ACC_ROLL = -325;
 const float TOTAL_LATED_FRAME = 4.7f;
-const double BALL_DELC_CHANGE_POINT = 250;
+const double BALL_DELC_CHANGE_POINT = 2500;
 const double BALL_FAST_DEC = 360;
 const double BALL_SLOW_DEC = 27.5;
+namespace Vision {
+const int BALL_STORE_BUFFER = 100;
+const int ROBOT_STORE_BUFFER = 100;
+const int MAINTAIN_STORE_BUFFER = 1000;
+}
 }
 }
 #endif // STATICPARAMS_H
