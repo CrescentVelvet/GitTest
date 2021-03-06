@@ -24,6 +24,8 @@ SOURCES += main.cpp \
     converter/maintain.cpp \
     converter/montage.cpp \
     converter/visionmodule.cpp \
+#    converter/globaldata.cpp \
+#    converter/globalsettings.cpp \
     share/geometry.cpp \
     share/globalsettings.cpp \
     share/matrix2d.cpp \
@@ -45,7 +47,16 @@ SOURCES += main.cpp \
     share/proto/cpp/vision_detection.pb.cc \
     share/proto/cpp/zss_cmd.pb.cc \
     share/proto/cpp/zss_debug.pb.cc \
-    share/proto/cpp/zss_train.pb.cc
+    share/proto/cpp/zss_train.pb.cc \
+    converter/analy_log.cpp \
+    analyser/out_event.cpp \
+    analyser/utils.cpp \
+    analyser/param.cpp \
+    analyser/aimlesskick.cpp \
+    analyser/collision.cpp \
+    analyser/overspeed.cpp \
+#    analyser/ref_event.cpp \
+    analyser/referee.cpp
 
 INCLUDEPATH += \
     $$PWD/../logreader \
@@ -56,7 +67,29 @@ INCLUDEPATH += \
     $$PWD/share \
     $$PWD/share/proto/cpp
 
+win32 {
+    LOGREADER_LIB = $$PWD/../bin/logreader.lib
+    LOGWRITER_LIB = $$PWD/../bin/logwriter.lib
+    NETSEND_LIB = $$PWD/../bin/netsend.lib
+    NETRECEIVE_LIB = $$PWD/../bin/netreceive.lib
+}
+unix:!macx{
+    LOGREADER_LIB = $$PWD/../bin/liblogreader.so
+    LOGWRITER_LIB = $$PWD/../bin/liblogwriter.so
+    NETSEND_LIB = $$PWD/../bin/libnetsend.so
+    NETRECEIVE_LIB = $$PWD/../bin/libnetreceive.so
+}
+macx{
+    LOGREADER_LIB = $$PWD/../bin/liblogreader.a
+    LOGWRITER_LIB = $$PWD/../bin/liblogwriter.a
+    NETSEND_LIB = $$PWD/../bin/libnetsend.a
+    NETRECEIVE_LIB = $$PWD/../bin/libnetreceive.a
+}
 
+LIBS += $$LOGREADER_LIB \
+        $$LOGWRITER_LIB \
+        $$NETSEND_LIB \
+        $$NETRECEIVE_LIB
 
 DESTDIR = $$PWD/../bin/
 
@@ -72,6 +105,8 @@ HEADERS += \
     converter/messageformat.h \
     converter/montage.h \
     converter/visionmodule.h \
+#    converter/globaldata.h \
+#    converter/globalsettings.h \
     share/dataqueue.hpp \
     share/geometry.h \
     share/globalsettings.h \
@@ -97,7 +132,21 @@ HEADERS += \
     share/proto/cpp/vision_detection.pb.h \
     share/proto/cpp/zss_cmd.pb.h \
     share/proto/cpp/zss_debug.pb.h \
-    share/proto/cpp/zss_train.pb.h
+    share/proto/cpp/zss_train.pb.h \
+    converter/analy_log.h \
+    converter/param.h \
+    analyser/out_event.h \
+    analyser/utils.h \
+    analyser/param.h \
+    analyser/vmdata.h \
+    analyser/aimlesskick.h \
+    analyser/collision.h \
+    analyser/overspeed.h \
+#    analyser/ref_event.h \
+    analyser/referee.h \
+    semaphore.h \
+    converter/semaphore.h \
+    converter/Semaphore.h
 
 # Third party library dir
 win32 {
@@ -123,10 +172,6 @@ win32 {
         PROTOBUF_LIB = $${THIRD_PARTY_DIR}/protobuf/lib/libprotobufD.lib
         ZLIB_LIB = $${THIRD_PARTY_DIR}/zlib/lib/zlibD.lib
     }
-    LOGREADER_LIB = $$PWD/../bin/logreader.lib
-    LOGWRITER_LIB = $$PWD/../bin/logwriter.lib
-    NETSEND_LIB = $$PWD/../bin/netsend.lib
-    NETRECEIVE_LIB = $$PWD/../bin/netreceive.lib
 }
 unix:!macx{
     PROTOBUF_INCLUDE_DIR = $${THIRD_PARTY_DIR}/include
@@ -134,11 +179,6 @@ unix:!macx{
     ZLIB_INCLUDE_DIR = $${THIRD_PARTY_DIR}/zlib/include
     ZLIB_LIB = -lz
     EIGEN_INCLUDE_DIR = /usr/include/eigen3
-    LOGREADER_LIB = $$PWD/../bin/liblogreader.so
-    LOGWRITER_LIB = $$PWD/../bin/liblogwriter.so
-    NETSEND_LIB = $$PWD/../bin/libnetsend.so
-    NETRECEIVE_LIB = $$PWD/../bin/libnetreceive.so
-
 }
 
 macx {
@@ -147,17 +187,9 @@ macx {
     ZLIB_INCLUDE_DIR = $${THIRD_PARTY_DIR}/zlib/include
     ZLIB_LIB = $${THIRD_PARTY_DIR}/zlib/lib/zlib.a
     EIGEN_INCLUDE_DIR = $${THIRD_PARTY_DIR}/Eigen
-    LOGREADER_LIB = $$PWD/../bin/liblogreader.a
-    LOGWRITER_LIB = $$PWD/../bin/liblogwriter.a
-    NETSEND_LIB = $$PWD/../bin/libnetsend.a
-    NETRECEIVE_LIB = $$PWD/../bin/libnetreceive.a
 }
 
-LIBS += $$LOGREADER_LIB \
-        $$LOGWRITER_LIB \
-        $$NETSEND_LIB \
-        $$NETRECEIVE_LIB \
-        $$PROTOBUF_LIB \
+LIBS += $$PROTOBUF_LIB \
         $$ZLIB_LIB
 
 INCLUDEPATH += $$PROTOBUF_INCLUDE_DIR \
