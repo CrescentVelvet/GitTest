@@ -78,6 +78,12 @@ unix:!macx{
     NETSEND_LIB = $$PWD/../bin/libnetsend.so
     NETRECEIVE_LIB = $$PWD/../bin/libnetreceive.so
 }
+macx{
+    LOGREADER_LIB = $$PWD/../bin/liblogreader.a
+    LOGWRITER_LIB = $$PWD/../bin/liblogwriter.a
+    NETSEND_LIB = $$PWD/../bin/libnetsend.a
+    NETRECEIVE_LIB = $$PWD/../bin/libnetreceive.a
+}
 
 LIBS += $$LOGREADER_LIB \
         $$LOGWRITER_LIB \
@@ -148,7 +154,6 @@ unix:!macx{
 macx {
     THIRD_PARTY_DIR = /usr/local/Cellar
 }
-
 win32 {
     PROTOBUF_INCLUDE_DIR = $${THIRD_PARTY_DIR}/protobuf/include
     ZLIB_INCLUDE_DIR = $${THIRD_PARTY_DIR}/zlib/include
@@ -170,7 +175,6 @@ unix:!macx{
     ZLIB_LIB = -lz
     EIGEN_INCLUDE_DIR = /usr/include/eigen3
 }
-
 macx {
     PROTOBUF_INCLUDE_DIR = $${THIRD_PARTY_DIR}/protobuf/2.6.1/include
     PROTOBUF_LIB = $${THIRD_PARTY_DIR}/protobuf/2.6.1/lib/libprotobuf.a

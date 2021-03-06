@@ -67,10 +67,24 @@ INCLUDEPATH += \
     $$PWD/share \
     $$PWD/share/proto/cpp
 
-LOGREADER_LIB = $$PWD/../bin/logreader.lib
-LOGWRITER_LIB = $$PWD/../bin/logwriter.lib
-NETSEND_LIB = $$PWD/../bin/netsend.lib
-NETRECEIVE_LIB = $$PWD/../bin/netreceive.lib
+win32 {
+    LOGREADER_LIB = $$PWD/../bin/logreader.lib
+    LOGWRITER_LIB = $$PWD/../bin/logwriter.lib
+    NETSEND_LIB = $$PWD/../bin/netsend.lib
+    NETRECEIVE_LIB = $$PWD/../bin/netreceive.lib
+}
+unix:!macx{
+    LOGREADER_LIB = $$PWD/../bin/liblogreader.so
+    LOGWRITER_LIB = $$PWD/../bin/liblogwriter.so
+    NETSEND_LIB = $$PWD/../bin/libnetsend.so
+    NETRECEIVE_LIB = $$PWD/../bin/libnetreceive.so
+}
+macx{
+    LOGREADER_LIB = $$PWD/../bin/liblogreader.a
+    LOGWRITER_LIB = $$PWD/../bin/liblogwriter.a
+    NETSEND_LIB = $$PWD/../bin/libnetsend.a
+    NETRECEIVE_LIB = $$PWD/../bin/libnetreceive.a
+}
 
 LIBS += $$LOGREADER_LIB \
         $$LOGWRITER_LIB \
