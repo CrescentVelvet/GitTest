@@ -32,6 +32,17 @@ HEADERS += \
     ../Hera/share/staticparams.h \
     ../Hera/share/proto/cpp/vision_detection.pb.h
 
+# Third party library dir
+win32 {
+    THIRD_PARTY_DIR = $$PWD/../ZBin/3rdParty
+}
+unix:!macx{
+    THIRD_PARTY_DIR = /usr/local
+}
+macx {
+    THIRD_PARTY_DIR = /usr/local/Cellar
+}
+
 win32 {
     PROTOBUF_INCLUDE_DIR = $${THIRD_PARTY_DIR}/protobuf/include
     ZLIB_INCLUDE_DIR = $${THIRD_PARTY_DIR}/zlib/include

@@ -49,7 +49,7 @@ DESTDIR = $$PWD/../bin
 
 # Third party library dir
 win32 {
-    THIRD_PARTY_DIR = $$PWD/../3rdParty
+    THIRD_PARTY_DIR = $$PWD/../ZBin/3rdParty
 }
 unix:!macx{
     THIRD_PARTY_DIR = /usr/local
@@ -65,11 +65,11 @@ win32 {
 
     CONFIG(release,debug|release){
         PROTOBUF_LIB = $${THIRD_PARTY_DIR}/protobuf/lib/libprotobuf.lib
-        ZLIB_LIB = $${THIRD_PARTY_DIR}/zlib/lib/zlib.lib
+        ZLIB_LIB = $${THIRD_PARTY_DIR}/zlib/lib/x64/zlib.lib
     }
     CONFIG(debug,debug|release){
         PROTOBUF_LIB = $${THIRD_PARTY_DIR}/protobuf/lib/libprotobufD.lib
-        ZLIB_LIB = $${THIRD_PARTY_DIR}/zlib/lib/zlibD.lib
+        ZLIB_LIB = $${THIRD_PARTY_DIR}/zlib/lib/x64/zlibD.lib
     }
 }
 unix:!macx{

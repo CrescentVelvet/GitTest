@@ -150,7 +150,7 @@ HEADERS += \
 
 # Third party library dir
 win32 {
-    THIRD_PARTY_DIR = $$PWD/../3rdParty
+    THIRD_PARTY_DIR = $$PWD/../ZBin/3rdParty
 }
 unix:!macx{
     THIRD_PARTY_DIR = /usr/local
