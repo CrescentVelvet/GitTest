@@ -71,6 +71,9 @@ Thumbs.db
 *.dll
 *.exe
 
+# protobuf
+Hera/share/proto/cpp/*.*
+
 3rdParty/
 bin/
 test/
