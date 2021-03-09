@@ -12,9 +12,9 @@ public:
         int count = 0;
         while(response_to_control() != CONTROL_NEED_EXIT){
             auto&& str = std::to_string(count++);
-            std::cout << "A before publish" << std::endl;
+            std::cout << "A start publish" << std::endl;
             publish("msg",str.c_str(),str.size());
-            std::cout << "A after publish" << std::endl;
+            std::cout << "A finish publish" << std::endl;
             std::this_thread::sleep_for(std::chrono::milliseconds(800));
         }
     }
@@ -30,9 +30,9 @@ public:
         std::this_thread::sleep_for(std::chrono::milliseconds(500));
         ZSData data;
         while(response_to_control() != CONTROL_NEED_EXIT){
-            std::cout << "B before receive" << std::endl;
+            std::cout << "B start receive" << std::endl;
             receive("msg",data);
-            std::cout << "B after receive" << std::endl;
+            std::cout << "B finish receive" << std::endl;
             std::cout << std::string((const char *)data.data(),data.size()) << std::endl;
         }
     }

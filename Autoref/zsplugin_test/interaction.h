@@ -14,6 +14,7 @@ public:
     //! 1 : run
     //! 2 : pause
     //! 3 : exit
+    //! 4 : re
     Q_INVOKABLE void setControlCode(int,int);
 
 signals:

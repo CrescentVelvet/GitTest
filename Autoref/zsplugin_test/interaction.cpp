@@ -20,7 +20,7 @@ int Interaction::getControlCode(int id){
 }
 void Interaction::setControlCode(int id,int cmd){
     qDebug() << "setControlCode : " << id << cmd;
-    int command[] = {-1,ZSPlugin::CONTROL_NEED_RUN,ZSPlugin::CONTROL_NEED_PAUSE,ZSPlugin::CONTROL_NEED_EXIT};
+    int command[] = {-1, ZSPlugin::CONTROL_NEED_RUN, ZSPlugin::CONTROL_NEED_PAUSE, ZSPlugin::CONTROL_NEED_STOP, ZSPlugin::CONTROL_NEED_EXIT};
     bool need_exit = command[cmd] == ZSPlugin::CONTROL_NEED_EXIT;
     switch (id) {
     case 0:
