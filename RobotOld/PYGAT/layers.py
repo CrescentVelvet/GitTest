@@ -3,27 +3,29 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
-
 class GraphAttentionLayer(nn.Module):
-    """
-    Simple GAT layer, similar to https://arxiv.org/abs/1710.10903
-    """
+
     def __init__(self, in_features, out_features, dropout, alpha, concat=True):
         super(GraphAttentionLayer, self).__init__()
+        # 随机梯度下降:在训练过程中,按照一定概率随机丢弃一些神经网络单元,防止过拟合
         self.dropout = dropout
+        # 输入样本的特征的大小
         self.in_features = in_features
+        # 输出样本的特征的大小
         self.out_features = out_features
         self.alpha = alpha
         self.concat = concat
-
+        # 设置模型参数,以便在参数优化时能够根据训练来修改
         self.W = nn.Parameter(torch.empty(size=(in_features, out_features)))
-        nn.init.xavier_uniform_(self.W.data, gain=1.414)
         self.a = nn.Parameter(torch.empty(size=(2*out_features, 1)))
+        # Xavier初始化
+        nn.init.xavier_uniform_(self.W.data, gain=1.414)
         nn.init.xavier_uniform_(self.a.data, gain=1.414)
-
+        # 激活函数:if x < 0 得 y = x/a , if x > 0 得 y = x
         self.leakyrelu = nn.LeakyReLU(self.alpha)
 
     def forward(self, h, adj):
+        # 矩阵乘法:wh = h * w
         Wh = torch.mm(h, self.W) # h.shape: (N, in_features), Wh.shape: (N, out_features)
         a_input = self._prepare_attentional_mechanism_input(Wh)
         e = self.leakyrelu(torch.matmul(a_input, self.a).squeeze(2))
